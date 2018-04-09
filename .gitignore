@@ -240,3 +240,5 @@ migrations/
 env/
 .vscode/
 .env
+__pycache__/
+env/
