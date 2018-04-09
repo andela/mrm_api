@@ -15,7 +15,6 @@ __pycache__/
 
 # Distribution / packaging
 .Python
-env/
 build/
 develop-eggs/
 dist/
@@ -112,3 +111,6 @@ ENV/
 # alembic
 alembic/
 alembic.ini
+env/
+.vscode/
+.env
