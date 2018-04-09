@@ -124,3 +124,7 @@ migrations/
 mrm-env/
 __pycache__/
 env/
+.vscode/
+.env
+__pycache__/
+env/
