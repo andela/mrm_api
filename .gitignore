@@ -118,3 +118,5 @@ __pycache__/
 *.pyc
 migrations/
 mrm-env/
+__pycache__/
+env/
