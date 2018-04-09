@@ -45,6 +45,9 @@
 
 ## Built with 
 - Python version  3
+
+## Built with 
+- Python version 3
 - Flask
 - Grapghql
 - Postgres
@@ -61,4 +64,4 @@ When contributing to this repository, please first discuss the change you wish t
 
 
 
-
+## Running migrations
