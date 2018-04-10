@@ -10,14 +10,13 @@ jobs:
       # use `-browsers` prefix for selenium tests, e.g. `3.6.1-browsers`
       - image: circleci/python:3.6.1
         environment:
-          APP_SETTING: testing
-          TEST_DATABASE_URL: postgresql://postgres@localhost/mrm_test_db
+          TEST_DB: postgresql://postgres:masiko26@localhost/shoppinglist
       - image: circleci/postgres:9.6.5-alpine-ram
         environment:
           SECRET_KEY: "********"
-          POSTGRES_USER: postgres
-          POSTGRES_DB: mrm_test_db
-          POSTGRES_PASSWORD:
+          POSTGRES_USER: masiko26
+          POSTGRES_DB: mrm_db
+          POSTGRES_PASSWORD: admin
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -39,6 +38,7 @@ jobs:
       - run:
           name: install dependencies
           command: |
+<<<<<<< HEAD
             python -m venv venv
             . venv/bin/activate
             pip install -r requirements.txt
@@ -47,6 +47,16 @@ jobs:
             - ./venv
           key: v1-dependencies-{{ checksum "requirements.txt" }}
 
+=======
+            python3 -m env env
+            . env/bin/activate
+            pip install -r requirements.txt
+      - save_cache:
+          paths:
+            - ./env
+          key: v1-dependencies-{{ checksum "requirements.txt" }}
+        
+>>>>>>> 3f57e922... [Chore] Include .gitingore file
       # run tests!
       # this example uses Django's built-in test-runner
       # other common Python testing frameworks include pytest and nose
@@ -55,6 +65,7 @@ jobs:
       - run:
           name: run tests
           command: |
+<<<<<<< HEAD
             . venv/bin/activate
             tox
             coveralls
@@ -95,3 +106,10 @@ workflows:
             branches:
               only: develop
 
+=======
+            . env/bin/activate
+            nosetests --with-coverage --cover-package=my_app
+      - store_artifacts:
+          path: test-reports
+          destination: test-reports
+>>>>>>> 3f57e922... [Chore] Include .gitingore file
