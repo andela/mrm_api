@@ -2,8 +2,46 @@
  The MRM-api is the backbone of a tool to facilitate room management. It enables  capturing of feedback based on room usage and analyse usage statistics.The MRM-api provides capability to register rooms and give feedback.
 
 ## Development set up
+<<<<<<< HEAD
 - Check that python 3, pip, virtualenv and postgress are installed
 
+=======
+- Install python 3
+    - ##### Mac
+        -  Install Brew in Terminal
+        ```
+      /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+        ```
+        -   Then Install Python 3
+        ```
+        brew install python3
+        ```
+    - ##### Windows
+        - Download installation setup
+        ```
+        https://www.python.org/downloads/
+        ```
+        - Click the icon labeling the  Python file  and follow the prompts
+        ```
+         for example  python-3.6.2.exe.
+        ```
+    - ##### Linux
+        - Run the following command in the terminal
+        ```
+        sudo apt-get update
+       ```
+        ```
+        sudo apt-get install python3.6
+        ```
+- Install python install package (pip) manager 
+    ```
+      Follow this link --> https://pip.pypa.io/en/stable/installing/
+    ```
+- Install virtualenv
+    ```
+    pip install virtualenv
+    ```
+>>>>>>> 9b996e0d... [Chore #156461913]Add contribution guide
 - Clone the mrm-api repo and cd into it
     ```
     git clone https://github.com/andela/mrm_api.git
@@ -45,9 +83,13 @@
 
 ## Built with 
 - Python version  3
+- Run application.
+    ```
+    python app.py
+    ```
 
 ## Built with 
-- Python version 3
+- Python version  3
 - Flask
 - Grapghql
 - Postgres
@@ -62,9 +104,18 @@ When contributing to this repository, please first discuss the change you wish t
 - After  undertaking the task, a fully detailed pull request shall be submitted to the owners of this repository for review. 
 - If there any changes requested ,it is expected that these changes shall be effected and the pull request resubmitted for review.Once all the changes are accepted, the pull request shall be closed and the changes merged into `develop` by the owners of this repository.
 
-
-
-
-## contribution guide
+#####
 
 ## Running migrations
+- Initialize  Database Structure. Run the command below :
+```
+python manage.py db init
+```
+- Migrate databse to new structure: RUn the command below:
+```
+python manage.py db migrate
+```
+- Upgrade to new structure
+```
+python manage.py db upgrade
+```
