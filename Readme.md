@@ -105,11 +105,11 @@ When contributing to this repository, please first discuss the change you wish t
 ```
 python manage.py db init
 ```
-- Migrate databse to new structure: RUn the command below:
+- Migrate databse to new structure. Run the command below:
 ```
 python manage.py db migrate
 ```
-- Upgrade to new structure
+- Upgrade to new structure.Run the command below:
 ```
 python manage.py db upgrade
 ```
