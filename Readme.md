@@ -29,9 +29,20 @@
         ```
         sudo apt-get install python3.6
         ```
+        
+- Install postgres
+    - ##### Mac
+        Follow guidelines  at this [link](https://gist.github.com/sgnl/609557ebacd3378f3b72).
+    - ##### Windows
+        Follow guidelines  at this [link](http://www.postgresqltutorial.com/install-postgresql/).
+ 
+    - ##### Linux
+       Follow guidelines  at this [link](http://postgresguide.com/setup/install.html).
+
+        
 - Install python install package (pip) manager 
     ```
-      Follow this link --> https://pip.pypa.io/en/stable/installing/
+        For guidelines to install pip for your Operating system follow this link (https://pip.pypa.io/en/stable/installing/)
     ```
 - Install virtualenv
     ```
