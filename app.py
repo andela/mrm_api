@@ -1,12 +1,14 @@
 from flask import Flask
 from flask_graphql import GraphQLView
+from flask_sqlalchemy import SQLAlchemy
 
 #local imports
 from config import config
 from helpers.database import db_session
 from schema import schema
 
-
+#initializing a db instance
+db = SQLAlchemy()
 def create_app(config_name):
     app = Flask(__name__)
     app.config.from_object(config[config_name])
