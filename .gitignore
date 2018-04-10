@@ -1,5 +1,4 @@
 .vscode/
-__pycache__/
 *.pyc
 venv
 .tox/
@@ -119,3 +118,6 @@ __pycache__/
 *.pyc
 migrations/
 .env
+mrm-env/
+*.pyc
+migrations/
