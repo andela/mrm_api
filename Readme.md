@@ -36,12 +36,20 @@
         
 - Install postgres
     - ##### Mac
-        Follow guidelines  at this [link](https://gist.github.com/sgnl/609557ebacd3378f3b72).
+    
+        ```
+        Follow guidelines  at this link (https://gist.github.com/sgnl/609557ebacd3378f3b72).
+        ```
+
     - ##### Windows
-        Follow guidelines  at this [link](http://www.postgresqltutorial.com/install-postgresql/).
+        ```
+        Follow guidelines  at this link (http://www.postgresqltutorial.com/install-postgresql/).
+        ```
  
     - ##### Linux
-       Follow guidelines  at this [link](http://postgresguide.com/setup/install.html).
+       ```
+       Follow guidelines  at this link (http://postgresguide.com/setup/install.html).
+       ```
 
         
 - Install python install package (pip) manager 
