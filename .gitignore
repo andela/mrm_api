@@ -1,5 +1,6 @@
 .vscode/
-mrm-env/
+env/
 __pycache__/
 *.pyc
 migrations/
+.env
