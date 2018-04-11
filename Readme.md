@@ -72,6 +72,27 @@
     ```
     pip install -r requirements.txt
     ```
+- Create Application environment variables and save them in .env file
+    ```
+    export APP_SETTINGS="Development" # set app Enviroment.
+    export SECRET_KEY="some-very-long-string-of-random-characters"
+    export DEV_DATABASE_URL="" # Db for Development.
+    export TEST_DATABASE_URL="" # Db for Testing
+    export DATABASE_URL="" # Db for Production
+    ```
+- Running migrations
+    - Initialize  Database Structure. Run the command below :
+        ```
+        python manage.py db init
+        ```
+    - Migrate databse to new structure. Run the command below:
+        ```
+        python manage.py db migrate
+        ```
+    - Upgrade to new structure.Run the command below:
+        ```
+        python manage.py db upgrade
+        ```
 - Run application.
     ```
     python app.py
@@ -93,18 +114,6 @@ When contributing to this repository, please first discuss the change you wish t
 - After  undertaking the task, a fully detailed pull request shall be submitted to the owners of this repository for review. 
 - If there any changes requested ,it is expected that these changes shall be effected and the pull request resubmitted for review.Once all the changes are accepted, the pull request shall be closed and the changes merged into `develop` by the owners of this repository.
 
-#####
 
-## Running migrations
-- Initialize  Database Structure. Run the command below :
-```
-python manage.py db init
-```
-- Migrate databse to new structure. Run the command below:
-```
-python manage.py db migrate
-```
-- Upgrade to new structure.Run the command below:
-```
-python manage.py db upgrade
-```
+
+
