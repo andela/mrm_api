@@ -231,3 +231,8 @@ alembic.ini
 env/
 .vscode/
 .env
+env/
+__pycache__/
+*.pyc
+migrations/
+.env
