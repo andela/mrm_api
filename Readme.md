@@ -2,65 +2,10 @@
  The MRM-api is the backbone of a tool to facilitate room management. It enables  capturing of feedback based on room usage and analyse usage statistics.The MRM-api provides capability to register rooms and give feedback.
 
 ## Development set up
-<<<<<<< HEAD
 - Check that python 3, pip, virtualenv and postgress are installed
 
-=======
-- Install python 3
-    - ##### Mac
-        -  Install Brew in Terminal
-        ```
-      /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-        ```
-        -   Then Install Python 3
-        ```
-        brew install python3
-        ```
-    - ##### Windows
-        - Download installation setup
-        ```
-        https://www.python.org/downloads/
-        ```
-        - Click the icon labeling the  Python file  and follow the prompts
-        ```
-         for example  python-3.6.2.exe.
-        ```
-    - ##### Linux
-        - Run the following command in the terminal
-        ```
-        sudo apt-get update
-       ```
-        ```
-        sudo apt-get install python3.6
-        ```
-        
-- Install postgres
-    - ##### Mac
-    
-        ```
-        Follow guidelines  at this link (https://gist.github.com/sgnl/609557ebacd3378f3b72).
-        ```
+- Check that python 3, pip, virtualenv and postgress are installed
 
-    - ##### Windows
-        ```
-        Follow guidelines  at this link (http://www.postgresqltutorial.com/install-postgresql/).
-        ```
- 
-    - ##### Linux
-       ```
-       Follow guidelines  at this link (http://postgresguide.com/setup/install.html).
-       ```
-
-        
-- Install python install package (pip) manager 
-    ```
-        For guidelines to install pip for your Operating system follow this link (https://pip.pypa.io/en/stable/installing/)
-    ```
-- Install virtualenv
-    ```
-    pip install virtualenv
-    ```
->>>>>>> 9b996e0d... [Chore #156461913]Add contribution guide
 - Clone the mrm-api repo and cd into it
     ```
     git clone https://github.com/andela/mrm_api.git
