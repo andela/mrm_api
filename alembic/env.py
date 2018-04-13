@@ -19,7 +19,6 @@ config.set_main_option('sqlalchemy.url', os.getenv('DEV_DATABASE_URL'))
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-
 sys.path.append(os.getcwd())
 from models import Base
 target_metadata = Base.metadata
