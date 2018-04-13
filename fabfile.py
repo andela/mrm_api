@@ -3,6 +3,9 @@ from fabric.api import local, settings, hide
 import fnmatch
 import os
 
+def Run_Migration():
+    local("alembic revision --autogenerate ")
+    local("alembic upgrade head ")
 
 def user_exists(name):
     """
