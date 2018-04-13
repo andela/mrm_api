@@ -58,6 +58,8 @@ virtualenv==15.2.0
 Werkzeug==0.14.1
 Flask-Testing==0.7.1
 SQLAlchemy==1.2.6
+SQLAlchemy==1.2.5
+SQLAlchemy-Utils==0.33.2
 typing==3.6.4
 virtualenv==15.1.0
 Werkzeug==0.14.1
