@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .vscode/
 __pycache__/
 *.pyc
@@ -5,17 +6,26 @@ venv
 .tox/
 .pytest_cache/
 nrm_tool.egg-info/
+=======
+>>>>>>> 3d2acb9c... [Feature #156461691] Add .gitignore file
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
+<<<<<<< HEAD
 nrm_tool.egg-info
+=======
+>>>>>>> 3d2acb9c... [Feature #156461691] Add .gitignore file
 
 # C extensions
 *.so
 
 # Distribution / packaging
 .Python
+<<<<<<< HEAD
+=======
+env/
+>>>>>>> 3d2acb9c... [Feature #156461691] Add .gitignore file
 build/
 develop-eggs/
 dist/
@@ -86,6 +96,7 @@ celerybeat-schedule
 .env
 
 # virtualenv
+.venv
 venv/
 ENV/
 
