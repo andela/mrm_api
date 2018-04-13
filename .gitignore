@@ -16,7 +16,14 @@ nrm_tool.egg-info
 
 # Distribution / packaging
 .Python
+<<<<<<< HEAD
 env/
+=======
+<<<<<<< HEAD
+=======
+env/
+>>>>>>> 3d2acb9c... [Feature #156461691] Add .gitignore file
+>>>>>>> e66e8aba... [Feature #156461691] Add .gitignore file
 build/
 develop-eggs/
 dist/
@@ -87,6 +94,7 @@ celerybeat-schedule
 .env
 
 # virtualenv
+.venv
 venv/
 ENV/
 
