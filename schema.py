@@ -1,16 +1,16 @@
 import graphene
 
-import api.room.schema
+import room.schema
 
 
 class Query(
-    api.room.schema.Query
+    room.schema.Query
 ):
     pass
 
 
 class Mutation(
-    api.room.schema.Mutation
+    room.schema.Mutation
 ):
     pass
 
