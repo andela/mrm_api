@@ -2,7 +2,7 @@ from flask import Flask
 from flask_graphql import GraphQLView
 
 from config import config
-from database import db_session
+from helpers.database import db_session
 from schema import schema
 
 
