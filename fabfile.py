@@ -3,9 +3,8 @@ def InstallDB(user):
     local(" psql " +user+" -c 'CREATE DATABASE mrm_d'")
 
 def Run_Migration():
-    local("python manage.py init")
-    local("python manage.py migrate")
-    local("python manage.py upgrade")
+    local("alembic revision --autogenerate ")
+    local("alembic upgrade head ")
 
 def Run_App():
     local("python app.py")
