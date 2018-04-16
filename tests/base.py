@@ -1,3 +1,7 @@
+import sys
+import os
+sys.path.append(os.getcwd())
+
 from flask_testing import TestCase
 from graphene.test import Client
 from sqlalchemy import create_engine
@@ -7,8 +11,10 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 from mrm_api.app import create_app
 from schema import schema
 from config import config
-from database import engine, db_session, Base
-from models import Floor, Location, Block
+from helpers.database import engine, db_session, Base
+from location.models import Location
+from block.models import Block
+from floor.models import Floor
 
 
 class BaseTestCase(TestCase):
