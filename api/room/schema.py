@@ -4,8 +4,8 @@ from graphene import relay, Schema
 from graphene_sqlalchemy import (SQLAlchemyObjectType, 
                                  SQLAlchemyConnectionField)
 
-from room.models import Room as RoomModel
-from equipment.schema import Equipment
+from api.room.models import Room as RoomModel
+from api.equipment.schema import Equipment
 
 class Room(SQLAlchemyObjectType):
     

@@ -5,12 +5,11 @@ from sqlalchemy.orm import relationship
 
 from helpers.database import Base
 from utilities.utility import Utility
-from block.models import Block
+from api.room.models import Room
 
 
-class Floor(Base, Utility):
-    __tablename__ = 'floors'
+class Equipment(Base, Utility):
+    __tablename__ = 'equipments'
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
-    block_id = Column(Integer, ForeignKey('blocks.id'))
-    room = relationship('Room')
+    room_id = Column(Integer, ForeignKey('rooms.id'))
