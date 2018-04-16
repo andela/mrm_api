@@ -12,9 +12,9 @@ from mrm_api.app import create_app
 from schema import schema
 from config import config
 from helpers.database import engine, db_session, Base
-from location.models import Location
-from block.models import Block
-from floor.models import Floor
+from api.location.models import Location
+from api.block.models import Block
+from api.floor.models import Floor
 
 
 class BaseTestCase(TestCase):
