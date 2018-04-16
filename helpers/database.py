@@ -10,7 +10,6 @@ from config import config
 
 config_name = os.getenv('FLASK_CONFIG')
 database_uri = config.get(config_name).SQLALCHEMY_DATABASE_URI
-print(database_uri)
 engine = create_engine(database_uri, convert_unicode=True)
 db_session = scoped_session(sessionmaker(autocommit=False,
                                          autoflush=False,
