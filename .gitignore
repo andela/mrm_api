@@ -115,3 +115,10 @@ ENV/
 # alembic
 alembic/
 alembic.ini
+.vscode/
+__pycache__/
+*.pyc
+venv
+.tox/
+.pytest_cache/
+nrm_tool.egg-info/
