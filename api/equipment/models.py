@@ -5,7 +5,7 @@ from sqlalchemy.orm import relationship
 
 from helpers.database import Base
 from utilities.utility import Utility
-from room.models import Room
+from api.room.models import Room
 
 
 class Equipment(Base, Utility):

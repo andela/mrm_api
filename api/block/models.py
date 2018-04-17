@@ -5,7 +5,7 @@ from sqlalchemy.orm import relationship
 
 from helpers.database import Base
 from utilities.utility import Utility
-from location.models import Location
+from api.location.models import Location
 
 
 class Block(Base, Utility):
