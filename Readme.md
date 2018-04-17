@@ -32,15 +32,15 @@
 
     - Migrate database to new structure. Run the command below:
         ```
-        python manage.py db migrate
+        alembic revision --autogenerate -m "Migration message"
         ```
     - Upgrade to new structure.Run the command below:
         ```
-        python manage.py db upgrade
+        alembic upgrade head
         ```
 - Run application.
     ```
-    python app.py
+    python manage.py runserver
     ```
 
 ## Built with 
