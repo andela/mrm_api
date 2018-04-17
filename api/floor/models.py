@@ -5,7 +5,7 @@ from sqlalchemy.orm import relationship
 
 from helpers.database import Base
 from utilities.utility import Utility
-from block.models import Block
+from api.block.models import Block
 
 
 class Floor(Base, Utility):
