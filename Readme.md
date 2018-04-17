@@ -45,13 +45,6 @@
 
 ## Built with 
 - Python version  3
-- Run application.
-    ```
-    python app.py
-    ```
-
-## Built with 
-- Python version  3
 - Flask
 - Grapghql
 - Postgres
