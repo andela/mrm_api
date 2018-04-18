@@ -1,0 +1,61 @@
+actionid: py27
+msg: getenv
+cmdargs: ['/Users/kamaradeo/Desktop/Travail/mrm_api/.tox/py27/bin/pip', 'install', '-rrequirements.txt']
+
+Collecting alembic==0.9.8 (from -r requirements.txt (line 1))
+Collecting attrs==17.4.0 (from -r requirements.txt (line 2))
+  Using cached https://files.pythonhosted.org/packages/b5/60/4e178c1e790fd60f1229a9b3cb2f8bc2f4cc6ff2c8838054c142c70b5adc/attrs-17.4.0-py2.py3-none-any.whl
+Collecting click==6.7 (from -r requirements.txt (line 3))
+  Downloading https://files.pythonhosted.org/packages/34/c1/8806f99713ddb993c5366c362b2f908f18269f8d792aff1abfd700775a77/click-6.7-py2.py3-none-any.whl (71kB)
+Collecting Flask==0.12.2 (from -r requirements.txt (line 4))
+  Downloading https://files.pythonhosted.org/packages/77/32/e3597cb19ffffe724ad4bf0beca4153419918e7fa4ba6a34b04ee4da3371/Flask-0.12.2-py2.py3-none-any.whl (83kB)
+Collecting Flask-GraphQL==1.4.1 (from -r requirements.txt (line 5))
+Collecting funcsigs==1.0.2 (from -r requirements.txt (line 6))
+  Using cached https://files.pythonhosted.org/packages/69/cb/f5be453359271714c01b9bd06126eaf2e368f1fddfff30818754b5ac2328/funcsigs-1.0.2-py2.py3-none-any.whl
+Collecting graphene==2.0.1 (from -r requirements.txt (line 7))
+  Downloading https://files.pythonhosted.org/packages/5e/04/8b3df9de415958155c7ec588aa7069e51c3c64b4b955d0adf3c7c0623ad1/graphene-2.0.1-py2.py3-none-any.whl (103kB)
+Collecting graphene-sqlalchemy==2.0.0 (from -r requirements.txt (line 8))
+  Downloading https://files.pythonhosted.org/packages/02/71/fa5e35b1bf1450bd8c7c46a5563d019fb2a26b221f40ff23e300fa1217df/graphene_sqlalchemy-2.0.0-py2.py3-none-any.whl
+Collecting graphql-core==2.0 (from -r requirements.txt (line 9))
+  Downloading https://files.pythonhosted.org/packages/4f/e2/f4fb4ca7cfe13a6d51581c5628b6b44ee78cc832b763f3cc3f1e986850a5/graphql_core-2.0-py2.py3-none-any.whl (202kB)
+Collecting graphql-relay==0.4.5 (from -r requirements.txt (line 10))
+Collecting iso8601==0.1.12 (from -r requirements.txt (line 11))
+  Downloading https://files.pythonhosted.org/packages/ef/57/7162609dab394d38bbc7077b7ba0a6f10fb09d8b7701ea56fa1edc0c4345/iso8601-0.1.12-py2.py3-none-any.whl
+Collecting itsdangerous==0.24 (from -r requirements.txt (line 12))
+Collecting Jinja2==2.10 (from -r requirements.txt (line 13))
+  Downloading https://files.pythonhosted.org/packages/7f/ff/ae64bacdfc95f27a016a7bed8e8686763ba4d277a78ca76f32659220a731/Jinja2-2.10-py2.py3-none-any.whl (126kB)
+Collecting Mako==1.0.7 (from -r requirements.txt (line 14))
+Collecting MarkupSafe==1.0 (from -r requirements.txt (line 15))
+Collecting more-itertools==4.1.0 (from -r requirements.txt (line 16))
+  Using cached https://files.pythonhosted.org/packages/4a/88/c28e2a2da8f3dc3a391d9c97ad949f2ea0c05198222e7e6af176e5bf9b26/more_itertools-4.1.0-py2-none-any.whl
+Collecting pluggy==0.6.0 (from -r requirements.txt (line 17))
+  Downloading https://files.pythonhosted.org/packages/82/05/43e3947125a2137cba4746135c75934ceed1863f27e050fc560052104a71/pluggy-0.6.0-py2-none-any.whl
+Collecting promise==2.1 (from -r requirements.txt (line 18))
+  Downloading https://files.pythonhosted.org/packages/34/16/a459aad0458910cb9e041400bb99d5176bdcc09f7188622f4d1478c4a625/promise-2.1-py2-none-any.whl
+Collecting psycopg2==2.7.4 (from -r requirements.txt (line 19))
+  Downloading https://files.pythonhosted.org/packages/67/ee/668612acf12fecb8f8a19342517b8c4cf172b7bb9ff9fa1f86e7f95a4757/psycopg2-2.7.4-cp27-cp27m-macosx_10_6_intel.macosx_10_9_intel.macosx_10_9_x86_64.macosx_10_10_intel.macosx_10_10_x86_64.whl (1.7MB)
+Collecting py==1.5.3 (from -r requirements.txt (line 20))
+  Downloading https://files.pythonhosted.org/packages/67/a5/f77982214dd4c8fd104b066f249adea2c49e25e8703d284382eb5e9ab35a/py-1.5.3-py2.py3-none-any.whl (84kB)
+Collecting pytest==3.5.0 (from -r requirements.txt (line 21))
+  Using cached https://files.pythonhosted.org/packages/ed/96/271c93f75212c06e2a7ec3e2fa8a9c90acee0a4838dc05bf379ea09aae31/pytest-3.5.0-py2.py3-none-any.whl
+Collecting python-dateutil==2.7.0 (from -r requirements.txt (line 22))
+  Downloading https://files.pythonhosted.org/packages/bc/c5/3449988d33baca4e9619f49a14e28026399b0a8c32817e28b503923a04ab/python_dateutil-2.7.0-py2.py3-none-any.whl (207kB)
+Collecting python-editor==1.0.3 (from -r requirements.txt (line 23))
+Collecting Rx==1.6.1 (from -r requirements.txt (line 24))
+  Downloading https://files.pythonhosted.org/packages/33/0f/5ef4ac78e2a538cc1b054eb86285fe0bf7a5dbaeaac2c584757c300515e2/Rx-1.6.1-py2.py3-none-any.whl (179kB)
+Collecting singledispatch==3.4.0.3 (from -r requirements.txt (line 25))
+  Using cached https://files.pythonhosted.org/packages/c5/10/369f50bcd4621b263927b0a1519987a04383d4a98fb10438042ad410cf88/singledispatch-3.4.0.3-py2.py3-none-any.whl
+Collecting six==1.11.0 (from -r requirements.txt (line 26))
+  Downloading https://files.pythonhosted.org/packages/67/4b/141a581104b1f6397bfa78ac9d43d8ad29a7ca43ea90a2d863fe3056e86a/six-1.11.0-py2.py3-none-any.whl
+Collecting SQLAlchemy==1.2.5 (from -r requirements.txt (line 27))
+Collecting tox==3.0.0 (from -r requirements.txt (line 28))
+  Downloading https://files.pythonhosted.org/packages/e6/41/4dcfd713282bf3213b0384320fa8841e4db032ddcb80bc08a540159d42a8/tox-3.0.0-py2.py3-none-any.whl (60kB)
+Collecting typing==3.6.4 (from -r requirements.txt (line 29))
+  Downloading https://files.pythonhosted.org/packages/0d/4d/4e5985d075d241d686a1663fa1f88b61d544658d08c1375c7c6aac32afc3/typing-3.6.4-py2-none-any.whl
+Collecting virtualenv==15.2.0 (from -r requirements.txt (line 30))
+  Using cached https://files.pythonhosted.org/packages/ed/ea/e20b5cbebf45d3096e8138ab74eda139595d827677f38e9dd543e6015bdf/virtualenv-15.2.0-py2.py3-none-any.whl
+Collecting Werkzeug==0.14.1 (from -r requirements.txt (line 31))
+  Downloading https://files.pythonhosted.org/packages/20/c4/12e3e56473e52375aa29c4764e70d1b8f3efa6682bef8d0aae04fe335243/Werkzeug-0.14.1-py2.py3-none-any.whl (322kB)
+Requirement already satisfied: setuptools in ./.tox/py27/lib/python2.7/site-packages (from pytest==3.5.0->-r requirements.txt (line 21)) (39.0.1)
+Installing collected packages: SQLAlchemy, MarkupSafe, Mako, python-editor, six, python-dateutil, alembic, attrs, click, itsdangerous, Werkzeug, Jinja2, Flask, typing, promise, Rx, graphql-core, Flask-GraphQL, funcsigs, graphql-relay, graphene, singledispatch, iso8601, graphene-sqlalchemy, more-itertools, pluggy, psycopg2, py, pytest, virtualenv, tox
+Successfully installed Flask-0.12.2 Flask-GraphQL-1.4.1 Jinja2-2.10 Mako-1.0.7 MarkupSafe-1.0 Rx-1.6.1 SQLAlchemy-1.2.5 Werkzeug-0.14.1 alembic-0.9.8 attrs-17.4.0 click-6.7 funcsigs-1.0.2 graphene-2.0.1 graphene-sqlalchemy-2.0.0 graphql-core-2.0 graphql-relay-0.4.5 iso8601-0.1.12 itsdangerous-0.24 more-itertools-4.1.0 pluggy-0.6.0 promise-2.1 psycopg2-2.7.4 py-1.5.3 pytest-3.5.0 python-dateutil-2.7.0 python-editor-1.0.3 singledispatch-3.4.0.3 six-1.11.0 tox-3.0.0 typing-3.6.4 virtualenv-15.2.0

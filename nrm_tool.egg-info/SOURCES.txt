@@ -1,0 +1,5 @@
+setup.py
+nrm_tool.egg-info/PKG-INFO
+nrm_tool.egg-info/SOURCES.txt
+nrm_tool.egg-info/dependency_links.txt
+nrm_tool.egg-info/top_level.txt

@@ -1,0 +1,12 @@
+actionid: python3.4
+msg: installpkg
+cmdargs: ['/Users/kamaradeo/Desktop/Travail/mrm_api/.tox/python3.4/bin/pip', 'install', '/Users/kamaradeo/Desktop/Travail/mrm_api/.tox/dist/nrm_tool-1.0.zip']
+
+Processing ./.tox/dist/nrm_tool-1.0.zip
+Building wheels for collected packages: nrm-tool
+  Running setup.py bdist_wheel for nrm-tool: started
+  Running setup.py bdist_wheel for nrm-tool: finished with status 'done'
+  Stored in directory: /Users/kamaradeo/Library/Caches/pip/wheels/f7/55/f9/cea9a28590ca84279d51c6511ef2f90d1657e7acef2af44af8
+Successfully built nrm-tool
+Installing collected packages: nrm-tool
+Successfully installed nrm-tool-1.0

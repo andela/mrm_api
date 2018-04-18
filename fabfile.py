@@ -7,7 +7,7 @@ def Run_Migration():
     local("alembic upgrade head ")
 
 def Run_App():
-    local("python app.py")
+    local("python manage.py runserver")
 
 def prepare_to_host(user):
     InstallDB(user)

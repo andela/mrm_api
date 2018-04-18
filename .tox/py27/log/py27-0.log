@@ -1,0 +1,9 @@
+actionid: py27
+msg: getenv
+cmdargs: ['/Users/kamaradeo/Desktop/Travail/mrm_api/venv/bin/python', '-m', 'virtualenv', '--python', '/Users/kamaradeo/Desktop/Travail/mrm_api/venv/bin/python2.7', 'py27']
+
+Using real prefix '/System/Library/Frameworks/Python.framework/Versions/2.7'
+New python executable in /Users/kamaradeo/Desktop/Travail/mrm_api/.tox/py27/bin/python2.7
+Also creating executable in /Users/kamaradeo/Desktop/Travail/mrm_api/.tox/py27/bin/python
+Installing setuptools, pip, wheel...done.
+Running virtualenv with interpreter /Users/kamaradeo/Desktop/Travail/mrm_api/venv/bin/python2.7

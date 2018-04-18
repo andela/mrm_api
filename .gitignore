@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 # Byte-compiled / optimized / DLL files
 #__pycache__/
@@ -115,3 +116,12 @@ ENV/
 .pytest_cache/
 html_coverage_report/
 *.DS_store
+=======
+.vscode/
+venv/
+__pycache__/
+*.pyc
+.tox
+.pytest_cache
+nrm_tool.ego-info/
+>>>>>>> 9f6b1d4f... [Chore #56466913] Add run command to automation

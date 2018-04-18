@@ -1,0 +1,98 @@
+actionid: py36
+msg: getenv
+cmdargs: ['/Users/kamaradeo/Desktop/Travail/mrm_api/.tox/py36/bin/pip', 'install', '-rrequirements.txt']
+
+Collecting alembic==0.9.8 (from -r requirements.txt (line 1))
+Collecting click==6.7 (from -r requirements.txt (line 2))
+  Downloading https://files.pythonhosted.org/packages/34/c1/8806f99713ddb993c5366c362b2f908f18269f8d792aff1abfd700775a77/click-6.7-py2.py3-none-any.whl (71kB)
+Collecting Flask==0.12.2 (from -r requirements.txt (line 3))
+  Downloading https://files.pythonhosted.org/packages/77/32/e3597cb19ffffe724ad4bf0beca4153419918e7fa4ba6a34b04ee4da3371/Flask-0.12.2-py2.py3-none-any.whl (83kB)
+Collecting Flask-GraphQL==1.4.1 (from -r requirements.txt (line 4))
+  Using cached https://files.pythonhosted.org/packages/d5/3d/54698202bb63f134e68b1891208cf80021195c9a5d728fd76d21dc8a86c0/Flask-GraphQL-1.4.1.tar.gz
+Collecting graphene==2.0.1 (from -r requirements.txt (line 5))
+  Downloading https://files.pythonhosted.org/packages/5e/04/8b3df9de415958155c7ec588aa7069e51c3c64b4b955d0adf3c7c0623ad1/graphene-2.0.1-py2.py3-none-any.whl (103kB)
+Collecting graphene-sqlalchemy==2.0.0 (from -r requirements.txt (line 6))
+  Downloading https://files.pythonhosted.org/packages/02/71/fa5e35b1bf1450bd8c7c46a5563d019fb2a26b221f40ff23e300fa1217df/graphene_sqlalchemy-2.0.0-py2.py3-none-any.whl
+Collecting graphql-core==2.0 (from -r requirements.txt (line 7))
+  Downloading https://files.pythonhosted.org/packages/4f/e2/f4fb4ca7cfe13a6d51581c5628b6b44ee78cc832b763f3cc3f1e986850a5/graphql_core-2.0-py2.py3-none-any.whl (202kB)
+Collecting graphql-relay==0.4.5 (from -r requirements.txt (line 8))
+  Using cached https://files.pythonhosted.org/packages/5e/b0/b91fadc180544fc9e3c156d7049561fd5f1e2211d26fd29033548fd50934/graphql-relay-0.4.5.tar.gz
+Collecting iso8601==0.1.12 (from -r requirements.txt (line 9))
+  Downloading https://files.pythonhosted.org/packages/ef/57/7162609dab394d38bbc7077b7ba0a6f10fb09d8b7701ea56fa1edc0c4345/iso8601-0.1.12-py2.py3-none-any.whl
+Collecting itsdangerous==0.24 (from -r requirements.txt (line 10))
+  Using cached https://files.pythonhosted.org/packages/dc/b4/a60bcdba945c00f6d608d8975131ab3f25b22f2bcfe1dab221165194b2d4/itsdangerous-0.24.tar.gz
+Collecting Jinja2==2.10 (from -r requirements.txt (line 11))
+  Downloading https://files.pythonhosted.org/packages/7f/ff/ae64bacdfc95f27a016a7bed8e8686763ba4d277a78ca76f32659220a731/Jinja2-2.10-py2.py3-none-any.whl (126kB)
+Collecting Mako==1.0.7 (from -r requirements.txt (line 12))
+  Using cached https://files.pythonhosted.org/packages/eb/f3/67579bb486517c0d49547f9697e36582cd19dafb5df9e687ed8e22de57fa/Mako-1.0.7.tar.gz
+Collecting MarkupSafe==1.0 (from -r requirements.txt (line 13))
+  Using cached https://files.pythonhosted.org/packages/4d/de/32d741db316d8fdb7680822dd37001ef7a448255de9699ab4bfcbdf4172b/MarkupSafe-1.0.tar.gz
+Collecting promise==2.1 (from -r requirements.txt (line 14))
+  Downloading https://files.pythonhosted.org/packages/e2/23/ff9e53fb9a00f89573646729e04a2c0933e845dcca758113f0281c396cdf/promise-2.1.tar.gz
+Collecting psycopg2==2.7.4 (from -r requirements.txt (line 15))
+  Cache entry deserialization failed, entry ignored
+  Downloading https://files.pythonhosted.org/packages/8c/a5/0e61d6f4a140a6e06a9ba40266c4b49123d834f1f97fe9a5ae0b6e45112b/psycopg2-2.7.4-cp36-cp36m-macosx_10_6_intel.macosx_10_9_intel.macosx_10_9_x86_64.macosx_10_10_intel.macosx_10_10_x86_64.whl (1.7MB)
+Collecting python-dateutil==2.7.0 (from -r requirements.txt (line 16))
+  Cache entry deserialization failed, entry ignored
+  Downloading https://files.pythonhosted.org/packages/bc/c5/3449988d33baca4e9619f49a14e28026399b0a8c32817e28b503923a04ab/python_dateutil-2.7.0-py2.py3-none-any.whl (207kB)
+Collecting python-editor==1.0.3 (from -r requirements.txt (line 17))
+  Cache entry deserialization failed, entry ignored
+  Using cached https://files.pythonhosted.org/packages/65/1e/adf6e000ea5dc909aa420352d6ba37f16434c8a3c2fa030445411a1ed545/python-editor-1.0.3.tar.gz
+Collecting Rx==1.6.1 (from -r requirements.txt (line 18))
+  Cache entry deserialization failed, entry ignored
+  Downloading https://files.pythonhosted.org/packages/33/0f/5ef4ac78e2a538cc1b054eb86285fe0bf7a5dbaeaac2c584757c300515e2/Rx-1.6.1-py2.py3-none-any.whl (179kB)
+Collecting singledispatch==3.4.0.3 (from -r requirements.txt (line 19))
+  Cache entry deserialization failed, entry ignored
+  Using cached https://files.pythonhosted.org/packages/c5/10/369f50bcd4621b263927b0a1519987a04383d4a98fb10438042ad410cf88/singledispatch-3.4.0.3-py2.py3-none-any.whl
+Collecting six==1.11.0 (from -r requirements.txt (line 20))
+  Cache entry deserialization failed, entry ignored
+  Downloading https://files.pythonhosted.org/packages/67/4b/141a581104b1f6397bfa78ac9d43d8ad29a7ca43ea90a2d863fe3056e86a/six-1.11.0-py2.py3-none-any.whl
+Collecting SQLAlchemy==1.2.5 (from -r requirements.txt (line 21))
+  Cache entry deserialization failed, entry ignored
+  Using cached https://files.pythonhosted.org/packages/7e/57/435347429f4ff5016b72c9b179c70a6cc67e5f9b4d3f3e9b51362c40b356/SQLAlchemy-1.2.5.tar.gz
+Collecting typing==3.6.4 (from -r requirements.txt (line 22))
+  Cache entry deserialization failed, entry ignored
+  Downloading https://files.pythonhosted.org/packages/05/2b/2b05bf1d5a9dd450447c9a5df3e118a465e5d3cb12b73b7220a5064a403f/typing-3.6.4-py3-none-any.whl
+Collecting Werkzeug==0.14.1 (from -r requirements.txt (line 23))
+  Cache entry deserialization failed, entry ignored
+  Downloading https://files.pythonhosted.org/packages/20/c4/12e3e56473e52375aa29c4764e70d1b8f3efa6682bef8d0aae04fe335243/Werkzeug-0.14.1-py2.py3-none-any.whl (322kB)
+Collecting tox==3.0.0 (from -r requirements.txt (line 24))
+  Cache entry deserialization failed, entry ignored
+  Downloading https://files.pythonhosted.org/packages/e6/41/4dcfd713282bf3213b0384320fa8841e4db032ddcb80bc08a540159d42a8/tox-3.0.0-py2.py3-none-any.whl (60kB)
+Collecting pluggy<1.0,>=0.3.0 (from tox==3.0.0->-r requirements.txt (line 24))
+  Cache entry deserialization failed, entry ignored
+  Using cached https://files.pythonhosted.org/packages/ba/65/ded3bc40bbf8d887f262f150fbe1ae6637765b5c9534bd55690ed2c0b0f7/pluggy-0.6.0-py3-none-any.whl
+Collecting py>=1.4.17 (from tox==3.0.0->-r requirements.txt (line 24))
+  Cache entry deserialization failed, entry ignored
+  Downloading https://files.pythonhosted.org/packages/67/a5/f77982214dd4c8fd104b066f249adea2c49e25e8703d284382eb5e9ab35a/py-1.5.3-py2.py3-none-any.whl (84kB)
+Collecting virtualenv>=1.11.2 (from tox==3.0.0->-r requirements.txt (line 24))
+  Cache entry deserialization failed, entry ignored
+  Using cached https://files.pythonhosted.org/packages/ed/ea/e20b5cbebf45d3096e8138ab74eda139595d827677f38e9dd543e6015bdf/virtualenv-15.2.0-py2.py3-none-any.whl
+Building wheels for collected packages: Flask-GraphQL, graphql-relay, itsdangerous, Mako, MarkupSafe, promise, python-editor, SQLAlchemy
+  Running setup.py bdist_wheel for Flask-GraphQL: started
+  Running setup.py bdist_wheel for Flask-GraphQL: finished with status 'done'
+  Stored in directory: /Users/kamaradeo/Library/Caches/pip/wheels/59/72/8b/fc8c7d0dd2ffe506a2988bea1a3b68cd8f86a3a05c4a410cdb
+  Running setup.py bdist_wheel for graphql-relay: started
+  Running setup.py bdist_wheel for graphql-relay: finished with status 'done'
+  Stored in directory: /Users/kamaradeo/Library/Caches/pip/wheels/61/f6/b1/b3b3a8963e2d98d1d87b2ab871740743ff49d9f0c9fe47cbbc
+  Running setup.py bdist_wheel for itsdangerous: started
+  Running setup.py bdist_wheel for itsdangerous: finished with status 'done'
+  Stored in directory: /Users/kamaradeo/Library/Caches/pip/wheels/2c/4a/61/5599631c1554768c6290b08c02c72d7317910374ca602ff1e5
+  Running setup.py bdist_wheel for Mako: started
+  Running setup.py bdist_wheel for Mako: finished with status 'done'
+  Stored in directory: /Users/kamaradeo/Library/Caches/pip/wheels/15/35/25/dbcb848832ccb1a4b4ad23f529badfd3bce9bf88017f7ca510
+  Running setup.py bdist_wheel for MarkupSafe: started
+  Running setup.py bdist_wheel for MarkupSafe: finished with status 'done'
+  Stored in directory: /Users/kamaradeo/Library/Caches/pip/wheels/33/56/20/ebe49a5c612fffe1c5a632146b16596f9e64676768661e4e46
+  Running setup.py bdist_wheel for promise: started
+  Running setup.py bdist_wheel for promise: finished with status 'done'
+  Stored in directory: /Users/kamaradeo/Library/Caches/pip/wheels/88/86/3e/71eaf83263d21622b40676905009ec308dceea8f1ab6ffb4d1
+  Running setup.py bdist_wheel for python-editor: started
+  Running setup.py bdist_wheel for python-editor: finished with status 'done'
+  Stored in directory: /Users/kamaradeo/Library/Caches/pip/wheels/36/e0/98/ba386b125a00ea9dd52e2c16aa2ec0adbbd639b84bfe2e001d
+  Running setup.py bdist_wheel for SQLAlchemy: started
+  Running setup.py bdist_wheel for SQLAlchemy: finished with status 'done'
+  Stored in directory: /Users/kamaradeo/Library/Caches/pip/wheels/7f/47/19/9d21adcd1f537063d81e00b933df6c58c9cd4d278bfb500bb5
+Successfully built Flask-GraphQL graphql-relay itsdangerous Mako MarkupSafe promise python-editor SQLAlchemy
+Installing collected packages: six, python-dateutil, python-editor, MarkupSafe, Mako, SQLAlchemy, alembic, click, itsdangerous, Jinja2, Werkzeug, Flask, Rx, typing, promise, graphql-core, Flask-GraphQL, graphql-relay, graphene, singledispatch, iso8601, graphene-sqlalchemy, psycopg2, pluggy, py, virtualenv, tox
+Successfully installed Flask-0.12.2 Flask-GraphQL-1.4.1 Jinja2-2.10 Mako-1.0.7 MarkupSafe-1.0 Rx-1.6.1 SQLAlchemy-1.2.5 Werkzeug-0.14.1 alembic-0.9.8 click-6.7 graphene-2.0.1 graphene-sqlalchemy-2.0.0 graphql-core-2.0 graphql-relay-0.4.5 iso8601-0.1.12 itsdangerous-0.24 pluggy-0.6.0 promise-2.1 psycopg2-2.7.4 py-1.5.3 python-dateutil-2.7.0 python-editor-1.0.3 singledispatch-3.4.0.3 six-1.11.0 tox-3.0.0 typing-3.6.4 virtualenv-15.2.0

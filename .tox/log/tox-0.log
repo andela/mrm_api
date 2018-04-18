@@ -1,0 +1,36 @@
+actionid: tox
+msg: packaging
+cmdargs: ['/Users/kamaradeo/Desktop/Travail/mrm_api/venv/bin/python', local('/Users/kamaradeo/Desktop/Travail/mrm_api/setup.py'), 'sdist', '--formats=zip', '--dist-dir', local('/Users/kamaradeo/Desktop/Travail/mrm_api/.tox/dist')]
+
+running sdist
+running egg_info
+writing nrm_tool.egg-info/PKG-INFO
+writing top-level names to nrm_tool.egg-info/top_level.txt
+writing dependency_links to nrm_tool.egg-info/dependency_links.txt
+reading manifest file 'nrm_tool.egg-info/SOURCES.txt'
+writing manifest file 'nrm_tool.egg-info/SOURCES.txt'
+warning: sdist: standard file not found: should have one of README, README.rst, README.txt, README.md
+
+running check
+warning: check: missing required meta-data: url
+
+warning: check: missing meta-data: if 'author' supplied, 'author_email' must be supplied too
+
+creating nrm_tool-1.0
+creating nrm_tool-1.0/nrm_tool.egg-info
+copying files to nrm_tool-1.0...
+copying setup.py -> nrm_tool-1.0
+copying nrm_tool.egg-info/PKG-INFO -> nrm_tool-1.0/nrm_tool.egg-info
+copying nrm_tool.egg-info/SOURCES.txt -> nrm_tool-1.0/nrm_tool.egg-info
+copying nrm_tool.egg-info/dependency_links.txt -> nrm_tool-1.0/nrm_tool.egg-info
+copying nrm_tool.egg-info/top_level.txt -> nrm_tool-1.0/nrm_tool.egg-info
+Writing nrm_tool-1.0/setup.cfg
+creating '.tox/dist/nrm_tool-1.0.zip' and adding 'nrm_tool-1.0' to it
+adding 'nrm_tool-1.0/PKG-INFO'
+adding 'nrm_tool-1.0/setup.cfg'
+adding 'nrm_tool-1.0/setup.py'
+adding 'nrm_tool-1.0/nrm_tool.egg-info/dependency_links.txt'
+adding 'nrm_tool-1.0/nrm_tool.egg-info/PKG-INFO'
+adding 'nrm_tool-1.0/nrm_tool.egg-info/SOURCES.txt'
+adding 'nrm_tool-1.0/nrm_tool.egg-info/top_level.txt'
+removing 'nrm_tool-1.0' (and everything under it)
