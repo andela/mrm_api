@@ -61,48 +61,8 @@ jobs:
       - run:
           name: run tests
           command: |
-            ./cc-test-reporter before-build
-            . venv/bin/activate
-            tox
-            coverage xml
-      - run:
-          name: upload test coverage to codeclimate
-          command: |
-            ./cc-test-reporter format-coverage -o ./.coverage -t coverage.py
-            ./cc-test-reporter upload-coverage -i .coverage
+            . env/bin/activate
+            nosetests --with-coverage --cover-package=my_app
       - store_artifacts:
           path: test-reports
           destination: test-reports
-
-  deploy-job:
-    docker:
-      - image: google/cloud-sdk
-        environment:
-          GOOGLE_APPLICATION_CREDENTIALS: ${HOME}/gcloud-service-key.json
-          GOOGLE_PROJECT_ID: ${GOOGLE_PROJECT_ID}
-          GOOGLE_COMPUTE_ZONE: ${GOOGLE_COMPUTE_ZONE}
-    steps:
-      - run:
-          name: Store Service Account Key into file
-          command: echo $GCLOUD_SERVICE_KEY > ${HOME}/gcloud-service-key.json
-      - run:
-          name: Authenticate on gcloud
-          command: |
-            gcloud auth activate-service-account --key-file ${HOME}/gcloud-service-key.json
-            gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
-            gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
-      - run:
-          name: Deploy to gcloud
-          command: gcloud beta compute instance-groups managed rolling-action replace mrm-backend-instance-group --region europe-west1
-
-workflows:
-  version: 2
-  build-then-deploy:
-    jobs:
-      - build
-      - deploy-job:
-          requires:
-            - build
-          filters:
-            branches:
-              only: develop
