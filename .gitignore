@@ -1,6 +1,5 @@
-
 # Byte-compiled / optimized / DLL files
-#__pycache__/
+__pycache__/
 *.py[cod]
 *$py.class
 
@@ -49,6 +48,7 @@ nosetests.xml
 coverage.xml
 *.cover
 .hypothesis/
+.pytest_cache/
 
 # Translations
 *.mo
@@ -67,6 +67,7 @@ docs/_build/
 # PyBuilder
 target/
 
+
 # Jupyter Notebook
 .ipynb_checkpoints
 
@@ -78,6 +79,10 @@ celerybeat-schedule
 
 # SageMath parsed files
 *.sage.py
+
+# pyenv
+.python-version
+
 
 # dotenv
 .env
@@ -100,6 +105,7 @@ ENV/
 # mypy
 .mypy_cache/
 
+
 # editor
 .vscode/
 .idea/
@@ -115,3 +121,12 @@ ENV/
 .pytest_cache/
 html_coverage_report/
 *.DS_store
+
+# vscode
+.vscode/
+venv/
+__pycache__/
+*.pyc
+.tox
+.pytest_cache
+nrm_tool.ego-info/
