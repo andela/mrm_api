@@ -2,7 +2,7 @@ import os
 
 from flask_script import Manager, Shell
 
-from app import create_app
+from mrm_api.app import create_app
 import config
 
 
