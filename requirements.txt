@@ -2,6 +2,7 @@ alembic==0.9.8
 attrs==17.4.0
 click==6.7
 Flask==0.12.2
+Flask-Script==2.0.6
 Flask-GraphQL==1.4.1
 graphene==2.0.1
 graphene-sqlalchemy==2.0.0
@@ -24,5 +25,6 @@ Rx==1.6.1
 singledispatch==3.4.0.3
 six==1.11.0
 SQLAlchemy==1.2.5
+SQLAlchemy-Utils==0.33.2
 typing==3.6.4
 Werkzeug==0.14.1

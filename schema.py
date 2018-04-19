@@ -1,5 +1,6 @@
 import graphene
 
+<<<<<<< HEAD
 from graphene import relay, Schema
 from graphene_sqlalchemy import (SQLAlchemyObjectType, 
                                  SQLAlchemyConnectionField)
@@ -76,3 +77,20 @@ class Mutations(graphene.ObjectType):
     update_room = UpdateRoom.Field()
 
 schema = Schema(query=Query, mutation=Mutations)
+
+import api.room.schema
+
+
+class Query(
+    api.room.schema.Query
+):
+    pass
+
+
+class Mutation(
+    api.room.schema.Mutation
+):
+    pass
+
+schema = graphene.Schema(query=Query, mutation=Mutation)
+
