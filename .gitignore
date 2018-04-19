@@ -9,6 +9,7 @@ nrm_tool.egg-info/
 __pycache__/
 *.py[cod]
 *$py.class
+nrm_tool.egg-info
 
 # C extensions
 *.so
@@ -85,7 +86,6 @@ celerybeat-schedule
 .env
 
 # virtualenv
-.venv
 venv/
 ENV/
 
