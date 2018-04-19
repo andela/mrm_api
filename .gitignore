@@ -1,7 +1,5 @@
-<<<<<<< HEAD
-
 # Byte-compiled / optimized / DLL files
-#__pycache__/
+__pycache__/
 *.py[cod]
 *$py.class
 
@@ -27,6 +25,10 @@ wheels/
 .installed.cfg
 *.egg
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 8ce39250... [Chore #156615736] Include pytest_cache in .gitignore file
 # PyInstaller
 #  Usually these files are written by a python script from a template
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
@@ -50,6 +52,10 @@ nosetests.xml
 coverage.xml
 *.cover
 .hypothesis/
+<<<<<<< HEAD
+=======
+.pytest_cache/
+>>>>>>> 8ce39250... [Chore #156615736] Include pytest_cache in .gitignore file
 
 # Translations
 *.mo
@@ -68,6 +74,11 @@ docs/_build/
 # PyBuilder
 target/
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+
+>>>>>>> [Chore #156615736] Include pytest_cache in .gitignore file
 # Jupyter Notebook
 .ipynb_checkpoints
 
@@ -79,6 +90,11 @@ celerybeat-schedule
 
 # SageMath parsed files
 *.sage.py
+=======
+# pyenv
+.python-version
+
+>>>>>>> 8ce39250... [Chore #156615736] Include pytest_cache in .gitignore file
 
 # dotenv
 .env
@@ -101,6 +117,7 @@ ENV/
 # mypy
 .mypy_cache/
 
+<<<<<<< HEAD
 # editor
 .vscode/
 .idea/
@@ -117,6 +134,9 @@ ENV/
 html_coverage_report/
 *.DS_store
 =======
+=======
+# vscode
+>>>>>>> 8ce39250... [Chore #156615736] Include pytest_cache in .gitignore file
 .vscode/
 venv/
 __pycache__/
