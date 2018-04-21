@@ -9,8 +9,11 @@ from api.block.models import Block
 from api.floor.models import Floor
 from api.room.models import Room
 <<<<<<< HEAD
+<<<<<<< HEAD
 from api.room_resource.models import Resource
 =======
+=======
+>>>>>>> [Feature #156614968 ]Add tests
 from api.equipment.models import Equipment
 >>>>>>> [Feature #156615347] Add tests
 
@@ -24,6 +27,13 @@ sys.path.append(os.getcwd())
 class BaseTestCase(TestCase):
 
     def create_app(self):
+=======
+
+
+class BaseTestCase(TestCase):
+    
+    def create_app(self): 
+>>>>>>> [Feature #156614968 ]Add tests
         app = create_app('testing')
         self.base_url = 'https://127.0.0.1:5000/mrm'
         self.headers = {'content-type': 'application/json'}
