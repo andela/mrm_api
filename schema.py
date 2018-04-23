@@ -15,4 +15,3 @@ class Mutation(
     pass
 
 schema = graphene.Schema(query=Query, mutation=Mutation)
-
