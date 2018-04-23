@@ -9,12 +9,14 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 from mrm_api.app import create_app
+from admin_schema import admin_schema
 from schema import schema
 from config import config
 from helpers.database import engine, db_session, Base
 from api.location.models import Location
 from api.block.models import Block
 from api.floor.models import Floor
+from api.user.models import User
 
 
 class BaseTestCase(TestCase):
@@ -24,6 +26,7 @@ class BaseTestCase(TestCase):
         self.base_url = 'https://127.0.0.1:5000/mrm'
         self.headers = {'content-type': 'application/json'}
         self.client = Client(schema)
+        self.admin_client = Client(admin_schema)
         return app
     
     def setUp(self):
@@ -36,7 +39,9 @@ class BaseTestCase(TestCase):
             block.save()
             floor = Floor(name='3rd', block_id=block.id)
             floor.save()
-            db_session.commit()
+            user = User(email='admin@mrm.com', name="Proxie")
+            user.save()
+            db_session().commit()
     
     def tearDown(self):
         app = self.create_app()

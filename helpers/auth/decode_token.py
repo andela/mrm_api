@@ -1,5 +1,10 @@
 from flask import current_app, request
 import jwt
+from admin_schema import admin_schema
+from helpers.database import db_session
+
+
+from api.user.models import User
 
 class Authentication():
   """ Authenicate token 
@@ -23,10 +28,10 @@ class Authentication():
     :param auth_token:
     :return: integer|string
     """
-    secret_key = current_app.config['SECRET_KEY']
+    SECRET_KEY = current_app.config['SECRET_KEY']
     
     try:
-      payload = jwt.decode(auth_token, 'me')
+      payload = jwt.decode(auth_token, SECRET_KEY)
       return payload
     except jwt.ExpiredSignatureError:
       return 'Signature expired. Please log in again.'
@@ -37,8 +42,31 @@ class Authentication():
     value = self.verify(token)
 
     if type(value) is dict:
-      if value['role'] == 'Admin':
-        return True
+
+      user_email = value['UserInfo']['email']
+
+      query = '''
+      query{
+        user(email: "'''+user_email+'''"){
+          id
+          email
+          name
+          }
+        }
+      '''
+      result = admin_schema.execute(query, context_value={'session': db_session})
+
+      try:
+        
+        result_user = list(result.data.items())        
+        result_user[0][1]
+        email = list(result_user[0][1].items())
+        
+        if user_email == email[1][1]:
+          return True
+
+      except:
+        pass
     else:
       return value
     return 'Your can are not authroized to accesst this route.', 401

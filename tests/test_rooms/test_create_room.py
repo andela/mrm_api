@@ -16,7 +16,7 @@ from helpers.database import db_session
 class TestCreateRoom(BaseTestCase):
 
     def test_room_creation(self):
-        execute_query = self.client.execute(
+        execute_query = self.admin_client.execute(
             room_mutation_query,
             context_value={'session': db_session})
         

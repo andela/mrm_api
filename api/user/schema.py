@@ -31,6 +31,11 @@ class CreateUser(graphene.Mutation):
 class Query(graphene.ObjectType):
     node = relay.Node.Field()
     users = SQLAlchemyConnectionField(User)
+    user = graphene.Field(lambda: User, email=graphene.String())
+
+    def resolve_user(self, info, email):
+       query = User.get_query(info)
+       return query.filter(UserModel.email == email).first()
 
 
 class Mutation(graphene.ObjectType):
