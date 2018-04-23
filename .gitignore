@@ -69,10 +69,6 @@ docs/_build/
 # PyBuilder
 target/
 
-<<<<<<< HEAD
-
-=======
->>>>>>> [Feature #156461691] Change os.environ.get to os.getenv
 # Jupyter Notebook
 .ipynb_checkpoints
 
@@ -121,3 +117,5 @@ ENV/
 .pytest_cache/
 html_coverage_report/
 *.DS_store
+
+
