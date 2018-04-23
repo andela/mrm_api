@@ -9,6 +9,8 @@ Flask==0.12.2
 funcsigs==1.0.2
 Flask-Bcrypt==0.7.1
 Flask-GraphQL==1.4.1
+Flask-Script==2.0.6
+graphene==2.1
 Flask-Testing==0.7.1
 graphene==2.0.1
 graphene-sqlalchemy==2.0.0
