@@ -104,4 +104,9 @@ ENV/
 
 # alembic
 alembic/
+<<<<<<< HEAD
 alembic.ini
+=======
+alembic.ini
+.pytest_cache/
+>>>>>>> 10aa9b5... [Feature #156614968 ]Add tests
