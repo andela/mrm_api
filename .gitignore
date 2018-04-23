@@ -5,6 +5,8 @@ venv
 .pytest_cache/
 nrm_tool.egg-info/
 # Byte-compiled / optimized / DLL files
+__pycache__/
+.pytest_cache/
 *.py[cod]
 *$py.class
 nrm_tool.egg-info
