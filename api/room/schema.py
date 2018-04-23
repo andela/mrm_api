@@ -1,5 +1,6 @@
 import graphene
 
+from graphql import GraphQLError
 from graphene import relay, Schema
 from graphene_sqlalchemy import (SQLAlchemyObjectType, 
                                  SQLAlchemyConnectionField)
@@ -24,6 +25,9 @@ class CreateRoom(graphene.Mutation):
     room = graphene.Field(Room)
 
     def mutate(self, info, **kwargs):
+        # for field in kwargs:
+        #     if not kwargs.get(field):
+        #         raise GraphQLError(f"Room {field} is required field")
         room  = RoomModel(**kwargs)
         room.save()
 

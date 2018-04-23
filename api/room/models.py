@@ -1,6 +1,6 @@
 from sqlalchemy import (
     Column, String, Integer, ForeignKey, func, 
-    DateTime, create_engine)
+    DateTime, create_engine, CheckConstraint)
 from sqlalchemy.orm import relationship
 
 from helpers.database import Base
@@ -16,3 +16,8 @@ class Room(Base, Utility):
     capacity = Column(Integer, nullable=False)
     floor_id = Column(Integer, ForeignKey('floors.id'))
     equipment = relationship('Equipment')
+
+    def save(self, **kwargs):
+        for key in self.__mapper__.columns.keys()[1:]:
+            if not key:
+                raise AttributeError(f"Room {key} is required field")
