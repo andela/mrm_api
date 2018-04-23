@@ -243,3 +243,6 @@ env/
 .env
 __pycache__/
 env/
+
+# pytests
+.pytest_cache/
