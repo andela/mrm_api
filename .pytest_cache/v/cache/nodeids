@@ -1,9 +1,0 @@
-[
-  "tests/test_equipment/test_add_equipment.py::TestAddEquipment::test_add_equipment",
-  "tests/test_equipment/test_retrieve_equipments.py::TestRetrieveEquipments::test_retrieve_equipment_names",
-  "tests/test_equipment/test_retrieve_equipments.py::TestRetrieveEquipments::test_retrieve_equipments",
-  "tests/test_rooms/test_create_room.py::TestCreateRoom::test_room_creation",
-  "tests/test_rooms/test_retrieve_rooms.py::TestRetrieveRooms::test_retrieve_room_capacities",
-  "tests/test_rooms/test_retrieve_rooms.py::TestRetrieveRooms::test_retrieve_room_types",
-  "tests/test_rooms/test_retrieve_rooms.py::TestRetrieveRooms::test_retrieve_rooms"
-]

@@ -97,3 +97,6 @@ ENV/
 # alembic
 alembic/
 alembic.ini
+
+# pytests
+.pytest_cache/
