@@ -31,3 +31,4 @@ SQLAlchemy-Utils==0.33.2
 typing==3.6.4
 virtualenv==15.2.0
 Werkzeug==0.14.1
+Flask-Testing==0.7.1

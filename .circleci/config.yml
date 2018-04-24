@@ -54,12 +54,9 @@ jobs:
       # https://nose.readthedocs.io
       - run:
           name: run tests
-          branch: ch-cicrle-ci-156615736
           command: |
-            
             . venv/bin/activate
             tox
-
       - store_artifacts:
           path: test-reports
           destination: test-reports
