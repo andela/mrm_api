@@ -17,7 +17,13 @@ class Room(Base, Utility):
     floor_id = Column(Integer, ForeignKey('floors.id'))
     equipment = relationship('Equipment')
 
-    def save(self, **kwargs):
-        for key in self.__mapper__.columns.keys()[1:]:
-            if not key:
-                raise AttributeError(f"Room {key} is required field")
+    def __init__(self, **kwargs):
+        for field in kwargs:
+            if not kwargs.get(field):
+                raise AttributeError(f"Room {field} is required field")
+        
+        self.name = kwargs['name']
+        self.room_type = kwargs['room_type']
+        self.capacity = kwargs['capacity']
+        self.floor_id = kwargs['floor_id']
+
