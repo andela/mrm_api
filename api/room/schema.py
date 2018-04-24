@@ -46,8 +46,7 @@ class UpdateRoom(graphene.Mutation):
             exact_room.room_type = kwargs["room_type"]
         if kwargs.get("capacity"):
             exact_room.capacity = kwargs["capacity"]
-            print(kwargs["capacity"])
-
+            
         exact_room.save()
         return UpdateRoom(room=exact_room)
 
