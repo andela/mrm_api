@@ -3,7 +3,7 @@ import graphene
 from graphene import relay, Schema
 from graphene_sqlalchemy import (SQLAlchemyObjectType, 
                                  SQLAlchemyConnectionField)
-
+from graphql import GraphQLError
 from api.room.models import Room as RoomModel
 from api.equipment.schema import Equipment
 
@@ -50,8 +50,7 @@ class UpdateRoom(graphene.Mutation):
             exact_room.room_type = kwargs["room_type"]
         if kwargs.get("capacity"):
             exact_room.capacity = kwargs["capacity"]
-            print(kwargs["capacity"])
-
+            
         exact_room.save()
         return UpdateRoom(room=exact_room)
 
