@@ -4,8 +4,8 @@ import fnmatch
 import os
 
 def Run_Migration():
-    local("alembic revision --autogenerate ")
     local("alembic upgrade head ")
+    local("alembic revision --autogenerate ")
 
 def user_exists(name):
     """
