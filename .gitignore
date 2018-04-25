@@ -72,6 +72,9 @@ docs/_build/
 # PyBuilder
 target/
 
+# pyenv
+.python-version
+
 # Jupyter Notebook
 .ipynb_checkpoints
 
@@ -126,5 +129,5 @@ __pycache__/
 env/
 .vscode/
 .env
+.vscode/
 __pycache__/
-env/

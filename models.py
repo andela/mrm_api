@@ -38,6 +38,8 @@ class Floor(Base, Utility):
     block_id = Column(Integer, ForeignKey('blocks.id'))
     room = relationship('Room')
 
+#local imports.
+
 
 class Room(Base, Utility):
     __tablename__ = 'rooms'
