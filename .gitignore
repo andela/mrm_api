@@ -1,8 +1,16 @@
+.vscode/
+__pycache__/
+*.pyc
+venv
+.tox/
+.pytest_cache/
+nrm_tool.egg-info/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 .pytest_cache/
 *.py[cod]
 *$py.class
+nrm_tool.egg-info
 
 # C extensions
 *.so
@@ -67,6 +75,17 @@ target/
 # pyenv
 .python-version
 
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# celery beat schedule file
+celerybeat-schedule
+
+# SageMath parsed files
+*.sage.py
 
 # dotenv
 .env
@@ -98,3 +117,16 @@ ENV/
 # alembic
 alembic/
 alembic.ini
+env/
+.vscode/
+.env
+env/
+__pycache__/
+*.pyc
+migrations/
+.env
+env/
+.vscode/
+.env
+__pycache__/
+env/
