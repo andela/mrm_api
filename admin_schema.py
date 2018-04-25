@@ -2,6 +2,7 @@ import graphene
 
 import api.room.schema
 import api.user.schema
+import api.room_resource.schema
 
 
 
@@ -14,7 +15,8 @@ class Query(
 
 class Mutation(
     api.room.schema.Mutation,
-    api.user.schema.Mutation
+    api.user.schema.Mutation,
+    api.room_resource.schema.Mutation
 ):
     pass
 

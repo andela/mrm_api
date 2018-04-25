@@ -15,4 +15,4 @@ class Room(Base, Utility):
     room_type = Column(String, nullable=False)
     capacity = Column(Integer, nullable=False)
     floor_id = Column(Integer, ForeignKey('floors.id'))
-    equipment = relationship('Equipment')
+    resource = relationship('Resource')

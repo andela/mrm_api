@@ -5,7 +5,6 @@ from graphene_sqlalchemy import (SQLAlchemyObjectType,
                                  SQLAlchemyConnectionField)
 
 from api.user.models import User as UserModel
-from api.equipment.schema import Equipment
 
 class User(SQLAlchemyObjectType):
     
