@@ -8,7 +8,7 @@ mrm_api = dirname(dirname(abspath(__file__)))
 sys.path.insert(0, mrm_api)
 
 from tests.base import BaseTestCase
-from fixtures.room.room_fixtures import (
+from fixtures.api.room.room_fixtures import (
     room_mutation_query, room_mutation_response
 )
 from helpers.database import db_session

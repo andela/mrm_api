@@ -17,7 +17,7 @@ from api.location.models import Location
 from api.block.models import Block
 from api.floor.models import Floor
 from api.user.models import User
-
+from api.room.models import Room
 
 class BaseTestCase(TestCase):
     
@@ -39,8 +39,11 @@ class BaseTestCase(TestCase):
             block.save()
             floor = Floor(name='3rd', block_id=block.id)
             floor.save()
+            room = Room(name="Testing here", room_type="Metting", capacity=4, floor_id=floor.id )
+            room.save()
             user = User(email='admin@mrm.com', name="Proxie")
             user.save()
+
             db_session().commit()
     
     def tearDown(self):
