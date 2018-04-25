@@ -3,12 +3,14 @@ import graphene
 import api.room.schema
 import api.user.schema
 import api.room_resource.schema
+import api.room_resource.schema
 
 
 
 class Query(
     api.room.schema.Query,
-    api.user.schema.Query
+    api.user.schema.Query,
+    api.room_resource.schema.Query
 ):
     pass
 

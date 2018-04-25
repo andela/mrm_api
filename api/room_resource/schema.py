@@ -26,6 +26,11 @@ class CreateResource(graphene.Mutation):
         
         return CreateResource(resource=resource)
 
-class Mutation(graphene.ObjectType):
+class Query(graphene.ObjectType):
+    node = relay.Node.Field()
+    resources = SQLAlchemyConnectionField(Resource)
+    single_resource = relay.Node.Field(Resource)
 
+
+class Mutation(graphene.ObjectType):
     create_resource = CreateResource.Field()
