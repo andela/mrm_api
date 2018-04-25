@@ -26,8 +26,6 @@ class CreateRoom(graphene.Mutation):
         return CreateRoom(room=room)
 
 
-
-
 class UpdateRoom(graphene.Mutation):
     class Arguments:
         room_id = graphene.Int()
@@ -48,7 +46,6 @@ class UpdateRoom(graphene.Mutation):
         exact_room.save()
         return UpdateRoom(room=exact_room)
 
-
 class Query(graphene.ObjectType):
     rooms = graphene.List(Room)
     get_room_by_id = graphene.List(
@@ -68,6 +65,10 @@ class Query(graphene.ObjectType):
         result = query.filter(RoomModel.id == room_id)
         return result
 
+    def resolve_get_room_by_id(self,info,id):
+        query =Room.get_query(info) 
+        result = query.filter(RoomModel.id == id)
+        return result
 
 class Mutation(graphene.ObjectType):
     create_room = CreateRoom.Field()
