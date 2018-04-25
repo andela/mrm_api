@@ -6,16 +6,12 @@ bcrypt==3.1.4
 cffi==1.11.2
 click==6.7
 Flask==0.12.2
-Flask-Script==2.0.6
-Flask-GraphQL==1.4.1
 funcsigs==1.0.2
-graphene==2.0.1
 Flask-Bcrypt==0.7.1
 Flask-GraphQL==1.4.1
 Flask-Script==2.0.6
 graphene==2.1
 Flask-Testing==0.7.1
-graphene==2.0.1
 graphene-sqlalchemy==2.0.0
 graphql-core==2.0
 graphql-relay==0.4.5
@@ -27,7 +23,6 @@ MarkupSafe==1.0
 more-itertools==4.1.0
 pluggy==0.6.0
 promise==2.1
-psycopg2==2.7.4
 py==1.5.3
 pytest==3.5.0
 python-dateutil==2.7.0
@@ -42,11 +37,7 @@ singledispatch==3.4.0.3
 six==1.11.0
 tox==3.0.0
 SQLAlchemy-Utils==0.33.2
-virtualenv==15.2.0
-Werkzeug==0.14.1
-Flask-Testing==0.7.1
 SQLAlchemy==1.2.6
-SQLAlchemy==1.2.5
 SQLAlchemy-Utils==0.33.2
 typing==3.6.4
 Werkzeug==0.14.1

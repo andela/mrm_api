@@ -1,5 +1,4 @@
 .vscode/
-__pycache__/
 *.pyc
 venv
 .tox/
@@ -17,6 +16,7 @@ nrm_tool.egg-info
 
 # Distribution / packaging
 .Python
+env/
 env/
 build/
 develop-eggs/
@@ -124,9 +124,10 @@ env/
 __pycache__/
 *.pyc
 migrations/
-.env
+mrm-env/
+__pycache__/
 env/
 .vscode/
 .env
+.vscode/
 __pycache__/
-env/
