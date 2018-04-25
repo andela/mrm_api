@@ -4,7 +4,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import relationship
 
 from helpers.database import Base
-from utilities.utility import Utility
+from utilities.utility import Utility, validate_empty_fields
 from api.floor.models import Floor
 
 
@@ -18,9 +18,8 @@ class Room(Base, Utility):
     equipment = relationship('Equipment')
 
     def __init__(self, **kwargs):
-        for field in kwargs:
-            if not kwargs.get(field):
-                raise AttributeError(f"Room {field} is required field")
+        # validating empty fields
+        validate_empty_fields(**kwargs)
         
         self.name = kwargs['name']
         self.room_type = kwargs['room_type']
