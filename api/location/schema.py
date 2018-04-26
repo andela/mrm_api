@@ -20,6 +20,16 @@ class Location(SQLAlchemyObjectType):
 class Query(graphene.ObjectType):
     node = relay.Node.Field()
     all_locations = SQLAlchemyConnectionField(Location)
+    get_rooms_in_location =graphene.List(
+        lambda:Location,
+        id = graphene.Int()
+    )
+
+    def resolve_get_rooms_in_location(self,info,id):
+        query =Location .get_query(info)
+        result = query.filter(LocationModel.id ==id)
+        return result
+
 
 
 
