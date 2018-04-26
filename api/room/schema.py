@@ -65,10 +65,6 @@ class Query(graphene.ObjectType):
         result = query.filter(RoomModel.id == room_id)
         return result
 
-    def resolve_get_room_by_id(self,info,id):
-        query =Room.get_query(info) 
-        result = query.filter(RoomModel.id == id)
-        return result
 
 class Mutation(graphene.ObjectType):
     create_room = CreateRoom.Field()
