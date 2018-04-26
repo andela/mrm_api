@@ -123,10 +123,8 @@ venv
 nrm_tool.egg-info/
 # Byte-compiled / optimized / DLL files
 __pycache__/
-.pytest_cache/
 *.py[cod]
 *$py.class
-nrm_tool.egg-info
 
 # C extensions
 *.so
@@ -188,6 +186,7 @@ docs/_build/
 # PyBuilder
 target/
 
+<<<<<<< HEAD
 # Jupyter Notebook
 .ipynb_checkpoints
 
@@ -199,6 +198,11 @@ celerybeat-schedule
 
 # SageMath parsed files
 *.sage.py
+=======
+# pyenv
+.python-version
+
+>>>>>>> Revert "Merge branch 'develop' into ft-add-room-156461691"
 
 # dotenv
 .env
