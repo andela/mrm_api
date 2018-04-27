@@ -1,7 +1,3 @@
-import sys
-import os
-sys.path.append(os.getcwd())
-
 from flask_testing import TestCase
 from graphene.test import Client
 from sqlalchemy import create_engine
