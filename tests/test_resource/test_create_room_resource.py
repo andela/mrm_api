@@ -3,10 +3,6 @@ import os
 sys.path.append(os.getcwd())
 
 from graphene.test import Client
-from os.path import dirname, abspath
-mrm_api = dirname(dirname(abspath(__file__)))
-sys.path.insert(0, mrm_api)
-
 from tests.base import BaseTestCase
 from fixtures.room_resource.room_resource_fixtures import (
     resource_mutation_query, resource_mutation_response,

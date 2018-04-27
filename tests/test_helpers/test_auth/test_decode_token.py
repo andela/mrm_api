@@ -2,10 +2,6 @@ import sys
 import os
 sys.path.append(os.getcwd())
 
-from os.path import dirname, abspath
-mrm_api = dirname(dirname(abspath(__file__)))
-sys.path.insert(0, mrm_api)
-
 from tests.base import BaseTestCase
 from helpers.auth.decode_token import Auth
 from fixtures.helpers.auth_fixtures import (

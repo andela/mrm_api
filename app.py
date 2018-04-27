@@ -18,7 +18,7 @@ def create_app(config_name):
         '/mrm',
         view_func=GraphQLView.as_view(
             'mrm',
-            schema=admin_schema,
+            schema=schema,
             graphiql=True # for having the GraphiQL interface
         )
     )
