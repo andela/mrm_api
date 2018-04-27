@@ -56,8 +56,8 @@ jobs:
           name: run tests
           command: |
             . venv/bin/activate
-            export APP_SETTING=testing
-            export TEST_DATABASE_URL=postgresql://postgres@localhost/mrm_test_db
+            echo export APP_SETTING=testing
+            echo export TEST_DATABASE_URL=postgresql://postgres@localhost/mrm_test_db
             tox
       - store_artifacts:
           path: test-reports
