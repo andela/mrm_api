@@ -4,7 +4,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import relationship
 
 from helpers.database import Base
-from utilities.utility import Utility
+from utilities.utility import Utility,validate_empty_fields
 from api.floor.models import Floor
 
 
@@ -16,3 +16,4 @@ class Room(Base, Utility):
     capacity = Column(Integer, nullable=False)
     floor_id = Column(Integer, ForeignKey('floors.id'))
     equipment = relationship('Equipment')
+   

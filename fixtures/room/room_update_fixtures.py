@@ -2,7 +2,7 @@
 null = None
 
 query_update_all_fields = '''mutation{
-                updateRoom(name:"Entebbe",newName:"Jinja",capacity:8,roomType:"board room"){
+                updateRoom(id:1,name:"Jinja",capacity:8,roomType:"board room"){
                     room{
                         name
                         capacity
@@ -26,7 +26,7 @@ expected_query_update_all_fields = {
                 }
 
 query_update_only_required_field = '''mutation{
-            updateRoom(name:"Entebbe",newName:"Jinja"){
+            updateRoom(id:1,name:"Jinja"){
                 room{
                     name
                     capacity
@@ -48,8 +48,8 @@ expected_query_update_only_required_field = {
             }
             }
 
-query_without_keyword_name = '''mutation{
-            updateRoom(newName:"Jinja"){
+query_without_id = '''mutation{
+            updateRoom(name:"Jinja"){
                 room{
                     name
                     capacity
@@ -59,10 +59,10 @@ query_without_keyword_name = '''mutation{
                 }
             '''
 
-expected_query_without_keyword_name = {
+expected_query_without_id = {
              "errors": [
                     {
-                    "message": "mutate() missing 1 required positional argument: 'name'",
+                    "message": "mutate() missing 1 required positional argument: 'id'",
                     "locations": [
                         {
                         "line": 2,
@@ -78,7 +78,7 @@ expected_query_without_keyword_name = {
 
 
 query_if_name_is_existant_room = '''mutation{
-                updateRoom(name:"Bakamoko",newName:"Jinja",capacity:8,roomType:"board room"){
+                updateRoom(id:4,name:"Jinja",capacity:8,roomType:"board room"){
                     room{
                     name
                     capacity
