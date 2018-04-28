@@ -6,6 +6,7 @@ from graphene_sqlalchemy import (SQLAlchemyObjectType,
 from graphql import GraphQLError
 from api.room.models import Room as RoomModel
 from api.equipment.schema import Equipment
+from utilities.utility import validate_empty_fields
 
 class Room(SQLAlchemyObjectType):
     
@@ -32,20 +33,21 @@ class CreateRoom(graphene.Mutation):
 class UpdateRoom(graphene.Mutation):
 
     class Arguments:
-        name = graphene.String()
+        id = graphene.Int()
         room_type = graphene.String()
         capacity = graphene.Int()
-        new_name = graphene.String()
+        name = graphene.String()
         
 
     room = graphene.Field(Room)
     
-    def mutate(self, info,name, **kwargs):
+    def mutate(self, info, id, **kwargs):
+        validate_empty_fields(**kwargs)
         query_room = Room.get_query(info)
-        exact_room = query_room.filter(RoomModel.name == name).first()
+        exact_room = query_room.filter(RoomModel.id == id).first()
 
-        if kwargs.get("new_name"):
-            exact_room.name = kwargs["new_name"]
+        if kwargs.get("name"):  
+            exact_room.name = kwargs["name"]
         if kwargs.get("room_type"):
             exact_room.room_type = kwargs["room_type"]
         if kwargs.get("capacity"):
