@@ -15,7 +15,8 @@ class Query(
 
 
 class Mutation(
-    api.room.schema.Mutation
+    api.room.schema.Mutation,
+    api.equipment.schema.Mutation
 ):
     pass
 
