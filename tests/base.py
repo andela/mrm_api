@@ -8,7 +8,11 @@ from api.location.models import Location
 from api.block.models import Block
 from api.floor.models import Floor
 from api.room.models import Room
+<<<<<<< HEAD
 from api.room_resource.models import Resource
+=======
+from api.equipment.models import Equipment
+>>>>>>> [Feature #156615347] Add tests
 
 import sys
 import os
