@@ -99,4 +99,5 @@ ENV/
 
 # pytests
 .pytest_cache/
+/__pycache__/
 
