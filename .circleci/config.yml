@@ -42,6 +42,10 @@ jobs:
             python -m venv venv
             . venv/bin/activate
             pip install -r requirements.txt
+<<<<<<< HEAD
+=======
+
+>>>>>>> develop
       - save_cache:
           paths:
             - ./venv
@@ -60,3 +64,7 @@ jobs:
       - store_artifacts:
           path: test-reports
           destination: test-reports
+<<<<<<< HEAD
+=======
+          
+>>>>>>> develop
