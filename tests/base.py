@@ -8,8 +8,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
 
-from app import create_app
 from admin_schema import admin_schema
+from app import create_app
 from schema import schema
 from config import config
 from helpers.database import engine, db_session, Base

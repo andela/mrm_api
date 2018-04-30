@@ -19,9 +19,16 @@ config.set_main_option('sqlalchemy.url', os.getenv('DEV_DATABASE_URL'))
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-
+# target_metadata = None
+import os
+import sys
 sys.path.append(os.getcwd())
-from models import Base
+from helpers.database import Base
+from api.location.models import Location
+from api.block.models import Block
+from api.floor.models import Floor
+from api.room.models import Room
+from api.equipment.models import Equipment
 target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,

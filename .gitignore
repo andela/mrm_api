@@ -1,6 +1,4 @@
-env/
 .vscode/
-.env
 *.pyc
 venv
 .tox/
@@ -118,6 +116,11 @@ ENV/
 *.sqlite
 
 # alembic
+# alembic/
+# alembic.ini
+
+# pytests
+.pytest_cache/
 alembic/
 alembic.ini
 env/
