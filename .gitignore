@@ -115,6 +115,11 @@ ENV/
 *.sqlite
 
 # alembic
+# alembic/
+# alembic.ini
+
+# pytests
+.pytest_cache/
 alembic/
 alembic.ini
 env/
