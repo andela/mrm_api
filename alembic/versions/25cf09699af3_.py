@@ -1,8 +1,8 @@
-"""Add check constraint
+"""empty message
 
-Revision ID: e6b8bb0f1d36
+Revision ID: 25cf09699af3
 Revises: 
-Create Date: 2018-04-20 15:25:32.814657
+Create Date: 2018-04-30 17:09:05.431717
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'e6b8bb0f1d36'
+revision = '25cf09699af3'
 down_revision = None
 branch_labels = None
 depends_on = None
