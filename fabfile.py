@@ -13,4 +13,3 @@ def prepare_to_host(user):
     InstallDB(user)
     Run_Migration()
     Run_App()
-
