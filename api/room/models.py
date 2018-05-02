@@ -25,4 +25,3 @@ class Room(Base, Utility):
         self.room_type = kwargs['room_type']
         self.capacity = kwargs['capacity']
         self.floor_id = kwargs['floor_id']
-
