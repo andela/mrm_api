@@ -13,6 +13,8 @@ import sys
 import os
 sys.path.append(os.getcwd())
 
+from api.room_resource.models import Resource
+from api.room.models import Room
 
 class BaseTestCase(TestCase):
 

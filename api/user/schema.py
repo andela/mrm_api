@@ -5,7 +5,7 @@ from graphene_sqlalchemy import (SQLAlchemyObjectType,
                                  SQLAlchemyConnectionField)
 
 from api.user.models import User as UserModel
-from api.equipment.schema import Equipment
+from api.room_resource.schema import Resource
 
 class User(SQLAlchemyObjectType):
     
