@@ -4,6 +4,8 @@
 ## Development set up
 - Check that python 3, pip, virtualenv and postgress are installed
 
+- Check that python 3, pip, virtualenv and postgress are installed
+
 - Clone the mrm-api repo and cd into it
     ```
     git clone https://github.com/andela/mrm_api.git
@@ -42,6 +44,7 @@
     ```
     python manage.py runserver
     ```
+
 
 ## Built with 
 - Python version  3

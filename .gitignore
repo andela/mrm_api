@@ -105,8 +105,8 @@ ENV/
 *.sqlite
 
 # alembic
-alembic/
+# alembic/
+# alembic.ini
 
-alembic.ini
+# pytests
 .pytest_cache/
-/__pycache__/
