@@ -17,6 +17,16 @@ admin = {
   }
 }
 
+expired = {
+  "UserInfo": {
+    "name": "Proxie",
+    "email": "admin@mrm.com",
+  },
+  "exp": 152664012
+}
+
+expired_token = jwt.encode(expired, SECRET_KEY)
+
 token = jwt.encode(user, SECRET_KEY)
 
 admin_token = jwt.encode(admin, SECRET_KEY)
