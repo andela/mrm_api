@@ -4,6 +4,8 @@
 ## Development set up
 - Check that python 3, pip, virtualenv and postgress are installed
 
+- Check that python 3, pip, virtualenv and postgress are installed
+
 - Clone the mrm-api repo and cd into it
     ```
     git clone https://github.com/andela/mrm_api.git
@@ -32,16 +34,17 @@
 
     - Migrate database to new structure. Run the command below:
         ```
-        python manage.py db migrate
+        alembic revision --autogenerate -m "Migration message"
         ```
     - Upgrade to new structure.Run the command below:
         ```
-        python manage.py db upgrade
+        alembic upgrade head
         ```
 - Run application.
     ```
-    python app.py
+    python manage.py runserver
     ```
+
 
 ## Built with 
 - Python version  3

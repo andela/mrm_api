@@ -15,9 +15,17 @@ fileConfig(config.config_file_name)
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
+<<<<<<< HEAD
 import os
 import sys
 sys.path.append(os.getcwd())
+=======
+# target_metadata = None
+import os
+import sys
+sys.path.append(os.getcwd())
+
+>>>>>>> 886bd3f4174947f2fb32aba10b8f635d69cbd92a
 from helpers.database import Base
 from api.location.models import Location
 from api.block.models import Block
