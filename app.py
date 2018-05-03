@@ -1,10 +1,8 @@
 from flask import Flask
 from flask_graphql import GraphQLView
 
-#local imports
 from config import config
 from helpers.database import db_session
-from database import db_session
 from schema import schema
 
 
