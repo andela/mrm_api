@@ -3,6 +3,7 @@ import graphene
 
 import api.room.schema
 
+
 class Query(
     api.room.schema.Query
 ):
