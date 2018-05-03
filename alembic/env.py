@@ -3,6 +3,8 @@ from alembic import context
 from sqlalchemy import engine_from_config, pool
 from logging.config import fileConfig
 
+import os
+import sys
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
@@ -10,6 +12,8 @@ config = context.config
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
 fileConfig(config.config_file_name)
+
+config.set_main_option('sqlalchemy.url', os.getenv('DEV_DATABASE_URL'))
 
 # add your model's MetaData object here
 # for 'autogenerate' support
@@ -26,6 +30,7 @@ from api.block.models import Block
 from api.floor.models import Floor
 from api.room.models import Room
 from api.equipment.models import Equipment
+from api.user.models import User
 target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,

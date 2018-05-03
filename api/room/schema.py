@@ -5,7 +5,7 @@ from graphene_sqlalchemy import (SQLAlchemyObjectType,
                                  SQLAlchemyConnectionField)
 
 from api.room.models import Room as RoomModel
-from api.equipment.schema import Equipment
+from api.room_resource.schema import Resource
 
 class Room(SQLAlchemyObjectType):
     
@@ -33,7 +33,7 @@ class CreateRoom(graphene.Mutation):
 class Query(graphene.ObjectType):
     node = relay.Node.Field()
     rooms = SQLAlchemyConnectionField(Room)
-    equipments = SQLAlchemyConnectionField(Equipment)
+    resource = SQLAlchemyConnectionField(Resource)
 
 
 class Mutation(graphene.ObjectType):

@@ -1,3 +1,4 @@
+
 import graphene
 
 import api.room.schema
@@ -8,10 +9,7 @@ class Query(
 ):
     pass
 
-
-class Mutation(
-    api.room.schema.Mutation
-):
+class Mutation():
     pass
 
-schema = graphene.Schema(query=Query, mutation=Mutation)
+schema = graphene.Schema(query=Query)
