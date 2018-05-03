@@ -40,9 +40,6 @@ class DeleteResource(graphene.Mutation):
         exact_room_resource = query_room_resource.filter(ResourceModel.id == resource_id).first()
         
         exact_room_resource.delete()
-        # return query_room_resource
-    
-        
         return DeleteResource(resource=exact_room_resource)
 
 class Query(graphene.ObjectType):

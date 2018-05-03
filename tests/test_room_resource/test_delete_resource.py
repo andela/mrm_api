@@ -6,8 +6,4 @@ class DeleteResource(BaseTestCase):
     def test_deleteresource_mutation(self):
 
         execute_delete_resource = self.client.execute(delete_resource)
-        print(execute_delete_resource)
-        print("=======================")
-        print(expected_query_after_delete)
-        # assert execute_delete_resource == expected_query_after_delete
         self.assertEqual(execute_delete_resource, expected_query_after_delete)
