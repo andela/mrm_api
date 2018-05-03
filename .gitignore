@@ -1,23 +1,14 @@
-.vscode/
-*.pyc
-venv
-.tox/
-.pytest_cache/
-nrm_tool.egg-info/
 # Byte-compiled / optimized / DLL files
 .pytest_cache/
 __pycache__/
-.pytest_cache/
 *.py[cod]
 *$py.class
-nrm_tool.egg-info
 
 # C extensions
 *.so
 
 # Distribution / packaging
 .Python
-env/
 env/
 build/
 develop-eggs/
@@ -76,18 +67,6 @@ target/
 # pyenv
 .python-version
 
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# pyenv
-.python-version
-
-# celery beat schedule file
-celerybeat-schedule
-
-# SageMath parsed files
-*.sage.py
-
 # dotenv
 .env
 
@@ -121,19 +100,3 @@ ENV/
 
 # pytests
 .pytest_cache/
-alembic/
-alembic.ini
-env/
-.vscode/
-.env
-env/
-__pycache__/
-*.pyc
-migrations/
-mrm-env/
-__pycache__/
-env/
-.vscode/
-.env
-.vscode/
-__pycache__/
