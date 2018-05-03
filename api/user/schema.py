@@ -29,9 +29,12 @@ class CreateUser(graphene.Mutation):
 
 
 class Query(graphene.ObjectType):
-    node = relay.Node.Field()
-    users = SQLAlchemyConnectionField(User)
+    users = graphene.List(User)
     user = graphene.Field(lambda: User, email=graphene.String())
+
+    def resolve_users(self, info):
+        query = User.get_query(info)
+        return query.all()
 
     def resolve_user(self, info, email):
        query = User.get_query(info)

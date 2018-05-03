@@ -16,9 +16,9 @@ class TestDecodeToken(BaseTestCase):
     ''' Authenicate token test case '''
 
     def test_verify_token(self):  
-        ''' Verify it token exists '''     
-        expected_responese = 'Please Provied a valid token!'
-        self.assertEqual(Auth.verify(''), expected_responese)
+        ''' Verify if token exists '''     
+        expected_responese =  b'{\n  "message": "This endpoint requires you to be authenticated."\n}\n'
+        self.assertEqual(Auth.verify('')[0].data, expected_responese)
 
     def test_decode_token(self):
         ''' Decode token '''
@@ -27,8 +27,8 @@ class TestDecodeToken(BaseTestCase):
 
     def test_decode_token_ex(self):
         ''' Decode token '''
-        expected_responese = 'Invalid token. Please Provied a valid token!'
-        self.assertEqual(Auth.decode_token(fake_token), expected_responese)
+        expected_responese = b'{\n  "message": "Invalid token. Please Provied a valid token!"\n}\n'
+        self.assertEqual(Auth.decode_token(fake_token)[0].data, expected_responese)
 
     def test_is_admin(self):
         ''' if user is admin'''
@@ -36,7 +36,7 @@ class TestDecodeToken(BaseTestCase):
 
     def test_is_not_admin(self):
         ''' if user is not admin'''
-        expected_responese = 'Your can are not authroized to accesst this route.', 401
-        self.assertEqual(Auth.is_admin(token), expected_responese)
+        expected_responese =  b'{\n  "message": "Your can are not authroized to accesst this route."\n}\n'
+        self.assertEqual(Auth.is_admin(token)[0].data, expected_responese)
     
     # def auth_required(self):
