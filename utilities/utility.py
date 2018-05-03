@@ -8,11 +8,7 @@ def validate_empty_fields(**kwargs):
     """
     for field in kwargs:
         if not kwargs.get(field):
-<<<<<<< HEAD
             raise AttributeError(f"{field} is a required field")
-=======
-            raise AttributeError("Room {field} is required field")
->>>>>>> develop
 
 
 class Utility(object):
