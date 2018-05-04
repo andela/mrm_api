@@ -3,9 +3,9 @@ rooms_in_block_query = '''
     {
         getRoomsInABlock(blockId:1){
             name
-            floor{
+            floors{
                 name
-                room{
+                rooms{
                     name
                     capacity
                     roomType
@@ -21,16 +21,15 @@ rooms_in_block_query_response = {
         "getRoomsInABlock": [
             {
                 "name": "EC",
-                "floor": [
+                "floors": [
                     {
                         "name": "3rd",
-                        "room": [
-                            {
-                                "name": "Entebbe",
-                                "capacity": 6,
-                                "roomType": "meeting"
-                            }
-                        ]
+                        "rooms": [
+                        {
+                            "name": "Entebbe",
+                            "capacity": 6,
+                            "roomType": "meeting"
+                        }
                     }
                 ]
             }

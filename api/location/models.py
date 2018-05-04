@@ -10,4 +10,5 @@ class Location(Base, Utility):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     abbreviation = Column(String, nullable=False)
-    block = relationship('Block')
+    image_url = Column(String)
+    blocks = relationship('Block')
