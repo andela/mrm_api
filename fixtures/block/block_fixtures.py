@@ -1,28 +1,19 @@
 
 rooms_in_block_query= '''
                     {
-                    getRoomsInABlock(id:1){
+                        getRoomsInABlock(blockId:1){
                         name
                         floor{
-                        edges{
-                            node{
                             name
                             room{
-                                edges{
-                                node{
-                                    name
-                                    capacity
-                                    roomType
-                                }
-                                }
-                                
+                                name
+                                capacity
+                                roomType
                             }
-                            }
-                        }
                         }
                         
-                    }
-                    }'''
+                        }
+                        }'''
 
 
 rooms_in_block_query_response = {
@@ -30,26 +21,18 @@ rooms_in_block_query_response = {
                     "getRoomsInABlock": [
                     {
                         "name": "EC",
-                        "floor": {
-                        "edges": [
+                        "floor": [
+                        {
+                            "name": "3rd",
+                            "room": [
                             {
-                            "node": {
-                                "name": "3rd",
-                                "room": {
-                                "edges": [
-                                    {
-                                    "node": {
-                                        "name": "Entebbe",
-                                        "capacity": 6,
-                                        "roomType": "meeting"
-                                    }
-                                    }
-                                ]
-                                }
+                                "name": "Entebbe",
+                                "capacity": 6,
+                                "roomType": "meeting"
                             }
-                            }
-                        ]
+                            ]
                         }
+                        ]
                     }
                     ]
                 }

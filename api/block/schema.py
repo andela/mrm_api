@@ -9,17 +9,20 @@ from api.block.models import Block as BlockModel
 class Block(SQLAlchemyObjectType):
     class Meta:
         model = BlockModel
-        interfaces = (relay.Node,)
 
 class Query(graphene.ObjectType):
     node = relay.Node.Field()
-    floor = SQLAlchemyConnectionField(Block)
+    floor = graphene.List(Block)
     get_rooms_in_a_block = graphene.List(
         lambda:Block,
-        id = graphene.Int()
+        block_id = graphene.Int()
     )
 
-    def resolve_get_rooms_in_a_block(self,info,id):
+    def resolve_blocks(self,info):
         query = Block.get_query(info)
-        result = query.filter(BlockModel.id == id)
+        return query.all()
+
+    def resolve_get_rooms_in_a_block(self,info,block_id):
+        query = Block.get_query(info)
+        result = query.filter(BlockModel.id == block_id)
         return result

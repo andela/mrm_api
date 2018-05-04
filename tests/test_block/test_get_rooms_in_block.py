@@ -15,4 +15,4 @@ from fixtures.block.block_fixtures import(
 class QueryBlock(BaseTestCase):
     def test_get_rooms_in_block(self):
         query = self.client.execute(rooms_in_block_query)
-        assert query == rooms_in_block_query_response
+        self.assertEquals(query,rooms_in_block_query_response) 

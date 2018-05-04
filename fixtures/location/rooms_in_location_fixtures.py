@@ -1,33 +1,21 @@
 
 query_get_rooms_in_location = '''{
-                                getRoomsInALocation(id:1){
+                                getRoomsInALocation(locationId:1){
                                     name
                                     abbreviation
                                     block{
-                                    edges{
-                                        node{
                                         name
                                         floor{
-                                            edges{
-                                            node{
                                                 name
                                                 room{
-                                                edges{
-                                                    node{
                                                     capacity
                                                     name
                                                     roomType
                                                     }
                                                 }
-                                            }
-                                            }
-                                        }
-                                        }
                                     }
                                     }
-                                }
-                                }
-                                }
+                                }                             
                                         '''
 
 expected_query_get_rooms_in_location ={
@@ -36,35 +24,17 @@ expected_query_get_rooms_in_location ={
                                             {
                                                 "name": "Uganda",
                                                 "abbreviation": "KLA",
-                                                "block": {
-                                                "edges": [
-                                                    {
-                                                    "node": {
+                                                "block": [{
                                                         "name": "EC",
-                                                        "floor": {
-                                                        "edges": [
-                                                            {
-                                                            "node": {
+                                                        "floor": [{
                                                                 "name": "3rd",
-                                                                "room": {
-                                                                "edges": [
-                                                                    {
-                                                                    "node":{
+                                                                "room": [{
                                                                     "capacity":6,
                                                                     "name":"Entebbe",
                                                                     "roomType":"meeting",
-                                                                    }
-                                                                }
-                                                                ]
-                                                                }
-                                                            }
-                                                            }
-                                                        ]
-                                                        }
-                                                    }
-                                                    }
-                                                ]
-                                                }
+                                                                }]
+                                                        }]
+                                                }]
                                             }
                                             ]
                                         }

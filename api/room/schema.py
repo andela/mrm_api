@@ -11,7 +11,6 @@ class Room(SQLAlchemyObjectType):
     
     class Meta:
         model = RoomModel
-        interfaces = (relay.Node, )
 
 
 class CreateRoom(graphene.Mutation):
@@ -56,16 +55,20 @@ class UpdateRoom(graphene.Mutation):
 
 class Query(graphene.ObjectType):
     node = relay.Node.Field()
-    rooms = SQLAlchemyConnectionField(Room)
+    rooms = graphene.List(Room)
     equipments = SQLAlchemyConnectionField(Equipment)
     get_room_by_id = graphene.List(
         lambda:Room,
-        id = graphene.Int()
+        room_id = graphene.Int()
         )
 
-    def resolve_get_room_by_id(self,info,id):
+    def resolve_rooms(self,info):
+        query = Room.get_query(info)
+        return query.all()
+
+    def resolve_get_room_by_id(self,info,room_id):
         query =Room.get_query(info) 
-        result = query.filter(RoomModel.id == id)
+        result = query.filter(RoomModel.id == room_id)
         return result
 
 class Mutation(graphene.ObjectType):

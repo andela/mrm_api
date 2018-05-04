@@ -15,19 +15,23 @@ from api.equipment.models import Equipment
 class Location(SQLAlchemyObjectType):
     class Meta:
         model = LocationModel
-        interfaces = (relay.Node,)
 
 class Query(graphene.ObjectType):
     node = relay.Node.Field()
-    all_locations = SQLAlchemyConnectionField(Location)
+    all_locations = graphene.List(Location)
     get_rooms_in_a_location =graphene.List(
         lambda:Location,
-        id = graphene.Int()
+        location_id = graphene.Int()
     )
 
-    def resolve_get_rooms_in_a_location(self,info,id):
+
+    def resolve_all_locations(self,info):
+        query = Location.get_query(info)
+        return query.all()
+
+    def resolve_get_rooms_in_a_location(self,info,location_id):
         query =Location.get_query(info)
-        result = query.filter(LocationModel.id ==id)
+        result = query.filter(LocationModel.id == location_id)
         return result
 
 

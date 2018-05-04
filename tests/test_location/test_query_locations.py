@@ -24,13 +24,13 @@ from fixtures.location.nonexistant_location_id_fixtures import (
 class QueryLocation(BaseTestCase):
     def test_query_all_locations(self):
         all_locations = self.client.execute(all_locations_query)
-        assert all_locations == expected_query_all_locations
+        self.assertEquals(all_locations, expected_query_all_locations)
 
     def test_query_rooms_in_a_location(self):
         get_room_in_a_location = self.client.execute (query_get_rooms_in_location)
-        assert get_room_in_a_location == expected_query_get_rooms_in_location
+        self.assertEquals(get_room_in_a_location,expected_query_get_rooms_in_location) 
 
     def test_query_rooms_in_a_location_with_nonexistant_id(self):
         query_with_wrong_id = self.client.execute(query_nonexistant_location_id)
-        assert query_with_wrong_id == expected_query_with_nonexistant_id
+        self.assertEquals(query_with_wrong_id , expected_query_with_nonexistant_id) 
                             
