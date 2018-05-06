@@ -11,7 +11,6 @@ class Resource(SQLAlchemyObjectType):
     
     class Meta:
         model = ResourceModel
-        interfaces = (relay.Node, )
 
 class CreateResource(graphene.Mutation):
 
@@ -27,10 +26,16 @@ class CreateResource(graphene.Mutation):
         return CreateResource(resource=resource)
 
 class Query(graphene.ObjectType):
-    node = relay.Node.Field()
-    resources = SQLAlchemyConnectionField(Resource)
-    single_resource = relay.Node.Field(Resource)
-
+    resources = graphene.List(Resource)
+    get_resource_by_room_id = graphene.List(lambda: Resource, room_id = graphene.Int())
+    
+    def resolve_resources(self, info):
+        query = Resource.get_query(info)
+        return query.all()
+    
+    def resolve_get_resource_by_room_id(self, info, room_id):
+        query = Resource.get_query(info)
+        return query.filter(ResourceModel.room_id == room_id.frist())
 
 class Mutation(graphene.ObjectType):
     create_resource = CreateResource.Field()

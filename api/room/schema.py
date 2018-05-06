@@ -33,7 +33,7 @@ class CreateRoom(graphene.Mutation):
 class Query(graphene.ObjectType):
     node = relay.Node.Field()
     rooms = SQLAlchemyConnectionField(Room)
-    resource = SQLAlchemyConnectionField(Resource)
+    resource = graphene.List(Resource)
 
 
 class Mutation(graphene.ObjectType):

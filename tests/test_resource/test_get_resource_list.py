@@ -19,8 +19,8 @@ from api.room_resource.models import Resource
 
 class TestGetRoomResource(BaseTestCase):
 
-    def test_room_resource_creation(self):
-        room_resource = Resource(name="Markers")
+    def test_get_room_resource_list(self):
+        room_resource = Resource(name="Markers", room_id=1)
         room_resource.save()
         db_session().commit()
 

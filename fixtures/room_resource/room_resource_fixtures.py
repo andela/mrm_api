@@ -1,6 +1,6 @@
 resource_mutation_query = '''
     mutation {
-        createResource(name: "Speakers", roomId: 1) {
+        createResource(name: "Markers", roomId: 1) {
             resource{
                 name
                 roomId
@@ -10,14 +10,14 @@ resource_mutation_query = '''
 '''
 
 resource_mutation_response = {
-    "data": {
-        "createResource": {
-            "resource": {
-                "name": "Speakers",
-                "roomId": 1
-            }
-        }
+  "data": {
+    "createResource": {
+      "resource": {
+        "name": "Markers",
+        "roomId": 1
+      }
     }
+  }
 }
 
 resource_mutation_empty_name_string_query = '''
