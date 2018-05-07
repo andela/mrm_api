@@ -19,6 +19,7 @@ fileConfig(config.config_file_name)
 import os
 import sys
 sys.path.append(os.getcwd())
+config.set_main_option('sqlalchemy.url', os.getenv('DEV_DATABASE_URL'))
 
 from helpers.database import Base
 from api.location.models import Location
@@ -26,6 +27,7 @@ from api.block.models import Block
 from api.floor.models import Floor
 from api.room.models import Room
 from api.equipment.models import Equipment
+
 target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
