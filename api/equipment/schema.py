@@ -1,8 +1,7 @@
 import graphene
 
-from graphene import relay, Schema
-from graphene_sqlalchemy import (SQLAlchemyObjectType, 
-                                 SQLAlchemyConnectionField)
+from graphene import  Schema
+from graphene_sqlalchemy import SQLAlchemyObjectType
 from api.equipment.models import Equipment as EquipmentModel
 from utilities.utility import validate_empty_fields
 
@@ -11,7 +10,14 @@ class Equipment(SQLAlchemyObjectType):
     
     class Meta:
         model = EquipmentModel
-        interfaces = (relay.Node, )
+
+class Query(graphene.ObjectType):
+    equipment = graphene.List(Equipment)
+
+    def resolve_equipment(self,info):
+        query = Equipment.get_query(info)
+        return query.all()
+
 
 class UpdateRoomResource(graphene.Mutation):
     class Arguments:
