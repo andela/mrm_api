@@ -57,7 +57,7 @@ query_rooms_response = {
 
 room_query_by_id = '''
                 {
-                getRoomById(id:1){
+                getRoomById(roomId:1){
                     capacity
                     name
                     roomType
