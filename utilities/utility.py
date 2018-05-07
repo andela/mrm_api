@@ -24,6 +24,7 @@ def update_entity_fields(entity, **kwargs):
     return entity
 
 
+
 class Utility(object):
 
     def save(self):
