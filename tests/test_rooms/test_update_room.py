@@ -7,10 +7,10 @@ from fixtures.room.room_update_fixtures import (
     expected_query_update_all_fields,
     query_update_only_required_field,
     expected_query_update_only_required_field,
-    query_without_keyword_name,
-    expected_query_without_keyword_name,
-    query_if_name_is_existant_room,
-    expected_query_if_name_is_existant_room
+    query_without_keyword_id,
+    expected_query_without_keyword_id,
+    query_if_id_is_existant_room,
+    expected_query_if_id_is_existant_room
 
 )
 
@@ -27,15 +27,15 @@ class TestUpdateRoom(BaseTestCase):
         test_edit_only_required_field = self.client.execute(query_update_only_required_field)
         assert test_edit_only_required_field == expected_query_update_only_required_field
 
-    # test if you get error once keyword 'name' is not supplied in update query
-    def test_for_error_if_name_not_supplied(self):
-        test_get_error_if_no_name = self.client.execute(query_without_keyword_name)
+    # test if you get error once keyword 'id' is not supplied in update query
+    def test_for_error_if_id_not_supplied(self):
+        test_get_error_if_no_id = self.client.execute(query_without_keyword_id)
 
-        assert test_get_error_if_no_name == expected_query_without_keyword_name
+        assert test_get_error_if_no_id == expected_query_without_keyword_id
 
-    # test if you get error once keyword 'name' supplied is of room that is none existant
-    def test_for_error_if_name_is_existant_room(self):
+    # test if you get error once keyword 'id' supplied is of room that is none existant
+    def test_for_error_if_id_is_non_existant_room(self):
         
-        test_get_error_if_room_is_none_existant = self.client.execute(query_if_name_is_existant_room )
-        assert test_get_error_if_room_is_none_existant  == expected_query_if_name_is_existant_room 
+        test_get_error_if_room_is_none_existant = self.client.execute(query_if_id_is_existant_room )
+        assert test_get_error_if_room_is_none_existant  == expected_query_if_id_is_existant_room 
 

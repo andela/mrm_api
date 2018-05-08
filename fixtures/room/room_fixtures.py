@@ -1,3 +1,5 @@
+null = None
+
 room_mutation_query = '''
     mutation {
         createRoom(name: "Mbarara", roomType: "Meeting", capacity: 4, floorId: 1) {
