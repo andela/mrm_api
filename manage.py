@@ -2,8 +2,10 @@ import os
 
 from flask_script import Manager, Shell
 
+
 #local imports
 from app import create_app
+
 
 
 app = create_app(os.getenv('APP_SETTINGS') or 'default')
