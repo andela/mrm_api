@@ -1,21 +1,22 @@
 import graphene
 
+from graphql import GraphQLError
 from graphene import  Schema
 from graphene_sqlalchemy import SQLAlchemyObjectType
-from api.equipment.models import Equipment as EquipmentModel
+from api.room_resource.models import Resource as ResourceModel
 from utilities.utility import validate_empty_fields
 
 
-class Equipment(SQLAlchemyObjectType):
+class Resource(SQLAlchemyObjectType):
     
     class Meta:
-        model = EquipmentModel
+        model = ResourceModel
 
 class Query(graphene.ObjectType):
-    equipment = graphene.List(Equipment)
+    resource = graphene.List(Resource)
 
-    def resolve_equipment(self,info):
-        query = Equipment.get_query(info)
+    def resolve_resource(self,info):
+        query = Resource.get_query(info)
         return query.all()
 
 
@@ -25,25 +26,25 @@ class UpdateRoomResource(graphene.Mutation):
         room_id = graphene.Int()
         resource_id = graphene.Int()
 
-    equipment = graphene.Field(Equipment)
+    resource = graphene.Field(Resource)
     def mutate(self,info,room_id,resource_id,**kwargs):
         validate_empty_fields(**kwargs)
 
-        query = Equipment.get_query(info)
+        query = Resource.get_query(info)
 
-        exact_room = query.filter(EquipmentModel.room_id == room_id).first()
+        exact_room = query.filter(ResourceModel.room_id == room_id).first()
         if not exact_room:
-            raise AttributeError("RoomId not found")
+            raise GraphQLError("RoomId not found")
 
-        exact_resource = query.filter(EquipmentModel.id == resource_id).first()
+        exact_resource = query.filter(ResourceModel.room_id == room_id).filter (ResourceModel.id == resource_id).first()
         if not exact_resource:
-            raise AttributeError("ResourceId not found")
+            raise GraphQLError("ResourceId not found")
 
         if kwargs.get("name"):
             exact_resource.name = kwargs["name"]
 
         exact_room.save()
-        return UpdateRoomResource(equipment = exact_resource)
+        return UpdateRoomResource(resource = exact_resource)
 
 
 class Mutation(graphene.ObjectType):

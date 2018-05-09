@@ -5,7 +5,7 @@ from graphene_sqlalchemy import (SQLAlchemyObjectType,
                                  SQLAlchemyConnectionField)
 from graphql import GraphQLError
 from api.room.models import Room as RoomModel
-from api.equipment.schema import Equipment
+from api.room_resource.schema import Resource
 
 class Room(SQLAlchemyObjectType):
     
@@ -57,7 +57,7 @@ class UpdateRoom(graphene.Mutation):
 class Query(graphene.ObjectType):
     node = relay.Node.Field()
     rooms = SQLAlchemyConnectionField(Room)
-    equipments = graphene.List(Equipment)
+    resource = graphene.List(Resource)
     get_room_by_id = graphene.List(
         lambda:Room,
         room_id = graphene.Int()

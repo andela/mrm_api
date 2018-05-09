@@ -4,7 +4,7 @@ null = None
 update_room_resource_query = '''
                         mutation{
                         updateRoomResource(roomId:1,resourceId:1,name:"TV Screen"){
-                            equipment{
+                            resource{
                             name
                             }
                         }
@@ -14,7 +14,7 @@ update_room_resource_query = '''
 expected_update_room_resource_query = {
                         "data": {
                             "updateRoomResource": {
-                            "equipment": {
+                            "resource": {
                                 "name": "TV Screen"
                             }
                             }
@@ -24,7 +24,7 @@ expected_update_room_resource_query = {
 non_existant_room_id_query = '''
                         mutation{
                         updateRoomResource(roomId:6,resourceId:1,name:"TV Screen"){
-                            equipment{
+                            resource{
                             name
                             }
                         }
@@ -51,7 +51,7 @@ expected_non_existant_room_id_query = {
 non_existant_resource_id_query = '''
                         mutation{
                         updateRoomResource(roomId:1,resourceId:6,name:"TV Screen"){
-                            equipment{
+                            resource{
                             name
                             }
                         }

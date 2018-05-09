@@ -16,7 +16,7 @@ from api.location.models import Location
 from api.block.models import Block
 from api.floor.models import Floor
 from api.room.models import Room
-from api.equipment.models import Equipment
+from api.room_resource.models import Resource
 
 
 class BaseTestCase(TestCase):
@@ -40,8 +40,8 @@ class BaseTestCase(TestCase):
             floor.save()
             room = Room(name='Entebbe', room_type='meeting', capacity=6, floor_id=floor.id)
             room.save()
-            equipment =Equipment(name="Markers", room_id=room.id)
-            equipment.save()
+            resource =Resource(name="Markers", room_id=room.id)
+            resource.save()
             db_session.commit()
     
     def tearDown(self):

@@ -40,6 +40,8 @@ htmlcov/
 .tox/
 .coverage
 .coverage.*
+.coveragerc
+setup.cfg
 .cache
 nosetests.xml
 coverage.xml

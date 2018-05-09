@@ -10,7 +10,7 @@ from api.location.models import Location as LocationModel
 from api.floor.models import Floor as FloorModel 
 from api.room.models import Room as RoomModel
 
-from api.equipment.models import Equipment 
+from api.room_resource.models import Resource 
 
 class Location(SQLAlchemyObjectType):
     class Meta:
