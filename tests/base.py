@@ -11,6 +11,7 @@ from api.room.models import Room
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 from api.room_resource.models import Resource
 =======
 =======
@@ -19,6 +20,9 @@ from api.room_resource.models import Resource
 >>>>>>> [Feature #156615347] Add tests
 from api.equipment.models import Equipment
 >>>>>>> [Feature #156615347] Add tests
+=======
+from api.room_resource.models import Resource
+>>>>>>> [Feature #156615347]Add tests for models
 
 import sys
 import os
