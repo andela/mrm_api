@@ -14,14 +14,12 @@ config = context.config
 fileConfig(config.config_file_name)
 
 config.set_main_option('sqlalchemy.url', os.getenv('DEV_DATABASE_URL'))
-
 # add your model's MetaData object here
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 # target_metadata = None
-import os
-import sys
+
 sys.path.append(os.getcwd())
 
 from helpers.database import Base
