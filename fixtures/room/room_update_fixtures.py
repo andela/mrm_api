@@ -105,3 +105,34 @@ expected_query_if_room_id_is_non_existant_room = {
                 }
                 }
 
+
+update_with_empty_field = '''mutation{
+                updateRoom(roomId:1,name:"",capacity:8,roomType:"board room"){
+                    room{
+                        name
+                        capacity
+                        roomType
+                        }
+                    }
+                    }
+'''
+
+expected_response_update_with_empty_field = {
+    "errors": [
+                    {
+                    "message": "name is required field",
+                    "locations": [
+                        {
+                        "line": 2,
+                        "column": 17
+                        }
+                    ]
+                    }
+                ],
+                "data": {
+                    "updateRoom": null
+                }
+
+
+}
+

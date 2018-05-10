@@ -8,7 +8,7 @@ def validate_empty_fields(**kwargs):
     """
     for field in kwargs:
         if not kwargs.get(field):
-            raise AttributeError("{field} is required field")
+            raise AttributeError(field + " is required field")
 
 def update_entity_fields(entity,**kwargs):
     """

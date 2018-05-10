@@ -10,7 +10,9 @@ from fixtures.room.room_update_fixtures import (
     query_without_room_id,
     expected_query_without_room_id,
     query_if_room_id_is_non_existant_room,
-    expected_query_if_room_id_is_non_existant_room
+    expected_query_if_room_id_is_non_existant_room,
+    update_with_empty_field,
+    expected_response_update_with_empty_field
 
 )
 
@@ -43,4 +45,11 @@ class TestUpdateRoom(BaseTestCase):
         """ 
         test_get_error_if_room_is_none_existant = self.client.execute(query_if_room_id_is_non_existant_room )
         self.assertEquals(test_get_error_if_room_is_none_existant, expected_query_if_room_id_is_non_existant_room)
+
+    def test_update_with_empty_field(self):
+        """
+        test if you get error when you suppy and empty field for example and empty name string
+        """
+        query = self.client.execute(update_with_empty_field)
+        self.assertEquals(query,expected_response_update_with_empty_field)
 
