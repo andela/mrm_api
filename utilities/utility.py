@@ -23,7 +23,7 @@ def update_entity_fields(entity,**kwargs):
 
 class Utility(object):
     
-    def save(self,**kwargs):
+    def save(self):
         """Function for saving new objects"""
         db_session.add(self)
         db_session.commit()
