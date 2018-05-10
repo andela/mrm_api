@@ -1,10 +1,7 @@
 import graphene
-from graphene import relay
+from graphene import Schema
 
-from graphene_sqlalchemy import(
-    SQLAlchemyConnectionField,
-    SQLAlchemyObjectType
-)
+from graphene_sqlalchemy import SQLAlchemyObjectType
 
 from api.floor.models import Floor as FloorModel
 
@@ -13,7 +10,6 @@ class Floor(SQLAlchemyObjectType):
         model = FloorModel
 
 class Query(graphene.ObjectType):
-    node = relay.Node.Field()
     floor = graphene.List(Floor)
 
     def resolve_floors(self,info):

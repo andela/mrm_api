@@ -26,7 +26,7 @@ from api.location.models import Location
 from api.block.models import Block
 from api.floor.models import Floor
 from api.room.models import Room
-from api.equipment.models import Equipment
+from api.room_resource.models import Resource
 
 target_metadata = Base.metadata
 

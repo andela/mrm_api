@@ -8,8 +8,8 @@ from utilities.utility import Utility
 from api.room.models import Room
 
 
-class Equipment(Base, Utility):
-    __tablename__ = 'equipments'
+class Resource(Base, Utility):
+    __tablename__ = 'resources'
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     room_id = Column(Integer, ForeignKey('rooms.id'))

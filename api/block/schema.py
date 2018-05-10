@@ -1,9 +1,6 @@
 import graphene
-from graphene import relay,Schema
-from graphene_sqlalchemy import (
-    SQLAlchemyObjectType, 
-    SQLAlchemyConnectionField
-)
+from graphene import Schema
+from graphene_sqlalchemy import SQLAlchemyObjectType
 from api.block.models import Block as BlockModel
 
 class Block(SQLAlchemyObjectType):
@@ -11,7 +8,6 @@ class Block(SQLAlchemyObjectType):
         model = BlockModel
 
 class Query(graphene.ObjectType):
-    node = relay.Node.Field()
     floor = graphene.List(Block)
     get_rooms_in_a_block = graphene.List(
         lambda:Block,

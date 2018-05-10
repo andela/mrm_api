@@ -1,11 +1,10 @@
 import graphene
 
 from graphene import  Schema
-from graphene_sqlalchemy import (SQLAlchemyObjectType, 
-                                 SQLAlchemyConnectionField)
+from graphene_sqlalchemy import SQLAlchemyObjectType
 from graphql import GraphQLError
 from api.room.models import Room as RoomModel
-from api.equipment.schema import Equipment
+from api.room_resource.schema import Resource
 
 class Room(SQLAlchemyObjectType):
     
@@ -28,34 +27,10 @@ class CreateRoom(graphene.Mutation):
 
         return CreateRoom(room=room)
 
-class UpdateRoom(graphene.Mutation):
-
-    class Arguments:
-        room_type = graphene.String()
-        capacity = graphene.Int()
-        name = graphene.String()
-        room_id = graphene.Int()
-        
-
-    room = graphene.Field(Room)
-    
-    def mutate(self, info,room_id, **kwargs):
-        query_room = Room.get_query(info)
-        exact_room = query_room.filter(RoomModel.id == room_id).first()
-
-        if kwargs.get("name"):
-            exact_room.name = kwargs["name"]
-        if kwargs.get("room_type"):
-            exact_room.room_type = kwargs["room_type"]
-        if kwargs.get("capacity"):
-            exact_room.capacity = kwargs["capacity"]
-            
-        exact_room.save()
-        return UpdateRoom(room=exact_room)
 
 class Query(graphene.ObjectType):
     rooms = graphene.List(Room)
-    equipment = graphene.List(Equipment)
+    resource = graphene.List(Resource)
     get_room_by_id = graphene.List(
         lambda:Room,
         room_id = graphene.Int()
@@ -75,4 +50,4 @@ class Query(graphene.ObjectType):
 
 class Mutation(graphene.ObjectType):
     create_room = CreateRoom.Field()
-    update_room = UpdateRoom.Field()
+   
