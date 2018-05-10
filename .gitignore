@@ -100,3 +100,4 @@ ENV/
 # pytests
 .pytest_cache/
 /__pycache__/
+html_coverage_report/
