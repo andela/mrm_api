@@ -28,31 +28,23 @@ room_mutation_response = {
 rooms_query = '''
     {
     rooms{
-        edges{
-            node{
                 name
                 capacity
                 roomType
-                }
-            }
         }
     }
     '''
 query_rooms_response = {
     "data": {
-        "rooms": {
-        "edges": [
+        "rooms": [
             {
-            "node": {
+        
                 "name": "Entebbe",
                 "capacity": 6,
                 "roomType": "meeting"
             }
-            }
-            
-        ]
+            ]
         }
-    }
     }
 
 room_query_by_id = '''

@@ -1,6 +1,6 @@
 import graphene
 
-from graphene import relay, Schema
+from graphene import Schema
 from graphene_sqlalchemy import (SQLAlchemyObjectType, 
                                  SQLAlchemyConnectionField)
 from graphql import GraphQLError
@@ -11,7 +11,6 @@ class Room(SQLAlchemyObjectType):
     
     class Meta:
         model = RoomModel
-        interfaces = (relay.Node, )
 
 
 class CreateRoom(graphene.Mutation):
@@ -29,39 +28,18 @@ class CreateRoom(graphene.Mutation):
 
         return CreateRoom(room=room)
 
-class UpdateRoom(graphene.Mutation):
-
-    class Arguments:
-        name = graphene.String()
-        room_type = graphene.String()
-        capacity = graphene.Int()
-        new_name = graphene.String()
-        
-
-    room = graphene.Field(Room)
-    
-    def mutate(self, info,name, **kwargs):
-        query_room = Room.get_query(info)
-        exact_room = query_room.filter(RoomModel.name == name).first()
-
-        if kwargs.get("new_name"):
-            exact_room.name = kwargs["new_name"]
-        if kwargs.get("room_type"):
-            exact_room.room_type = kwargs["room_type"]
-        if kwargs.get("capacity"):
-            exact_room.capacity = kwargs["capacity"]
-            
-        exact_room.save()
-        return UpdateRoom(room=exact_room)
 
 class Query(graphene.ObjectType):
-    node = relay.Node.Field()
-    rooms = SQLAlchemyConnectionField(Room)
+    rooms = graphene.List(Room)
     resource = graphene.List(Resource)
     get_room_by_id = graphene.List(
         lambda:Room,
         room_id = graphene.Int()
         )
+
+    def resolve_rooms(self,info):
+        query = Room.get_query(info)
+        return query.all()
 
     def resolve_get_room_by_id(self,info,room_id):
         query =Room.get_query(info) 
@@ -70,4 +48,3 @@ class Query(graphene.ObjectType):
 
 class Mutation(graphene.ObjectType):
     create_room = CreateRoom.Field()
-    update_room = UpdateRoom.Field()
