@@ -5,7 +5,11 @@ from graphene_sqlalchemy import (SQLAlchemyObjectType,
                                  SQLAlchemyConnectionField)
 from graphql import GraphQLError
 from api.room.models import Room as RoomModel
+<<<<<<< HEAD
 from api.room_resource.schema import Resource
+=======
+from api.equipment.schema import Equipment
+>>>>>>> d82422178efb2d93cadff71d0c311879ba5a7f0a
 from utilities.utility import validate_empty_fields
 
 class Room(SQLAlchemyObjectType):
