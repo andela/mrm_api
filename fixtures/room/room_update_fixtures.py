@@ -2,7 +2,7 @@
 null = None
 
 query_update_all_fields = '''mutation{
-                updateRoom(id:1,name:"Jinja",capacity:8,roomType:"board room"){
+                updateRoom(roomId:1,name:"Jinja",capacity:8,roomType:"board room"){
                     room{
                         name
                         capacity
@@ -26,7 +26,7 @@ expected_query_update_all_fields = {
                 }
 
 query_update_only_required_field = '''mutation{
-            updateRoom(id:1,name:"Jinja"){
+            updateRoom(roomId:1,name:"Jinja"){
                 room{
                     name
                     capacity
@@ -48,7 +48,7 @@ expected_query_update_only_required_field = {
             }
             }
 
-query_without_id = '''mutation{
+query_without_room_id = '''mutation{
             updateRoom(name:"Jinja"){
                 room{
                     name
@@ -59,10 +59,10 @@ query_without_id = '''mutation{
                 }
             '''
 
-expected_query_without_id = {
+expected_query_without_room_id = {
              "errors": [
                     {
-                    "message": "mutate() missing 1 required positional argument: 'id'",
+                    "message": "mutate() missing 1 required positional argument: 'room_id'",
                     "locations": [
                         {
                         "line": 2,
@@ -77,8 +77,8 @@ expected_query_without_id = {
         }
 
 
-query_if_name_is_existant_room = '''mutation{
-                updateRoom(id:4,name:"Jinja",capacity:8,roomType:"board room"){
+query_if_room_id_is_existant_room = '''mutation{
+                updateRoom(roomId:4,name:"Jinja",capacity:8,roomType:"board room"){
                     room{
                     name
                     capacity
@@ -88,7 +88,7 @@ query_if_name_is_existant_room = '''mutation{
                 }
             '''
 
-expected_query_if_name_is_existant_room = {
+expected_query_if_room_id_is_existant_room = {
                 "errors": [
                     {
                     "message": "'NoneType' object has no attribute 'name'",
