@@ -77,7 +77,7 @@ expected_query_without_room_id = {
         }
 
 
-query_if_room_id_is_existant_room = '''mutation{
+query_if_room_id_is_non_existant_room = '''mutation{
                 updateRoom(roomId:4,name:"Jinja",capacity:8,roomType:"board room"){
                     room{
                     name
@@ -88,10 +88,10 @@ query_if_room_id_is_existant_room = '''mutation{
                 }
             '''
 
-expected_query_if_room_id_is_existant_room = {
+expected_query_if_room_id_is_non_existant_room = {
                 "errors": [
                     {
-                    "message": "'NoneType' object has no attribute 'name'",
+                    "message": "'NoneType' object has no attribute 'room_type'",
                     "locations": [
                         {
                         "line": 2,

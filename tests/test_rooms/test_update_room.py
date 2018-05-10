@@ -9,8 +9,8 @@ from fixtures.room.room_update_fixtures import (
     expected_query_update_only_required_field,
     query_without_room_id,
     expected_query_without_room_id,
-    query_if_room_id_is_existant_room,
-    expected_query_if_room_id_is_existant_room
+    query_if_room_id_is_non_existant_room,
+    expected_query_if_room_id_is_non_existant_room
 
 )
 
@@ -37,10 +37,10 @@ class TestUpdateRoom(BaseTestCase):
         test_get_error_if_no_id = self.client.execute(query_without_room_id)
         assert test_get_error_if_no_id == expected_query_without_room_id
 
-    def test_for_error_if_name_is_existant_room(self):
+    def test_for_error_if_room_id_is_non_existant_room(self):
         """
-        Test if you get error once keyvalue 'room_id' supplied is of room that is none existant
+        Test if you get error once keyvalue 'room_id' supplied is of room that is non-existant
         """ 
-        test_get_error_if_room_is_none_existant = self.client.execute(query_if_room_id_is_existant_room )
-        assert test_get_error_if_room_is_none_existant  == expected_query_if_room_id_is_existant_room 
+        test_get_error_if_room_is_none_existant = self.client.execute(query_if_room_id_is_non_existant_room )
+        assert test_get_error_if_room_is_none_existant  == expected_query_if_room_id_is_non_existant_room 
 
