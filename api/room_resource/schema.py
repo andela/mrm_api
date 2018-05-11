@@ -4,7 +4,10 @@ from graphql import GraphQLError
 from graphene import  Schema
 from graphene_sqlalchemy import SQLAlchemyObjectType
 from api.room_resource.models import Resource as ResourceModel
-from utilities.utility import validate_empty_fields,update_entity_fields
+from utilities.utility import (
+    validate_empty_fields,
+    update_entity_fields,
+    )
 
 
 class Resource(SQLAlchemyObjectType):
@@ -19,7 +22,6 @@ class Query(graphene.ObjectType):
         query = Resource.get_query(info)
         return query.all()
 
-
 class UpdateRoomResource(graphene.Mutation):
     class Arguments:
         name = graphene.String()
@@ -31,10 +33,10 @@ class UpdateRoomResource(graphene.Mutation):
         validate_empty_fields(**kwargs)
         query = Resource.get_query(info)
         exact_resource = query.filter(ResourceModel.id == resource_id).first()
-
+        
         if not exact_resource:
             raise GraphQLError("ResourceId not Found")
-
+         
         update_entity_fields(exact_resource, **kwargs)
         exact_resource.save()
         return UpdateRoomResource(resource = exact_resource)
