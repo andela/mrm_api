@@ -1,8 +1,7 @@
-import os
-import sys
 from flask import Flask
 from flask_graphql import GraphQLView
 
+#local imports
 from config import config
 from helpers.database import db_session
 from helpers.auth.decode_token import Auth
