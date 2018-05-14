@@ -3,7 +3,6 @@ from alembic import context
 from sqlalchemy import engine_from_config, pool
 from logging.config import fileConfig
 
-
 import os
 import sys
 # this is the Alembic Config object, which provides
@@ -29,6 +28,7 @@ from api.block.models import Block
 from api.floor.models import Floor
 from api.room.models import Room
 from api.equipment.models import Equipment
+from api.user.models import User
 target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,

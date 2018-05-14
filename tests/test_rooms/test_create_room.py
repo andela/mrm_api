@@ -16,7 +16,7 @@ class TestCreateRoom(BaseTestCase):
         """
         Testing for room creation
         """
-        execute_query = self.client.execute(
+        execute_query = self.admin_client.execute(
             room_mutation_query,
             context_value={'session': db_session})
         
