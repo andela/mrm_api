@@ -22,13 +22,15 @@ config.set_main_option('sqlalchemy.url', os.getenv('DEV_DATABASE_URL'))
 # target_metadata = None
 
 sys.path.append(os.getcwd())
+config.set_main_option('sqlalchemy.url', os.getenv('DEV_DATABASE_URL'))
 
 from helpers.database import Base
 from api.location.models import Location
 from api.block.models import Block
 from api.floor.models import Floor
 from api.room.models import Room
-from api.equipment.models import Equipment
+from api.room_resource.models import Resource
+
 target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
