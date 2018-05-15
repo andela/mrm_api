@@ -1,3 +1,4 @@
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -63,8 +64,18 @@ docs/_build/
 # PyBuilder
 target/
 
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
 # pyenv
 .python-version
+
+# celery beat schedule file
+celerybeat-schedule
+
+# SageMath parsed files
+*.sage.py
 
 # dotenv
 .env

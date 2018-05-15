@@ -1,5 +1,6 @@
 import graphene
 
+
 from graphene import Schema
 from graphene_sqlalchemy import (SQLAlchemyObjectType, 
                                  SQLAlchemyConnectionField)

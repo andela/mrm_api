@@ -12,6 +12,7 @@ def create_app(config_name):
     app = Flask(__name__)
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
+    
     app.add_url_rule(
         '/mrm',
         view_func=GraphQLView.as_view(
