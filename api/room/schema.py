@@ -8,6 +8,7 @@ from api.room.models import Room as RoomModel
 from api.room_resource.schema import Resource
 from utilities.utility import validate_empty_fields,update_entity_fields
 
+
 class Room(SQLAlchemyObjectType):
     
     class Meta:
@@ -55,6 +56,10 @@ class UpdateRoom(graphene.Mutation):
 class Query(graphene.ObjectType):
     rooms = graphene.List(Room)
     resource = graphene.List(Resource)
+    get_room_by_id = graphene.List(
+        lambda:Room,
+        room_id = graphene.Int()
+        )
 
     def resolve_rooms(self,info):
         query = Room.get_query(info)
@@ -63,3 +68,12 @@ class Query(graphene.ObjectType):
 class Mutation(graphene.ObjectType):
     create_room = CreateRoom.Field()
     update_room = UpdateRoom.Field()
+
+    def resolve_get_room_by_id(self,info,room_id):
+        query =Room.get_query(info) 
+        check_room = query.filter(RoomModel.id ==room_id).first()
+        if not check_room:
+            raise GraphQLError("Room not found")
+        result = query.filter(RoomModel.id == room_id)
+        return result
+
