@@ -1,6 +1,7 @@
 from flask_testing import TestCase
 from graphene.test import Client
 
+from admin_schema import admin_schema
 from app import create_app
 from schema import schema
 from helpers.database import engine, db_session, Base
@@ -12,6 +13,7 @@ from api.room.models import Room
 import sys
 import os
 sys.path.append(os.getcwd())
+from api.user.models import User
 
 
 class BaseTestCase(TestCase):
@@ -40,6 +42,10 @@ class BaseTestCase(TestCase):
             room.save()
             db_session.commit()
 
+            user = User(email='admin@mrm.com', name="Namuli")
+            user.save()
+            db_session().commit()
+    
     def tearDown(self):
         app = self.create_app()
         with app.app_context():

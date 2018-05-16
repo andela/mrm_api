@@ -5,6 +5,7 @@ from flask_graphql import GraphQLView
 from config import config
 from helpers.database import db_session
 from schema import schema
+from helpers.auth.decode_token import Auth
 
 
 def create_app(config_name):
@@ -20,6 +21,15 @@ def create_app(config_name):
             graphiql=True  # for having the GraphiQL interface
         )
     )
+
+    def graphql_view():
+        view = GraphQLView.as_view(
+            'graphql',
+            schema=schema,
+            graphiql=True
+            )
+        return Auth.auth_required(view)
+    
 
     @app.teardown_appcontext
     def shutdown_session(exception=None):
