@@ -25,10 +25,10 @@ expired = {
   "exp": 152664012
 }
 
-expired_token = str(jwt.encode(expired, SECRET_KEY))
+expired_token = jwt.encode(expired, SECRET_KEY)
 
-token = str(jwt.encode(user, SECRET_KEY))
+token = jwt.encode(user, SECRET_KEY)
 
-admin_token = str(jwt.encode(admin, SECRET_KEY))
+admin_token = jwt.encode(admin, SECRET_KEY)
 
-fake_token = "thisisa faketokem -adfoj903lamfa-30948rufjkflp94083920weosdk"
+fake_token = 'thisisa faketokem -adfoj903lamfa-30948rufjkflp94083920weosdk'
