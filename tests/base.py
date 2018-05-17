@@ -15,11 +15,12 @@ from helpers.database import engine, db_session, Base
 from api.location.models import Location
 from api.block.models import Block
 from api.floor.models import Floor
+from api.room.models import Room
 
 
 class BaseTestCase(TestCase):
     
-    def create_app(self):
+    def create_app(self): 
         app = create_app('testing')
         self.base_url = 'https://127.0.0.1:5000/mrm'
         self.headers = {'content-type': 'application/json'}
@@ -36,6 +37,8 @@ class BaseTestCase(TestCase):
             block.save()
             floor = Floor(name='3rd', block_id=block.id)
             floor.save()
+            room = Room(name='Entebbe', room_type='meeting', capacity=6, floor_id=floor.id)
+            room.save()
             db_session.commit()
     
     def tearDown(self):

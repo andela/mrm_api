@@ -19,16 +19,25 @@ config.set_main_option('sqlalchemy.url', os.getenv('DEV_DATABASE_URL'))
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
+<<<<<<< HEAD
+import os
+import sys
+sys.path.append(os.getcwd())
+=======
 # target_metadata = None
 
 sys.path.append(os.getcwd())
+config.set_main_option('sqlalchemy.url', os.getenv('DEV_DATABASE_URL'))
 
+>>>>>>> 886bd3f4174947f2fb32aba10b8f635d69cbd92a
 from helpers.database import Base
 from api.location.models import Location
 from api.block.models import Block
 from api.floor.models import Floor
 from api.room.models import Room
-from api.equipment.models import Equipment
+from api.room_resource.models import Resource
+
+
 target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
