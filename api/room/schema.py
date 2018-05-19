@@ -65,15 +65,17 @@ class Query(graphene.ObjectType):
         query = Room.get_query(info)
         return query.all()
 
-class Mutation(graphene.ObjectType):
-    create_room = CreateRoom.Field()
-    update_room = UpdateRoom.Field()
-
     def resolve_get_room_by_id(self,info,room_id):
         query =Room.get_query(info) 
-        check_room = query.filter(RoomModel.id ==room_id).first()
+        check_room = query.filter(RoomModel.id == room_id).first()
         if not check_room:
             raise GraphQLError("Room not found")
         result = query.filter(RoomModel.id == room_id)
         return result
+
+class Mutation(graphene.ObjectType):
+    create_room = CreateRoom.Field()
+    update_room = UpdateRoom.Field()
+
+    
 

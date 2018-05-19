@@ -24,7 +24,7 @@
     ```
 - Create Application environment variables and save them in .env file
     ```
-    export APP_SETTINGS="Development" # set app Enviroment.
+    export APP_SETTINGS="development" # set app Enviroment.
     export SECRET_KEY="some-very-long-string-of-random-characters"
     export DEV_DATABASE_URL="" # Db for Development.
     export TEST_DATABASE_URL="" # Db for Testing
@@ -44,6 +44,29 @@
     ```
     python manage.py runserver
     ```
+- Running Tests
+ - To run tests and observe test coverage for various versions of python . Run the command below.
+ ```
+ tox
+ ```
+ - To run  and check for test coverage. Run the command below:
+ ```
+ coverage run -m pytest
+ ```
+ - To obtain coverage report. Run the command below:
+
+ ```
+ coverage report
+ ``` 
+ - To obtain html browser report. Run command below:
+ ```
+ coverage html
+ ```
+ ```
+ A folder titled html_coverage_report will be generated. Open it and copy the path  of index.html and paste it in your browser.
+ ```
+
+
 
 
 ## Built with 
