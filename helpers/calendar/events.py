@@ -1,5 +1,8 @@
 import datetime
+<<<<<<< HEAD
 import json
+=======
+>>>>>>> [Feature #157385654] Add getRoomSchedule query
 
 from .credentials import Credentials
 
