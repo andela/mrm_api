@@ -1,5 +1,4 @@
 import datetime
-import json
 
 from .credentials import Credentials
 
