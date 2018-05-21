@@ -2,7 +2,7 @@ get_all_blocks_query = '''{
     allBlocks {
         id
         name
-        locationId
+        officeId
     }
 }
 '''
@@ -13,7 +13,7 @@ get_blocks_query_response = {
             {
                 "id": "1",
                 "name": "EC",
-                "locationId": 1
+                "officeId": 1
             }
         ]
     }

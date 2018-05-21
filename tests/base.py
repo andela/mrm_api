@@ -5,6 +5,7 @@ from app import create_app
 from schema import schema
 from helpers.database import engine, db_session, Base
 from api.location.models import Location
+from api.office.models import Office
 from api.block.models import Block
 from api.floor.models import Floor
 from api.room.models import Room
@@ -31,9 +32,16 @@ class BaseTestCase(TestCase):
         self.app_test = app.test_client()
         with app.app_context():
             Base.metadata.create_all(bind=engine)
-            location = Location(name='Uganda', abbreviation='KLA')
+            location = Location(
+                name='Uganda',
+                abbreviation='KLA',
+                image_url="http://www.url.com",
+                time_zone="EAT"
+                )
             location.save()
-            block = Block(name='EC', location_id=location.id)
+            office = Office(building_name="EPIC Tower", location_id=location.id)
+            office.save()
+            block = Block(name='EC', office_id=office.id)
             block.save()
             floor = Floor(name='3rd', block_id=block.id)
             floor.save()
