@@ -1,7 +1,7 @@
 import os
 import jwt
 
-SECRET_KEY = os.getenv('SECRET_KEY')
+
 
 user = {
   "UserInfo": {
@@ -30,11 +30,11 @@ expired = {
   "exp": 152664012
 }
 
-expired_token = jwt.encode(expired, SECRET_KEY)
+expired_token = jwt.encode(expired)
 
-token = jwt.encode(user, SECRET_KEY)
-no_token=jwt.encode(no_user, SECRET_KEY)
+token = jwt.encode(user)
 
-admin_token = jwt.encode(admin, SECRET_KEY)
+
+admin_token = jwt.encode(admin)
 
 fake_token = 'thisisa faketokem -adfoj903lamfa-30948rufjkflp94083920weosdk'
