@@ -1,7 +1,7 @@
 import os
 import jwt
 
-SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY = "some-very-long-string-of-random-characters-CHANGE-TO-YOUR-LIKING"
 
 user = {
   "UserInfo": {
