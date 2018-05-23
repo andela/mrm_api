@@ -4,6 +4,10 @@ Flask==0.12.2
 Flask-Cors==3.0.4
 Flask-Script==2.0.6
 Flask-GraphQL==1.4.1
+Flask-Script==2.0.6
+Fabric==1.14.0
+Paramiko==2.4.1
+graphene==2.0.1
 graphene-sqlalchemy==2.0.0
 graphene==2.1
 MarkupSafe==1.0
@@ -19,6 +23,6 @@ tox==3.0.0
 SQLAlchemy-Utils==0.33.2
 virtualenv==15.2.0
 Flask-Testing==0.7.1
-typing==3.6.4
 flake8==3.5.0
 coveralls
+Werkzeug==0.14.1
