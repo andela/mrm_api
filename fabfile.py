@@ -11,7 +11,7 @@ def database_exists(name):
     """
     Check if a PostgreSQL database exists.
     """
-    with settings(hide('running', 'stdout', 'stderr', 'warnings'),
+    with settings(hide('running','stdout', 'stderr', 'warnings'),
                   warn_only=True):
         db = local('''psql -d %(name)s -c ""''' % locals()).succeeded
         return db
@@ -33,10 +33,11 @@ def run_migrations():
     To run migrations
     """
 
-    with settings(hide('stdout', 'stderr', 'warnings'),
+    with settings(hide('running', 'stdout', 'stderr', 'warnings'),
                   warn_only=True):
         res = check_dir()
-        if res == 2:
+        print(res)
+        if res > 0 and res <2:
             local("alembic stamp head")
             local("alembic upgrade head")
         if res==0:
@@ -53,9 +54,8 @@ def run_app():
     """
     To start the app
     """
-    with settings(hide('running','stdout', 'warnings'),
+    with settings(hide('stdout', 'stderr', 'warnings'),
                   warn_only=True):
-        local("source .env")
         local(" pip install -r requirements.txt")
         local("python manage.py runserver")
 
