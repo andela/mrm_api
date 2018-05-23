@@ -9,12 +9,7 @@ user = {
     "email": "user@mrm.com",
   }
 }
-no_user = {
-  "UserInfo": {
-    "name": "",
-    "email": "",
-  }
-}
+
 admin = {
   "UserInfo": {
     "name": "Namuli",
@@ -31,10 +26,6 @@ expired = {
 }
 
 expired_token = jwt.encode(expired,SECRET_KEY)
-
 token = jwt.encode(user, SECRET_KEY)
-no_token=jwt.encode(no_user, SECRET_KEY)
-
 admin_token = jwt.encode(admin, SECRET_KEY)
-
 fake_token = 'thisisa faketokem -adfoj903lamfa-30948rufjkflp94083920weosdk'

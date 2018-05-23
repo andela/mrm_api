@@ -9,9 +9,7 @@ sys.path.insert(0, mrm_api)
 
 from tests.base import BaseTestCase
 from helpers.auth.decode_token import Auth
-from fixtures.helpers.auth_fixtures import (
-    user, token, admin, admin_token, fake_token, expired_token, no_token
-    )
+from fixtures.helpers.auth_fixtures import user, token, admin, admin_token, fake_token, expired_token
 
 class TestDecodeToken(BaseTestCase):
     ''' Authenicate token test case '''
