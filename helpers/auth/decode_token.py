@@ -1,7 +1,6 @@
 import jwt
 from flask import current_app, request, jsonify, make_response
 from helpers.database import db_session
-from fixtures.helpers.auth_fixtures import true_token
 from api.user.models import User
 
 class Authentication():
@@ -17,7 +16,7 @@ class Authentication():
       :params token
       :return: func|string
     """
-    token = true_token
+   
     if token:
       return self.decode_token(token)
     return jsonify({ 'message' : 'This endpoint requires you to be authenticated.'}), 401
