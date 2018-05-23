@@ -1,7 +1,6 @@
 from flask_testing import TestCase
 from graphene.test import Client
 
-from admin_schema import admin_schema
 from app import create_app
 from schema import schema
 from helpers.database import engine, db_session, Base

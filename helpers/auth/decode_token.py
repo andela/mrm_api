@@ -1,6 +1,5 @@
 import jwt
 from flask import current_app, request, jsonify, make_response
-from admin_schema import admin_schema
 from helpers.database import db_session
 from api.user.models import User
 
@@ -9,7 +8,7 @@ class Authentication():
     :methods
         verify
         decode_token
-        is_admin
+        user_credentials
   """
 
   def verify(self, token):
@@ -26,10 +25,9 @@ class Authentication():
     :param auth_token:
     :return: integer|string
     """
-    SECRET_KEY = current_app.config['SECRET_KEY']
     
     try:
-      payload = jwt.decode(auth_token, SECRET_KEY)
+      payload = jwt.decode(auth_token, verify=False)
       return payload
     except jwt.ExpiredSignatureError:
       return jsonify({ 'message':'Signature expired. Please log in again.'}), 401
@@ -37,43 +35,16 @@ class Authentication():
     except jwt.InvalidTokenError:
       return jsonify({ 'message': 'Invalid token. Please Provide a valid token!'}), 401
 
-  def is_admin(self, token):
+  def user_credentials(self, token):
     value = self.verify(token)
-    
 
     if type(value) is dict:
-
       user_email = value['UserInfo']['email']
-      
-
-      query = '''
-      query{
-        user(email: "'''+user_email+'''"){
-          id
-          email
-          name
-          }
-        }
-      '''
-      result = admin_schema.execute(query, context_value={'session': db_session})
-      
-      try:
-        
-        result_user = list(result.data.items())
-               
-        result_user[0][1]
-       
-        email = list(result_user[0][1].items())
-        
-        
-        if user_email == email[1][1]:
-          name = email[2][1]
-          response =jsonify({ 'UserEmail':user_email,'Name':name})
-          return response
-
-      except:
-        pass
+      nme = value['UserInfo']['name']
+      res ={'UserEmail':user_email,'Name':nme}
+      return jsonify(res)
     else:
+      
       return value
     return make_response(jsonify({ 'message':'Your can are not authroized to accesst this route.'}), 401)
   
@@ -89,7 +60,7 @@ class Authentication():
           :returns: func|string
         """
         token = request.headers.get('token')
-        validate_token = self.is_admin(token)
+        validate_token = self.user_credentials(token)
         if validate_token == True:
             return fn(*args, **kwargs)
         return validate_token
