@@ -2,7 +2,7 @@ from __future__ import with_statement
 from fabric.api import *
 import fabtools
 import fnmatch
-
+import os
 
 def user_exists(name):
     """
@@ -29,23 +29,35 @@ def database_exists(name):
         return db
 
 
+def check_dir():
+    """
+    To check for migrations
+    """
+    files = os.listdir(path='../mrm_api/alembic/versions/')
+    number_migrations = len(fnmatch.filter(files, '*.py'))
+    return number_migrations
+    
+
+
 def run_migrations():
+    
     """
     To run migrations
     """
-    with settings(hide('running', 'stdout', 'stderr', 'warnings'),
+
+    with settings(hide('stdout', 'stderr', 'warnings'),
                   warn_only=True):
-        res = local('ls -l ../mrm_api/alembic/versions/| egrep -c "^-"' ,capture=True)
-        if int(res) == 2:
-           local("alembic stamp head")
-           local("alembic upgrade head")
-        if int(res)==0:
-            local("alembic revision -- autogenerate")
-            local("alembic upgrade head")
-        if  int(res)>2:
+        res = check_dir()
+        if res == 2:
             local("alembic stamp head")
             local("alembic upgrade head")
-            local("alembic revision -- autogenerate")
+        if res==0:
+            local("alembic revision --autogenerate")
+            local("alembic upgrade head")
+        if  res > 2:
+            local("alembic stamp head")
+            local("alembic upgrade head")
+            local("alembic revision --autogenerate")
             local("alembic upgrade head")
 
             
@@ -53,9 +65,11 @@ def run_app():
     """
     To start the app
     """
-    # local("source .env")
-    # local("sudo pip install -r requirements.txt")
-    local("python manage.py runserver")
+    with settings(hide('running','stdout', 'warnings'),
+                  warn_only=True):
+        local("source .env")
+        local(" pip install -r requirements.txt")
+        local("python manage.py runserver")
 
 
 def set_up(user):
