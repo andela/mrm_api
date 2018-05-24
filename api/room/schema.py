@@ -14,8 +14,7 @@ class Room(SQLAlchemyObjectType):
         model = RoomModel
 
 class Calendar(graphene.ObjectType):
-        start = graphene.String()
-        event_summary = graphene.String()
+        events = graphene.String()
     
 
 class Calendar(graphene.ObjectType):
@@ -108,16 +107,14 @@ class Query(graphene.ObjectType):
             events=room_schedule
         )
 
-    def resolve_get_room_schedule(self, info, calendar_id, days):
+    def resolve_room_schedule(self, info, calendar_id, days):
         query = Room.get_query(info)
         check_calendar_id = query.filter(RoomModel.calendar_id == calendar_id).first()
         if not check_calendar_id:
             raise GraphQLError("Invalid CalendarId")
-        
         room_schedule = RoomSchedules.get_room_schedules(self,calendar_id,days)
         return Calendar(
-            start = room_schedule[0],
-            event_summary = room_schedule[1]
+            events = room_schedule
         )
 
 class Mutation(graphene.ObjectType):

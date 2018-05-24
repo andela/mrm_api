@@ -40,7 +40,11 @@ class BaseTestCase(TestCase):
                         room_type='meeting',
                         capacity=6,
                         floor_id=floor.id,
+<<<<<<< HEAD
                         calendar_id = 'andela.com_3836323338323230343935@resource.calendar.google.com',  # noqa: E501
+=======
+                        calendar_id = 'andela.com_3835468272423230343935@resource.calendar.google.com',  # noqa: E501
+>>>>>>> [Feature #157385654]Add view room schedule functionality
                         image_url="https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg")  # noqa: E501
             room.save()
             resource = Resource(name='Markers',
