@@ -67,7 +67,6 @@ docs/_build/
 # PyBuilder
 target/
 
-
 # Jupyter Notebook
 .ipynb_checkpoints
 
@@ -79,7 +78,6 @@ celerybeat-schedule
 
 # SageMath parsed files
 *.sage.py
-
 # pyenv
 .python-version
 
@@ -104,24 +102,6 @@ ENV/
 
 # mypy
 .mypy_cache/
-
-
-# editor
-.vscode/
-.idea/
-
-# sqlite DB
-*.sqlite
-
-# alembic
-# alembic/
-# alembic.ini
-
-# pytests
-.pytest_cache/
-html_coverage_report/
-*.DS_store
-
 # vscode
 .vscode/
 venv/
