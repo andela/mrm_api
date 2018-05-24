@@ -48,6 +48,7 @@ nosetests.xml
 coverage.xml
 *.cover
 .hypothesis/
+.pytest_cache/
 
 # Translations
 *.mo
@@ -77,6 +78,9 @@ celerybeat-schedule
 
 # SageMath parsed files
 *.sage.py
+# pyenv
+.python-version
+
 
 # dotenv
 .env
@@ -98,19 +102,11 @@ ENV/
 
 # mypy
 .mypy_cache/
-
-# editor
+# vscode
 .vscode/
-.idea/
-
-# sqlite DB
-*.sqlite
-
-# alembic
-# alembic/
-# alembic.ini
-
-# pytests
-.pytest_cache/
-html_coverage_report/
-*.DS_store
+venv/
+__pycache__/
+*.pyc
+.tox
+.pytest_cache
+nrm_tool.ego-info/
