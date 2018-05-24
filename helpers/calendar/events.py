@@ -1,4 +1,5 @@
 import datetime
+import json
 
 from .credentials import Credentials
 
@@ -33,8 +34,12 @@ class RoomSchedules(Credentials):
             orderBy='startTime').execute()
 
         calendar_events = events_result.get('items', [])
+        output = []
         if not calendar_events:
             return('No upcoming events found.')
         for event in calendar_events:
-            start = event['start'].get('dateTime', event['start'].get('date'))
-            return(start,event.get("summary"))
+            event_details = {}
+            event_details["start"] = event['start'].get('dateTime', event['start'].get('date'))
+            event_details["summary"] = event.get("summary")
+            output.append(event_details)
+        return output

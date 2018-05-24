@@ -2,7 +2,12 @@ null = None
 
 room_mutation_query = '''
     mutation {
-        createRoom(name: "Mbarara", roomType: "Meeting", capacity: 4, floorId: 1) {
+        createRoom(
+            name: "Mbarara", 
+            roomType: "Meeting", 
+            capacity: 4, 
+            floorId: 1, 
+            calendarId:"andela.com_385@resource.calendar.google.com") {
             room {
                 name
                 roomType

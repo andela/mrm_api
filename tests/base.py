@@ -37,7 +37,13 @@ class BaseTestCase(TestCase):
             block.save()
             floor = Floor(name='3rd', block_id=block.id)
             floor.save()
-            room = Room(name='Entebbe', room_type='meeting', capacity=6, floor_id=floor.id)
+            room = Room(
+                name='Entebbe', 
+                room_type='meeting', 
+                capacity=6,
+                calendar_id = 'andela.com_3835468272423230343935@resource.calendar.google.com',
+                floor_id=floor.id
+                )
             room.save()
             db_session.commit()
     
