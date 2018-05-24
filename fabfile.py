@@ -4,8 +4,20 @@ import fabtools
 import fnmatch
 import os
 
-def Run_App():
-    local("python app.py")
+def user_exists(name):
+    """
+    Check if a user exists.
+    """
+    with settings(hide('running', 'stdout','stderr', 'warnings'), warn_only=True):
+        res = local('users %(name)s' % locals()).succeeded
+        return res
+    
+def create_database(owner, name, template='template0', encoding='UTF8',
+                    locale='en_US.UTF-8'):
+    with settings(hide('running', 'stdout','stderr', 'warnings'), warn_only=True):
+        local('''createdb --owner %(owner)s --template %(template)s \
+                    --encoding=%(encoding)s --lc-ctype=%(locale)s \
+                    --lc-collate=%(locale)s %(name)s''' % locals())
 
 def database_exists(name):
     """
@@ -33,10 +45,9 @@ def run_migrations():
     To run migrations
     """
 
-    with settings(hide('running', 'stdout', 'stderr', 'warnings'),
+    with settings(hide('stdout', 'stderr', 'warnings'),
                   warn_only=True):
         res = check_dir()
-        print(res)
         if res > 0 and res <2:
             local("alembic stamp head")
             local("alembic upgrade head")
@@ -61,6 +72,9 @@ def run_app():
 
 
 def set_up(user):
+    """
+    To automate the set process
+    """
     u = user_exists(user)
     if u:
         db_exists = database_exists("mrm_db")
@@ -68,7 +82,7 @@ def set_up(user):
             run_migrations()
             run_app()
         else:
-             create_database(user)
+             create_database(user,"mrm_db")
              run_migrations()
              run_app()
     else:
