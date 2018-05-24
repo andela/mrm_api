@@ -120,3 +120,4 @@ class Query(graphene.ObjectType):
 class Mutation(graphene.ObjectType):
     create_room = CreateRoom.Field()
     update_room = UpdateRoom.Field()
+
