@@ -1,10 +1,10 @@
 import os
-from flask_testing import TestCase
+from tests.base import BaseTestCase
 from fabric.api import *
-from ..fabfile import *
+from fabfile import *
 
 
-class AutomationTestCase(TestCase):
+class AutomationTestCase(BaseTestCase):
 
     def test_user(self):
         current_user = local("users")
