@@ -11,14 +11,20 @@ class Query(
     api.block.schema.Query,
     api.floor.schema.Query,
     api.room.schema.Query,
-    api.room_resource.schema.Query
+    api.room_resource.schema.Query,
+    api.role.schema.Query,
+    api.user.schema.Query
+
 ):
     pass
 
 
 class Mutation(
     api.room.schema.Mutation,
-    api.room_resource.schema.Mutation
+    api.room_resource.schema.Mutation,
+    api.role.schema.Mutation,
+    api.user.schema.Mutation,
+    api.user_role.schema.Mutation
 ):
     pass
 
