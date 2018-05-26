@@ -1,4 +1,5 @@
-## Product overview 
+[![Coverage Status](https://coveralls.io/repos/github/andela/mrm_api/badge.svg)](https://coveralls.io/github/andela/mrm_api)
+## Product overview
  The MRM-api is the backbone of a tool to facilitate room management. It enables  capturing of feedback based on room usage and analyse usage statistics.The MRM-api provides capability to register rooms and give feedback.
 
 ## Development set up
@@ -57,7 +58,7 @@
 
  ```
  coverage report
- ``` 
+ ```
  - To obtain html browser report. Run command below:
  ```
  coverage html
@@ -69,7 +70,7 @@
 
 
 
-## Built with 
+## Built with
 - Python version  3
 - Flask
 - Grapghql
@@ -82,7 +83,7 @@ When contributing to this repository, please first discuss the change you wish t
  ##### Pull Request Process
 - A contributor shall identify a task to be done from the [pivotal tracker](https://www.pivotaltracker.com/n/projects/2154921).If there is a bug , feature or chore that has not be included among the tasks, the contributor can add it only after consulting the owner of this repository and the task being accepted.
 - The Contributor shall then create a branch off  the ` develop` branch where they are expected to undertake the task they have chosen.
-- After  undertaking the task, a fully detailed pull request shall be submitted to the owners of this repository for review. 
+- After  undertaking the task, a fully detailed pull request shall be submitted to the owners of this repository for review.
 - If there any changes requested ,it is expected that these changes shall be effected and the pull request resubmitted for review.Once all the changes are accepted, the pull request shall be closed and the changes merged into `develop` by the owners of this repository.
 
 
