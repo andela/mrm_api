@@ -1,7 +1,8 @@
 import os
 from tests.base import BaseTestCase
 from fabric.api import *
-from fabfile import *
+from fabfile import user_exists, check_dir, database_exists
+from tests.base import BaseTestCase
 
 
 class AutomationTestCase(BaseTestCase):
