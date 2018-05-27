@@ -15,8 +15,8 @@ class AutomationTestCase(BaseTestCase):
 
     def test_database_existence(self):
         current_user = local("users")
-        test_db = create_database(current_user,)
-        print(test_db)
+        print(current_user)
+        test_db = create_database(current_user, "mrm_db_test")
         db = database_exists("mrm_db_test")
         self.assertTrue(db)
     
