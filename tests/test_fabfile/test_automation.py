@@ -1,7 +1,8 @@
 import os
 from tests.base import BaseTestCase
 from fabric.api import *
-from fabfile import user_exists, check_dir, database_exists
+from mrm_api.fabfile import (user_exists, check_dir,
+                     database_exists, create_database)
 from tests.base import BaseTestCase
 
 
@@ -13,11 +14,14 @@ class AutomationTestCase(BaseTestCase):
         self.assertTrue(user)
 
     def test_database_existence(self):
-        db = database_exists("mrm_test_db")
+        current_user = local("users")
+        test_db = create_database(current_user,)
+        print(test_db)
+        db = database_exists("mrm_db_test")
         self.assertTrue(db)
     
     def test_check_dir(self):
         count = check_dir()
-        self.assertIs(int,count)
+        self.assertIs(int,type(count))
     
 
