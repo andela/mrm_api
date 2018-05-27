@@ -3,8 +3,10 @@ coverage==4.5.1
 Flask==0.12.2
 Flask-Cors==3.0.4
 Flask-Script==2.0.6
-Flask-GraphQL==1.4.1
-google-api-python-client==1.6.7
+Flask-Testing==0.7.1
+Fabric==1.14.0
+Paramiko==2.4.1
+graphene==2.0.1
 graphene-sqlalchemy==2.0.0
 graphene==2.1
 MarkupSafe==1.0
