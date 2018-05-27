@@ -30,6 +30,7 @@ def database_exists(name):
     with settings(hide('running','stdout', 'stderr', 'warnings'),
                   warn_only=True):
         db = local('''psql -d %(name)s -c ""''' % locals()).succeeded
+        print(db)
         return db
 
 def check_dir():
@@ -40,8 +41,6 @@ def check_dir():
     number_migrations = len(fnmatch.filter(files, '*.py'))
     return number_migrations
     
-
-
 def run_migrations():   
     """
     To run migrations
