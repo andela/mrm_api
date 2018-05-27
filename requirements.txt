@@ -5,6 +5,7 @@ Flask-Cors==3.0.4
 Flask-Script==2.0.6
 Flask-GraphQL==1.4.1
 Flask-Script==2.0.6
+Flask-Testing==0.7.1
 Fabric==1.14.0
 Paramiko==2.4.1
 graphene==2.0.1
