@@ -4,6 +4,7 @@ import fabtools
 import fnmatch
 import os
 
+
 def user_exists(name):
     """
     Check if a user exists.
@@ -14,6 +15,9 @@ def user_exists(name):
     
 def create_database(owner, name, template='template0', encoding='UTF8',
                     locale='en_US.UTF-8'):
+    """
+    To create database
+    """
     with settings(hide('running', 'stdout','stderr', 'warnings'), warn_only=True):
         local('''createdb --owner %(owner)s --template %(template)s \
                     --encoding=%(encoding)s --lc-ctype=%(locale)s \
@@ -28,7 +32,6 @@ def database_exists(name):
         db = local('''psql -d %(name)s -c ""''' % locals()).succeeded
         return db
 
-
 def check_dir():
     """
     To check for migrations
@@ -39,12 +42,10 @@ def check_dir():
     
 
 
-def run_migrations():
-    
+def run_migrations():   
     """
     To run migrations
     """
-
     with settings(hide('stdout', 'stderr', 'warnings'),
                   warn_only=True):
         res = check_dir()
@@ -59,8 +60,7 @@ def run_migrations():
             local("alembic upgrade head")
             local("alembic revision --autogenerate")
             local("alembic upgrade head")
-
-            
+          
 def run_app():
     """
     To start the app
@@ -69,7 +69,6 @@ def run_app():
                   warn_only=True):
         local(" pip install -r requirements.txt")
         local("python manage.py runserver")
-
 
 def set_up(user):
     """
