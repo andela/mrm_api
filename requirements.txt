@@ -17,8 +17,6 @@ Fabric3==1.14.post1
 flake8==3.5.0
 Flask==0.12.2
 Flask-GraphQL==1.4.1
-Flask-Script==2.0.6
-Flask-Testing==0.7.1
 Fabric==1.14.0
 Paramiko==2.4.1
 graphene==2.0.1
@@ -63,3 +61,6 @@ flake8==3.5.0
 coveralls
 >>>>>>> [Chore #156466913] Refact automation file
 Werkzeug==0.14.1
+Flask-Testing==0.7.1
+typing==3.6.4
+
