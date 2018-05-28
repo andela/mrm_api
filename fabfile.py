@@ -36,7 +36,7 @@ def check_dir():
     """
     To check for migrations
     """
-    files = os.listdir(path='../mrm_api/alembic/versions/')
+    files = os.listdir(path='alembic/versions/')
     number_migrations = len(fnmatch.filter(files, '*.py'))
     return number_migrations
     
