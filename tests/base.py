@@ -41,11 +41,12 @@ class BaseTestCase(TestCase):
                 name='Entebbe', 
                 room_type='meeting', 
                 capacity=6,
-                calendar_id = 'andela.com_3835468272423230343935@resource.calendar.google.com',
+                calendar_id = 'andela.com_3836323338323230343935@resource.calendar.google.com',
                 floor_id=floor.id
                 )
             room.save()
             db_session.commit()
+            
     
     def tearDown(self):
         app = self.create_app()
