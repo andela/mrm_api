@@ -18,10 +18,11 @@ def create_database(owner, name, template='template0', encoding='UTF8',
     """
     To create database
     """
-    with settings(hide('running', 'stdout','stderr', 'warnings'), warn_only=True):
+    with settings( warn_only=True):
         local('''createdb --owner %(owner)s --template %(template)s \
                     --encoding=%(encoding)s --lc-ctype=%(locale)s \
                     --lc-collate=%(locale)s %(name)s''' % locals())
+        
 
 def database_exists(name):
     """
