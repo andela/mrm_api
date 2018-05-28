@@ -57,6 +57,7 @@ jobs:
           command: |
             . venv/bin/activate
             tox
+            coveralls
       - store_artifacts:
           path: test-reports
           destination: test-reports
@@ -80,7 +81,7 @@ jobs:
             gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
       - run:
           name: Deploy to gcloud
-          command: gcloud beta compute instance-groups managed rolling-action replace mrm-backend-instance-group --max-unavailable=2 --min-ready=280 --zone=europe-west1-b
+          command: gcloud beta compute instance-groups managed rolling-action replace mrm-backend-instance-group --max-unavailable=1 --min-ready=280 --zone=europe-west1-b
 
 workflows:
   version: 2
