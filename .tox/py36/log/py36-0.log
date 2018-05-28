@@ -1,9 +1,0 @@
-actionid: py36
-msg: getenv
-cmdargs: ['/Users/kamaradeo/Desktop/Travail/mrm_api/venv/bin/python', '-m', 'virtualenv', '--python', '/usr/local/bin/python3.6', 'py36']
-
-Using base prefix '/usr/local/Cellar/python/3.6.4_4/Frameworks/Python.framework/Versions/3.6'
-New python executable in /Users/kamaradeo/Desktop/Travail/mrm_api/.tox/py36/bin/python3.6
-Also creating executable in /Users/kamaradeo/Desktop/Travail/mrm_api/.tox/py36/bin/python
-Installing setuptools, pip, wheel...done.
-Running virtualenv with interpreter /usr/local/bin/python3.6

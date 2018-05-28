@@ -1,5 +1,0 @@
-actionid: python2.7
-msg: envreport
-cmdargs: ['/Users/kamaradeo/Desktop/Travail/mrm_api/.tox/python2.7/bin/pip', 'freeze']
-
-nrm-tool==1.0

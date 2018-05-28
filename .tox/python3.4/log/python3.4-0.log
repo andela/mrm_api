@@ -1,8 +1,0 @@
-actionid: python3.4
-msg: getenv
-cmdargs: ['/Users/kamaradeo/Desktop/Travail/mrm_api/venv/bin/python', '-m', 'virtualenv', '--python', '/Users/kamaradeo/Desktop/Travail/mrm_api/venv/bin/python', 'python3.4']
-
-Already using interpreter /Users/kamaradeo/Desktop/Travail/mrm_api/venv/bin/python
-Using real prefix '/System/Library/Frameworks/Python.framework/Versions/2.7'
-New python executable in /Users/kamaradeo/Desktop/Travail/mrm_api/.tox/python3.4/bin/python
-Installing setuptools, pip, wheel...done.
