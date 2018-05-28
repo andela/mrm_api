@@ -10,13 +10,14 @@ jobs:
       # use `-browsers` prefix for selenium tests, e.g. `3.6.1-browsers`
       - image: circleci/python:3.6.1
         environment:
-          TEST_DB: postgresql://postgres:masiko26@localhost/shoppinglist
+          APP_SETTING: testing
+          TEST_DATABASE_URL: postgresql://postgres@localhost/mrm_test_db
       - image: circleci/postgres:9.6.5-alpine-ram
         environment:
           SECRET_KEY: "********"
-          POSTGRES_USER: masiko26
-          POSTGRES_DB: mrm_db
-          POSTGRES_PASSWORD: admin
+          POSTGRES_USER: postgres
+          POSTGRES_DB: mrm_test_db
+          POSTGRES_PASSWORD:
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -38,14 +39,14 @@ jobs:
       - run:
           name: install dependencies
           command: |
-            python3 -m env env
-            . env/bin/activate
+            python -m venv venv
+            . venv/bin/activate
             pip install -r requirements.txt
       - save_cache:
           paths:
-            - ./env
+            - ./venv
           key: v1-dependencies-{{ checksum "requirements.txt" }}
-        
+
       # run tests!
       # this example uses Django's built-in test-runner
       # other common Python testing frameworks include pytest and nose
@@ -54,8 +55,42 @@ jobs:
       - run:
           name: run tests
           command: |
-            . env/bin/activate
-            nosetests --with-coverage --cover-package=my_app
+            . venv/bin/activate
+            tox
+            coveralls
       - store_artifacts:
           path: test-reports
           destination: test-reports
+
+  deploy-job:
+    docker:
+      - image: google/cloud-sdk
+        environment:
+          GOOGLE_APPLICATION_CREDENTIALS: ${HOME}/gcloud-service-key.json
+          GOOGLE_PROJECT_ID: ${GOOGLE_PROJECT_ID}
+          GOOGLE_COMPUTE_ZONE: ${GOOGLE_COMPUTE_ZONE}
+    steps:
+      - run:
+          name: Store Service Account Key into file
+          command: echo $GCLOUD_SERVICE_KEY > ${HOME}/gcloud-service-key.json
+      - run:
+          name: Authenticate on gcloud
+          command: |
+            gcloud auth activate-service-account --key-file ${HOME}/gcloud-service-key.json
+            gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
+            gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
+      - run:
+          name: Deploy to gcloud
+          command: gcloud beta compute instance-groups managed rolling-action replace mrm-backend-instance-group --max-unavailable=1 --min-ready=280 --zone=europe-west1-b
+
+workflows:
+  version: 2
+  build-then-deploy:
+    jobs:
+      - build
+      - deploy-job:
+          requires:
+            - build
+          filters:
+            branches:
+              only: develop
