@@ -32,7 +32,7 @@
     export TEST_DATABASE_URL="" # Db for Testing
     export DATABASE_URL="" # Db for Production
     ```
-- To create a development database,run migrations and run application.
+- Create development database,run migrations and run application.
 
     -  Run the command below:
         ```
