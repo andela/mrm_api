@@ -36,27 +36,18 @@ class BaseTestCase(TestCase):
             block.save()
             floor = Floor(name='3rd', block_id=block.id)
             floor.save()
-<<<<<<< HEAD
             room = Room(name='Entebbe',
                         room_type='meeting',
                         capacity=6,
                         floor_id=floor.id,
+                        calendar_id = 'andela.com_3836323338323230343935@resource.calendar.google.com',  # noqa: E501
                         image_url="https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg")  # noqa: E501
-=======
-            room = Room(
-                name='Entebbe', 
-                room_type='meeting', 
-                capacity=6,
-                calendar_id = 'andela.com_3835468272423230343935@resource.calendar.google.com',
-                floor_id=floor.id
-                )
->>>>>>> [Feature #157385654]Add view room schedule functionality
             room.save()
             resource = Resource(name='Markers',
                                 room_id=room.id)
             resource.save()
             db_session.commit()
-
+            
     def tearDown(self):
         app = self.create_app()
         with app.app_context():
