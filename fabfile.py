@@ -10,7 +10,7 @@ def user_exists(name):
     Check if a user exists.
     """
     with settings(hide('running', 'stdout','stderr', 'warnings'), warn_only=True):
-        res = local('users %(name)s' % locals()).succeeded
+        res = local('groups %(name)s' % locals()).succeeded
         return res
     
 def create_database(owner, name, template='template0', encoding='UTF8',
@@ -31,7 +31,6 @@ def database_exists(name):
     with settings(hide('running','stdout', 'stderr', 'warnings'),
                   warn_only=True):
         db = local('''psql -d %(name)s -c ""''' % locals()).succeeded
-        print(db)
         return db
 
 def check_dir():
