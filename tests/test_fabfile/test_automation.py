@@ -1,7 +1,7 @@
 import os
 from tests.base import BaseTestCase
 from fabric.api import *
-from mrm_api.fabfile import (user_exists, check_dir,
+from fabfile import (user_exists, check_dir,
                      database_exists, create_database)
 from tests.base import BaseTestCase
 
