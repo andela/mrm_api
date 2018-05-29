@@ -58,6 +58,7 @@ def run_migrations():
             local("alembic upgrade head")
             local("alembic revision --autogenerate")
             local("alembic upgrade head")
+    return True
           
 def run_app():
     """
@@ -65,7 +66,6 @@ def run_app():
     """
     with settings(hide('stdout', 'stderr', 'warnings'),
                   warn_only=True):
-        local(" pip install -r requirements.txt")
         local("python manage.py runserver")
 
 def set_up(user):
