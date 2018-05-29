@@ -2,7 +2,8 @@ import os
 from tests.base import BaseTestCase
 from fabric.api import *
 from fabfile import (user_exists, check_dir,
-                     database_exists, create_database)
+                     database_exists, create_database,
+                     set_up)
 from tests.base import BaseTestCase
 
 
