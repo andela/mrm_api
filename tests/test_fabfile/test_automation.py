@@ -27,7 +27,7 @@ class AutomationTestCase(BaseTestCase):
         self.assertTrue(run_migrations())
     
     def test_database_creation_and_existence(self):
-        test_db = create_database(owner='postgres',name='mrm_db_test')
+        test_db = create_database(owner=local("users"),name='mrm_db_test')
         db = database_exists("mrm_db_test")
         self.assertTrue(db)
         local('dropdb mrm_db_test')
