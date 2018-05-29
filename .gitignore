@@ -101,11 +101,6 @@ ENV/
 
 # mypy
 .mypy_cache/
-<<<<<<< HEAD
-=======
-
-=======
->>>>>>> [Chore #156466913] Clean up the branch
 # vscode
 .vscode/
 venv/
