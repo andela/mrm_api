@@ -21,7 +21,7 @@ class TestDecodeToken(BaseTestCase):
 
         expected_responese = b'{\n  "message": "This endpoint requires you to be authenticated."\n}\n'
         self.assertEqual(Auth.verify('')[0].data, expected_responese)
-        print(expired_token)
+
 
     def test_decode_token(self):
         '''Test Decode token '''
