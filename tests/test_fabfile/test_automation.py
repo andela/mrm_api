@@ -12,12 +12,6 @@ class AutomationTestCase(BaseTestCase):
         current_user = local("users")
         user = user_exists(current_user)
         self.assertTrue(user)
-
-    def test_database_creation_and_existence(self):
-        test_db = create_database(owner='postgres',name='mrm_db_test')
-        db = database_exists("mrm_db_test")
-        self.assertTrue(db)
-        local('dropdb mrm_db_test')
     
     def test_check_dir(self):
         count = check_dir()
