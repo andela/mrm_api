@@ -112,4 +112,4 @@ ENV/
 # pytests
 #.pytest_cache/
 html_coverage_report/
-
+*.DS_store
