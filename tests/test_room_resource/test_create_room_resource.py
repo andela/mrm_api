@@ -19,22 +19,22 @@ class TestCreateRoomResource(BaseTestCase):
         execute_query = self.client.execute(
             resource_mutation_query,
             context_value={'session': db_session})
-        
+
         expected_responese = resource_mutation_response
         self.assertEqual(execute_query, expected_responese)
-    
+
     def test_room_resource_creation_name_error(self):
         execute_query = self.client.execute(
             resource_mutation_empty_name_string_query,
             context_value={'session': db_session})
-        
+
         expected_responese = error_empty_name_string
         self.assertEqual(execute_query, expected_responese)
-    
+
     def test_room_resource_creation_room_id_error(self):
         execute_query = self.client.execute(
             resource_mutation_0_value_room_id_query,
             context_value={'session': db_session})
-        
+
         expected_responese = error_0_value_room_id
         self.assertEqual(execute_query, expected_responese)
