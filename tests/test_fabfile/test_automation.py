@@ -1,10 +1,9 @@
 import os
-from tests.base import BaseTestCase
-from fabric.api import *
+from fabric.api import local
 from fabfile import (user_exists, check_dir,
-                     database_exists, create_database,
-                     set_up, run_migrations,run_app)
+                     set_up, run_migrations)
 from tests.base import BaseTestCase
+sys.path.append(os.getcwd())
 
 
 class AutomationTestCase(BaseTestCase):
@@ -26,15 +25,3 @@ class AutomationTestCase(BaseTestCase):
     def test_migration(self):
         self.assertTrue(run_migrations())
     
-    # def test_database_creation_and_existence(self):
-    #     current_user = local('users',capture=True)
-    #     test_db = create_database(owner=current_user,name='mrm_db_test')
-    #     db = database_exists("mrm_db_test")
-    #     self.assertTrue(db)
-    #     local('dropdb mrm_db_test')
-
-
-
-    
-    
-
