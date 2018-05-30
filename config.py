@@ -1,6 +1,7 @@
 import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 
+
 class Config:
     SECRET_KEY = os.getenv('SECRET_KEY') or 'hard to guess string'
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
@@ -13,17 +14,18 @@ class Config:
 class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.getenv('DEV_DATABASE_URL') or \
-    'sqlite:///' + os.path.join(basedir, 'dev-db.sqlite')
+        'sqlite:///' + os.path.join(basedir, 'dev-db.sqlite')
+
 
 class TestingConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = os.getenv('TEST_DATABASE_URL') or \
-    'sqlite:///' + os.path.join(basedir, 'test-db.sqlite')
+        'sqlite:///' + os.path.join(basedir, 'test-db.sqlite')
 
 
 class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL') or \
-    'sqlite:///' + os.path.join(basedir, 'data.sqlite')
+        'sqlite:///' + os.path.join(basedir, 'data.sqlite')
 
 
 config = {

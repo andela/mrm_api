@@ -2,7 +2,7 @@
 null = None
 
 query_update_all_fields = '''mutation{
-                updateRoom(roomId:1,name:"Jinja",capacity:8,roomType:"board room"){
+                updateRoom(roomId:1,name:"Jinja",capacity:8,roomType:"board room"){ # noqa: E501
                     room{
                         name
                         capacity
@@ -13,14 +13,13 @@ query_update_all_fields = '''mutation{
                 '''
 
 expected_query_update_all_fields = {
-                
                 "data": {
                     "updateRoom": {
-                    "room": {
-                        "name": "Jinja",
-                        "capacity": 8,
-                        "roomType": "board room"
-                    }
+                        "room": {
+                            "name": "Jinja",
+                            "capacity": 8,
+                            "roomType": "board room"
+                        }
                     }
                 }
                 }
@@ -39,11 +38,11 @@ query_update_only_required_field = '''mutation{
 expected_query_update_only_required_field = {
             "data": {
                 "updateRoom": {
-                "room": {
-                    "name": "Jinja",
-                    "capacity": 6,
-                    "roomType": "meeting"
-                }
+                    "room": {
+                        "name": "Jinja",
+                        "capacity": 6,
+                        "roomType": "meeting"
+                    }
                 }
             }
             }
@@ -62,13 +61,13 @@ query_without_room_id = '''mutation{
 expected_query_without_room_id = {
              "errors": [
                     {
-                    "message": "mutate() missing 1 required positional argument: 'room_id'",
-                    "locations": [
-                        {
-                        "line": 2,
-                        "column": 13
-                        }
-                    ]
+                        "message": "mutate() missing 1 required positional argument: 'room_id'",  # noqa: E501
+                        "locations": [
+                            {
+                                "line": 2,
+                                "column": 13
+                            }
+                        ]
                     }
                 ],
                 "data": {
@@ -78,7 +77,7 @@ expected_query_without_room_id = {
 
 
 query_if_room_id_is_non_existant_room = '''mutation{
-                updateRoom(roomId:4,name:"Jinja",capacity:8,roomType:"board room"){
+                updateRoom(roomId:4,name:"Jinja",capacity:8,roomType:"board room"){ # noqa: E501
                     room{
                     name
                     capacity
@@ -91,13 +90,13 @@ query_if_room_id_is_non_existant_room = '''mutation{
 expected_query_if_room_id_is_non_existant_room = {
                 "errors": [
                     {
-                    "message": "'NoneType' object has no attribute 'room_type'",
-                    "locations": [
-                        {
-                        "line": 2,
-                        "column": 17
-                        }
-                    ]
+                        "message": "'NoneType' object has no attribute 'room_type'",  # noqa: E501
+                        "locations": [
+                            {
+                                "line": 2,
+                                "column": 17
+                            }
+                        ]
                     }
                 ],
                 "data": {
@@ -118,21 +117,18 @@ update_with_empty_field = '''mutation{
 '''
 
 expected_response_update_with_empty_field = {
-    "errors": [
+    "errors":  [
                     {
-                    "message": "name is required field",
-                    "locations": [
-                        {
-                        "line": 2,
-                        "column": 17
-                        }
-                    ]
+                        "message": "name is required field",
+                        "locations": [
+                            {
+                                "line": 2,
+                                "column": 17
+                            }
+                        ]
                     }
                 ],
-                "data": {
-                    "updateRoom": null
-                }
-
-
+    "data": {
+        "updateRoom": null
+    }
 }
-

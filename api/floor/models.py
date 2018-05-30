@@ -1,11 +1,10 @@
 from sqlalchemy import (
-    Column, String, Integer, ForeignKey, func, 
-    DateTime, create_engine)
+    Column, String, Integer, ForeignKey)
 from sqlalchemy.orm import relationship
 
 from helpers.database import Base
 from utilities.utility import Utility
-from api.block.models import Block
+from api.block.models import Block  # noqa: F401
 
 
 class Floor(Base, Utility):

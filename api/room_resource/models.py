@@ -1,11 +1,8 @@
 from sqlalchemy import (
-    Column, String, Integer, ForeignKey, func, 
-    DateTime, create_engine)
-from sqlalchemy.orm import relationship
-
+    Column, String, Integer, ForeignKey)
 from helpers.database import Base
 from utilities.utility import Utility
-from api.room.models import Room
+from api.room.models import Room  # noqa: F401
 
 
 class Resource(Base, Utility):

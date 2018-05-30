@@ -15,23 +15,23 @@ query_get_rooms_in_location = '''{
                                                 }
                                     }
                                     }
-                                }                             
+                                }
                                         '''
 
-expected_query_get_rooms_in_location ={
+expected_query_get_rooms_in_location = {
                                         "data": {
                                             "getRoomsInALocation": [
-                                            {
-                                                "name": "Uganda",
-                                                "abbreviation": "KLA",
-                                                "block": [{
+                                                {
+                                                    "name": "Uganda",
+                                                    "abbreviation": "KLA",
+                                                    "block": [{
                                                         "name": "EC",
                                                         "floor": [{
                                                                 "name": "3rd",
                                                                 "room": [{
-                                                                    "capacity":6,
-                                                                    "name":"Entebbe",
-                                                                    "roomType":"meeting",
+                                                                    "capacity": 6,  # noqa: E501
+                                                                    "name": "Entebbe",  # noqa: E501
+                                                                    "roomType": "meeting",  # noqa: E501
                                                                 }]
                                                         }]
                                                 }]
