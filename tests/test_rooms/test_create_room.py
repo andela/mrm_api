@@ -1,4 +1,3 @@
-from graphene.test import Client
 from tests.base import BaseTestCase
 from fixtures.room.room_fixtures import (
     room_mutation_query, room_mutation_response
