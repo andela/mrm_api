@@ -1,6 +1,6 @@
 
 # Byte-compiled / optimized / DLL files
-__pycache__/
+#__pycache__/
 *.py[cod]
 *$py.class
 
@@ -110,7 +110,6 @@ ENV/
 # alembic.ini
 
 # pytests
-.pytest_cache/
-/__pycache__/
+#.pytest_cache/
 html_coverage_report/
 
