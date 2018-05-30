@@ -2,7 +2,7 @@ null = None
 
 room_mutation_query = '''
     mutation {
-        createRoom(name: "Mbarara", roomType: "Meeting", capacity: 4, floorId: 1) {
+        createRoom(name: "Mbarara", roomType: "Meeting", capacity: 4, floorId: 1) { # noqa: E501
             room {
                 name
                 roomType
@@ -59,11 +59,11 @@ room_query_by_id = '''
 room_query_by_id_response = {
                     "data": {
                         "getRoomById": [
-                        {
-                            "capacity": 6,
-                            "name": "Entebbe",
-                            "roomType": "meeting"
-                        }
+                            {
+                                "capacity": 6,
+                                "name": "Entebbe",
+                                "roomType": "meeting"
+                            }
                         ]
                     }
                     }

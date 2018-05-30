@@ -1,11 +1,10 @@
 from sqlalchemy import (
-    Column, String, Integer, ForeignKey, func, 
-    DateTime, create_engine, CheckConstraint)
+    Column, String, Integer, ForeignKey)
 from sqlalchemy.orm import relationship
 
 from helpers.database import Base
 from utilities.utility import Utility, validate_empty_fields
-from api.floor.models import Floor
+from api.floor.models import Floor  # noqa: F401
 
 
 class Room(Base, Utility):
@@ -20,7 +19,7 @@ class Room(Base, Utility):
     def __init__(self, **kwargs):
         # validating empty fields
         validate_empty_fields(**kwargs)
-        
+
         self.name = kwargs['name']
         self.room_type = kwargs['room_type']
         self.capacity = kwargs['capacity']

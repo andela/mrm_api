@@ -1,4 +1,3 @@
-
 all_locations_query = '''
                                     {
                             allLocations{
@@ -21,24 +20,24 @@ all_locations_query = '''
 
 
 expected_query_all_locations = {
-                                "data": {
-                                    "allLocations": [{
-                                            "name": "Uganda",
-                                            "abbreviation": "KLA",
-                                            "block": [{
-                                                    "name": "EC",
-                                                    "floor": [{
-                                                            "name": "3rd",
-                                                            "room": [{
-                                                                "capacity": 6,
-                                                                "name": "Entebbe",
-                                                                "roomType": "meeting"
-                                                                    }]
-                                                             }]
-                                                     }]
-                                 }]
-                                }
-                            }
+    "data": {
+        "allLocations": [{
+            "name": "Uganda",
+            "abbreviation": "KLA",
+            "block": [{
+                "name": "EC",
+                "floor": [{
+                    "name": "3rd",
+                    "room": [{
+                        "capacity": 6,
+                        "name": "Entebbe",  # noqa: E501
+                        "roomType": "meeting"  # noqa: E501
+                    }]
+                }]
+            }]
+        }]
+    }
+}
 
 pass_an_arg_all_locations = '''
                     {
@@ -66,13 +65,13 @@ pass_an_arg_all_locations = '''
 expected_response_pass_an_arg = {
                     "errors": [
                         {
-                        "message": "Unknown argument \"locationId\" on field \"allLocations\" of type \"Query\".",
-                        "locations": [
-                            {
-                            "line": 3,
-                            "column": 34
-                            }
-                        ]
+                            "message": "Unknown argument \"locationId\" on field \"allLocations\" of type \"Query\".",  # noqa: E501
+                            "locations": [
+                                {
+                                    "line": 3,
+                                    "column": 34
+                                }
+                            ]
                         }
                     ]
                     }
@@ -90,13 +89,13 @@ all_location_no_hierachy = '''{
 expected_all_location_no_hierachy = {
                         "errors": [
                             {
-                            "message": "Cannot query field \"room\" on type \"Location\".",
-                            "locations": [
-                                {
-                                "line": 3,
-                                "column": 29
-                                }
-                            ]
+                                "message": "Cannot query field \"room\" on type \"Location\".",  # noqa: E501
+                                "locations": [
+                                    {
+                                        "line": 3,
+                                        "column": 29
+                                    }
+                                ]
                             }
                         ]
                         }
