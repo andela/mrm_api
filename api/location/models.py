@@ -1,6 +1,5 @@
 from sqlalchemy import (
-    Column, String, Integer, ForeignKey, func, 
-    DateTime, create_engine)
+    Column, String, Integer)
 from sqlalchemy.orm import relationship
 
 from helpers.database import Base
