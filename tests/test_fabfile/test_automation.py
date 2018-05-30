@@ -24,5 +24,3 @@ class AutomationTestCase(BaseTestCase):
 
     def test_migration(self):
         self.assertTrue(run_migrations())
-
-
