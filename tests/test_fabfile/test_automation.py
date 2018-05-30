@@ -1,7 +1,8 @@
 import os
 from fabric.api import local
 from fabfile import (user_exists, check_dir,
-                     set_up, run_migrations)
+                     set_up, run_migrations,
+                     create_database, database_exists)
 from tests.base import BaseTestCase
 sys.path.append(os.getcwd())
 
