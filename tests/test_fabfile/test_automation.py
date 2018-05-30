@@ -25,11 +25,5 @@ class AutomationTestCase(BaseTestCase):
 
     def test_migration(self):
         self.assertTrue(run_migrations())
-    
-    def test_database_creation_and_existence(self):
-        current_user = local('whoami',capture=True)
-        test_db = create_database(owner=current_user,name='mrm_db_test')
-        db = database_exists("mrm_db_test")
-        self.assertTrue(db)
-        local('dropdb mrm_db_test')
+
 
