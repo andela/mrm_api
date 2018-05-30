@@ -110,6 +110,6 @@ ENV/
 # alembic.ini
 
 # pytests
-#.pytest_cache/
+.pytest_cache/
 html_coverage_report/
 *.DS_store
