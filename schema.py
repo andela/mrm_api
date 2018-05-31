@@ -3,6 +3,7 @@ import api.location.schema
 import api.block.schema
 import api.floor.schema
 import api.room.schema
+import api.room_resource.schema
 
 
 class Query(
@@ -15,7 +16,8 @@ class Query(
 
 
 class Mutation(
-    api.room.schema.Mutation
+    api.room.schema.Mutation,
+    api.room_resource.schema.Mutation
 ):
     pass
 
