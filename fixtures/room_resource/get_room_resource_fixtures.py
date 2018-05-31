@@ -14,18 +14,18 @@ resource_query_response = {
     }
   }
 
-get_room_resource_by_room_id = '''
+get_room_resources_by_room_id = '''
 {
-    getResourceByRoomId(roomId: 1){
+    getResourcesByRoomId(roomId: 1){
         roomId
         name
     }
 }
 '''
 
-get_room_resource_by_room_id_response = {
+get_room_resources_by_room_id_response = {
   "data": {
-    "getResourceByRoomId": [
+    "getResourcesByRoomId": [
       {
         "roomId": 1,
         "name": "Markers"
@@ -34,16 +34,16 @@ get_room_resource_by_room_id_response = {
   }
 }
 
-get_room_resource_by_room_id_error = '''
+get_room_resources_by_room_id_error = '''
 {
-    getResourceByRoomId(roomId: 100){
+    getResourcesByRoomId(roomId: 100){
         roomId
         name
     }
 }
 '''
 
-get_room_resource_by_room_id_error_response = {
+get_room_resources_by_room_id_error_response = {
   "errors": [
     {
       "message": "Room has no resource yet",
@@ -56,6 +56,6 @@ get_room_resource_by_room_id_error_response = {
     }
   ],
   "data": {
-    "getResourceByRoomId": None
+    "getResourcesByRoomId": None
   }
 }
