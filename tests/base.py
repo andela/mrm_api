@@ -11,8 +11,9 @@ from api.room.models import Room
 
 import sys
 import os
-sys.path.append(os.getcwd())
+
 from api.user.models import User
+sys.path.append(os.getcwd())
 
 
 class BaseTestCase(TestCase):
@@ -44,7 +45,7 @@ class BaseTestCase(TestCase):
             user = User(email='admin@mrm.com', name="Namuli")
             user.save()
             db_session().commit()
-    
+
     def tearDown(self):
         app = self.create_app()
         with app.app_context():
