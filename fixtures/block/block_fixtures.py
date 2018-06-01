@@ -1,3 +1,23 @@
+get_all_blocks_query = '''{
+    allBlocks {
+        id
+        name
+        locationId
+    }
+}
+'''
+
+get_blocks_query_response = {
+    "data": {
+        "allBlocks": [
+            {
+                "id": "1",
+                "name": "EC",
+                "locationId": 1
+            }
+        ]
+    }
+}
 
 rooms_in_block_query = '''
     {

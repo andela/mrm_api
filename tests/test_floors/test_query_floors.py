@@ -1,19 +1,15 @@
 from tests.base import BaseTestCase
-from api.floor.models import Floor
+
+from fixtures.floor.get_floors_fixures import (
+    get_all_floors_query, get_floors_query_response
+)
+
+import sys
+import os
+sys.path.append(os.getcwd())
 
 
-class TestFloorModel(BaseTestCase):
-    def test_if_data_can_be_saved(self):
-        """
-        Test that data can be saved in the Block Model by
-        counting number of objects
-        """
-        object_count = Floor.query.count()
-
-        floor = Floor(name='2nd', block_id=1)
-        floor.save()
-
-        new_count = Floor.query.count()
-
-        self.assertNotEquals(object_count, new_count)
-        assert object_count < new_count
+class TestQueryFloors(BaseTestCase):
+    def test_query_all_floors(self):
+        all_floors = self.client.execute(get_all_floors_query)
+        self.assertEquals(all_floors, get_floors_query_response)
