@@ -21,3 +21,5 @@ Flask-Testing==0.7.1
 typing==3.6.4
 flake8==3.5.0
 coveralls
+jwt==0.5.3
+PyJWT==1.6.1
