@@ -3,7 +3,8 @@ import os
 
 
 from tests.base import BaseTestCase
-from fixtures.room_resource.delete_room_resource import (delete_resource, expected_query_after_delete)   # noqa: E501
+from fixtures.room_resource.delete_room_resource import (delete_resource, 
+                                                         expected_query_after_delete)
 from helpers.database import db_session
 
 sys.path.append(os.getcwd())
