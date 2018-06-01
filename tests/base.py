@@ -41,7 +41,7 @@ class BaseTestCase(TestCase):
                         capacity=6,
                         floor_id=floor.id)
             room.save()
-            resource = Resource(name='chair',
+            resource = Resource(name='Markers',
                                 room_id=room.id)
             resource.save()
             db_session.commit()

@@ -45,10 +45,6 @@ class DeleteResource(graphene.Mutation):
 
 class Query(graphene.ObjectType):
     resources = graphene.List(Resource)
-
-
-class Query(graphene.ObjectType):
-    resources = graphene.List(Resource)
     get_resources_by_room_id = graphene.List(lambda: Resource,
                                              room_id=graphene.Int())
 
