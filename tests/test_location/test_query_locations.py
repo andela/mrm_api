@@ -1,5 +1,3 @@
-from os.path import dirname, abspath
-
 from tests.base import BaseTestCase
 
 from fixtures.location.all_locations_fixtures import (
@@ -23,8 +21,6 @@ from fixtures.location.nonexistant_location_id_fixtures import (
 import sys
 import os
 sys.path.append(os.getcwd())
-mrm_api = dirname(dirname(abspath(__file__)))
-sys.path.insert(0, mrm_api)
 
 
 class QueryLocation(BaseTestCase):
