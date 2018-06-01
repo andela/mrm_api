@@ -1,8 +1,5 @@
 from sqlalchemy import (
-    Column, String, Integer, ForeignKey, func, 
-    DateTime, create_engine)
-from sqlalchemy.orm import relationship
-
+    Column, String, Integer)
 from helpers.database import Base
 from utilities.utility import Utility
 

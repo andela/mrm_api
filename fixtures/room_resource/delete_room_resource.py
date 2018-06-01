@@ -1,28 +1,25 @@
 
 null = None
-delete_resource ='''
+delete_resource = '''
 mutation {
-  deleteResource(name: "chair", roomId: 1, resourceId: 1) {
+  deleteResource(roomId: 1, resourceId: 1, name: "chair") {
     resource {
-      name
       roomId
       id
-     
+      name
     }
   }
 }
 '''
 
-expected_query_after_delete ={
-  "data": {
-    "deleteResource": {
-      "resource": {
-        "roomId": 1,
-        "id": "UmVzb3VyY2U6MQ==",
-        "name": "chair",
-      }
+expected_query_after_delete = {
+    "data": {
+        "deleteResource": {
+            "resource": {
+                "roomId": 1,
+                "id": "1",
+                "name": "chair"
+            }
+        }
     }
-  }
 }
-
-

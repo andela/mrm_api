@@ -4,7 +4,6 @@ from sqlalchemy.orm import relationship
 
 from helpers.database import Base
 from utilities.utility import Utility, validate_empty_fields
-from api.floor.models import Floor  # noqa: F401
 
 
 class Room(Base, Utility):
@@ -24,4 +23,3 @@ class Room(Base, Utility):
         self.room_type = kwargs['room_type']
         self.capacity = kwargs['capacity']
         self.floor_id = kwargs['floor_id']
-    

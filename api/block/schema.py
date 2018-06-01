@@ -9,7 +9,7 @@ class Block(SQLAlchemyObjectType):
 
 
 class Query(graphene.ObjectType):
-    floor = graphene.List(Block)
+    blocks = graphene.List(Block)
     get_rooms_in_a_block = graphene.List(
         lambda: Block,
         block_id=graphene.Int()

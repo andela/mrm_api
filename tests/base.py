@@ -8,13 +8,14 @@ from api.location.models import Location
 from api.block.models import Block
 from api.floor.models import Floor
 from api.room.models import Room
+from api.room_resource.models import Resource
 
 import sys
 import os
+
+
 sys.path.append(os.getcwd())
 
-from api.room_resource.models import Resource
-from api.room.models import Room
 
 class BaseTestCase(TestCase):
 
@@ -40,6 +41,9 @@ class BaseTestCase(TestCase):
                         capacity=6,
                         floor_id=floor.id)
             room.save()
+            resource = Resource(name='chair',
+                                room_id=room.id)
+            resource.save()
             db_session.commit()
 
     def tearDown(self):

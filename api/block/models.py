@@ -3,7 +3,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import relationship
 from helpers.database import Base
 from utilities.utility import Utility
-from api.location.models import Location  # noqa: F401
+from api.floor.models import Floor  # noqa: F401
 
 
 class Block(Base, Utility):
