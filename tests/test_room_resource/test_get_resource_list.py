@@ -5,10 +5,7 @@ from fixtures.room_resource.get_room_resource_fixtures import (
     get_room_resources_by_room_id_error_response
 )
 from helpers.database import db_session
-from fixtures.room_resource.get_room_resource_fixtures import (resource_query,  # noqa E501
-                                                               resource_query_response,  # noqa E501
-                                                               get_room_resources_by_room_id,  # noqa E501
-                                                               get_room_resources_by_room_id_response)  # noqa E501
+
 
 import sys
 import os
