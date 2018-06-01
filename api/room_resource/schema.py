@@ -29,12 +29,10 @@ class CreateResource(graphene.Mutation):
 class DeleteResource(graphene.Mutation):
 
     class Arguments:
-        name = graphene.String(required=True)
         resource_id = graphene.Int(required=True)
-        room_id = graphene.Int(required=True)
     resource = graphene.Field(Resource)
 
-    def mutate(self, info, name, resource_id, **kwargs):
+    def mutate(self, info, resource_id, **kwargs):
         query_room_resource = Resource.get_query(info)
         exact_room_resource = query_room_resource.filter(
             ResourceModel.id == resource_id).first()

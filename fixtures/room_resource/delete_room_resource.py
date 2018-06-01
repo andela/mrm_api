@@ -2,7 +2,7 @@
 null = None
 delete_resource = '''
 mutation {
-  deleteResource(roomId: 1, resourceId: 1, name: "Markers") {
+  deleteResource(resourceId: 1) {
     resource {
       roomId
       id
