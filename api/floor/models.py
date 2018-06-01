@@ -4,7 +4,7 @@ from sqlalchemy.orm import relationship
 
 from helpers.database import Base
 from utilities.utility import Utility
-from api.block.models import Block  # noqa: F401
+from api.room.models import Room   # noqa: F401
 
 
 class Floor(Base, Utility):

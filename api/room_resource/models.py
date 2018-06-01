@@ -1,5 +1,6 @@
 from sqlalchemy import (
     Column, String, Integer, ForeignKey)
+
 from helpers.database import Base
 from utilities.utility import Utility, validate_empty_fields
 from api.room.models import Room  # noqa: F401

@@ -9,7 +9,7 @@ class Floor(SQLAlchemyObjectType):
 
 
 class Query(graphene.ObjectType):
-    floor = graphene.List(Floor)
+    floors = graphene.List(Floor)
 
     def resolve_floors(self, info):
         query = Floor.get_query(info)

@@ -30,3 +30,8 @@ class Utility(object):
         """Function for saving new objects"""
         db_session.add(self)
         db_session.commit()
+
+    def delete(self):
+        """Function for deleting objects"""
+        db_session.delete(self)
+        db_session.commit()
