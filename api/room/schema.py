@@ -2,8 +2,6 @@ import graphene
 
 from graphene_sqlalchemy import (SQLAlchemyObjectType)
 from graphql import GraphQLError
-from graphene import Schema
-from graphene_sqlalchemy import (SQLAlchemyObjectType)
 
 from api.room.models import Room as RoomModel
 from utilities.utility import validate_empty_fields, update_entity_fields

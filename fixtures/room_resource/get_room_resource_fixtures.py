@@ -1,6 +1,6 @@
 resource_query = '''
     query {
-        resources{
+        allResources{
                     name
               }
         }
@@ -8,7 +8,7 @@ resource_query = '''
 
 resource_query_response = {
   "data": {
-    "resources": [{
+    "allResources": [{
         "name": "Markers"
       }]
     }

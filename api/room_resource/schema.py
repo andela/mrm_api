@@ -14,7 +14,7 @@ class Resource(SQLAlchemyObjectType):
 
 
 class CreateResource(graphene.Mutation):
-    
+
     class Arguments:
         name = graphene.String(required=True)
         room_id = graphene.Int(required=True)

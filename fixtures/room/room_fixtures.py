@@ -4,7 +4,7 @@ room_mutation_query = '''
     mutation {
         createRoom(
             name: "Mbarara", roomType: "Meeting", capacity: 4, floorId: 1,
-            imageUrl: "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg") {
+            imageUrl: "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg") {  # noqa: E501
             room {
                 name
                 roomType
@@ -24,7 +24,7 @@ room_mutation_response = {
                 "roomType": "Meeting",
                 "capacity": 4,
                 "floorId": 1,
-                "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg"
+                "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg"  # noqa: E501
             }
         }
     }
@@ -33,7 +33,7 @@ room_mutation_response = {
 
 rooms_query = '''
     {
-    rooms{
+    allRooms{
                 name
                 capacity
                 roomType
@@ -43,11 +43,11 @@ rooms_query = '''
     '''
 query_rooms_response = {
     "data": {
-        "rooms": [{
+        "allRooms": [{
                 "name": "Entebbe",
                 "capacity": 6,
                 "roomType": "meeting",
-                "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg"
+                "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg"  # noqa: E501
             }]
     }
 }

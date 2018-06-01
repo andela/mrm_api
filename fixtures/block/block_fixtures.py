@@ -25,11 +25,12 @@ rooms_in_block_query_response = {
                     {
                         "name": "3rd",
                         "rooms": [
-                        {
-                            "name": "Entebbe",
-                            "capacity": 6,
-                            "roomType": "meeting"
-                        }
+                            {
+                                "name": "Entebbe",
+                                "capacity": 6,
+                                "roomType": "meeting"
+                            }
+                        ]
                     }
                 ]
             }
