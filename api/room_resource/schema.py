@@ -3,8 +3,6 @@ import graphene
 from graphene_sqlalchemy import SQLAlchemyObjectType
 from graphql import GraphQLError
 
-from graphql import GraphQLError
-from graphene_sqlalchemy import SQLAlchemyObjectType
 from api.room_resource.models import Resource as ResourceModel
 from utilities.utility import (
     validate_empty_fields,
