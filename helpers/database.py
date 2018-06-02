@@ -2,6 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
 from config import config
+
 import os
 import sys
 sys.path.append(os.getcwd())

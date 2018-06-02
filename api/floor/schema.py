@@ -9,8 +9,17 @@ class Floor(SQLAlchemyObjectType):
 
 
 class Query(graphene.ObjectType):
-    floors = graphene.List(Floor)
+    all_floors = graphene.List(Floor)
+    get_rooms_in_a_floor = graphene.List(
+        lambda: Floor,
+        floor_id=graphene.Int()
+    )
 
-    def resolve_floors(self, info):
+    def resolve_all_floors(self, info):
         query = Floor.get_query(info)
         return query.all()
+
+    def resolve_get_rooms_in_a_floor(self, info, floor_id):
+        query = Floor.get_query(info)
+        result = query.filter(FloorModel.id == floor_id)
+        return result

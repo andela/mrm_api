@@ -9,13 +9,13 @@ class Block(SQLAlchemyObjectType):
 
 
 class Query(graphene.ObjectType):
-    blocks = graphene.List(Block)
+    all_blocks = graphene.List(Block)
     get_rooms_in_a_block = graphene.List(
         lambda: Block,
         block_id=graphene.Int()
     )
 
-    def resolve_blocks(self, info):
+    def resolve_all_blocks(self, info):
         query = Block.get_query(info)
         return query.all()
 

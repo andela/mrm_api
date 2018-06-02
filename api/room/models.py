@@ -12,8 +12,9 @@ class Room(Base, Utility):
     name = Column(String, nullable=False)
     room_type = Column(String, nullable=False)
     capacity = Column(Integer, nullable=False)
+    image_url = Column(String)
     floor_id = Column(Integer, ForeignKey('floors.id'))
-    resource = relationship('Resource')
+    resources = relationship('Resource')
 
     def __init__(self, **kwargs):
         # validating empty fields
@@ -22,4 +23,5 @@ class Room(Base, Utility):
         self.name = kwargs['name']
         self.room_type = kwargs['room_type']
         self.capacity = kwargs['capacity']
+        self.image_url = kwargs['image_url']
         self.floor_id = kwargs['floor_id']
