@@ -3,7 +3,6 @@ import graphene
 from graphene_sqlalchemy import (SQLAlchemyObjectType)
 from graphql import GraphQLError
 from api.room.models import Room as RoomModel
-from api.room_resource.schema import Resource
 from utilities.utility import validate_empty_fields, update_entity_fields
 
 
@@ -50,11 +49,10 @@ class UpdateRoom(graphene.Mutation):
 
 class Query(graphene.ObjectType):
     rooms = graphene.List(Room)
-    resource = graphene.List(Resource)
     get_room_by_id = graphene.List(
         lambda: Room,
         room_id=graphene.Int()
-        )
+    )
 
     def resolve_rooms(self, info):
         query = Room.get_query(info)
