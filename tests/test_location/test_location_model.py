@@ -3,7 +3,6 @@ from api.location.models import Location
 
 
 class TestLocationModel(BaseTestCase):
-
     def test_if_data_is_saved(self):
         """
         Test if on creation of a location, data is actually saved

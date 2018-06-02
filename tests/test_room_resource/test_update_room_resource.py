@@ -1,7 +1,7 @@
 from os.path import dirname, abspath
 
 from tests.base import BaseTestCase
-from fixtures.resource.update_resource_fixtures import (
+from fixtures.room_resource.update_resource_fixtures import (
     update_room_resource_query,
     expected_update_room_resource_query,
     non_existant_resource_id_query,

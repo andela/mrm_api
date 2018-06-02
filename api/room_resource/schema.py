@@ -35,7 +35,6 @@ class UpdateRoomResource(graphene.Mutation):
         name = graphene.String()
         room_id = graphene.Int()
         resource_id = graphene.Int()
-
     resource = graphene.Field(Resource)
 
     def mutate(self, info, resource_id, **kwargs):
