@@ -1,5 +1,3 @@
-from os.path import dirname, abspath
-
 from tests.base import BaseTestCase
 from fixtures.room_resource.update_resource_fixtures import (
     update_room_resource_query,
@@ -13,11 +11,9 @@ from fixtures.room_resource.update_resource_fixtures import (
 import os
 import sys
 sys.path.append(os.getcwd())
-mrm_api = dirname(dirname(abspath(__file__)))
-sys.path.insert(0, mrm_api)
 
 
-class UpdateRoomResorce(BaseTestCase):
+class TestUpdateRoomResorce(BaseTestCase):
 
     def test_update_resource(self):
         """

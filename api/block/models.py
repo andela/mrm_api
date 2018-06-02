@@ -1,9 +1,9 @@
-from sqlalchemy import (
-    Column, String, Integer, ForeignKey)
+from sqlalchemy import (Column, String, Integer, ForeignKey)
 from sqlalchemy.orm import relationship
+
 from helpers.database import Base
 from utilities.utility import Utility
-from api.floor.models import Floor  # noqa: F401
+from api.location.models import Location  # noqa: F401
 
 
 class Block(Base, Utility):
