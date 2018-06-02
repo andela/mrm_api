@@ -44,6 +44,7 @@ query_rooms_response = {
                 "roomType": "meeting"
             }]
     }
+}
 
 room_query_by_id = '''
                 {

@@ -16,12 +16,12 @@ def create_app(config_name):
         view_func=GraphQLView.as_view(
             'mrm',
             schema=schema,
-            graphiql=True # for having the GraphiQL interface
+            graphiql=True   # for having the GraphiQL interface
         )
     )
 
     @app.teardown_appcontext
     def shutdown_session(exception=None):
         db_session.remove()
-    
+
     return app

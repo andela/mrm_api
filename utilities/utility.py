@@ -23,7 +23,7 @@ def update_entity_fields(entity, **kwargs):
         exec("entity.{0} = kwargs['{0}']".format(key))
     return entity
 
-    
+
 class Utility(object):
 
     def save(self):

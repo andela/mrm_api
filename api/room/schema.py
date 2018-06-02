@@ -46,6 +46,7 @@ class UpdateRoom(graphene.Mutation):
         exact_room.save()
         return UpdateRoom(room=exact_room)
 
+
 class Query(graphene.ObjectType):
     rooms = graphene.List(Room)
     get_room_by_id = graphene.List(
@@ -68,3 +69,4 @@ class Query(graphene.ObjectType):
 
 class Mutation(graphene.ObjectType):
     create_room = CreateRoom.Field()
+    update_room = UpdateRoom.Field()

@@ -2,7 +2,6 @@ from tests.base import BaseTestCase
 from api.room_resource.models import Resource
 
 
-
 class TestBlockModel(BaseTestCase):
     def test_if_data_can_be_saved(self):
         """
@@ -11,10 +10,10 @@ class TestBlockModel(BaseTestCase):
         """
         object_count = Resource.query.count()
 
-        resource =Resource(name="TV Screen", room_id=1)
+        resource = Resource(name="TV Screen", room_id=1)
         resource.save()
 
         new_count = Resource.query.count()
 
-        self.assertNotEquals(object_count,new_count)
+        self.assertNotEquals(object_count, new_count)
         assert object_count < new_count

@@ -34,7 +34,6 @@ class TestRoomModel(BaseTestCase):
             )
             room.save()
 
-
     def test_if_data_can_be_saved(self):
         """
         Test that data can be saved in the Room Model by
@@ -47,5 +46,5 @@ class TestRoomModel(BaseTestCase):
 
         new_count = Room.query.count()
 
-        self.assertNotEquals(object_count,new_count)
+        self.assertNotEquals(object_count, new_count)
         assert object_count < new_count
