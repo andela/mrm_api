@@ -1,5 +1,4 @@
 import graphene
-
 import api.location.schema
 import api.block.schema
 import api.floor.schema

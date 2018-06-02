@@ -1,5 +1,4 @@
-from sqlalchemy import (
-    Column, String, Integer, ForeignKey)
+from sqlalchemy import (Column, String, Integer, ForeignKey)
 
 from helpers.database import Base
 from utilities.utility import Utility, validate_empty_fields

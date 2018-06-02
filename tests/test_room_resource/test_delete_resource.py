@@ -10,7 +10,7 @@ from helpers.database import db_session
 sys.path.append(os.getcwd())
 
 
-class DeleteResource(BaseTestCase):
+class TestDeleteRoomResource(BaseTestCase):
 
     def test_deleteresource_mutation(self):
 

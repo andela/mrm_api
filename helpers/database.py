@@ -6,7 +6,6 @@ import os
 import sys
 sys.path.append(os.getcwd())
 
-
 config_name = os.getenv('APP_SETTINGS')
 database_uri = config.get(config_name).SQLALCHEMY_DATABASE_URI
 engine = create_engine(database_uri, convert_unicode=True)

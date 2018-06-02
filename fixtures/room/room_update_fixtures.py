@@ -1,4 +1,3 @@
-
 null = None
 
 query_update_all_fields = '''mutation{
