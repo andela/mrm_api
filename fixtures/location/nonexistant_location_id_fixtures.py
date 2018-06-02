@@ -18,7 +18,7 @@ getRoomsInALocation(locationId:4){
 '''
 
 expected_query_with_nonexistant_id = {
-"data": {
+    "data": {
         "getRoomsInALocation": []
     }
 }

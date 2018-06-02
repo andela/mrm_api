@@ -46,16 +46,16 @@ pass_an_arg_all_locations = '''
             id
             abbreviation
             blocks {
-            name
-            id
+                name
+                id
             floors {
                 name
                 id
                 rooms {
-                id
-                name
-                roomType
-                capacity
+                    id
+                    name
+                    roomType
+                    capacity
                 }
             }
             }
@@ -69,7 +69,7 @@ expected_response_pass_an_arg = {
                 "locations": [
                     {
                         "line": 3,
-                        "column": 34
+                        "column": 22
                     }
                 ]
             }
@@ -89,11 +89,11 @@ all_location_no_hierachy = '''{
 expected_all_location_no_hierachy = {
     "errors": [
             {
-                "message": "Cannot query field \"room\" on type \"Location\".",  # noqa: E501
+                "message": "Cannot query field \"rooms\" on type \"Location\".",  # noqa: E501
                 "locations": [
                     {
                         "line": 3,
-                        "column": 29
+                        "column": 9
                     }
                 ]
             }

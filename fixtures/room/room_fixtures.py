@@ -63,13 +63,34 @@ room_query_by_id = '''
 '''
 
 room_query_by_id_response = {
-"data": {
-        "getRoomById": [
-            {
+    "data": {
+        "getRoomById": [{
                 "capacity": 6,
                 "name": "Entebbe",
                 "roomType": "meeting"
             }
         ]
+    }
+}
+
+room_query_by_nonexistant_id = '''{
+    getRoomById(roomId: 100) {
+        id
+        name
+    }
+}
+'''
+
+room_query_by_nonexistant_id_response = {
+    "errors": [{
+        "message": "Room not found",
+        "locations": [{
+                "line": 2,
+                "column": 5
+            }
+        ]
+    }],
+    "data": {
+        "getRoomById": null
     }
 }

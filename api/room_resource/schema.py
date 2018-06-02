@@ -4,7 +4,7 @@ from graphene_sqlalchemy import SQLAlchemyObjectType
 from graphql import GraphQLError
 
 from api.room_resource.models import Resource as ResourceModel
-from utilities.utility import (validate_empty_fields,update_entity_fields)
+from utilities.utility import validate_empty_fields, update_entity_fields
 
 
 class Resource(SQLAlchemyObjectType):
