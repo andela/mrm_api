@@ -1,10 +1,8 @@
-from sqlalchemy import (
-    Column, String, Integer)
+from sqlalchemy import (Column, String, Integer)
 from sqlalchemy.orm import relationship
 
 from helpers.database import Base
 from utilities.utility import Utility
-from api.block.models import Block   # noqa: F401
 
 
 class Location(Base, Utility):

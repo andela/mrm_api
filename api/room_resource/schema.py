@@ -4,6 +4,10 @@ from graphene_sqlalchemy import SQLAlchemyObjectType
 from graphql import GraphQLError
 
 from api.room_resource.models import Resource as ResourceModel
+from utilities.utility import (
+    validate_empty_fields,
+    update_entity_fields,
+    )
 
 
 class Resource(SQLAlchemyObjectType):
@@ -24,6 +28,26 @@ class CreateResource(graphene.Mutation):
         resource.save()
 
         return CreateResource(resource=resource)
+
+
+class UpdateRoomResource(graphene.Mutation):
+    class Arguments:
+        name = graphene.String()
+        room_id = graphene.Int()
+        resource_id = graphene.Int()
+    resource = graphene.Field(Resource)
+
+    def mutate(self, info, resource_id, **kwargs):
+        validate_empty_fields(**kwargs)
+        query = Resource.get_query(info)
+        exact_resource = query.filter(ResourceModel.id == resource_id).first()
+
+        if not exact_resource:
+            raise GraphQLError("ResourceId not Found")
+
+        update_entity_fields(exact_resource, **kwargs)
+        exact_resource.save()
+        return UpdateRoomResource(resource=exact_resource)
 
 
 class DeleteResource(graphene.Mutation):
@@ -62,4 +86,5 @@ class Query(graphene.ObjectType):
 class Mutation(graphene.ObjectType):
 
     create_resource = CreateResource.Field()
+    update_room_resource = UpdateRoomResource.Field()
     delete_resource = DeleteResource.Field()
