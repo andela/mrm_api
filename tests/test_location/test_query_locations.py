@@ -23,7 +23,7 @@ import os
 sys.path.append(os.getcwd())
 
 
-class QueryLocation(BaseTestCase):
+class TestQueryLocation(BaseTestCase):
     def test_query_all_locations(self):
         # test if all_location executes in a hierachy
         all_locations = self.client.execute(all_locations_query)
