@@ -1,4 +1,5 @@
 import os
+import sys
 from fabric.api import local
 from fabfile import (user_exists, check_dir,
                      set_up, run_migrations)
