@@ -119,16 +119,16 @@ room_schedule_query_with_non_existant_calendar_id = '''
 room_schedule_of_non_existant_calendar_id_response = {
                                         "errors": [
                                             {
-                                            "message": "Invalid CalendarId",
-                                            "locations": [
-                                                {
-                                                "line": 1,
-                                                "column": 2
-                                                }
-                                            ]
-                                            }
-                                        ],
+                                                "message": "Invalid CalendarId",
+                                                "locations": [
+                                                    {
+                                                        "line": 1,
+                                                        "column": 2
+                                                        }
+                                                        ]
+                                                        }
+                                                        ],
                                         "data": {
                                             "roomSchedule": null
                                         }
-                                        } 
+                                        }

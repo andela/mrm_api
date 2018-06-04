@@ -4,8 +4,7 @@ from graphene_sqlalchemy import (SQLAlchemyObjectType)
 from graphql import GraphQLError
 
 from api.room.models import Room as RoomModel
-from api.room_resource.schema import Resource
-from utilities.utility import validate_empty_fields,update_entity_fields
+from utilities.utility import validate_empty_fields, update_entity_fields
 from helpers.calendar.events import RoomSchedules
 
 
@@ -13,9 +12,10 @@ class Room(SQLAlchemyObjectType):
     class Meta:
         model = RoomModel
 
+
 class Calendar(graphene.ObjectType):
         events = graphene.String()
-    
+
 
 class CreateRoom(graphene.Mutation):
     class Arguments:
@@ -62,8 +62,8 @@ class Query(graphene.ObjectType):
     )
     room_schedule = graphene.Field(
         Calendar,
-        calendar_id = graphene.String(),
-        days = graphene.Int(),
+        calendar_id=graphene.String(),
+        days=graphene.Int(),
     )
 
 
@@ -90,15 +90,20 @@ class Query(graphene.ObjectType):
 
     def resolve_room_schedule(self, info, calendar_id, days):
         query = Room.get_query(info)
-        check_calendar_id = query.filter(RoomModel.calendar_id == calendar_id).first()
+        check_calendar_id = query.filter(
+            RoomModel.calendar_id == calendar_id
+            ).first()
         if not check_calendar_id:
             raise GraphQLError("Invalid CalendarId")
-        room_schedule = RoomSchedules.get_room_schedules(self,calendar_id,days)
+        room_schedule = RoomSchedules.get_room_schedules(
+            self,
+            calendar_id,
+            days)
         return Calendar(
-            events = room_schedule
+            events=room_schedule
         )
+
 
 class Mutation(graphene.ObjectType):
     create_room = CreateRoom.Field()
     update_room = UpdateRoom.Field()
-
