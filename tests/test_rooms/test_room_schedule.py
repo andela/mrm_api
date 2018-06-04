@@ -28,8 +28,8 @@ class QueryRoomSchedule(BaseTestCase):
         assert type(query) is dict
         self.assertNotEquals(query, {})
 
-    def test_room_schedule_with_non_existant_calendar_id(self):
-        """This function tests whether an error is raised if the calendarId is
+    def test_room_schdeule_with_non_existant_calendar_id(self):
+        """This function tests whether an error is raised if the calandarId is
             non existant.
         """
         query = self.client.execute(

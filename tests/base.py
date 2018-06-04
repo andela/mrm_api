@@ -47,7 +47,7 @@ class BaseTestCase(TestCase):
                                 room_id=room.id)
             resource.save()
             db_session.commit()
-            
+
     def tearDown(self):
         app = self.create_app()
         with app.app_context():
