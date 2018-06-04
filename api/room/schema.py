@@ -12,6 +12,9 @@ class Room(SQLAlchemyObjectType):
     class Meta:
         model = RoomModel
 
+class Calendar(graphene.ObjectType):
+        events = graphene.String()
+    
 
 class Calendar(graphene.ObjectType):
         events = graphene.String()
