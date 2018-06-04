@@ -66,14 +66,14 @@ room_query_by_id = '''
 room_query_by_id_response = {
                     "data": {
                         "getRoomById": [
-                        {
-                            "capacity": 6,
-                            "name": "Entebbe",
-                            "roomType": "meeting"
-                        }
-                        ]
-                    }
-                    }
+                            {
+                                "capacity": 6,
+                                "name": "Entebbe",
+                                "roomType": "meeting"
+                                }
+                                ]
+                                }
+                                }
 
 room_with_non_existant_id = '''
                 {
@@ -88,19 +88,19 @@ room_with_non_existant_id = '''
 room_query_with_non_existant_id_response = {
                                 "errors": [
                                     {
-                                    "message": "Room not found",
-                                    "locations": [
-                                        {
-                                        "line": 3,
-                                        "column": 17
-                                        }
-                                    ]
-                                    }
-                                ],
+                                        "message": "Room not found",
+                                        "locations": [
+                                            {
+                                                "line": 3,
+                                                "column": 17
+                                                }
+                                                ]
+                                                }
+                                                ],
                                 "data": {
                                     "getRoomById": null
-                                }
-                                }
+                                        }
+                                        }
 
 room_schedule_query = '''
                         {
@@ -125,16 +125,16 @@ room_schedule_query_with_non_existant_calendar_id = '''
 room_schedule_of_non_existant_calendar_id_response = {
                                         "errors": [
                                             {
-                                            "message": "Invalid CalendarId",
-                                            "locations": [
-                                                {
-                                                "line": 1,
-                                                "column": 2
-                                                }
-                                            ]
-                                            }
-                                        ],
+                                                "message": "Invalid CalendarId",
+                                                "locations": [
+                                                    {
+                                                        "line": 1,
+                                                        "column": 2
+                                                        }
+                                                        ]
+                                                        }
+                                                        ],
                                         "data": {
                                             "roomSchedule": null
                                         }
-                                        } 
+                                        }

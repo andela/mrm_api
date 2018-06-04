@@ -63,18 +63,18 @@ pass_an_arg_all_locations = '''
     }'''
 
 expected_response_pass_an_arg = {
-    "errors": [
-            {
-                "message": "Unknown argument \"locationId\" on field \"allLocations\" of type \"Query\".",  # noqa: E501
-                "locations": [
-                    {
-                        "line": 3,
-                        "column": 22
-                    }
-                ]
-            }
-        ]
-    }
+                                    "errors": [
+                                        {
+                                        "message": "Unknown argument \"locationId\" on field \"allLocations\" of type \"Query\".",  # noqa: E501
+                                        "locations": [
+                                            {
+                                                "line": 3,
+                                                "column": 22
+                                                        }
+                                                        ]
+                                                        }
+                                                        ]
+                                                        }
 
 all_location_no_hierachy = '''{
     allLocations{
