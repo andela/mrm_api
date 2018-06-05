@@ -14,7 +14,7 @@ class QueryRoomSchedule(BaseTestCase):
     and the google api integration
     funcs :
             - test_room_schedule
-            - test_room_schdeule_with_non_existant_calendar_id
+            - test_room_schedule_with_non_existant_calendar_id
     """
     def test_room_schedule(self):
         """
@@ -27,8 +27,8 @@ class QueryRoomSchedule(BaseTestCase):
         assert type(query) is dict
         self.assertNotEquals(query, {})
 
-    def test_room_schdeule_with_non_existant_calendar_id(self):
-        """This function tests whether an error is raised if the calandarId is
+    def test_room_schedule_with_non_existant_calendar_id(self):
+        """This function tests whether an error is raised if the calendarId is
             non existant.
         """
         query = self.client.execute(
