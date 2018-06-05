@@ -13,7 +13,7 @@ class Room(Base, Utility):
     room_type = Column(String, nullable=False)
     capacity = Column(Integer, nullable=False)
     image_url = Column(String)
-    calendar_id = Column(String, nullable=False)
+    calendar_id = Column(String)
     floor_id = Column(Integer, ForeignKey('floors.id'))
     resources = relationship('Resource')
 
