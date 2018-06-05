@@ -33,13 +33,28 @@
     ```
 - Running migrations
 
-    - Migrate database to new structure. Run the command below:
+    - Initial migration commands
         ```
-        alembic revision --autogenerate -m "Migration message"
+        $ alembic revision --autogenerate -m "Migration message"
+
+        $ alembic upgrade head
         ```
-    - Upgrade to new structure.Run the command below:
+    - If you have one migration file in the alembic/version folder. Run the commands below:
         ```
-        alembic upgrade head
+        $ alembic stamp head
+
+        $ alembic upgrade head
+        ```
+    - If you have more than 2 migration files in the alembic/versions folder. Rum the commands bellow
+        ```
+        $ alembic stamp head
+
+        $ alembic upgrade head
+
+        $ alembic revision --autogenerate -m "Migration message"
+        
+        $ alembic upgrade head
+        
         ```
 - Run application.
     ```
