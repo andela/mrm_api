@@ -1,8 +1,8 @@
-"""empty message
+"""initial migration
 
-Revision ID: addfefc32d3b
+Revision ID: c231314bba8d
 Revises: 
-Create Date: 2018-05-15 18:32:10.614757
+Create Date: 2018-06-05 15:37:18.075067
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'addfefc32d3b'
+revision = 'c231314bba8d'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -22,6 +22,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(), nullable=False),
     sa.Column('abbreviation', sa.String(), nullable=False),
+    sa.Column('image_url', sa.String(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('blocks',
@@ -43,6 +44,7 @@ def upgrade():
     sa.Column('name', sa.String(), nullable=False),
     sa.Column('room_type', sa.String(), nullable=False),
     sa.Column('capacity', sa.Integer(), nullable=False),
+    sa.Column('image_url', sa.String(), nullable=True),
     sa.Column('floor_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['floor_id'], ['floors.id'], ),
     sa.PrimaryKeyConstraint('id')
