@@ -9,7 +9,7 @@ import os
 sys.path.append(os.getcwd())
 
 
-class TestCalendar(BaseTestCase):
+class TestCredentials(BaseTestCase):
     """ This class tests for the google api credentials
     func :
         - test_response_credentails
