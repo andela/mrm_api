@@ -1,16 +1,7 @@
-import sys
-import os
-from os.path import dirname, abspath
-
-
 from tests.base import BaseTestCase
 from helpers.auth.decode_token import Auth
 from fixtures.helpers.auth_fixtures import (user, token, admin_token,
                                             fake_token, expired_token)
-
-sys.path.append(os.getcwd())
-mrm_api = dirname(dirname(abspath(__file__)))
-sys.path.insert(0, mrm_api)
 
 
 class TestDecodeToken(BaseTestCase):
@@ -19,9 +10,8 @@ class TestDecodeToken(BaseTestCase):
     def test_verify_token(self):
         '''Verify if token exists'''
 
-        expected_responese = b'{\n  "message": "This endpoint requires you to be authenticated."\n}\n'
+        expected_responese = b'{\n  "message": "This endpoint requires you to be authenticated."\n}\n'  # noqa E501
         self.assertEqual(Auth.verify('')[0].data, expected_responese)
-
 
     def test_decode_token(self):
         '''Test Decode token '''
@@ -30,13 +20,13 @@ class TestDecodeToken(BaseTestCase):
 
     def test_decode_token_invalid(self):
         ''' Test Decode invalid token'''
-        expected_responese = b'{\n "message": "Invalid token. Please Provide a valid token!"\n}\n'
+        expected_responese = b'{\n  "message": "Invalid token. Please Provide a valid token!"\n}\n'  # noqa E501
         self.assertEqual(
             Auth.decode_token(fake_token)[0].data, expected_responese)
 
     def test_user_credentials(self):
         ''' if user is has credentials'''
-        response = b'{\n"Name": "Namuli", \n "UserEmail": "admin@mrm.com"\n}\n'
+        response = b'{\n  "Name": "Namuli", \n  "UserEmail": "admin@mrm.com"\n}\n'  # noqa E501
         self.assertEqual(Auth.user_credentials(admin_token).data, response)
 
     def test_decode_expired_token(self):
@@ -44,3 +34,9 @@ class TestDecodeToken(BaseTestCase):
         expected_responese = {'Name': 'Joyce', 'UserEmail': 'admin@mrm.com'}
         self.assertEqual(
             Auth.decode_token(expired_token)['UserInfo'], expected_responese)
+
+    def test_token_in_headers(self):
+        query = self.app_test.get("/mrm", headers={'token': token})
+        print(query.data)
+        expected_response = b'{\n  "Name": "Joyce", \n  "UserEmail": "user@mrm.com"\n}\n'  # noqa E501
+        self.assertEqual(query.data, expected_response)

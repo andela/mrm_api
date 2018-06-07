@@ -8,10 +8,6 @@ from api.location.models import Location
 from api.block.models import Block
 from api.floor.models import Floor
 from api.room.models import Room
-
-import sys
-import os
-sys.path.append(os.getcwd())
 from api.user.models import User
 
 
@@ -26,6 +22,7 @@ class BaseTestCase(TestCase):
 
     def setUp(self):
         app = self.create_app()
+        self.app_test = app.test_client()
         with app.app_context():
             Base.metadata.create_all(bind=engine)
             location = Location(name='Uganda', abbreviation='KLA')
@@ -44,7 +41,7 @@ class BaseTestCase(TestCase):
             user = User(email='admin@mrm.com', name="Namuli")
             user.save()
             db_session().commit()
-    
+
     def tearDown(self):
         app = self.create_app()
         with app.app_context():
