@@ -64,12 +64,11 @@ room_query_by_id = '''
 
 room_query_by_id_response = {
     "data": {
-        "getRoomById": [{
-                "capacity": 6,
-                "name": "Entebbe",
-                "roomType": "meeting"
-            }
-        ]
+        "getRoomById": {
+            "capacity": 6,
+            "name": "Entebbe",
+            "roomType": "meeting"
+        }
     }
 }
 
