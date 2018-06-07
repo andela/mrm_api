@@ -16,7 +16,6 @@ class QueryRoomSchedule(BaseTestCase):
             - test_room_schedule
             - test_room_schedule_with_non_existant_calendar_id
     """
-
     def test_room_schedule(self):
         """
         This function tests the return types of the data received

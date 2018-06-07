@@ -4,8 +4,13 @@ room_mutation_query = '''
     mutation {
         createRoom(
             name: "Mbarara", roomType: "Meeting", capacity: 4, floorId: 1,
+<<<<<<< HEAD
             calendarId:"andela.com_385@resource.calendar.google.com",
             imageUrl: "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg") {  # noqa: E501
+=======
+            imageUrl: "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg",
+            calendarId:"andela.com_385@resource.calendar.google.com") {  # noqa: E501
+>>>>>>> ea4f009842f4b252dc01d1396023d00b7f43107a
             room {
                 name
                 roomType
