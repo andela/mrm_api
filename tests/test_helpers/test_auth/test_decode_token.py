@@ -40,9 +40,9 @@ class TestDecodeToken(BaseTestCase):
         print(query.data)
         expected_response = b'{\n  "Name": "Joyce", \n  "UserEmail": "user@mrm.com"\n}\n'  # noqa E501
         self.assertEqual(query.data, expected_response)
+
     def test_headers_without_token(self):
         query = self.app_test.get("/mrm")
         print(query.data)
         expected_response = b'{\n  "message": "This endpoint requires you to be authenticated."\n}\n'  # noqa E501
         self.assertEqual(query.data, expected_response)
-

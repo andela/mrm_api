@@ -41,7 +41,6 @@ class Authentication():
 
     def user_credentials(self, token):
         value = self.verify(token)
-
         if isinstance(value, dict):
             user_email = value['UserInfo']['email']
             nme = value['UserInfo']['name']
