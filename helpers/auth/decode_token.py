@@ -22,6 +22,11 @@ class Authentication():
         return jsonify(
             {'message': 'This endpoint requires you to be authenticated.'}), 401
 
+
+    def resolve_token(self, info):
+        print(info)
+        # auth_header = info.context.META.get('HTTP_AUTHORIZATION')
+
     def decode_token(self, auth_token):
         """ Decodes the auth token
         :param auth_token:
@@ -29,7 +34,8 @@ class Authentication():
         """
         SECRET_KEY = os.getenv('SECRET_KEY')
         try:
-            payload = jwt.decode(auth_token, SECRET_KEY, verify=False)
+            payload = jwt.decode(auth_token, verify=False)
+            print(payload)
             return payload
         except jwt.ExpiredSignatureError:
             return jsonify(
