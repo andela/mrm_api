@@ -25,12 +25,8 @@ def create_app(config_name):
         )
     )
     app.add_url_rule(
-        '/_healthcheck',
-        view_func=GraphQLView.as_view(
-            '_healthcheck',
-            schema=healthcheck_schema,
-            graphiql=True   # for healthchecks
-        )
+        '/healthcheck'
+        view_func=lambda:health.run()
     )
 
     @app.teardown_appcontext
