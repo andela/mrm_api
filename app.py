@@ -1,10 +1,23 @@
-from flask import Flask
+from flask import Flask, render_template
 from flask_graphql import GraphQLView
 
 
 from config import config
 from helpers.database import db_session
 from schema import schema
+from healthcheck import HealthCheck
+import os
+
+
+health = HealthCheck()
+
+
+def postgres_up():
+    output = os.system("pg_isready")
+    return True, "postgress up ok 200"
+
+
+health = HealthCheck(checkers=[postgres_up])
 
 
 def create_app(config_name):
@@ -20,8 +33,9 @@ def create_app(config_name):
         )
     )
     app.add_url_rule(
-        '/healthcheck'
-        view_func=lambda:health.run()
+        '/healthcheck',
+        view_func=lambda: health.run(),
+        
     )
 
     @app.teardown_appcontext
