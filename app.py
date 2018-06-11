@@ -19,6 +19,10 @@ def create_app(config_name):
             graphiql=True   # for having the GraphiQL interface
         )
     )
+    app.add_url_rule(
+        '/healthcheck'
+        view_func=lambda:health.run()
+    )
 
     @app.teardown_appcontext
     def shutdown_session(exception=None):
