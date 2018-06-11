@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_graphql import GraphQLView
+from helpers.middleware import TokenMiddleware
 
 
 from config import config
@@ -18,7 +19,8 @@ def create_app(config_name):
         view_func = GraphQLView.as_view(
             'mrm',
             schema=schema,
-            graphiql=True
+            graphiql=True,
+            middleware=[TokenMiddleware()]
         )
         
     )
