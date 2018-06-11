@@ -64,8 +64,7 @@ class Query(graphene.ObjectType):
         check_room = query.filter(RoomModel.id == room_id).first()
         if not check_room:
             raise GraphQLError("Room not found")
-        result = query.filter(RoomModel.id == room_id)
-        return result
+        return check_room
 
 
 class Mutation(graphene.ObjectType):
