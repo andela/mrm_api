@@ -72,6 +72,7 @@ room_query_by_id_response = {
     }
 }
 
+
 room_query_by_nonexistant_id = '''{
     getRoomById(roomId: 100) {
         id

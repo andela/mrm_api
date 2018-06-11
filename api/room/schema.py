@@ -50,8 +50,8 @@ class UpdateRoom(graphene.Mutation):
 
 class Query(graphene.ObjectType):
     all_rooms = graphene.List(Room)
-    get_room_by_id = graphene.List(
-        lambda: Room,
+    get_room_by_id = graphene.Field(
+        Room,
         room_id=graphene.Int()
     )
 
