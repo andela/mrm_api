@@ -12,12 +12,10 @@ class Room(SQLAlchemyObjectType):
     class Meta:
         model = RoomModel
 
-
 class Calendar(graphene.ObjectType):
-
-        events = graphene.String()
-        occupants = graphene.String()
-
+    events = graphene.String()
+    occupants = graphene.String()
+        
 
 class CreateRoom(graphene.Mutation):
     class Arguments:
@@ -80,8 +78,8 @@ class DeleteRoom(graphene.Mutation):
 
 class Query(graphene.ObjectType):
     all_rooms = graphene.List(Room)
-    get_room_by_id = graphene.List(
-        lambda: Room,
+    get_room_by_id = graphene.Field(
+        Room,
         room_id=graphene.Int()
     )
     room_schedule = graphene.Field(
@@ -89,6 +87,7 @@ class Query(graphene.ObjectType):
         calendar_id=graphene.String(),
         days=graphene.Int(),
     )
+    
 
     def resolve_all_rooms(self, info):
         query = Room.get_query(info)
@@ -99,8 +98,7 @@ class Query(graphene.ObjectType):
         check_room = query.filter(RoomModel.id == room_id).first()
         if not check_room:
             raise GraphQLError("Room not found")
-        result = query.filter(RoomModel.id == room_id)
-        return result
+        return check_room
     def resolve_room_schedule(self, info, calendar_id, days):
         query = Room.get_query(info)
         check_calendar_id = query.filter(

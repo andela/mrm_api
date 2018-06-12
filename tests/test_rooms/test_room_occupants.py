@@ -6,7 +6,7 @@ from fixtures.room.room_fixtures import (
     room_occupants_query,
     room_occupants_query_with_non_existant_calendar_id,
     room_occupants_of_non_existant_calendar_id_response
-    )
+)
 
 
 class TestRoomOccupants(BaseTestCase):
@@ -16,6 +16,7 @@ class TestRoomOccupants(BaseTestCase):
             - test_room_occupants
             - test_room_occupants_with_non_existant_calendar_id
     """
+
     def test_room_occupants(self):
         """
         This function tests the return types of the data received
@@ -24,7 +25,7 @@ class TestRoomOccupants(BaseTestCase):
          - if data is obtained
         """
         query = self.client.execute(room_occupants_query)
-        assert type(query) is dict
+        assert isinstance(query, dict)
         self.assertNotEquals(query, {})
 
     def test_room_occupants_with_non_existant_calendar_id(self):
@@ -36,4 +37,4 @@ class TestRoomOccupants(BaseTestCase):
         self.assertNotEquals(
             query,
             room_occupants_of_non_existant_calendar_id_response
-            )
+        )
