@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-from flask import Flask
-=======
 from flask import Flask, render_template
->>>>>>> [Feature #158212394] healthcheck url setup
 from flask_graphql import GraphQLView
 from flask_cors import CORS
 
@@ -12,17 +8,26 @@ from helpers.database import db_session
 from schema import schema
 from healthcheck import HealthCheck
 import os
+import json
 
 
 health = HealthCheck()
 
 
 def postgres_up():
-    output = os.system("pg_isready")
-    return True, "postgress up ok 200"
+    output = os.system("pg_isready -q")
+    return True, output
 
 
-health = HealthCheck(checkers=[postgres_up])
+health.add_check(postgres_up)
+
+
+def status():
+    health.add_check(postgres_up)
+    r = health.run()
+    x = json.loads(r[0])
+    i = x['results'][0]['output']
+    return render_template('status.html', output=i)
 
 
 def create_app(config_name):
@@ -42,8 +47,7 @@ def create_app(config_name):
     )
     app.add_url_rule(
         '/healthcheck',
-        view_func=lambda: health.run(),
-        
+        view_func=lambda: status(),
     )
 
     @app.teardown_appcontext
