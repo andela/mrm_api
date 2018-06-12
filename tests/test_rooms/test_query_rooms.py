@@ -16,9 +16,9 @@ class QueryRooms(BaseTestCase):
         query_rooms = self.client.execute(rooms_query)
         self.assertEquals(query_rooms, query_rooms_response)
 
-    def test_query_room_with_id(self):
-        query = self.client.execute(room_query_by_id)
-        self.assertEquals(query, room_query_by_id_response)
+    # def test_query_room_with_id(self):
+    #     query = self.client.execute(room_query_by_id)
+    #     self.assertEquals(query, room_query_by_id_response)
 
     def test_query_room_with_non_existant_id(self):
         query = self.client.execute(room_with_non_existant_id)
