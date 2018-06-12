@@ -3,16 +3,14 @@ from flask import request, jsonify
 
 
 class Authentication:
-    """ Authenicate token and all role based authorization
+    """ Authenicate token
     :methods
-        verify
         decode_token
-        user_roles
-        auth_required
+        get_token
     """
 
     def get_token(self):
-        token = request.headers.get('token')
+        token = request.headers.get('token')  # get token from headers
         return token
 
     def decode_token(self):
@@ -32,7 +30,7 @@ class Authentication:
                 'message': 'Signature expired. Please log in again.'}), 401
         except jwt.InvalidTokenError:
             return jsonify({
-                'message': 'Invalid token. Please Provied a valid token!'
+                'message': 'Invalid token. Please Provide a valid token!'
             }), 401
 
 
