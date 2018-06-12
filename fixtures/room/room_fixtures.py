@@ -114,7 +114,7 @@ room_schedule_query_with_non_existant_calendar_id = '''
 room_schedule_of_non_existant_calendar_id_response = {
                                         "errors": [
                                             {
-                                                "message": "Invalid CalendarId",
+                                                "message": "CalendarId given not assigned to any room on converge",  # noqa: E501
                                                 "locations": [
                                                     {
                                                         "line": 1,

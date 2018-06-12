@@ -113,7 +113,7 @@ class Query(graphene.ObjectType):
             RoomModel.calendar_id == calendar_id
             ).first()
         if not check_calendar_id:
-            raise GraphQLError("Invalid CalendarId")
+            raise GraphQLError("CalendarId given not assigned to any room on converge")  # noqa: E501
         room_schedule = RoomSchedules.get_room_schedules(
             self,
             calendar_id,
