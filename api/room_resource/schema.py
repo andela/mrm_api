@@ -5,6 +5,7 @@ from graphql import GraphQLError
 
 from api.room_resource.models import Resource as ResourceModel
 from utilities.utility import validate_empty_fields, update_entity_fields
+from helpers.auth.authentication import Auth
 
 
 class Resource(SQLAlchemyObjectType):
@@ -53,10 +54,13 @@ class DeleteResource(graphene.Mutation):
         resource_id = graphene.Int(required=True)
     resource = graphene.Field(Resource)
 
+    @Auth.user_roles('Admin')
     def mutate(self, info, resource_id, **kwargs):
         query_room_resource = Resource.get_query(info)
         exact_room_resource = query_room_resource.filter(
             ResourceModel.id == resource_id).first()
+        if not exact_room_resource:
+            raise GraphQLError("Resource not found")
 
         exact_room_resource.delete()
         return DeleteResource(resource=exact_room_resource)
