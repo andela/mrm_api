@@ -64,25 +64,23 @@ room_query_by_id = '''
 '''
 
 room_query_by_id_response = {
-                    "data": {
-                        "getRoomById": [
-                            {
-                                "capacity": 6,
-                                "name": "Entebbe",
-                                "roomType": "meeting"
-                                }
-                                ]
-                                }
-                                }
+               
+    "data": {
+        "getRoomById": {
+            "capacity": 6,
+            "name": "Entebbe",
+            "roomType": "meeting"
+        }
+    }
+}
 
-room_with_non_existant_id = '''
-                {
-                getRoomById(roomId:7){
-                    capacity
-                    name
-                    roomType
-                }
-                }
+
+room_query_by_nonexistant_id = '''{
+    getRoomById(roomId: 100) {
+        id
+        name
+    }
+}
 '''
 
 room_query_with_non_existant_id_response = {
