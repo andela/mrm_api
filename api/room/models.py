@@ -13,6 +13,7 @@ class Room(Base, Utility):
     room_type = Column(String, nullable=False)
     capacity = Column(Integer, nullable=False)
     image_url = Column(String)
+    calendar_id = Column(String)
     floor_id = Column(Integer, ForeignKey('floors.id'))
     resources = relationship('Resource')
 
@@ -24,4 +25,5 @@ class Room(Base, Utility):
         self.room_type = kwargs['room_type']
         self.capacity = kwargs['capacity']
         self.image_url = kwargs['image_url']
+        self.calendar_id = kwargs['calendar_id']
         self.floor_id = kwargs['floor_id']
