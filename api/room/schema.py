@@ -17,10 +17,6 @@ class Calendar(graphene.ObjectType):
         events = graphene.String()
 
 
-class Calendar(graphene.ObjectType):
-        events = graphene.String()
-
-
 class CreateRoom(graphene.Mutation):
     class Arguments:
         name = graphene.String(required=True)
@@ -70,7 +66,6 @@ class Query(graphene.ObjectType):
         days=graphene.Int(),
     )
 
-
     def resolve_all_rooms(self, info):
         query = Room.get_query(info)
         return query.all()
@@ -81,31 +76,6 @@ class Query(graphene.ObjectType):
         if not check_room:
             raise GraphQLError("Room not found")
         return check_room
-
-    def resolve_room_schedule(self, info, calendar_id, days):
-        query = Room.get_query(info)
-        check_calendar_id = query.filter(RoomModel.calendar_id == calendar_id).first()
-        if not check_calendar_id:
-            raise GraphQLError("Invalid CalendarId")
-        room_schedule = RoomSchedules.get_room_schedules(self,calendar_id,days)
-        return Calendar(
-            events = room_schedule
-        )
-
-    def resolve_room_schedule(self, info, calendar_id, days):
-        query = Room.get_query(info)
-        check_calendar_id = query.filter(
-            RoomModel.calendar_id == calendar_id
-            ).first()
-        if not check_calendar_id:
-            raise GraphQLError("Invalid CalendarId")
-        room_schedule = RoomSchedules.get_room_schedules(
-            self,
-            calendar_id,
-            days)
-        return Calendar(
-            events=room_schedule
-        )
 
     def resolve_room_schedule(self, info, calendar_id, days):
         query = Room.get_query(info)
