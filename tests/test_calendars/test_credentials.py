@@ -14,7 +14,7 @@ class TestCredentials(BaseTestCase):
     func :
         - test_response_credentails
     """
-    
+
     def test_response_credentails(self):
         """ This function tests for type of response
         of the response to see if its a googleapi object
