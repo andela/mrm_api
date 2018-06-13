@@ -64,6 +64,7 @@ room_query_by_id = '''
 '''
 
 room_query_by_id_response = {
+               
     "data": {
         "getRoomById": {
             "capacity": 6,
@@ -83,18 +84,21 @@ room_with_non_existant_id = '''{
 '''
 
 room_query_with_non_existant_id_response = {
-    "errors": [{
-        "message": "Room not found",
-        "locations": [{
-                "line": 2,
-                "column": 5
-            }
-        ]
-    }],
-    "data": {
-        "getRoomById": null
-    }
-}
+                                "errors": [
+                                    {
+                                        "message": "Room not found",
+                                        "locations": [
+                                            {
+                                                "line": 3,
+                                                "column": 17
+                                                }
+                                                ]
+                                                }
+                                                ],
+                                "data": {
+                                    "getRoomById": null
+                                        }
+                                        }
 
 room_schedule_query = '''
                         {

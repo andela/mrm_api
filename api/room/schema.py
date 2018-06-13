@@ -59,6 +59,11 @@ class Query(graphene.ObjectType):
     get_room_by_id = graphene.Field(
         Room,
         room_id=graphene.Int()
+        )
+    room_schedule = graphene.Field(
+        Calendar,
+        calendar_id=graphene.String(),
+        days=graphene.Int(),
     )
     room_schedule = graphene.Field(
         Calendar,
