@@ -18,6 +18,9 @@ Flask-GraphQL==1.4.1
 Flask-Script==2.0.6
 Flask-Testing==0.7.1
 funcsigs==1.0.2
+Flask-Cors==3.0.4
+google-api-python-client==1.6.7
+graphene-sqlalchemy==2.0.0
 graphene==2.1
 graphene-sqlalchemy==2.0.0
 graphql-core==2.0

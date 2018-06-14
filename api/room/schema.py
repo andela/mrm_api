@@ -5,11 +5,16 @@ from graphql import GraphQLError
 
 from api.room.models import Room as RoomModel
 from utilities.utility import validate_empty_fields, update_entity_fields
+from helpers.calendar.events import RoomSchedules
 
 
 class Room(SQLAlchemyObjectType):
     class Meta:
         model = RoomModel
+
+
+class Calendar(graphene.ObjectType):
+        events = graphene.String()
 
 
 class CreateRoom(graphene.Mutation):
@@ -19,6 +24,7 @@ class CreateRoom(graphene.Mutation):
         capacity = graphene.Int(required=True)
         image_url = graphene.String()
         floor_id = graphene.Int(required=True)
+        calendar_id = graphene.String(required=True)
     room = graphene.Field(Room)
 
     def mutate(self, info, **kwargs):
@@ -50,9 +56,19 @@ class UpdateRoom(graphene.Mutation):
 
 class Query(graphene.ObjectType):
     all_rooms = graphene.List(Room)
-    get_room_by_id = graphene.List(
-        lambda: Room,
+    get_room_by_id = graphene.Field(
+        Room,
         room_id=graphene.Int()
+        )
+    room_schedule = graphene.Field(
+        Calendar,
+        calendar_id=graphene.String(),
+        days=graphene.Int(),
+    )
+    room_schedule = graphene.Field(
+        Calendar,
+        calendar_id=graphene.String(),
+        days=graphene.Int(),
     )
 
     def resolve_all_rooms(self, info):
@@ -64,8 +80,22 @@ class Query(graphene.ObjectType):
         check_room = query.filter(RoomModel.id == room_id).first()
         if not check_room:
             raise GraphQLError("Room not found")
-        result = query.filter(RoomModel.id == room_id)
-        return result
+        return check_room
+
+    def resolve_room_schedule(self, info, calendar_id, days):
+        query = Room.get_query(info)
+        check_calendar_id = query.filter(
+            RoomModel.calendar_id == calendar_id
+            ).first()
+        if not check_calendar_id:
+            raise GraphQLError("CalendarId given not assigned to any room on converge")  # noqa: E501
+        room_schedule = RoomSchedules.get_room_schedules(
+            self,
+            calendar_id,
+            days)
+        return Calendar(
+            events=room_schedule
+        )
 
 
 class Mutation(graphene.ObjectType):
