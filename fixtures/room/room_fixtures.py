@@ -42,6 +42,28 @@ rooms_query = '''
                 }
     }
     '''
+db_rooms_query = '''
+    {
+    rooms{
+                name
+                capacity
+                roomType
+                imageUrl
+                }
+    }
+    '''
+
+db_rooms_query_response = {
+    "data": {
+        "rooms": [{
+                "name": "Entebbe",
+                "capacity": 6,
+                "roomType": "meeting",
+                "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg"  # noqa: E501
+            }]
+    }
+}
+
 query_rooms_response = {
     "data": {
         "allRooms": [{
