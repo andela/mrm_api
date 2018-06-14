@@ -1,16 +1,15 @@
-from sqlalchemy import (Column, String, Integer, ForeignKey)
-from sqlalchemy.orm import relationship
+from sqlalchemy import (Column, Integer, ForeignKey)
 
 from helpers.database import Base
 from utilities.utility import Utility, validate_empty_fields
 
 
 class UsersRole(Base, Utility):
-    __tablename__ = 'users_role'
+    __tablename__ = 'users_roles'
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'))
     role_id = Column(Integer, ForeignKey('roles.id', ondelete='CASCADE'))
-    
+
     def __init__(self, **kwargs):
 
         validate_empty_fields(**kwargs)

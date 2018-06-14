@@ -6,7 +6,7 @@ from graphql import GraphQLError
 from sqlalchemy.exc import SQLAlchemyError
 
 from api.user.models import User
-from api.roles.models import Role
+from api.role.models import Role
 from api.user_role.models import UsersRole
 from helpers.auth.user_details import get_user_details
 
@@ -41,14 +41,14 @@ class Authentication:
             return jsonify({
                 'message': 'Invalid token. Please Provide a valid token!'
             }), 401
-    
+
     def save_user(self, user_info):
         """
         Save user to database.
-        
-        params: 
+
+        params:
             user_info: dict
-        returns: 
+        returns:
             bloolean
         """
         try:
@@ -66,7 +66,7 @@ class Authentication:
         except SQLAlchemyError:
             pass
         return True
-    
+
     def user_roles(self, *expected_args):
         """ User roles """
         def decorator(func):
@@ -79,15 +79,17 @@ class Authentication:
                     self.save_user(user_info)
                     email = user_data['email']
                     user = User.query.filter_by(email=email).first()
-                    user_role = UsersRole.query.filter_by(user_id=user.id).first()
+                    user_role = UsersRole.query.filter_by(
+                        user_id=user.id).first()
                     role = Role.query.filter_by(id=user_role.role_id).first()
 
                     if role.role in expected_args:
                         return func(*args, **kwargs)
                     else:
-                        raise GraphQLError('You are not authorized to perform this action')
+                        raise GraphQLError(
+                            'You are not authorized to perform this action')
                 else:
-                    raise GraphQLError(payload)
+                    raise GraphQLError(user_data)
             return wrapper
         return decorator
 

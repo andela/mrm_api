@@ -1,5 +1,4 @@
 from sqlalchemy import (Column, String, Integer)
-from sqlalchemy.orm import relationship
 from helpers.database import Base
 from utilities.utility import Utility, validate_empty_fields
 
@@ -12,5 +11,5 @@ class Role(Base, Utility):
     def __init__(self, **kwargs):
 
         validate_empty_fields(**kwargs)
-        
+
         self.role = kwargs['role']
