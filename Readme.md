@@ -58,7 +58,7 @@
         ```
 - Run application.
     ```
-   
+    python manage.py runserver
     ```
 - Running Tests
  - To run tests and observe test coverage for various versions of python . Run the command below.
