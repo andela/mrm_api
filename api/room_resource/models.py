@@ -1,4 +1,5 @@
 from sqlalchemy import (Column, String, Integer, ForeignKey)
+from sqlalchemy.orm import relationship
 
 from helpers.database import Base
 from utilities.utility import Utility, validate_empty_fields
@@ -10,6 +11,7 @@ class Resource(Base, Utility):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     room_id = Column(Integer, ForeignKey('rooms.id'))
+    room = relationship('Room')
 
     def __init__(self, **kwargs):
         validate_empty_fields(**kwargs)

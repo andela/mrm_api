@@ -15,6 +15,7 @@ class Room(Base, Utility):
     image_url = Column(String)
     calendar_id = Column(String)
     floor_id = Column(Integer, ForeignKey('floors.id'))
+    floor = relationship('Floor')
     resources = relationship('Resource')
 
     def __init__(self, **kwargs):
