@@ -5,10 +5,14 @@ from tests.base import BaseTestCase
 from fixtures.room_resource.delete_room_resource import (  # noqa: F401
   delete_resource, expected_query_after_delete)  # noqa: F401
 from helpers.database import db_session  # noqa: F401
+<<<<<<< HEAD
 from fixtures.token.token_fixture import api_token
 from api.user.models import User
 from api.role.models import Role
 from api.user_role.models import UsersRole
+=======
+from fixtures.room_resource.token_fixture import api_token
+>>>>>>> [Bug 158140748] Correct failing test
 
 sys.path.append(os.getcwd())
 
