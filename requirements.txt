@@ -23,7 +23,7 @@ virtualenv==15.2.0
 Flask-Testing==0.7.1
 typing==3.6.4
 flake8==3.5.0
-python-coveralls
+coveralls
 oauth2client==4.1.2
 PyJWT==1.6.1
 jwt==0.5.3
