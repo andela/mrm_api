@@ -4,6 +4,7 @@ room_mutation_query = '''
     mutation {
         createRoom(
             name: "Mbarara", roomType: "Meeting", capacity: 4, floorId: 1,
+            calendarId:"andela.com_3836323338323230343935@resource.calendar.google.com",
             imageUrl: "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg") {  # noqa: E501
             room {
                 name
@@ -73,7 +74,7 @@ room_query_by_id_response = {
 }
 
 
-room_query_by_nonexistant_id = '''{
+room_with_non_existant_id = '''{
     getRoomById(roomId: 100) {
         id
         name
@@ -81,16 +82,56 @@ room_query_by_nonexistant_id = '''{
 }
 '''
 
-room_query_by_nonexistant_id_response = {
-    "errors": [{
-        "message": "Room not found",
-        "locations": [{
-                "line": 2,
-                "column": 5
-            }
-        ]
-    }],
-    "data": {
-        "getRoomById": null
-    }
-}
+room_query_with_non_existant_id_response = {
+                                "errors": [
+                                    {
+                                        "message": "Room not found",
+                                        "locations": [
+                                            {
+                                                "line": 2,
+                                                "column": 5
+                                                }
+                                                ]
+                                                }
+                                                ],
+                                "data": {
+                                    "getRoomById": null
+                                        }
+                                        }
+
+room_schedule_query = '''
+                        {
+                        roomSchedule(
+                            calendarId:"andela.com_3836323338323230343935@resource.calendar.google.com",
+                            days:7){
+                        events
+                        }
+                        }
+                        '''
+
+room_schedule_query_with_non_existant_calendar_id = '''
+                        {
+                        roomSchedule(
+                            calendarId:"andela.com_38363230343935@resource.calendar.google.com",
+                            days:7){
+                        events
+                        }
+                        }
+                        '''
+
+room_schedule_of_non_existant_calendar_id_response = {
+                                        "errors": [
+                                            {
+                                                "message": "CalendarId given not assigned to any room on converge",  # noqa: E501
+                                                "locations": [
+                                                    {
+                                                        "line": 1,
+                                                        "column": 2
+                                                        }
+                                                        ]
+                                                        }
+                                                        ],
+                                        "data": {
+                                            "roomSchedule": null
+                                        }
+                                        }

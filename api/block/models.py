@@ -11,4 +11,5 @@ class Block(Base, Utility):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     location_id = Column(Integer, ForeignKey('locations.id'))
+    location = relationship('Location')
     floors = relationship('Floor')
