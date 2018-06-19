@@ -6,7 +6,6 @@ Flask-Script==2.0.6
 Flask-GraphQL==1.4.1
 google-api-python-client==1.6.7
 graphene-sqlalchemy==2.0.0
-google-api-python-client==1.7.3
 graphene==2.1
 MarkupSafe==1.0
 more-itertools==4.1.0

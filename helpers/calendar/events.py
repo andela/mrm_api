@@ -40,13 +40,13 @@ class RoomSchedules(Credentials):
 
         if not calendar_events:
             return('No upcoming events found.')
-            
+
         for event in calendar_events:
             event_details = {}
             event_details["start"] = event['start'].get('dateTime', event['start'].get('date'))  # noqa: E501
             event_details["summary"] = event.get("summary")
             output.append(event_details)
-         
+
     # Define Attendees here
         for event in calendar_events:
             all_attendees = []
@@ -57,4 +57,4 @@ class RoomSchedules(Credentials):
                 if match:
                     all_attendees.append(attendee.get('email'))
             print(all_attendees)
-        return (all_attendees, output)
+        return [all_attendees, output]

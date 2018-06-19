@@ -111,7 +111,7 @@ class Query(graphene.ObjectType):
             calendar_id,
             days)
         return Calendar(
-            occupants=room_occupants
+            occupants=room_occupants[0]
         )
 
     def resolve_room_schedule(self, info, calendar_id, days):
@@ -126,7 +126,7 @@ class Query(graphene.ObjectType):
             calendar_id,
             days)
         return Calendar(
-            events=room_schedule
+            events=room_schedule[1]
         )
 
 

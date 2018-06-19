@@ -64,16 +64,16 @@ room_query_by_id = '''
 '''
 
 room_query_by_id_response = {
-                    "data": {
-                        "getRoomById": [
+    "data": {
+        "getRoomById": [
                             {
                                 "capacity": 6,
                                 "name": "Entebbe",
                                 "roomType": "meeting"
-                                }
-                                ]
-                                }
-                                }
+                            }
+        ]
+    }
+}
 
 room_with_non_existant_id = '''{
     getRoomById(roomId: 100) {
@@ -84,21 +84,21 @@ room_with_non_existant_id = '''{
 '''
 
 room_query_with_non_existant_id_response = {
-                                "errors": [
-                                    {
-                                        "message": "Room not found",
-                                        "locations": [
-                                            {
-                                                "line": 2,
-                                                "column": 5
-                                                }
-                                                ]
-                                                }
-                                                ],
-                                "data": {
-                                    "getRoomById": null
-                                        }
-                                        }
+    "errors": [
+        {
+            "message": "Room not found",
+            "locations": [
+                {
+                    "line": 2,
+                    "column": 5
+                }
+            ]
+        }
+    ],
+    "data": {
+        "getRoomById": null
+    }
+}
 
 room_occupants_query = '''
                         {
@@ -109,7 +109,25 @@ room_occupants_query = '''
                         }
                         }
                         '''
+room_schedule_query = '''
+                        {
+                        roomSchedule(
+                            calendarId:"andela.com_3836323338323230343935@resource.calendar.google.com",
+                            days:7){
+                        events
+                        }
+                        }
+                        '''
 
+room_schedule_query_with_non_existant_calendar_id = '''
+                        {
+                        roomSchedule(
+                            calendarId:"andela.com_38363230343935@resource.calendar.google.com",
+                            days:7){
+                        events
+                        }
+                        }
+                        '''
 room_occupants_query_with_non_existant_calendar_id = '''
                         {
                         roomSchedule(
@@ -121,18 +139,34 @@ room_occupants_query_with_non_existant_calendar_id = '''
                         '''
 
 room_occupants_of_non_existant_calendar_id_response = {
-                                        "errors": [
-                                            {
-                                                "message": "Invalid CalendarId",
-                                                "locations": [
-                                                    {
-                                                        "line": 1,
-                                                        "column": 2
-                                                        }
-                                                        ]
-                                                        }
-                                                        ],
-                                        "data": {
-                                            "roomSchedule": null
-                                        }
-                                        }
+    "errors": [
+        {
+            "message": "Invalid CalendarId",
+            "locations": [
+                {
+                    "line": 1,
+                    "column": 2
+                }
+            ]
+        }
+    ],
+    "data": {
+        "roomSchedule": null
+    }
+}
+room_schedule_of_non_existant_calendar_id_response = {
+    "errors": [
+        {
+            "message": "Invalid CalendarId",
+            "locations": [
+                {
+                    "line": 1,
+                    "column": 2
+                }
+            ]
+        }
+    ],
+    "data": {
+        "roomSchedule": null
+    }
+}
