@@ -25,3 +25,4 @@ typing==3.6.4
 flake8==3.5.0
 coveralls
 google-auth
+requests==2.18.4
