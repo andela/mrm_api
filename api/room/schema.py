@@ -41,6 +41,7 @@ class UpdateRoom(graphene.Mutation):
         room_type = graphene.String()
         capacity = graphene.Int()
         image_url = graphene.String()
+        calendar_id = graphene.String()
     room = graphene.Field(Room)
 
     def mutate(self, info, room_id, **kwargs):
