@@ -27,4 +27,3 @@ python-coveralls
 oauth2client==4.1.2
 PyJWT==1.6.1
 jwt==0.5.3
-pyOpenSSL == 0.14
