@@ -1,9 +1,10 @@
 resource_mutation_query = '''
     mutation {
-        createResource(name: "Speakers", roomId: 1) {
+        createResource(name: "Speakers", roomId: 1, quantity: 3) {
             resource{
                 name
                 roomId
+                quantity
             }
         }
     }
@@ -14,7 +15,8 @@ resource_mutation_response = {
         "createResource": {
             "resource": {
                 "name": "Speakers",
-                "roomId": 1
+                "roomId": 1,
+                "quantity": 3
             }
         }
     }
@@ -57,6 +59,7 @@ resource_mutation_0_value_room_id_query = '''
                 resource{
                     name
                     roomId
+                    quantity
                     id
                 }
             }
