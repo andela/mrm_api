@@ -2,7 +2,8 @@ null = None
 
 update_room_resource_query = '''
             mutation{
-            updateRoomResource(resourceId:1,name:"TV Screen",roomId:1){
+            updateRoomResource(resourceId:1,name:"TV Screen",roomId:1,
+                                quantity:3){
                 resource{
                 name
                 }

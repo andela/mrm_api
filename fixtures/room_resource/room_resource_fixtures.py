@@ -34,10 +34,22 @@ resource_mutation_empty_name_string_query = '''
     }
 '''
 
-error_empty_name_string = {
+resource_mutation_empty_quantity_query = '''
+    mutation {
+        createResource(name: "Speaker", roomId: 1, quantity: ) {
+            resource{
+                name
+                roomId
+                quantity
+            }
+        }
+    }
+'''
+
+error_empty_quantity_string = {
   "errors": [
     {
-      "message": "name is required field",
+      "message": "quanttiy is required field",
       "locations": [
         {
           "line": 3,
