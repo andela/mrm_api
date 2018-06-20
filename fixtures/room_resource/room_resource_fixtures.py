@@ -28,6 +28,7 @@ resource_mutation_empty_name_string_query = '''
             resource{
                 name
                 roomId
+                quantity
             }
         }
     }
