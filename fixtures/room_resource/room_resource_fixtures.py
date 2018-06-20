@@ -59,7 +59,6 @@ error_empty_name_string = {
     }
   ]
 }
-}
 
 error_quantity_string = {
   "errors": [
