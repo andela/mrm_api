@@ -63,6 +63,23 @@ error_empty_quantity_string = {
   }
 }
 
+error_empty_name_string = {
+  "errors": [
+    {
+      "message": "name is required field",
+      "locations": [
+        {
+          "line": 3,
+          "column": 9
+        }
+      ]
+    }
+  ],
+  "data": {
+    "createResource": None
+  }
+}
+
 resource_mutation_0_value_room_id_query = '''
     mutation {
         createResource(
