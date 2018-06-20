@@ -24,7 +24,7 @@ resource_mutation_response = {
 
 resource_mutation_empty_name_string_query = '''
     mutation {
-        createResource(name: "", roomId: 1) {
+        createResource(name: "", roomId: 1, quantity: 3) {
             resource{
                 name
                 roomId
@@ -56,6 +56,7 @@ resource_mutation_0_value_room_id_query = '''
         createResource(
             name: "Speaker"
             roomId: 0
+            quantity: 3
             ) {
                 resource{
                     name
