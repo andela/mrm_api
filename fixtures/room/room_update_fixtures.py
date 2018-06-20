@@ -19,7 +19,7 @@ expected_query_update_all_fields = {
                 "name": "Jinja",
                 "capacity": 8,
                 "roomType": "board room",
-                "calendarId": "4"
+                "calendarId":"4"
             }
         }
     }
