@@ -4,8 +4,12 @@ from fixtures.room_resource.room_resource_fixtures import (
     resource_mutation_0_value_room_id_query, error_0_value_room_id,
     resource_mutation_empty_name_string_query, error_empty_name_string,
 <<<<<<< HEAD
+<<<<<<< HEAD
     resource_mutation_quantity_string_query, error_quantity_string
 =======
+>>>>>>> [Feature  ##158488492] Fix failing tests
+=======
+    resource_mutation_quantity_string_query, error_quantity_string
 >>>>>>> [Feature  ##158488492] Fix failing tests
 )
 
@@ -43,7 +47,11 @@ class TestCreateRoomResource(BaseTestCase):
         expected_responese = error_0_value_room_id
         self.assertEqual(execute_query, expected_responese)
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> [Feature  ##158488492] Fix failing tests
     def test_room_resource_creation_quantity_error(self):
         execute_query = self.client.execute(
             resource_mutation_quantity_string_query,
@@ -51,5 +59,9 @@ class TestCreateRoomResource(BaseTestCase):
 
         expected_responese = error_quantity_string
         self.assertEqual(execute_query, expected_responese)
+<<<<<<< HEAD
 =======
+>>>>>>> [Feature  ##158488492] Fix failing tests
+=======
+
 >>>>>>> [Feature  ##158488492] Fix failing tests

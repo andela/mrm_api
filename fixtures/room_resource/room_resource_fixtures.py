@@ -80,18 +80,15 @@ error_quantity_string = {
 error_empty_name_string = {
   "errors": [
     {
-      "message": "name is required field",
       "locations": [
         {
-          "line": 3,
-          "column": 9
+          "column": 47,
+          "line": 2
         }
-      ]
+      ],
+      "message": "Argument \"quantity\" has invalid value \"4\".\nExpected type \"Int\", found \"4\"."
     }
-  ],
-  "data": {
-    "createResource": None
-  }
+  ]
 }
 
 resource_mutation_0_value_room_id_query = '''
