@@ -54,6 +54,23 @@ class UpdateRoom(graphene.Mutation):
         return UpdateRoom(room=exact_room)
 
 
+class DeleteRoom(graphene.Mutation):
+
+    class Arguments:
+        room_id = graphene.Int(required=True)
+    room = graphene.Field(Room)
+
+    def mutate(self, info, room_id, **kwargs):
+        query_room = Room.get_query(info)
+        exact_room = query_room.filter(
+            RoomModel.id == room_id).first()
+        if not exact_room:
+            raise GraphQLError("RoomId not found")
+
+        exact_room.delete()
+        return DeleteRoom(room=exact_room)
+
+
 class Query(graphene.ObjectType):
     all_rooms = graphene.List(Room)
     get_room_by_id = graphene.Field(
@@ -101,3 +118,4 @@ class Query(graphene.ObjectType):
 class Mutation(graphene.ObjectType):
     create_room = CreateRoom.Field()
     update_room = UpdateRoom.Field()
+    delete_room = DeleteRoom.Field()
