@@ -99,7 +99,8 @@ class Query(graphene.ObjectType):
         if not check_room:
             raise GraphQLError("Room not found")
         return check_room
-    def resolve_room_schedule(self, info, calendar_id, days):
+
+    def resolve_room_occupants(self, info, calendar_id, days):
         query = Room.get_query(info)
         check_calendar_id = query.filter(
             RoomModel.calendar_id == calendar_id

@@ -25,7 +25,7 @@ class TestRoomOccupants(BaseTestCase):
          - if data is obtained
         """
         query = self.client.execute(room_occupants_query)
-        assert isinstance(query, dict)
+        assert type(query) is dict
         self.assertNotEquals(query, {})
 
     def test_room_occupants_with_non_existant_calendar_id(self):

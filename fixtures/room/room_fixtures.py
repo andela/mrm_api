@@ -65,13 +65,11 @@ room_query_by_id = '''
 
 room_query_by_id_response = {
     "data": {
-        "getRoomById": [
-                            {
-                                "capacity": 6,
-                                "name": "Entebbe",
-                                "roomType": "meeting"
-                            }
-        ]
+        "getRoomById": {
+            "capacity": 6,
+            "name": "Entebbe",
+            "roomType": "meeting"
+        }
     }
 }
 
@@ -102,10 +100,10 @@ room_query_with_non_existant_id_response = {
 
 room_occupants_query = '''
                         {
-                        roomSchedule(
+                        roomOccupants(
                             calendarId:"andela.com_3836323338323230343935@resource.calendar.google.com",
                             days:7){
-                        events
+                        occupants
                         }
                         }
                         '''
@@ -130,10 +128,10 @@ room_schedule_query_with_non_existant_calendar_id = '''
                         '''
 room_occupants_query_with_non_existant_calendar_id = '''
                         {
-                        roomSchedule(
+                        roomOccupants(
                             calendarId:"andela.com_38363230343935@resource.calendar.google.com",
                             days:7){
-                        events
+                        occupants
                         }
                         }
                         '''
