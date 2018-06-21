@@ -46,6 +46,23 @@ resource_mutation_quantity_string_query = '''
     }
 '''
 
+error_empty_name_string = {
+  "errors": [
+    {
+      "message": "name is required field",
+      "locations": [
+        {
+          "line": 3,
+          "column": 9
+        }
+      ]
+    }
+  ],
+  "data": {
+    "createResource": None
+  }
+}
+
 error_quantity_string = {
   "errors": [
     {
