@@ -14,6 +14,7 @@ jobs:
           TEST_DATABASE_URL: postgresql://postgres@localhost/mrm_test_db
       - image: circleci/postgres:9.6.5-alpine-ram
         environment:
+          CC_TEST_REPORTER_ID: ${CC_TEST_REPORTER_ID}
           SECRET_KEY: "********"
           POSTGRES_USER: postgres
           POSTGRES_DB: mrm_test_db
@@ -37,6 +38,12 @@ jobs:
           - v1-dependencies-
 
       - run:
+          name: Setup code climate test-reporter
+          command: |
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
+
+      - run:
           name: install dependencies
           command: |
             python -m venv venv
@@ -47,17 +54,18 @@ jobs:
             - ./venv
           key: v1-dependencies-{{ checksum "requirements.txt" }}
 
-      # run tests!
-      # this example uses Django's built-in test-runner
-      # other common Python testing frameworks include pytest and nose
-      # https://pytest.org
-      # https://nose.readthedocs.io
       - run:
           name: run tests
           command: |
+            ./cc-test-reporter before-build
             . venv/bin/activate
             tox
-            coveralls
+            coverage xml
+      - run:
+          name: upload test coverage to codeclimate
+          command: |
+            ./cc-test-reporter format-coverage -o ./.coverage -t coverage.py
+            ./cc-test-reporter upload-coverage -i .coverage
       - store_artifacts:
           path: test-reports
           destination: test-reports
