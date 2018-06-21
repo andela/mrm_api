@@ -113,7 +113,7 @@ error_quantity_string = {
     }
   ],
   "data": {
-    "createResource": null
+    "createResource": None
   }
 }
 
