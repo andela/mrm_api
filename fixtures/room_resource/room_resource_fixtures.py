@@ -36,7 +36,11 @@ resource_mutation_empty_name_string_query = '''
 
 resource_mutation_quantity_string_query = '''
     mutation {
+<<<<<<< HEAD
         createResource(name: "Speaker", roomId: 1, quantity:"3" ) {
+=======
+        createResource(name: "Makers", roomId: 1, quantity: 0) {
+>>>>>>> [Feature  ##158488492] Fix failing tests
             resource{
                 name
                 roomId
@@ -78,6 +82,7 @@ error_quantity_string = {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 error_empty_name_string = {
   "errors": [
     {
@@ -93,6 +98,25 @@ error_empty_name_string = {
 }
 
 =======
+>>>>>>> [Feature  ##158488492] Fix failing tests
+=======
+error_quantity_string = {
+  "errors": [
+    {
+      "message": "quantity is required field",
+      "locations": [
+        {
+          "column": 2,
+          "line": 2
+        }
+      ]
+    }
+  ],
+  "data": {
+    "createResource": null
+  }
+}
+
 >>>>>>> [Feature  ##158488492] Fix failing tests
 resource_mutation_0_value_room_id_query = '''
     mutation {

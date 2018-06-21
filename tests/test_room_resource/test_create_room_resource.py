@@ -39,7 +39,7 @@ class TestCreateRoomResource(BaseTestCase):
 
         expected_responese = error_0_value_room_id
         self.assertEqual(execute_query, expected_responese)
-
+    
     def test_room_resource_creation_quantity_error(self):
         execute_query = self.client.execute(
             resource_mutation_quantity_string_query,
