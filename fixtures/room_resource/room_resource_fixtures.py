@@ -69,8 +69,8 @@ error_quantity_string = {
       "message": "quantity is required field",
       "locations": [
         {
-          "column": 2,
-          "line": 2
+          "column": 3,
+          "line": 9
         }
       ]
     }
