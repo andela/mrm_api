@@ -52,8 +52,8 @@ error_empty_name_string = {
       "message": "name is required field",
       "locations": [
         {
-          "line": 3,
-          "column": 9
+          "line": 2,
+          "column": 2
         }
       ]
     }
