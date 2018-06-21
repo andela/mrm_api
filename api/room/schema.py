@@ -14,7 +14,7 @@ class Room(SQLAlchemyObjectType):
 
 
 class Calendar(graphene.ObjectType):
-        events = graphene.String()
+    events = graphene.String()
 
 
 class CreateRoom(graphene.Mutation):
@@ -54,12 +54,29 @@ class UpdateRoom(graphene.Mutation):
         return UpdateRoom(room=exact_room)
 
 
+class DeleteRoom(graphene.Mutation):
+
+    class Arguments:
+        room_id = graphene.Int(required=True)
+    room = graphene.Field(Room)
+
+    def mutate(self, info, room_id, **kwargs):
+        query_room = Room.get_query(info)
+        exact_room = query_room.filter(
+            RoomModel.id == room_id).first()
+        if not exact_room:
+            raise GraphQLError("RoomId not found")
+
+        exact_room.delete()
+        return DeleteRoom(room=exact_room)
+
+
 class Query(graphene.ObjectType):
     all_rooms = graphene.List(Room)
     get_room_by_id = graphene.Field(
         Room,
         room_id=graphene.Int()
-        )
+    )
     room_schedule = graphene.Field(
         Calendar,
         calendar_id=graphene.String(),
@@ -86,7 +103,7 @@ class Query(graphene.ObjectType):
         query = Room.get_query(info)
         check_calendar_id = query.filter(
             RoomModel.calendar_id == calendar_id
-            ).first()
+        ).first()
         if not check_calendar_id:
             raise GraphQLError("CalendarId given not assigned to any room on converge")  # noqa: E501
         room_schedule = RoomSchedules.get_room_schedules(
@@ -101,3 +118,4 @@ class Query(graphene.ObjectType):
 class Mutation(graphene.ObjectType):
     create_room = CreateRoom.Field()
     update_room = UpdateRoom.Field()
+    delete_room = DeleteRoom.Field()
