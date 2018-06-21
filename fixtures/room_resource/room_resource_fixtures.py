@@ -34,18 +34,6 @@ resource_mutation_empty_name_string_query = '''
     }
 '''
 
-resource_mutation_quantity_string_query = '''
-    mutation {
-        createResource(name: "Makers", roomId: 1, quantity: "3") {
-            resource{
-                name
-                roomId
-                quantity
-            }
-        }
-    }
-'''
-
 error_empty_name_string = {
   "errors": [
     {
@@ -61,20 +49,6 @@ error_empty_name_string = {
   "data": {
     "createResource": None
   }
-}
-
-error_quantity_string = {
-  "errors": [
-    {
-      "locations": [
-        {
-          "column": 47,
-          "line": 2
-        }
-      ],
-      "message": "Argument \"quantity\" has invalid value \"4\".\nExpected type \"Int\", found \"4\"."
-    }
-  ]
 }
 
 resource_mutation_0_value_room_id_query = '''
