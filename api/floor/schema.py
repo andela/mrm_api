@@ -1,4 +1,5 @@
 import graphene
+
 from graphene_sqlalchemy import SQLAlchemyObjectType
 from api.floor.models import Floor as FloorModel
 
