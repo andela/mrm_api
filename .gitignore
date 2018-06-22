@@ -1,5 +1,5 @@
 # Byte-compiled / optimized / DLL files
-__pycache__/
+#__pycache__/
 *.py[cod]
 *$py.class
 
@@ -24,6 +24,7 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+
 # PyInstaller
 #  Usually these files are written by a python script from a template
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
@@ -47,7 +48,6 @@ nosetests.xml
 coverage.xml
 *.cover
 .hypothesis/
-.pytest_cache/
 
 # Translations
 *.mo
@@ -77,9 +77,6 @@ celerybeat-schedule
 
 # SageMath parsed files
 *.sage.py
-# pyenv
-.python-version
-
 
 # dotenv
 .env
@@ -101,11 +98,19 @@ ENV/
 
 # mypy
 .mypy_cache/
-# vscode
+
+# editor
 .vscode/
-venv/
-__pycache__/
-*.pyc
-.tox
-.pytest_cache
-nrm_tool.ego-info/
+.idea/
+
+# sqlite DB
+*.sqlite
+
+# alembic
+# alembic/
+# alembic.ini
+
+# pytests
+.pytest_cache/
+html_coverage_report/
+*.DS_store
