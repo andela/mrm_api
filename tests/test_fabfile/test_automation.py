@@ -1,8 +1,5 @@
 import os
-<<<<<<< HEAD
-=======
 import sys
->>>>>>> 04289a8db1c17f2a73e7918b3b01f0826ea8ab60
 from fabric.api import local
 from fabfile import (user_exists, check_dir,
                      set_up, run_migrations)
