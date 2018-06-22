@@ -19,10 +19,25 @@ sys.path.append(os.getcwd())
 
 class TestCreateRoomResource(BaseTestCase):
 
-    def test_resource_additiom_mutation_when_not_admin(self):
+    def test_resource_creation_mutation_when_not_admin(self):
 
         api_headers = {'token': api_token}
         response = self.app_test.post('/mrm?query='+resource_mutation_query,
                                       headers=api_headers)
         self.assertIn("You are not authorized to perform this action",
                       str(response.data))
+
+    def test_room_resource_creation_when_admin(self):
+        user = User(email="deo.kamara@andela.com",
+                    location="Nairobi")
+        user.save()
+        role = Role(role="Admin")
+        role.save()
+        user_role = UsersRole(user_id=user.id, role_id=role.id)
+        user_role.save()
+        role = Role(role="Default User")
+        role.save()
+        api_headers = {'token': api_token}
+        response = self.app_test.post('/mrm?query='+esource_mutation_query,
+                                      headers=api_headers)
+        self.assertIn("Speakers", str(response.data))
