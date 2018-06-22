@@ -56,7 +56,7 @@ class TestCreateRoomResource(BaseTestCase):
         api_headers = {'token': api_token}
         response = self.app_test.post('/mrm?query='+resource_mutation_empty_name_string_query,
                                       headers=api_headers)
-        self.assertEqual(response.data, error_empty_name_string)
+        self.assertIn("name is required", str(response.data))
 
 
  
