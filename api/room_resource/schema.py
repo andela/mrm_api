@@ -21,6 +21,7 @@ class CreateResource(graphene.Mutation):
         room_id = graphene.Int(required=True)
     resource = graphene.Field(Resource)
 
+    @Auth.user_roles('Admin')
     def mutate(self, info, **kwargs):
         resource = ResourceModel(**kwargs)
         resource.save()
