@@ -29,7 +29,8 @@ class TestCreateRoomResource(BaseTestCase):
 
     def test_room_resource_creation_when_admin(self):
 
-        email="patrick.walukagga@andela.com",location="Kampala")
+        user = User(email="patrick.walukagga@andela.com",
+                    location="Kampala")
         user.save()
         role = Role(role="Admin")
         role.save()
