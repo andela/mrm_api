@@ -38,6 +38,6 @@ class TestCreateRoomResource(BaseTestCase):
         role = Role(role="Default User")
         role.save()
         api_headers = {'token': api_token}
-        response = self.app_test.post('/mrm?query='+esource_mutation_query,
+        response = self.app_test.post('/mrm?query='+resource_mutation_query,
                                       headers=api_headers)
         self.assertIn("Speakers", str(response.data))
