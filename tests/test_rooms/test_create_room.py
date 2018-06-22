@@ -1,10 +1,8 @@
 from tests.base import BaseTestCase
-from fixtures.room.room_fixtures import (
-    room_mutation_query, room_mutation_response
-)
 from helpers.database import db_session
-from fixtures.helpers.decorators_fixtures import ( 
-    admin_token, query_string, query_string_response
+from fixtures.token.token_fixture import api_token
+from fixtures.helpers.decorators_fixtures import (
+    query_string, query_string_response
     )
 
 from api.user.models import User
@@ -22,13 +20,8 @@ class TestCreateRoom(BaseTestCase):
         """
         Testing for room creation
         """
-        execute_query = self.client.execute(
-            room_mutation_query,
-            context_value={'session': db_session})
 
-        expected_responese = room_mutation_response
-        self.assertEqual(execute_query, expected_responese)
-        user = User(email="admin@mrm.com")
+        user = User(email="patrick.walukagga@andela.com", location="Lagos")
         user.save()
         role = Role(role="Admin")
         role.save()
@@ -36,16 +29,8 @@ class TestCreateRoom(BaseTestCase):
         user_role.save()
         db_session().commit()
 
-        query = self.app_test.post(query_string, headers={'token': admin_token})
-
+        api_headers = {'token': api_token}
+        query = self.app_test.post(query_string, headers=api_headers)
         expected_response = query_string_response
 
         self.assertEqual(query.data, expected_response)
-
-        # execute_query = self.client.execute(
-        #     room_mutation_query,
-        #     # headers={'token': admin_token},
-        #     context_value={'session': db_session})
-        
-        # expected_responese = room_mutation_response
-        # self.assertEqual(execute_query, expected_responese)
