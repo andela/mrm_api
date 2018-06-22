@@ -19,7 +19,7 @@ sys.path.append(os.getcwd())
 
 class TestCreateRoomResource(BaseTestCase):
 
-    def test_resource_additiom_mutation_when_not_admin(self):
+    def test_resource_creation_mutation_when_not_admin(self):
 
         expected_responese = resource_mutation_response
         self.assertEqual(execute_query, expected_responese)
