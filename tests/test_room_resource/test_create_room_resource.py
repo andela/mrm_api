@@ -59,4 +59,6 @@ class TestCreateRoomResource(BaseTestCase):
         self.assertIn("name is required", str(response.data))
 
 
+
+
  
