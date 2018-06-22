@@ -4,6 +4,10 @@ from fixtures.room_resource.room_resource_fixtures import (
     resource_mutation_0_value_room_id_query, error_0_value_room_id,
     resource_mutation_empty_name_string_query, error_empty_name_string
 )
+from fixtures.token.token_fixture import api_token
+from api.user.models import User
+from api.role.models import Role
+from api.user_role.models import UsersRole
 
 from helpers.database import db_session
 # from api.room.models import Room
@@ -15,26 +19,10 @@ sys.path.append(os.getcwd())
 
 class TestCreateRoomResource(BaseTestCase):
 
-    def test_room_resource_creation(self):
-        execute_query = self.client.execute(
-            resource_mutation_query,
-            context_value={'session': db_session})
+    def test_resource_additiom_mutation_when_not_admin(self):
 
-        expected_responese = resource_mutation_response
-        self.assertEqual(execute_query, expected_responese)
-
-    def test_room_resource_creation_name_error(self):
-        execute_query = self.client.execute(
-            resource_mutation_empty_name_string_query,
-            context_value={'session': db_session})
-
-        expected_responese = error_empty_name_string
-        self.assertEqual(execute_query, expected_responese)
-
-    def test_room_resource_creation_room_id_error(self):
-        execute_query = self.client.execute(
-            resource_mutation_0_value_room_id_query,
-            context_value={'session': db_session})
-
-        expected_responese = error_0_value_room_id
-        self.assertEqual(execute_query, expected_responese)
+        api_headers = {'token': api_token}
+        response = self.app_test.post('/mrm?query='+resource_mutation_query,
+                                      headers=api_headers)
+        self.assertIn("You are not authorized to perform this action",
+                      str(response.data))
