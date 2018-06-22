@@ -21,26 +21,23 @@ class TestCreateRoomResource(BaseTestCase):
 
     def test_resource_creation_mutation_when_not_admin(self):
 
-        expected_responese = resource_mutation_response
-        self.assertEqual(execute_query, expected_responese)
+        api_headers = {'token': api_token}
+        response = self.app_test.post('/mrm?query='+resource_mutation_query,
+                                      headers=api_headers)
+        self.assertIn("You are not authorized to perform this action",
+                      str(response.data))
 
-    def test_room_resource_creation_name_error(self):
-        execute_query = resource_mutation_empty_name_string_query
-        response = self.app_test.post('/mrm?query='+execute_query)
-        self.assertIn("name is required field", str(response.data))
-
-    def test_room_resource_creation_room_id_error(self):
-        execute_query = self.client.execute(
-            resource_mutation_0_value_room_id_query,
-            context_value={'session': db_session})
-
-        expected_responese = error_0_value_room_id
-        self.assertEqual(execute_query, expected_responese)
-
-    def test_room_resource_creation_quantity_error(self):
-        execute_query = self.client.execute(
-            resource_mutation_quantity_string_query,
-            context_value={'session': db_session})
-
-        expected_responese = error_quantity_string
-        self.assertEqual(execute_query, expected_responese)
+    def test_room_resource_creation_when_admin(self):
+        user = User(email="deo.kamara@andela.com",
+                    location="Nairobi")
+        user.save()
+        role = Role(role="Admin")
+        role.save()
+        user_role = UsersRole(user_id=user.id, role_id=role.id)
+        user_role.save()
+        role = Role(role="Default User")
+        role.save()
+        api_headers = {'token': api_token}
+        response = self.app_test.post('/mrm?query='+resource_mutation_query,
+                                      headers=api_headers)
+        self.assertIn("Speakers", str(response.data))
