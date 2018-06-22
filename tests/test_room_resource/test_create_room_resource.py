@@ -5,6 +5,10 @@ from fixtures.room_resource.room_resource_fixtures import (
     resource_mutation_empty_name_string_query,
     resource_mutation_quantity_string_query, error_quantity_string
 )
+from fixtures.token.token_fixture import api_token
+from api.user.models import User
+from api.role.models import Role
+from api.user_role.models import UsersRole
 
 from helpers.database import db_session
 
@@ -15,10 +19,7 @@ sys.path.append(os.getcwd())
 
 class TestCreateRoomResource(BaseTestCase):
 
-    def test_room_resource_creation(self):
-        execute_query = self.client.execute(
-            resource_mutation_query,
-            context_value={'session': db_session})
+    def test_resource_additiom_mutation_when_not_admin(self):
 
         expected_responese = resource_mutation_response
         self.assertEqual(execute_query, expected_responese)
