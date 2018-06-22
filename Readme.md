@@ -1,4 +1,6 @@
-[![Coverage Status](https://coveralls.io/repos/github/andela/mrm_api/badge.svg)](https://coveralls.io/github/andela/mrm_api)
+[![CircleCI](https://circleci.com/gh/andela/mrm_api.svg?style=svg)](https://circleci.com/gh/andela/mrm_api)
+[![Maintainability](https://api.codeclimate.com/v1/badges/33ed9630b4f81976f784/maintainability)](https://codeclimate.com/repos/5b0c1a7f82b58e02d000118e/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/33ed9630b4f81976f784/test_coverage)](https://codeclimate.com/repos/5b0c1a7f82b58e02d000118e/test_coverage)
 ## Product overview
  The MRM-api is the backbone of a tool to facilitate room management. It enables  capturing of feedback based on room usage and analyse usage statistics.The MRM-api provides capability to register rooms and give feedback.
 

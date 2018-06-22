@@ -14,7 +14,7 @@ class Room(SQLAlchemyObjectType):
 
 
 class Calendar(graphene.ObjectType):
-        events = graphene.String()
+    events = graphene.String()
 
 
 class CreateRoom(graphene.Mutation):
@@ -76,7 +76,7 @@ class Query(graphene.ObjectType):
     get_room_by_id = graphene.Field(
         Room,
         room_id=graphene.Int()
-        )
+    )
     room_schedule = graphene.Field(
         Calendar,
         calendar_id=graphene.String(),
@@ -103,7 +103,7 @@ class Query(graphene.ObjectType):
         query = Room.get_query(info)
         check_calendar_id = query.filter(
             RoomModel.calendar_id == calendar_id
-            ).first()
+        ).first()
         if not check_calendar_id:
             raise GraphQLError("CalendarId given not assigned to any room on converge")  # noqa: E501
         room_schedule = RoomSchedules.get_room_schedules(

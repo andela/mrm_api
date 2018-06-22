@@ -28,6 +28,7 @@ class BaseTestCase(TestCase):
 
     def setUp(self):
         app = self.create_app()
+        self.app_test = app.test_client()
         with app.app_context():
             Base.metadata.create_all(bind=engine)
             location = Location(name='Uganda', abbreviation='KLA')
