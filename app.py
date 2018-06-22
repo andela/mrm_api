@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_graphql import GraphQLView
+from flask_cors import CORS
 
 
 from config import config
