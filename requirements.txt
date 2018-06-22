@@ -3,7 +3,6 @@ coverage==4.5.1
 flake8==3.5.0
 Flask==0.12.2
 Flask-Cors==3.0.4
-Flask-Script==2.0.6
 Flask-GraphQL==1.4.1
 Flask-Testing==0.7.1
 Fabric==1.14.0
