@@ -1,9 +1,13 @@
 alembic==0.9.8
 coverage==4.5.1
+flake8==3.5.0
 Flask==0.12.2
 Flask-Cors==3.0.4
 Flask-Script==2.0.6
 Flask-GraphQL==1.4.1
+Flask-Testing==0.7.1
+Fabric==1.14.0
+Fabric3==1.14.post1
 google-api-python-client==1.6.7
 graphene-sqlalchemy==2.0.0
 graphene==2.1
@@ -20,7 +24,6 @@ SQLAlchemy==1.2.6
 tox==3.0.0
 SQLAlchemy-Utils==0.33.2
 virtualenv==15.2.0
-Flask-Testing==0.7.1
 typing==3.6.4
 flake8==3.5.0
 coveralls
