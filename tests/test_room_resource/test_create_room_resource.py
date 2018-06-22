@@ -42,3 +42,21 @@ class TestCreateRoomResource(BaseTestCase):
         response = self.app_test.post('/mrm?query='+resource_mutation_query,
                                       headers=api_headers)
         self.assertIn("Speakers", str(response.data))
+    
+    def test_room_resource_creation_name_error(self):
+        user = User(email="patrick.walukagga@andela.com",
+                    location="Kampala")
+        user.save()
+        role = Role(role="Admin")
+        role.save()
+        user_role = UsersRole(user_id=user.id, role_id=role.id)
+        user_role.save()
+        role = Role(role="Default User")
+        role.save()
+        api_headers = {'token': api_token}
+        response = self.app_test.post('/mrm?query='+resource_mutation_empty_name_string_query,
+                                      headers=api_headers)
+        self.assertEqual(response, error_empty_name_string)
+
+
+ 
