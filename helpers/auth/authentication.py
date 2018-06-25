@@ -54,7 +54,7 @@ class Authentication:
         params:
             user_info: dict
         returns:
-            bloolean
+            boolean
         """
         try:
             email = user_info['email']
