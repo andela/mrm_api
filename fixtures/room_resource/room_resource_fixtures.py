@@ -22,7 +22,7 @@ resource_mutation_response = {
     }
 }
 
-resource_mutation_empty_name_string_query = '''
+resource_mutation_empty_name = '''
     mutation {
         createResource(name: "", roomId: 1, quantity: 3) {
             resource{
@@ -46,23 +46,8 @@ resource_mutation_quantity_string_query = '''
     }
 '''
 
-error_empty_name_string = {
-  "errors": [
-    {
-      "message": "name is required field",
-      "locations": [
-        {
-          "line": 3,
-          "column": 9
-        }
-      ]
-    }
-  ],
-  "data": {
-    "createResource": None
-  }
-}
 
+<<<<<<< HEAD
 error_quantity_string = {
   "errors": [
     {
@@ -81,6 +66,9 @@ error_quantity_string = {
 }
 
 resource_mutation_0_value_room_id_query = '''
+=======
+resource_mutation_0_room_id = '''
+>>>>>>> [Bug 158140829] Fix flake8 errors
     mutation {
         createResource(
             name: "Speaker"
@@ -96,20 +84,3 @@ resource_mutation_0_value_room_id_query = '''
             }
     }
 '''
-
-error_0_value_room_id = {
-  "errors": [
-    {
-      "message": "room_id is required field",
-      "locations": [
-        {
-          "line": 3,
-          "column": 9
-        }
-      ]
-    }
-  ],
-  "data": {
-    "createResource": None
-  }
-}
