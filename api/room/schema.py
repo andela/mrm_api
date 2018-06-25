@@ -83,11 +83,6 @@ class Query(graphene.ObjectType):
         calendar_id=graphene.String(),
         days=graphene.Int(),
     )
-    room_schedule = graphene.Field(
-        Calendar,
-        calendar_id=graphene.String(),
-        days=graphene.Int(),
-    )
 
     def resolve_all_rooms(self, info):
         query = Room.get_query(info)
