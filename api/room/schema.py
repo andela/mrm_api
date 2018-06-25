@@ -41,6 +41,7 @@ class UpdateRoom(graphene.Mutation):
         room_type = graphene.String()
         capacity = graphene.Int()
         image_url = graphene.String()
+        calendar_id = graphene.String()
     room = graphene.Field(Room)
 
     def mutate(self, info, room_id, **kwargs):
@@ -48,6 +49,8 @@ class UpdateRoom(graphene.Mutation):
 
         query_room = Room.get_query(info)
         exact_room = query_room.filter(RoomModel.id == room_id).first()
+        if not exact_room:
+            raise GraphQLError("RoomId not found")
         update_entity_fields(exact_room, **kwargs)
 
         exact_room.save()
@@ -76,11 +79,6 @@ class Query(graphene.ObjectType):
     get_room_by_id = graphene.Field(
         Room,
         room_id=graphene.Int()
-    )
-    room_schedule = graphene.Field(
-        Calendar,
-        calendar_id=graphene.String(),
-        days=graphene.Int(),
     )
     room_schedule = graphene.Field(
         Calendar,

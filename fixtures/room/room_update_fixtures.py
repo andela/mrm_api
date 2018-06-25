@@ -1,11 +1,12 @@
 null = None
 
 query_update_all_fields = '''mutation{
-    updateRoom(roomId: 1, name: "Jinja", capacity: 8, roomType: "board room"){ # noqa: E501
+    updateRoom(roomId: 1, name: "Jinja", capacity: 8, roomType: "board room",calendarId:"4" ){ # noqa: E501
         room{
             name
             capacity
             roomType
+            calendarId
         }
     }
 }
@@ -17,7 +18,8 @@ expected_query_update_all_fields = {
             "room": {
                 "name": "Jinja",
                 "capacity": 8,
-                "roomType": "board room"
+                "roomType": "board room",
+                "calendarId": "4"
             }
         }
     }
