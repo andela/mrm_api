@@ -1,12 +1,10 @@
-null = None
 
 query_update_all_fields = '''mutation{
-    updateRoom(roomId: 1, name: "Jinja", capacity: 8, roomType: "board room",calendarId:"4" ){ # noqa: E501
+    updateRoom(roomId: 1, name: "Jinja", capacity: 8, roomType: "board room"){ # noqa: E501
         room{
             name
             capacity
             roomType
-            calendarId
         }
     }
 }
@@ -18,8 +16,7 @@ expected_query_update_all_fields = {
             "room": {
                 "name": "Jinja",
                 "capacity": 8,
-                "roomType": "board room",
-                "calendarId": "4"
+                "roomType": "board room"
             }
         }
     }
@@ -75,7 +72,7 @@ expected_query_without_room_id = {
 }
 
 
-query_if_room_id_is_non_existant_room = '''mutation{
+query_room_id_non_existant = '''mutation{
     updateRoom(roomId: 4, name: "Jinja", capacity: 8, roomType: "board room"){ # noqa: E501
         room{
             name
@@ -86,7 +83,7 @@ query_if_room_id_is_non_existant_room = '''mutation{
 }
 '''
 
-expected_query_if_room_id_is_non_existant_room = {
+expected_query_if_room_id_is_non_existant = {
     "errors": [
         {
             "message": "'NoneType' object has no attribute 'name'",  # noqa: E501
@@ -131,3 +128,4 @@ expected_response_update_with_empty_field = {
         "updateRoom": null
     }
 }
+
