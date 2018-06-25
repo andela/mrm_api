@@ -18,6 +18,17 @@ sys.path.append(os.getcwd())
 
 class TestCreateRoomResource(BaseTestCase):
 
+    def create_admin(self):
+        user = User(email="patrick.walukagga@andela.com",
+                    location="Kampala")
+        user.save()
+        role = Role(role="Admin")
+        role.save()
+        user_role = UsersRole(user_id=user.id, role_id=role.id)
+        user_role.save()
+        role = Role(role="Default User")
+        role.save()
+
     def test_resource_creation_mutation_when_not_admin(self):
 
         api_headers = {'token': api_token}
@@ -27,31 +38,14 @@ class TestCreateRoomResource(BaseTestCase):
                       str(response.data))
 
     def test_room_resource_creation_when_admin(self):
-
-        user = User(email="patrick.walukagga@andela.com",
-                    location="Kampala")
-        user.save()
-        role = Role(role="Admin")
-        role.save()
-        user_role = UsersRole(user_id=user.id, role_id=role.id)
-        user_role.save()
-        role = Role(role="Default User")
-        role.save()
+        self.create_admin()
         api_headers = {'token': api_token}
         response = self.app_test.post('/mrm?query='+resource_mutation_query,
                                       headers=api_headers)
         self.assertIn("Speakers", str(response.data))
 
     def test_room_resource_creation_name_error(self):
-        user = User(email="patrick.walukagga@andela.com",
-                    location="Kampala")
-        user.save()
-        role = Role(role="Admin")
-        role.save()
-        user_role = UsersRole(user_id=user.id, role_id=role.id)
-        user_role.save()
-        role = Role(role="Default User")
-        role.save()
+        self.create_admin()
         api_headers = {'token': api_token}
         response = self.app_test.post(
                                     '/mrm?query='+resource_mutation_empty_name,
@@ -59,15 +53,7 @@ class TestCreateRoomResource(BaseTestCase):
         self.assertIn("name is required", str(response.data))
 
     def test_room_resource_creation_room_id_error(self):
-        user = User(email="patrick.walukagga@andela.com",
-                    location="Kampala")
-        user.save()
-        role = Role(role="Admin")
-        role.save()
-        user_role = UsersRole(user_id=user.id, role_id=role.id)
-        user_role.save()
-        role = Role(role="Default User")
-        role.save()
+        self.create_admin()
         api_headers = {'token': api_token}
         response = self.app_test.post(
                                     '/mrm?query='+resource_mutation_0_room_id,
