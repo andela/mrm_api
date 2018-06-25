@@ -10,7 +10,6 @@ from fixtures.room.room_update_fixtures import (
     query_without_room_id,
     expected_query_without_room_id,
     query_if_room_id_is_non_existant_room,
-    expected_query_if_room_id_is_non_existant_room,
     update_with_empty_field,
     expected_response_update_with_empty_field
 
@@ -46,8 +45,10 @@ class TestUpdateRoom(BaseTestCase):
         Test if you get error once keyvalue 'room_id' supplied is
         of room that is non-existant
         """
-        test_get_error_if_room_is_none_existant = self.client.execute(query_if_room_id_is_non_existant_room)  # noqa: E501
-        self.assertEquals(test_get_error_if_room_is_none_existant, expected_query_if_room_id_is_non_existant_room)  # noqa: E501
+        update_resource = query_if_room_id_is_non_existant_room
+        response = self.app_test.post('/mrm?query='+update_resource)
+        self.assertIn("RoomId not found",
+                      str(response.data))
 
     def test_update_with_empty_field(self):
         """

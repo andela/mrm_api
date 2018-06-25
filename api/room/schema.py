@@ -49,6 +49,8 @@ class UpdateRoom(graphene.Mutation):
 
         query_room = Room.get_query(info)
         exact_room = query_room.filter(RoomModel.id == room_id).first()
+        if not exact_room:
+            raise GraphQLError("RoomId not found")
         update_entity_fields(exact_room, **kwargs)
 
         exact_room.save()
