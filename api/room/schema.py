@@ -6,6 +6,7 @@ from graphql import GraphQLError
 from api.room.models import Room as RoomModel
 from utilities.utility import validate_empty_fields, update_entity_fields
 from helpers.calendar.events import RoomSchedules
+from helpers.auth.authentication import Auth
 
 
 class Room(SQLAlchemyObjectType):
@@ -44,6 +45,7 @@ class UpdateRoom(graphene.Mutation):
         calendar_id = graphene.String()
     room = graphene.Field(Room)
 
+    @Auth.user_roles('Admin')
     def mutate(self, info, room_id, **kwargs):
         validate_empty_fields(**kwargs)
 
