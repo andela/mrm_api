@@ -17,6 +17,9 @@ fileConfig(config.config_file_name)
 # target_metadata = mymodel.Base.metadata
 # target_metadata = None
 
+import os
+import sys
+
 sys.path.append(os.getcwd())
 config.set_main_option('sqlalchemy.url', os.getenv('DEV_DATABASE_URL'))
 
