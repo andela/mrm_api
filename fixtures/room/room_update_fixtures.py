@@ -56,22 +56,6 @@ query_without_room_id = '''mutation{
                 }
             '''
 
-expected_query_without_room_id = {
-    "errors": [
-        {
-            "message": "mutate() missing 1 required positional argument: 'room_id'",  # noqa: E501
-            "locations": [{
-                "line": 2,
-                "column": 13
-            }]
-        }
-    ],
-    "data": {
-        "updateRoom": null
-    }
-}
-
-
 query_room_id_non_existant = '''mutation{
     updateRoom(roomId: 4, name: "Jinja", capacity: 8, roomType: "board room"){ # noqa: E501
         room{
@@ -83,24 +67,6 @@ query_room_id_non_existant = '''mutation{
 }
 '''
 
-expected_query_if_room_id_is_non_existant = {
-    "errors": [
-        {
-            "message": "'NoneType' object has no attribute 'name'",  # noqa: E501
-            "locations": [
-                {
-                    "line": 2,
-                    "column": 5
-                }
-            ]
-        }
-    ],
-    "data": {
-        "updateRoom": null
-    }
-}
-
-
 update_with_empty_field = '''mutation{
     updateRoom(roomId: 1, name:"", capacity:8, roomType: "board room"){
         room{
@@ -111,21 +77,3 @@ update_with_empty_field = '''mutation{
     }
 }
 '''
-
-expected_response_update_with_empty_field = {
-    "errors":  [
-                    {
-                        "message": "name is required field",
-                        "locations": [
-                            {
-                                "line": 2,
-                                "column": 5
-                            }
-                        ]
-                    }
-                ],
-    "data": {
-        "updateRoom": null
-    }
-}
-

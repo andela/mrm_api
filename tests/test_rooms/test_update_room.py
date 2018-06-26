@@ -4,15 +4,9 @@ from tests.base import BaseTestCase
 
 from fixtures.room.room_update_fixtures import (
     query_update_all_fields,
-    expected_query_update_all_fields,
-    query_update_only_required_field,
-    expected_query_update_only_required_field,
     query_without_room_id,
-    expected_query_without_room_id,
-    query_if_room_id_is_non_existant_room,
-    update_with_empty_field,
-    query_without_room_id
-
+    query_room_id_non_existant,
+    update_with_empty_field
 )
 from fixtures.token.token_fixture import api_token
 from api.user.models import User
