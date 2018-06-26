@@ -28,6 +28,7 @@ class CreateRoom(graphene.Mutation):
         calendar_id = graphene.String(required=True)
     room = graphene.Field(Room)
 
+    @Auth.user_roles('Admin')
     def mutate(self, info, **kwargs):
         room = RoomModel(**kwargs)
         room.save()
