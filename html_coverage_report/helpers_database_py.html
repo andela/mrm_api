@@ -70,6 +70,7 @@
 <p id="n1" class="stm run hide_run"><a href="#n1">1</a></p>
 <p id="n2" class="stm run hide_run"><a href="#n2">2</a></p>
 <p id="n3" class="stm run hide_run"><a href="#n3">3</a></p>
+<<<<<<< HEAD
 <p id="n4" class="stm run hide_run"><a href="#n4">4</a></p>
 <p id="n5" class="pln"><a href="#n5">5</a></p>
 <p id="n6" class="stm run hide_run"><a href="#n6">6</a></p>
@@ -106,6 +107,46 @@
 <p id="t16" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t17" class="stm run hide_run"><span class="nam">Base</span> <span class="op">=</span> <span class="nam">declarative_base</span><span class="op">(</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t18" class="stm run hide_run"><span class="nam">Base</span><span class="op">.</span><span class="nam">query</span> <span class="op">=</span> <span class="nam">db_session</span><span class="op">.</span><span class="nam">query_property</span><span class="op">(</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+=======
+<p id="n4" class="pln"><a href="#n4">4</a></p>
+<p id="n5" class="stm run hide_run"><a href="#n5">5</a></p>
+<p id="n6" class="stm run hide_run"><a href="#n6">6</a></p>
+<p id="n7" class="stm run hide_run"><a href="#n7">7</a></p>
+<p id="n8" class="pln"><a href="#n8">8</a></p>
+<p id="n9" class="stm run hide_run"><a href="#n9">9</a></p>
+<p id="n10" class="pln"><a href="#n10">10</a></p>
+<p id="n11" class="stm run hide_run"><a href="#n11">11</a></p>
+<p id="n12" class="stm run hide_run"><a href="#n12">12</a></p>
+<p id="n13" class="stm run hide_run"><a href="#n13">13</a></p>
+<p id="n14" class="stm run hide_run"><a href="#n14">14</a></p>
+<p id="n15" class="pln"><a href="#n15">15</a></p>
+<p id="n16" class="pln"><a href="#n16">16</a></p>
+<p id="n17" class="pln"><a href="#n17">17</a></p>
+<p id="n18" class="stm run hide_run"><a href="#n18">18</a></p>
+<p id="n19" class="stm run hide_run"><a href="#n19">19</a></p>
+
+            </td>
+            <td class="text">
+<p id="t1" class="stm run hide_run"><span class="key">import</span> <span class="nam">os</span><span class="strut">&nbsp;</span></p>
+<p id="t2" class="stm run hide_run"><span class="key">import</span> <span class="nam">sys</span><span class="strut">&nbsp;</span></p>
+<p id="t3" class="stm run hide_run"><span class="nam">sys</span><span class="op">.</span><span class="nam">path</span><span class="op">.</span><span class="nam">append</span><span class="op">(</span><span class="nam">os</span><span class="op">.</span><span class="nam">getcwd</span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t4" class="pln"><span class="strut">&nbsp;</span></p>
+<p id="t5" class="stm run hide_run"><span class="key">from</span> <span class="nam">sqlalchemy</span> <span class="key">import</span> <span class="nam">create_engine</span><span class="strut">&nbsp;</span></p>
+<p id="t6" class="stm run hide_run"><span class="key">from</span> <span class="nam">sqlalchemy</span><span class="op">.</span><span class="nam">ext</span><span class="op">.</span><span class="nam">declarative</span> <span class="key">import</span> <span class="nam">declarative_base</span><span class="strut">&nbsp;</span></p>
+<p id="t7" class="stm run hide_run"><span class="key">from</span> <span class="nam">sqlalchemy</span><span class="op">.</span><span class="nam">orm</span> <span class="key">import</span> <span class="nam">scoped_session</span><span class="op">,</span> <span class="nam">sessionmaker</span><span class="strut">&nbsp;</span></p>
+<p id="t8" class="pln"><span class="strut">&nbsp;</span></p>
+<p id="t9" class="stm run hide_run"><span class="key">from</span> <span class="nam">config</span> <span class="key">import</span> <span class="nam">config</span><span class="strut">&nbsp;</span></p>
+<p id="t10" class="pln"><span class="strut">&nbsp;</span></p>
+<p id="t11" class="stm run hide_run"><span class="nam">config_name</span> <span class="op">=</span> <span class="nam">os</span><span class="op">.</span><span class="nam">getenv</span><span class="op">(</span><span class="str">'APP_SETTINGS'</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t12" class="stm run hide_run"><span class="nam">database_uri</span> <span class="op">=</span> <span class="nam">config</span><span class="op">.</span><span class="nam">get</span><span class="op">(</span><span class="nam">config_name</span><span class="op">)</span><span class="op">.</span><span class="nam">SQLALCHEMY_DATABASE_URI</span><span class="strut">&nbsp;</span></p>
+<p id="t13" class="stm run hide_run"><span class="nam">engine</span> <span class="op">=</span> <span class="nam">create_engine</span><span class="op">(</span><span class="nam">database_uri</span><span class="op">,</span> <span class="nam">convert_unicode</span><span class="op">=</span><span class="key">True</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t14" class="stm run hide_run"><span class="nam">db_session</span> <span class="op">=</span> <span class="nam">scoped_session</span><span class="op">(</span><span class="nam">sessionmaker</span><span class="op">(</span><span class="nam">autocommit</span><span class="op">=</span><span class="key">False</span><span class="op">,</span><span class="strut">&nbsp;</span></p>
+<p id="t15" class="pln">                                         <span class="nam">autoflush</span><span class="op">=</span><span class="key">False</span><span class="op">,</span><span class="strut">&nbsp;</span></p>
+<p id="t16" class="pln">                                         <span class="nam">bind</span><span class="op">=</span><span class="nam">engine</span><span class="op">)</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t17" class="pln"><span class="strut">&nbsp;</span></p>
+<p id="t18" class="stm run hide_run"><span class="nam">Base</span> <span class="op">=</span> <span class="nam">declarative_base</span><span class="op">(</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t19" class="stm run hide_run"><span class="nam">Base</span><span class="op">.</span><span class="nam">query</span> <span class="op">=</span> <span class="nam">db_session</span><span class="op">.</span><span class="nam">query_property</span><span class="op">(</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+>>>>>>> 7ad0c2d088c678ab31e53394f59c84389c3eaa7e
 
             </td>
         </tr>
@@ -116,7 +157,11 @@
     <div class="content">
         <p>
             <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.io">coverage.py v4.5.1</a>,
+<<<<<<< HEAD
             created at 2018-06-26 10:52
+=======
+            created at 2018-05-28 12:02
+>>>>>>> 7ad0c2d088c678ab31e53394f59c84389c3eaa7e
         </p>
     </div>
 </div>
