@@ -63,20 +63,6 @@ error_empty_name_string = {
   }
 }
 
-error_empty_name_string = {
-  "errors": [
-    {
-      "locations": [
-        {
-          "column": 47,
-          "line": 2
-        }
-      ],
-      "message": "Argument \"quantity\" has invalid value \"4\".\nExpected type \"Int\", found \"4\"."
-    }
-  ]
-}
-
 error_quantity_string = {
   "errors": [
     {
