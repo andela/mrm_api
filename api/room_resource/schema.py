@@ -38,6 +38,7 @@ class UpdateRoomResource(graphene.Mutation):
         quantity = graphene.Int()
     resource = graphene.Field(Resource)
 
+    @Auth.user_roles('Admin')
     def mutate(self, info, resource_id, **kwargs):
         validate_empty_fields(**kwargs)
         query = Resource.get_query(info)

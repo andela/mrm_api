@@ -2,8 +2,7 @@ null = None
 
 update_room_resource_query = '''
             mutation{
-            updateRoomResource(resourceId:1,name:"TV Screen",roomId:1,
-                                quantity:3){
+            updateRoomResource(resourceId:1,name:"Markers",roomId:1){
                 resource{
                 name
                 }
@@ -12,14 +11,14 @@ update_room_resource_query = '''
             '''
 
 expected_update_room_resource_query = {
-                        "data": {
-                            "updateRoomResource": {
-                                "resource": {
-                                    "name": "TV Screen"
-                                        }
-                                        }
-                                        }
-                                        }
+    "data": {
+        "updateRoomResource": {
+            "resource": {
+                "name": "Markers"
+            }
+        }
+    }
+}
 
 
 non_existant_resource_id_query = '''
@@ -33,21 +32,21 @@ non_existant_resource_id_query = '''
                         '''
 
 expected_non_existant_resource_id_query = {
-                            "errors": [
-                                {
-                                    "message": "ResourceId not Found",
-                                    "locations": [
-                                        {
-                                            "line": 3,
-                                            "column": 25
-                                            }
-                                            ]
-                                            }
-                                            ],
-                            "data": {
-                                "updateRoomResource": null
-                                    }
-                                    }
+    "errors": [
+        {
+            "message": "ResourceId not Found",
+            "locations": [
+                {
+                    "line": 3,
+                    "column": 25
+                }
+            ]
+        }
+    ],
+    "data": {
+        "updateRoomResource": null
+    }
+}
 
 update_with_empty_field = '''
                     mutation{
@@ -60,19 +59,19 @@ update_with_empty_field = '''
 '''
 
 expected_response_empty_field = {
-                "errors": [
-                    {
-                        "message": "name is required field",
-                        "locations": [
-                            {
-                                "line": 3,
-                                "column": 25
-                                }
-                                ]
-                                }
-                                ],
-                "data": {
-                    "updateRoomResource": null
-                        }
+    "errors": [
+        {
+            "message": "name is required field",
+            "locations": [
+                {
+                    "line": 3,
+                    "column": 25
+                }
+            ]
+        }
+    ],
+    "data": {
+        "updateRoomResource": null
+    }
 
-                        }
+}
