@@ -6,6 +6,7 @@ from graphql import GraphQLError
 from api.room.models import Room as RoomModel
 from helpers.calendar.events import RoomSchedules
 from utilities.utility import validate_empty_fields, update_entity_fields
+from helpers.auth.authentication import Auth
 
 
 class Room(SQLAlchemyObjectType):
