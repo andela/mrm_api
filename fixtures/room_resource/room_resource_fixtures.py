@@ -1,9 +1,10 @@
 resource_mutation_query = '''
     mutation {
-        createResource(name: "Speakers", roomId: 1) {
+        createResource(name: "Speakers", roomId: 1, quantity: 3) {
             resource{
                 name
                 roomId
+                quantity
             }
         }
     }
@@ -14,7 +15,8 @@ resource_mutation_response = {
         "createResource": {
             "resource": {
                 "name": "Speakers",
-                "roomId": 1
+                "roomId": 1,
+                "quantity": 3
             }
         }
     }
@@ -22,10 +24,23 @@ resource_mutation_response = {
 
 resource_mutation_empty_name_string_query = '''
     mutation {
-        createResource(name: "", roomId: 1) {
+        createResource(name: "", roomId: 1, quantity: 3) {
             resource{
                 name
                 roomId
+                quantity
+            }
+        }
+    }
+'''
+
+resource_mutation_quantity_string_query = '''
+    mutation {
+        createResource(name: "Makers", roomId: 1, quantity: 0) {
+            resource{
+                name
+                roomId
+                quantity
             }
         }
     }
@@ -48,15 +63,34 @@ error_empty_name_string = {
   }
 }
 
+error_quantity_string = {
+  "errors": [
+    {
+      "message": "quantity is required field",
+      "locations": [
+        {
+          "column": 9,
+          "line": 3
+        }
+      ]
+    }
+  ],
+  "data": {
+    "createResource": None
+  }
+}
+
 resource_mutation_0_value_room_id_query = '''
     mutation {
         createResource(
             name: "Speaker"
             roomId: 0
+            quantity: 3
             ) {
                 resource{
                     name
                     roomId
+                    quantity
                     id
                 }
             }

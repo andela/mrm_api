@@ -10,7 +10,7 @@ class TestBlockModel(BaseTestCase):
         """
         object_count = Resource.query.count()
 
-        resource = Resource(name="TV Screen", room_id=1)
+        resource = Resource(name="TV Screen", room_id=1, quantity=3)
         resource.save()
 
         new_count = Resource.query.count()

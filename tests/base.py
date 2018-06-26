@@ -45,6 +45,7 @@ class BaseTestCase(TestCase):
                         image_url="https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg")  # noqa: E501
             room.save()
             resource = Resource(name='Markers',
+                                quantity=3,
                                 room_id=room.id)
             resource.save()
             db_session.commit()
