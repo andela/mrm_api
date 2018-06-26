@@ -30,6 +30,9 @@ role_query_response = {
   "data": {
     "roles": [
       {
+        "role": "Admin"
+      },
+      {
         "role": "Ops"
       }
     ]

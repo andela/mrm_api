@@ -3,7 +3,6 @@ from fixtures.user_role.user_role_fixtures import (
     user_role_mutation_query, user_role_mutation_response
 )
 from helpers.database import db_session
-from api.role.models import Role
 from api.user.models import User
 
 import sys
@@ -19,8 +18,6 @@ class TestCreateUserRole(BaseTestCase):
         """
         user = User(email="info@andela.com", location="Lagos")
         user.save()
-        role = Role(role="Admin")
-        role.save()
         db_session().commit()
 
         execute_query = self.client.execute(

@@ -33,9 +33,13 @@ user_query_response = {
   "data": {
     "users": [
       {
+        "email": "patrick.walukagga@andela.com",
+        "location": "Kampala"
+      },
+      {
         "email": "mrm@andela.com",
         "location": "Lagos"
-      }
+      },
     ]
   }
 }
