@@ -34,18 +34,6 @@ resource_mutation_empty_name = '''
     }
 '''
 
-resource_mutation_quantity_string_query = '''
-    mutation {
-        createResource(name: "Makers", roomId: 1, quantity: 0) {
-            resource{
-                name
-                roomId
-                quantity
-            }
-        }
-    }
-'''
-
 
 resource_mutation_0_room_id = '''
     mutation {
