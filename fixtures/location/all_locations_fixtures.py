@@ -3,7 +3,7 @@ all_locations_query = '''
   allLocations{
     name
     abbreviation
-    office{
+    offices{
       buildingName
       blocks{
         name
@@ -28,7 +28,7 @@ expected_query_all_locations = {
       {
         "name": "Uganda",
         "abbreviation": "KLA",
-        "office": [
+        "offices": [
           {
             "buildingName": "EPIC Tower",
             "blocks": [{
@@ -55,7 +55,7 @@ pass_an_arg_all_locations = '''
         allLocations(locationId: 1){
             name
             abbreviation
-            office{
+            offices{
             buildingName
             blocks{
                 name

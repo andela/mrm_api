@@ -12,6 +12,7 @@ class Office(Base, Utility):
     id = Column(Integer, primary_key=True)
     building_name = Column(String, nullable=False)
     location_id = Column(Integer, ForeignKey('locations.id'), nullable=False)
+    location = relationship('Location')
     blocks = relationship('Block')
 
     def __init__(self, **kwargs):
