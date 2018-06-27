@@ -17,7 +17,6 @@ from fixtures.location.nonexistant_location_id_fixtures import (
     query_nonexistant_location_id,
     expected_query_with_nonexistant_id
 )
-from helpers.database import db_session
 
 import sys
 import os
@@ -27,9 +26,7 @@ sys.path.append(os.getcwd())
 class TestQueryLocation(BaseTestCase):
     def test_query_all_locations(self):
         # test if all_location executes in a hierachy
-        all_locations = self.client.execute(
-            all_locations_query,
-            context_value={'session': db_session})
+        all_locations = self.client.execute(all_locations_query)
         self.assertEquals(all_locations, expected_query_all_locations)
 
         # test all_locations query if passed an argument

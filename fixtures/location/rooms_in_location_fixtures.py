@@ -3,8 +3,6 @@ query_get_rooms_in_location = '''{
 getRoomsInALocation(locationId:1){
     name
     abbreviation
-    offices {
-          buildingName
         blocks {
             name
             floors {
@@ -16,7 +14,6 @@ getRoomsInALocation(locationId:1){
                 }
             }
         }
-        }
     }
 }
 '''
@@ -27,18 +24,15 @@ expected_query_get_rooms_in_location = {
             {
                     "name": "Uganda",
                     "abbreviation": "KLA",
-                    "offices": [{
-                        "buildingName": "EPIC Tower",
-                        "blocks": [{
-                            "name": "EC",
-                            "floors": [{
-                                "name": "3rd",
-                                "rooms": [{
-                                    "capacity": 6,  # noqa: E501
-                                    "name": "Entebbe",  # noqa: E501
-                                    "roomType": "meeting",  # noqa: E501
-                                }]
-                        }]
+                    "blocks": [{
+                        "name": "EC",
+                        "floors": [{
+                            "name": "3rd",
+                            "rooms": [{
+                                "capacity": 6,  # noqa: E501
+                                "name": "Entebbe",  # noqa: E501
+                                "roomType": "meeting",  # noqa: E501
+                            }]
                     }]
                 }]
             }
