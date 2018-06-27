@@ -14,7 +14,7 @@ class TestBlocksModel(BaseTestCase):
         """
         object_count = Block.query.count()
 
-        block = Block(name='Wakanda', location_id=1)
+        block = Block(name='Wakanda', office_id=1)
         block.save()
 
         new_count = Block.query.count()

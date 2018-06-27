@@ -10,7 +10,12 @@ class TestLocationModel(BaseTestCase):
 
         object_count = Location.query.count()
 
-        test_location = Location(name='Kenya', abbreviation='KY')
+        test_location = Location(
+            name='Kenya',
+            abbreviation='KY',
+            image_url="http://www.url.com",
+            time_zone="ETA"
+            )
         test_location.save()
 
         new_count = Location.query.count()
