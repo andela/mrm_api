@@ -6,6 +6,7 @@ from graphql import GraphQLError
 from api.room.models import Room as RoomModel
 from utilities.utility import validate_empty_fields, update_entity_fields
 from helpers.calendar.events import RoomSchedules
+from helpers.auth.authentication import Auth
 
 
 class Room(SQLAlchemyObjectType):
@@ -27,6 +28,7 @@ class CreateRoom(graphene.Mutation):
         calendar_id = graphene.String(required=True)
     room = graphene.Field(Room)
 
+    @Auth.user_roles('Admin')
     def mutate(self, info, **kwargs):
         room = RoomModel(**kwargs)
         room.save()
@@ -41,13 +43,17 @@ class UpdateRoom(graphene.Mutation):
         room_type = graphene.String()
         capacity = graphene.Int()
         image_url = graphene.String()
+        calendar_id = graphene.String()
     room = graphene.Field(Room)
 
+    @Auth.user_roles('Admin')
     def mutate(self, info, room_id, **kwargs):
         validate_empty_fields(**kwargs)
 
         query_room = Room.get_query(info)
         exact_room = query_room.filter(RoomModel.id == room_id).first()
+        if not exact_room:
+            raise GraphQLError("RoomId not found")
         update_entity_fields(exact_room, **kwargs)
 
         exact_room.save()
@@ -76,11 +82,6 @@ class Query(graphene.ObjectType):
     get_room_by_id = graphene.Field(
         Room,
         room_id=graphene.Int()
-    )
-    room_schedule = graphene.Field(
-        Calendar,
-        calendar_id=graphene.String(),
-        days=graphene.Int(),
     )
     room_schedule = graphene.Field(
         Calendar,

@@ -32,6 +32,11 @@ class Authentication:
 
         try:
             auth_token = self.get_token()
+            if auth_token is None:
+                return jsonify({
+                   'message': 'Invalid token. Please Provide a valid token!'
+                }), 401
+
             payload = jwt.decode(auth_token, verify=False)
             return payload['UserInfo']  # Return User Info
         except jwt.ExpiredSignatureError:
@@ -73,7 +78,7 @@ class Authentication:
             @wraps(func)
             def wrapper(*args, **kwargs):
                 user_data = self.decode_token()
-                if user_data:
+                if type(user_data) is dict:
                     user_info = get_user_details(self.get_token(),
                                                  user_data['id'])
                     self.save_user(user_info)
@@ -89,7 +94,7 @@ class Authentication:
                         raise GraphQLError(
                             'You are not authorized to perform this action')
                 else:
-                    raise GraphQLError(user_data)
+                    raise GraphQLError(user_data[0].data)
             return wrapper
         return decorator
 

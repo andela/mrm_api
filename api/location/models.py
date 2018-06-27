@@ -11,4 +11,5 @@ class Location(Base, Utility):
     name = Column(String, nullable=False)
     abbreviation = Column(String, nullable=False)
     image_url = Column(String)
-    blocks = relationship('Block')
+    time_zone = Column(String, nullable=True)
+    offices = relationship('Office')

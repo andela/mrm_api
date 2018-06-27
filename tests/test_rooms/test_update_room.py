@@ -4,55 +4,69 @@ from tests.base import BaseTestCase
 
 from fixtures.room.room_update_fixtures import (
     query_update_all_fields,
-    expected_query_update_all_fields,
-    query_update_only_required_field,
-    expected_query_update_only_required_field,
     query_without_room_id,
-    expected_query_without_room_id,
-    query_if_room_id_is_non_existant_room,
-    expected_query_if_room_id_is_non_existant_room,
-    update_with_empty_field,
-    expected_response_update_with_empty_field
-
+    query_room_id_non_existant,
+    update_with_empty_field
 )
+from fixtures.token.token_fixture import api_token
+from api.user.models import User
+from api.role.models import Role
+from api.user_role.models import UsersRole
 
 
 class TestUpdateRoom(BaseTestCase):
 
-    def test_if_all_fields_updated(self):
-        """
-        Test if you can update all fields
-        """
-        test_update_all_fields = self.client.execute(query_update_all_fields)
-        self.assertEquals(test_update_all_fields, expected_query_update_all_fields)  # noqa: E501
+    def create_admin(self):
+        user = User(email="patrick.walukagga@andela.com",
+                    location="Kampala")
+        user.save()
+        role = Role(role="Admin")
+        role.save()
+        user_role = UsersRole(user_id=user.id, role_id=role.id)
+        user_role.save()
+        role = Role(role="Default User")
+        role.save()
 
-    def test_update_for_only_required_fields(self):
-        """
-        Test if you can edit only required field.
-        We shall only require to update the name in this test.
-        """
-        test_edit_only_required_field = self.client.execute(query_update_only_required_field)  # noqa: E501
-        self.assertEquals(test_edit_only_required_field, expected_query_update_only_required_field)  # noqa: E501
+    def test_resource_update_mutation_when_not_admin(self):
+
+        api_headers = {'token': api_token}
+        response = self.app_test.post('/mrm?query='+query_update_all_fields,
+                                      headers=api_headers)
+        self.assertIn("You are not authorized to perform this action",
+                      str(response.data))
+
+    def test_if_all_fields_updated(self):
+        self.create_admin()
+        api_headers = {'token': api_token}
+        response = self.app_test.post('/mrm?query='+query_update_all_fields,
+                                      headers=api_headers)
+        self.assertIn("Jinja", str(response.data))
 
     def test_for_error_if_id_not_supplied(self):
-        """
-         Test if you get error once  'room_id' is not supplied in update query
-        """
-        test_get_error_if_no_id = self.client.execute(query_without_room_id)
-        self.assertEquals(test_get_error_if_no_id, expected_query_without_room_id)  # noqa: E501
+        self.create_admin()
+        api_headers = {'token': api_token}
+        response = self.app_test.post('/mrm?query='+query_without_room_id,
+                                      headers=api_headers)
+        self.assertIn("required positional argument", str(response.data))
 
     def test_for_error_if_room_id_is_non_existant_room(self):
-        """
-        Test if you get error once keyvalue 'room_id' supplied is
-        of room that is non-existant
-        """
-        test_get_error_if_room_is_none_existant = self.client.execute(query_if_room_id_is_non_existant_room)  # noqa: E501
-        self.assertEquals(test_get_error_if_room_is_none_existant, expected_query_if_room_id_is_non_existant_room)  # noqa: E501
+        self.create_admin()
+        api_headers = {'token': api_token}
+        response = self.app_test.post('/mrm?query='+query_room_id_non_existant,
+                                      headers=api_headers)
+        self.assertIn("RoomId not found", str(response.data))
 
     def test_update_with_empty_field(self):
-        """
-        test if you get error when you suppy and empty field for example
-        and empty name string
-        """
-        query = self.client.execute(update_with_empty_field)
-        self.assertEquals(query, expected_response_update_with_empty_field)
+        user = User(email="patrick.walukagga@andela.com",
+                    location="Kampala")
+        user.save()
+        role = Role(role="Admin")
+        role.save()
+        user_role = UsersRole(user_id=user.id, role_id=role.id)
+        user_role.save()
+        role = Role(role="Default User")
+        role.save()
+        api_headers = {'token': api_token}
+        response = self.app_test.post('/mrm?query='+update_with_empty_field,
+                                      headers=api_headers)
+        self.assertIn("name is required field", str(response.data))

@@ -19,8 +19,10 @@ class CreateResource(graphene.Mutation):
     class Arguments:
         name = graphene.String(required=True)
         room_id = graphene.Int(required=True)
+        quantity = graphene.Int(required=True)
     resource = graphene.Field(Resource)
 
+    @Auth.user_roles('Admin')
     def mutate(self, info, **kwargs):
         resource = ResourceModel(**kwargs)
         resource.save()
@@ -33,8 +35,10 @@ class UpdateRoomResource(graphene.Mutation):
         name = graphene.String()
         room_id = graphene.Int()
         resource_id = graphene.Int()
+        quantity = graphene.Int()
     resource = graphene.Field(Resource)
 
+    @Auth.user_roles('Admin')
     def mutate(self, info, resource_id, **kwargs):
         validate_empty_fields(**kwargs)
         query = Resource.get_query(info)

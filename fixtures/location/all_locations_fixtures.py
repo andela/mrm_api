@@ -1,29 +1,36 @@
 all_locations_query = '''
 {
-    allLocations{
+  allLocations{
+    name
+    abbreviation
+    offices{
+      buildingName
+      blocks{
         name
-        abbreviation
-        blocks {
+        floors{
+          name
+          rooms{
+            capacity
             name
-            floors {
-                name
-                rooms {
-                    capacity
-                    name
-                    roomType
-                }
-            }
+            roomType
+          }
         }
+      }
     }
+  }
 }
 '''
 
 
 expected_query_all_locations = {
-    "data": {
-        "allLocations": [{
-            "name": "Uganda",
-            "abbreviation": "KLA",
+  "data": {
+    "allLocations": [
+      {
+        "name": "Uganda",
+        "abbreviation": "KLA",
+        "offices": [
+          {
+            "buildingName": "EPIC Tower",
             "blocks": [{
                 "name": "EC",
                 "floors": [{
@@ -35,27 +42,30 @@ expected_query_all_locations = {
                     }]
                 }]
             }]
-        }]
-    }
+          }
+        ]
+      }
+    ]
+  }
 }
+
 
 pass_an_arg_all_locations = '''
     {
         allLocations(locationId: 1){
             name
-            id
             abbreviation
-            blocks {
+            offices{
+            buildingName
+            blocks{
                 name
-                id
-            floors {
+                floors{
                 name
-                id
-                rooms {
-                    id
+                rooms{
+                    capacity
                     name
                     roomType
-                    capacity
+                }
                 }
             }
             }
@@ -79,7 +89,6 @@ expected_response_pass_an_arg = {
 all_location_no_hierachy = '''{
     allLocations{
         rooms {
-            id
             name
             roomType
             capacity
