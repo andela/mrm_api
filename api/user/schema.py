@@ -15,6 +15,7 @@ class CreateUser(graphene.Mutation):
 
     class Arguments:
         email = graphene.String(required=True)
+        location = graphene.String(required=True)
     user = graphene.Field(User)
 
     def mutate(self, info, **kwargs):
@@ -22,6 +23,19 @@ class CreateUser(graphene.Mutation):
         user.save()
 
         return CreateUser(user=user)
+
+
+class Query(graphene.ObjectType):
+    users = graphene.List(User)
+    user = graphene.Field(lambda: User, email=graphene.String())
+
+    def resolve_users(self, info):
+        query = User.get_query(info)
+        return query.all()
+
+    def resolve_user(self, info, email):
+        query = User.get_query(info)
+        return query.filter(UserModel.email == email).first()
 
 
 class Mutation(graphene.ObjectType):

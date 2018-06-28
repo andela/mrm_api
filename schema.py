@@ -4,6 +4,9 @@ import api.block.schema
 import api.floor.schema
 import api.room.schema
 import api.room_resource.schema
+import api.role.schema
+import api.user.schema
+import api.user_role.schema
 
 
 class Query(
@@ -11,15 +14,20 @@ class Query(
     api.block.schema.Query,
     api.floor.schema.Query,
     api.room.schema.Query,
-    api.room_resource.schema.Query
-
+    api.room_resource.schema.Query,
+    api.role.schema.Query,
+    api.user.schema.Query,
+    api.user_role.schema.Query
 ):
     pass
 
 
 class Mutation(
     api.room.schema.Mutation,
-    api.room_resource.schema.Mutation
+    api.room_resource.schema.Mutation,
+    api.role.schema.Mutation,
+    api.user.schema.Mutation,
+    api.user_role.schema.Mutation
 ):
     pass
 
