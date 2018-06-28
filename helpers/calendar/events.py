@@ -56,5 +56,5 @@ class RoomSchedules(Credentials):
                     r"(^[a-zA-Z0-9_.+-]+@andela+\.com+$)", attendees)
                 if match:
                     all_attendees.append(attendee.get('email'))
-            print(all_attendees)
+
         return [all_attendees, output]
