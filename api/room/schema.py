@@ -4,8 +4,8 @@ from graphene_sqlalchemy import (SQLAlchemyObjectType)
 from graphql import GraphQLError
 
 from api.room.models import Room as RoomModel
-from utilities.utility import validate_empty_fields, update_entity_fields
 from helpers.calendar.events import RoomSchedules
+from utilities.utility import validate_empty_fields, update_entity_fields
 from helpers.auth.authentication import Auth
 
 
@@ -16,6 +16,7 @@ class Room(SQLAlchemyObjectType):
 
 class Calendar(graphene.ObjectType):
     events = graphene.String()
+    occupants = graphene.String()
 
 
 class CreateRoom(graphene.Mutation):
@@ -88,6 +89,11 @@ class Query(graphene.ObjectType):
         calendar_id=graphene.String(),
         days=graphene.Int(),
     )
+    room_occupants = graphene.Field(
+        Calendar,
+        calendar_id=graphene.String(),
+        days=graphene.Int(),
+    )
 
     def resolve_all_rooms(self, info):
         query = Room.get_query(info)
@@ -99,6 +105,21 @@ class Query(graphene.ObjectType):
         if not check_room:
             raise GraphQLError("Room not found")
         return check_room
+
+    def resolve_room_occupants(self, info, calendar_id, days):
+        query = Room.get_query(info)
+        check_calendar_id = query.filter(
+            RoomModel.calendar_id == calendar_id
+        ).first()
+        if not check_calendar_id:
+            raise GraphQLError("Invalid CalendarId")
+        room_occupants = RoomSchedules.get_room_schedules(
+            self,
+            calendar_id,
+            days)
+        return Calendar(
+            occupants=room_occupants[0]
+        )
 
     def resolve_room_schedule(self, info, calendar_id, days):
         query = Room.get_query(info)
@@ -112,7 +133,7 @@ class Query(graphene.ObjectType):
             calendar_id,
             days)
         return Calendar(
-            events=room_schedule
+            events=room_schedule[1]
         )
 
 
