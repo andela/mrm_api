@@ -2,17 +2,14 @@ query_nonexistant_location_id = '''{
 getRoomsInALocation(locationId:4){
     name
     abbreviation
-    offices{
-        buildingName
-        blocks {
+    blocks {
+        name
+        floors {
             name
-            floors {
+            rooms {
+                capacity
                 name
-                rooms {
-                    capacity
-                    name
-                    roomType
-                }
+                roomType
             }
         }
     }
