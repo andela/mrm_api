@@ -1,6 +1,6 @@
 user_role_mutation_query = '''
 mutation{
-  createUsersRole(userId: 1, roleId: 1){
+  createUsersRole(userId: 2, roleId: 1){
     userRole{
       roleId
       userId
@@ -14,7 +14,7 @@ user_role_mutation_response = {
     "createUsersRole": {
       "userRole": {
         "roleId": 1,
-        "userId": 1
+        "userId": 2
       }
     }
   }
@@ -34,6 +34,10 @@ user_role_query_response = {
     "usersRole": [
       {
         "userId": 1,
+        "roleId": 1
+      },
+      {
+        "userId": 2,
         "roleId": 1
       }
     ]

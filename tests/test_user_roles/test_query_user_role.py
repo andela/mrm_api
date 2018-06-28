@@ -5,7 +5,6 @@ from fixtures.user_role.user_role_fixtures import (
 )
 from helpers.database import db_session
 from api.user.models import User
-from api.role.models import Role
 from api.user_role.models import UsersRole
 
 import sys
@@ -21,9 +20,7 @@ class TestQueryUserRole(BaseTestCase):
         """
         user = User(email="info@andela.com", location="Lagos")
         user.save()
-        role = Role(role="Admin")
-        role.save()
-        user_role = UsersRole(user_id=1, role_id=1)
+        user_role = UsersRole(user_id=user.id, role_id=1)
         user_role.save()
         db_session().commit()
 
@@ -37,9 +34,7 @@ class TestQueryUserRole(BaseTestCase):
     def test_query_users_role_by_role(self):
         user = User(email='mrm@andela.com', location="Lagos")
         user.save()
-        role = Role(role="Admin")
-        role.save()
-        user_role = UsersRole(user_id=1, role_id=1)
+        user_role = UsersRole(user_id=user.id, role_id=1)
         user_role.save()
         db_session().commit()
 
