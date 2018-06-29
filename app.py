@@ -37,3 +37,4 @@ def create_app(config_name):
     def shutdown_session(exception=None):
         db_session.remove()
 
+    return app
