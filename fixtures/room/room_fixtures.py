@@ -73,7 +73,6 @@ room_query_by_id_response = {
     }
 }
 
-
 room_with_non_existant_id = '''{
     getRoomById(roomId: 100) {
         id
@@ -83,22 +82,31 @@ room_with_non_existant_id = '''{
 '''
 
 room_query_with_non_existant_id_response = {
-                                "errors": [
-                                    {
-                                        "message": "Room not found",
-                                        "locations": [
-                                            {
-                                                "line": 2,
-                                                "column": 5
-                                                }
-                                                ]
-                                                }
-                                                ],
-                                "data": {
-                                    "getRoomById": null
-                                        }
-                                        }
+    "errors": [
+        {
+            "message": "Room not found",
+            "locations": [
+                {
+                    "line": 2,
+                    "column": 5
+                }
+            ]
+        }
+    ],
+    "data": {
+        "getRoomById": null
+    }
+}
 
+room_occupants_query = '''
+                        {
+                        roomOccupants(
+                            calendarId:"andela.com_3836323338323230343935@resource.calendar.google.com",
+                            days:7){
+                        occupants
+                        }
+                        }
+                        '''
 room_schedule_query = '''
                         {
                         roomSchedule(
@@ -118,20 +126,45 @@ room_schedule_query_with_non_existant_calendar_id = '''
                         }
                         }
                         '''
+room_occupants_query_with_non_existant_calendar_id = '''
+                        {
+                        roomOccupants(
+                            calendarId:"andela.com_38363230343935@resource.calendar.google.com",
+                            days:7){
+                        occupants
+                        }
+                        }
+                        '''
 
+room_occupants_of_non_existant_calendar_id_response = {
+    "errors": [
+        {
+            "message": "Invalid CalendarId",
+            "locations": [
+                {
+                    "line": 1,
+                    "column": 2
+                }
+            ]
+        }
+    ],
+    "data": {
+        "roomSchedule": null
+    }
+}
 room_schedule_of_non_existant_calendar_id_response = {
-                                        "errors": [
-                                            {
-                                                "message": "CalendarId given not assigned to any room on converge",  # noqa: E501
-                                                "locations": [
-                                                    {
-                                                        "line": 1,
-                                                        "column": 2
-                                                        }
-                                                        ]
-                                                        }
-                                                        ],
-                                        "data": {
-                                            "roomSchedule": null
-                                        }
-                                        }
+    "errors": [
+        {
+            "message": "Invalid CalendarId",
+            "locations": [
+                {
+                    "line": 1,
+                    "column": 2
+                }
+            ]
+        }
+    ],
+    "data": {
+        "roomSchedule": null
+    }
+}

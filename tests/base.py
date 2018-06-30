@@ -9,6 +9,9 @@ from api.block.models import Block
 from api.floor.models import Floor
 from api.room.models import Room
 from api.room_resource.models import Resource
+from api.user.models import User
+from api.role.models import Role
+from api.user_role.models import UsersRole
 
 import sys
 import os
@@ -31,6 +34,13 @@ class BaseTestCase(TestCase):
         self.app_test = app.test_client()
         with app.app_context():
             Base.metadata.create_all(bind=engine)
+            admin_user = User(email="patrick.walukagga@andela.com",
+                              location="Kampala")
+            admin_user.save()
+            role = Role(role="Admin")
+            role.save()
+            user_role = UsersRole(user_id=admin_user.id, role_id=role.id)
+            user_role.save()
             location = Location(name='Uganda', abbreviation='KLA')
             location.save()
             block = Block(name='EC', location_id=location.id)
@@ -41,7 +51,7 @@ class BaseTestCase(TestCase):
                         room_type='meeting',
                         capacity=6,
                         floor_id=floor.id,
-                        calendar_id='andela.com_3836323338323230343935@resource.calendar.google.com',  # noqa: E501
+                        calendar_id='andela.com_3835468272423230343935@resource.calendar.google.com',  # noqa: E501
                         image_url="https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg")  # noqa: E501
             room.save()
             resource = Resource(name='Markers',
