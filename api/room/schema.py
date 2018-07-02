@@ -67,6 +67,7 @@ class DeleteRoom(graphene.Mutation):
         room_id = graphene.Int(required=True)
     room = graphene.Field(Room)
 
+    @Auth.user_roles('Admin')
     def mutate(self, info, room_id, **kwargs):
         query_room = Room.get_query(info)
         exact_room = query_room.filter(
