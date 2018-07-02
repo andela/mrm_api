@@ -1,9 +1,7 @@
 """Migration message
-
 Revision ID: 5189113ab5b6
 Revises: 
 Create Date: 2018-06-22 17:27:50.547866
-
 """
 from alembic import op
 import sqlalchemy as sa
