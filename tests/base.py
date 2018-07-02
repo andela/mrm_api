@@ -12,6 +12,7 @@ from api.room_resource.models import Resource
 from api.user.models import User
 from api.role.models import Role
 from api.user_role.models import UsersRole
+from api.devices.models import Devices
 
 import sys
 import os
@@ -58,6 +59,15 @@ class BaseTestCase(TestCase):
                                 quantity=3,
                                 room_id=room.id)
             resource.save()
+            device = Devices(
+                resource_id=resource.id,
+                last_seen="2018-06-08T11:17:58.785136",
+                date_added="2018-06-08T11:17:58.785136",
+                name="Samsung ",
+                location="Nairobi",
+                device_type="External Display"
+            )
+            device.save()
             db_session.commit()
 
     def tearDown(self):

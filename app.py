@@ -2,10 +2,10 @@ from flask import Flask
 from flask_cors import CORS
 from flask_graphql import GraphQLView
 
-
 from config import config
 from helpers.database import db_session
 from schema import schema
+from healthcheck_schema import healthcheck_schema
 
 
 def create_app(config_name):
@@ -21,6 +21,14 @@ def create_app(config_name):
             'mrm',
             schema=schema,
             graphiql=True   # for having the GraphiQL interface
+        )
+    )
+    app.add_url_rule(
+        '/_healthcheck',
+        view_func=GraphQLView.as_view(
+            '_healthcheck',
+            schema=healthcheck_schema,
+            graphiql=True   # for healthchecks
         )
     )
 
