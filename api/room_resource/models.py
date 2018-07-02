@@ -13,6 +13,7 @@ class Resource(Base, Utility):
     quantity = Column(Integer, nullable=False)
     room_id = Column(Integer, ForeignKey('rooms.id'))
     room = relationship('Room')
+    devices = relationship('Devices')
 
     def __init__(self, **kwargs):
         validate_empty_fields(**kwargs)

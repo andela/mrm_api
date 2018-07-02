@@ -3,7 +3,7 @@ from graphene_sqlalchemy import SQLAlchemyObjectType
 
 from api.location.models import Location as LocationModel
 
-from api.room_resource.models import Resource as ResourceModel  # noqa: F401
+from api.devices.models import Devices as DevicesModel  # noqa: F401
 
 
 class Location(SQLAlchemyObjectType):
