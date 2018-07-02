@@ -1,4 +1,5 @@
 from sqlalchemy import (Column, String, Integer, DateTime, ForeignKey)
+from sqlalchemy.orm import relationship
 
 from helpers.database import Base
 from utilities.utility import Utility, validate_empty_fields
@@ -14,6 +15,7 @@ class Devices(Base, Utility):
     last_seen = Column(DateTime, nullable=False)
     location = Column(String, nullable=False)
     resource_id = Column(Integer, ForeignKey('resources.id'))
+    resource = relationship('Resource')
 
     def __init__(self, **kwargs):
         validate_empty_fields(**kwargs)
