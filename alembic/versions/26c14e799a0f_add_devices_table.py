@@ -24,7 +24,7 @@ def upgrade():
     sa.Column('device_type', sa.String(), nullable=False),
     sa.Column('date_added', sa.DateTime(), nullable=False),
     sa.Column('last_seen', sa.DateTime(), nullable=False),
-    sa.Column('location', sa.String(), nullable)=True),
+    sa.Column('location', sa.String(), nullable)=False),
     sa.Column('resource_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['resource_id'], ['resources.id'], ),
     sa.PrimaryKeyConstraint('id')
