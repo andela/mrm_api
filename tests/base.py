@@ -53,8 +53,8 @@ class BaseTestCase(TestCase):
                         capacity=6,
                         floor_id=floor.id,
                         calendar_id='andela.com_3835468272423230343935@resource.calendar.google.com',  # noqa: E501
-                        image_url="https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg",
-                        location="Uganda")  # noqa: E501
+                        image_url="https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg",  # noqa: E501
+                        location="Uganda")
             room.save()
             resource = Resource(name='Markers',
                                 quantity=3,
