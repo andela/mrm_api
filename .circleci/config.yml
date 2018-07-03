@@ -9,7 +9,7 @@ decode_credentials: &decode_credentials
     name: Decode Credentials
     command: |
       touch credentials.json
-      echo $CREDENTIALS | base64 --decode >> credentials.json
+      echo $CREDENTIALS | base64 --decode >> credentials.json 
 
 version: 2
 jobs:
