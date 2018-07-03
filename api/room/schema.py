@@ -26,6 +26,7 @@ class CreateRoom(graphene.Mutation):
         capacity = graphene.Int(required=True)
         image_url = graphene.String()
         floor_id = graphene.Int(required=True)
+        location = graphene.String(required=True)
         calendar_id = graphene.String(required=True)
     room = graphene.Field(Room)
 
@@ -45,6 +46,7 @@ class UpdateRoom(graphene.Mutation):
         capacity = graphene.Int()
         image_url = graphene.String()
         calendar_id = graphene.String()
+        location = graphene.String()
     room = graphene.Field(Room)
 
     @Auth.user_roles('Admin')
@@ -80,7 +82,8 @@ class DeleteRoom(graphene.Mutation):
 
 
 class Query(graphene.ObjectType):
-    all_rooms = graphene.List(Room)
+    all_rooms = graphene.List(Room,
+    location=graphene.String())
     get_room_by_id = graphene.Field(
         Room,
         room_id=graphene.Int()
@@ -96,8 +99,10 @@ class Query(graphene.ObjectType):
         days=graphene.Int(),
     )
 
-    def resolve_all_rooms(self, info):
+    def resolve_all_rooms(self, info, location):
         query = Room.get_query(info)
+        if location:
+            return query.filter(RoomModel.location == location).all()
         return query.all()
 
     def resolve_get_room_by_id(self, info, room_id):
