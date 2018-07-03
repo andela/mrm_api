@@ -82,8 +82,9 @@ class DeleteRoom(graphene.Mutation):
 
 
 class Query(graphene.ObjectType):
-    all_rooms = graphene.List(Room,
-    location=graphene.String())
+    all_rooms = graphene.List(
+        Room,
+        location=graphene.String())
     get_room_by_id = graphene.Field(
         Room,
         room_id=graphene.Int()
