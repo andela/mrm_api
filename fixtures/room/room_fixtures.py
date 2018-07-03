@@ -27,8 +27,8 @@ room_mutation_response = {
                 "roomType": "Meeting",
                 "capacity": 4,
                 "floorId": 1,
-                "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg",  # noqa: E501
-                "location": "Uganda"
+                "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg" ,
+                "location": "Uganda" # noqa: E501
             }
         }
     }
@@ -64,8 +64,8 @@ db_rooms_query_response = {
                 "name": "Entebbe",
                 "capacity": 6,
                 "roomType": "meeting",
-                "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg",  # noqa: E501
-                "location": "Uganda"
+                "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg",  
+                "location": "Uganda" # noqa: E501
             }]
     }
 }
@@ -76,8 +76,8 @@ query_rooms_response = {
                 "name": "Entebbe",
                 "capacity": 6,
                 "roomType": "meeting",
-                "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg",  # noqa: E501
-                "location": "Uganda"
+                "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg" ,
+                "location": "Uganda" # noqa: E501
             }]
     }
 }
