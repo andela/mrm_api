@@ -23,11 +23,13 @@ class CreateLocation(graphene.Mutation):
     location = graphene.Field(Location)
 
     def mutate(self, info, **kwargs):
-        validate_country_field(**kwargs) # Validate if the country given is a valid country
+        # Validate if the country given is a valid country
+        validate_country_field(**kwargs)
         validate_timezone_field(**kwargs)
         location = LocationModel(**kwargs)
         location.save()
         return CreateLocation(location=location)
+
 
 class Query(graphene.ObjectType):
     all_locations = graphene.List(Location)
