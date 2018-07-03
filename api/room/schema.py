@@ -100,7 +100,7 @@ class Query(graphene.ObjectType):
         days=graphene.Int(),
     )
 
-    def resolve_all_rooms(self, info, location):
+    def resolve_all_rooms(self, info, location=None):
         query = Room.get_query(info)
         if location:
             return query.filter(RoomModel.location == location).all()
