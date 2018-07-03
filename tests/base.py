@@ -5,7 +5,7 @@ from app import create_app
 from schema import schema
 from helpers.database import engine, db_session, Base
 from api.location.models import Location
-from api.block.models import Block
+from api.office.models import Office
 from api.floor.models import Floor
 from api.room.models import Room
 from api.room_resource.models import Resource
@@ -44,9 +44,9 @@ class BaseTestCase(TestCase):
             user_role.save()
             location = Location(name='Uganda', abbreviation='KLA')
             location.save()
-            block = Block(name='EC', location_id=location.id)
-            block.save()
-            floor = Floor(name='3rd', block_id=block.id)
+            office = Office(name='EC', location_id=location.id)
+            office.save()
+            floor = Floor(name='3rd', office_id=office.id)
             floor.save()
             room = Room(name='Entebbe',
                         room_type='meeting',

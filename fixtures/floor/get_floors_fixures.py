@@ -2,7 +2,7 @@ get_all_floors_query = '''{
     allFloors {
         id
         name
-        blockId
+        officeId
     }
 }
 '''
@@ -13,7 +13,7 @@ get_floors_query_response = {
             {
                 "id": "1",
                 "name": "3rd",
-                "blockId": 1
+                "officeId": 1
             }
         ]
     }

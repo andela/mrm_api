@@ -1,5 +1,5 @@
-get_all_blocks_query = '''{
-    allBlocks {
+get_all_offices_query = '''{
+    allOffices {
         id
         name
         locationId
@@ -7,9 +7,9 @@ get_all_blocks_query = '''{
 }
 '''
 
-get_blocks_query_response = {
+get_offices_query_response = {
     "data": {
-        "allBlocks": [
+        "allOffices": [
             {
                 "id": "1",
                 "name": "EC",
@@ -19,9 +19,9 @@ get_blocks_query_response = {
     }
 }
 
-rooms_in_block_query = '''
+rooms_in_office_query = '''
     {
-        getRoomsInABlock(blockId:1){
+        getRoomsInAnOffice(officeId:1){
             name
             floors{
                 name
@@ -36,9 +36,9 @@ rooms_in_block_query = '''
 '''
 
 
-rooms_in_block_query_response = {
+rooms_in_office_query_response = {
     "data": {
-        "getRoomsInABlock": [
+        "getRoomsInAnOffice": [
             {
                 "name": "EC",
                 "floors": [
