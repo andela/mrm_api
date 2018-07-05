@@ -1,8 +1,8 @@
 """Migration message
 
-Revision ID: 3415ad0453eb
+Revision ID: a5dfde5e01ef
 Revises: 
-Create Date: 2018-07-03 15:35:01.316731
+Create Date: 2018-07-05 09:24:55.897101
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '3415ad0453eb'
+revision = 'a5dfde5e01ef'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -23,7 +23,8 @@ def upgrade():
     sa.Column('name', sa.String(), nullable=False),
     sa.Column('abbreviation', sa.String(), nullable=False),
     sa.Column('image_url', sa.String(), nullable=True),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('name')
     )
     op.create_table('roles',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -70,6 +71,7 @@ def upgrade():
     sa.Column('location', sa.String(), nullable=True),
     sa.Column('floor_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['floor_id'], ['floors.id'], ),
+    sa.ForeignKeyConstraint(['location'], ['locations.name'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('resources',
