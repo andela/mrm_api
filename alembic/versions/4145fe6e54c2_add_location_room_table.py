@@ -1,8 +1,8 @@
-"""Migration message
+"""add location room table
 
-Revision ID: a7a16df46cb8
-Revises: 
-Create Date: 2018-07-05 10:02:07.682653
+Revision ID: 4145fe6e54c2
+Revises: 5189113ab5b6
+Create Date: 2018-07-05 15:07:51.873348
 
 """
 from alembic import op
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'a7a16df46cb8'
-down_revision = None
+revision = '4145fe6e54c2'
+down_revision = '5189113ab5b6'
 branch_labels = None
 depends_on = None
 
