@@ -18,7 +18,7 @@ class Room(Base, Utility):
     location = Column(String, ForeignKey('locations.name'))
     floor_id = Column(Integer, ForeignKey('floors.id'))
     floor = relationship('Floor')
-    locations = relationship('Location')
+    location = relationship('Location')
     resources = relationship('Resource')
 
     def __init__(self, **kwargs):
