@@ -34,7 +34,7 @@ def validate_timezone_field(**kwargs):
     :params kwargs
     """
     my_args = []
-    timezones = ['GMT+3', 'GMT+1']
+    timezones = ['EAST_AFRICA_TIME', 'WEST_AFRICA_TIME']
     for value in kwargs:
         time_zone_args = kwargs.get(value)
         my_args.append(time_zone_args)

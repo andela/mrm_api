@@ -3,7 +3,6 @@ from graphene_sqlalchemy import SQLAlchemyObjectType
 from api.location.models import Location as LocationModel
 
 from api.devices.models import Devices as DevicesModel  # noqa: F401
-from graphql import GraphQLError
 from api.room_resource.models import Resource as ResourceModel  # noqa: F401
 from utilities.utility import validate_country_field, validate_timezone_field
 
