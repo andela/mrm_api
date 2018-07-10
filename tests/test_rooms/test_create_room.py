@@ -19,5 +19,6 @@ class TestCreateRoom(BaseTestCase):
         api_headers = {'token': admin_api_token}
         query = self.app_test.post(query_string, headers=api_headers)
         expected_response = query_string_response
-
+        print(expected_response)
         self.assertEqual(query.data, expected_response)
+        print(query.data)
