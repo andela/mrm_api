@@ -21,3 +21,4 @@ class TestCreateRoom(BaseTestCase):
         expected_response = query_string_response
         print(expected_response)
         self.assertEqual(query.data, expected_response)
+        print(query.data)

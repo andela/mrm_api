@@ -13,7 +13,6 @@ room_mutation_query = '''
                 capacity
                 floorId
                 imageUrl
-                location
             }
         }
     }
@@ -41,7 +40,6 @@ rooms_query = '''
                 capacity
                 roomType
                 imageUrl
-                location
                 }
     }
     '''
@@ -52,7 +50,6 @@ db_rooms_query = '''
                 capacity
                 roomType
                 imageUrl
-                location
                 }
     }
     '''
