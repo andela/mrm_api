@@ -29,6 +29,7 @@ class CreateRoom(graphene.Mutation):
         capacity = graphene.Int(required=True)
         image_url = graphene.String()
         floor_id = graphene.Int(required=True)
+        location = graphene.String(required=True)
         calendar_id = graphene.String(required=True)
     room = graphene.Field(Room)
 
@@ -48,6 +49,7 @@ class UpdateRoom(graphene.Mutation):
         capacity = graphene.Int()
         image_url = graphene.String()
         calendar_id = graphene.String()
+        location = graphene.String()
     room = graphene.Field(Room)
 
     @Auth.user_roles('Admin')
