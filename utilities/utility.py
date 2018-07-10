@@ -33,12 +33,8 @@ def validate_timezone_field(**kwargs):
     saving an object
     :params kwargs
     """
-    my_args = []
     timezones = ['EAST_AFRICA_TIME', 'WEST_AFRICA_TIME']
-    for value in kwargs:
-        time_zone_args = kwargs.get(value)
-        my_args.append(time_zone_args)
-    if my_args[3] not in timezones:
+    if kwargs['time_zone'] not in timezones:
         raise AttributeError("Not a valid time zone")
 
 
