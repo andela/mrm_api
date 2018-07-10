@@ -12,6 +12,32 @@ def validate_empty_fields(**kwargs):
             raise AttributeError(field + " is required field")
 
 
+def validate_country_field(**kwargs):
+    """
+    Function to validate country fields when
+    saving an object
+    :params kwargs
+    """
+    my_args = []
+    countries = ['Kenya', 'Uganda', 'Nigeria']
+    for value in kwargs:
+        country_args = kwargs.get(value)
+        my_args.append(country_args)
+    if my_args[2] not in countries:
+        raise AttributeError("Not a valid country")
+
+
+def validate_timezone_field(**kwargs):
+    """
+    Function to validate country fields when
+    saving an object
+    :params kwargs
+    """
+    timezones = ['EAST_AFRICA_TIME', 'WEST_AFRICA_TIME']
+    if kwargs['time_zone'] not in timezones:
+        raise AttributeError("Not a valid time zone")
+
+
 def update_entity_fields(entity, **kwargs):
     """
     Function to update an entities fields

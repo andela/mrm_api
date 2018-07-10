@@ -30,7 +30,8 @@ class Mutation(
     api.role.schema.Mutation,
     api.user.schema.Mutation,
     api.user_role.schema.Mutation,
-    api.devices.schema.Mutation
+    api.devices.schema.Mutation,
+    api.location.schema.Mutation
 ):
     pass
 
