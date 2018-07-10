@@ -4,6 +4,9 @@ from graphene_sqlalchemy import (SQLAlchemyObjectType)
 from graphql import GraphQLError
 
 from api.room.models import Room as RoomModel
+from api.location.schema import Location, LocationModel
+from api.block.schema import Block, BlockModel
+from api.floor.schema import Floor, FloorModel
 from helpers.calendar.events import RoomSchedules
 from utilities.utility import validate_empty_fields, update_entity_fields
 from helpers.auth.authentication import Auth
@@ -26,7 +29,6 @@ class CreateRoom(graphene.Mutation):
         capacity = graphene.Int(required=True)
         image_url = graphene.String()
         floor_id = graphene.Int(required=True)
-        location = graphene.String(required=True)
         calendar_id = graphene.String(required=True)
     room = graphene.Field(Room)
 
@@ -46,7 +48,6 @@ class UpdateRoom(graphene.Mutation):
         capacity = graphene.Int()
         image_url = graphene.String()
         calendar_id = graphene.String()
-        location = graphene.String()
     room = graphene.Field(Room)
 
     @Auth.user_roles('Admin')
@@ -83,7 +84,7 @@ class DeleteRoom(graphene.Mutation):
 
 class Query(graphene.ObjectType):
     all_rooms = graphene.List(
-        Room,
+        Location,
         location=graphene.String())
     get_room_by_id = graphene.Field(
         Room,
@@ -101,9 +102,13 @@ class Query(graphene.ObjectType):
     )
 
     def resolve_all_rooms(self, info, location=None):
-        query = Room.get_query(info)
+        query_location = Location.get_query(info)
+        query_block = Block.get_query(info)
+        query_floor = Block.get_query(info)
+        query_room = Room.get_query(info)
         if location:
-            return query.filter(RoomModel.location == location).all()
+            loc =  query_location.filter(LocationModel.name == location).all()
+            t= query_block
         return query.all()
 
     def resolve_get_room_by_id(self, info, room_id):

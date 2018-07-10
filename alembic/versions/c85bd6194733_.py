@@ -1,8 +1,8 @@
-"""add location room table
+"""empty message
 
-Revision ID: 4145fe6e54c2
+Revision ID: c85bd6194733
 Revises: 5189113ab5b6
-Create Date: 2018-07-05 15:07:51.873348
+Create Date: 2018-07-10 12:03:41.005498
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '4145fe6e54c2'
+revision = 'c85bd6194733'
 down_revision = '5189113ab5b6'
 branch_labels = None
 depends_on = None
@@ -68,10 +68,8 @@ def upgrade():
     sa.Column('capacity', sa.Integer(), nullable=False),
     sa.Column('image_url', sa.String(), nullable=True),
     sa.Column('calendar_id', sa.String(), nullable=True),
-    sa.Column('location', sa.String(), nullable=True),
     sa.Column('floor_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['floor_id'], ['floors.id'], ),
-    sa.ForeignKeyConstraint(['location'], ['locations.name'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('resources',
