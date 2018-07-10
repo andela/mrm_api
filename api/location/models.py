@@ -8,13 +8,13 @@ from utilities.utility import Utility
 import enum
 
 
-class Country_type(enum.Enum):
+class CountryType(enum.Enum):
     Uganda = "Uganda"
     Kenya = "Kenya"
     Nigeria = "Nigeria"
 
 
-class TimeZone_type(enum.Enum):
+class TimeZoneType(enum.Enum):
     EAST_AFRICA_TIME = "UTC+3"
     WEST_AFRICA_TIME = "UTC+1"
 
@@ -24,7 +24,7 @@ class Location(Base, Utility):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     abbreviation = Column(String, nullable=False)
-    country = Column(Enum(Country_type))
-    time_zone = Column(Enum(TimeZone_type))
+    country = Column(Enum(CountryType))
+    time_zone = Column(Enum(TimeZoneType))
     image_url = Column(String)
     blocks = relationship('Block')
