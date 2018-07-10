@@ -2,6 +2,15 @@
 #
 # Check https://circleci.com/docs/2.0/language-python/ for more details
 #
+
+# create credentials file
+decode_credentials: &decode_credentials
+  run:
+    name: Decode Credentials
+    command: |
+      touch credentials.json
+      echo $CREDENTIALS | base64 --decode >> credentials.json 
+
 version: 2
 jobs:
   build:
@@ -29,6 +38,8 @@ jobs:
 
     steps:
       - checkout
+
+      - *decode_credentials
 
       # Download and cache dependencies
       - restore_cache:
