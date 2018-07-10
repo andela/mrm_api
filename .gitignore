@@ -116,5 +116,4 @@ ENV/
 html_coverage_report/
 *.DS_store
 
-# credentials
-credentials.json
+
