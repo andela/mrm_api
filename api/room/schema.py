@@ -156,4 +156,3 @@ class Mutation(graphene.ObjectType):
     create_room = CreateRoom.Field()
     update_room = UpdateRoom.Field()
     delete_room = DeleteRoom.Field()
-
