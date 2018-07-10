@@ -84,7 +84,7 @@ class DeleteRoom(graphene.Mutation):
 
 class Query(graphene.ObjectType):
     all_rooms = graphene.List(
-        Location,
+        Room,
         location=graphene.String())
     get_room_by_id = graphene.Field(
         Room,
@@ -104,12 +104,14 @@ class Query(graphene.ObjectType):
     def resolve_all_rooms(self, info, location=None):
         query_location = Location.get_query(info)
         query_block = Block.get_query(info)
-        query_floor = Block.get_query(info)
+        query_floor = Floor.get_query(info)
         query_room = Room.get_query(info)
         if location:
-            loc =  query_location.filter(LocationModel.name == location).all()
-            t= query_block
-        return query.all()
+            room_location = query_location.filter(LocationModel.name == location).first()  # noqa: E501
+            room_block = query_block.filter(BlockModel.location_id == room_location.id).first()  # noqa: E501
+            room_floor = query_floor.filter(FloorModel.block_id == room_block.id).first()  # noqa: E501
+            return query_room.filter(RoomModel.floor_id == room_floor.id).all()
+        return query_room.all()
 
     def resolve_get_room_by_id(self, info, room_id):
         query = Room.get_query(info)
