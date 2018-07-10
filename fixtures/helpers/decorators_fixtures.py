@@ -35,8 +35,7 @@ room_mutation_query = '''
           roomType: "Meeting",
           capacity: 1,
           floorId: 1,
-          imageUrl: "http://url.com",
-          ) {
+          imageUrl: "http://url.com") {
             room {
                 name
                 roomType
