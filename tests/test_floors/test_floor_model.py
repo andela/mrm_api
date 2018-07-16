@@ -5,12 +5,12 @@ from api.floor.models import Floor
 class TestFloorModel(BaseTestCase):
     def test_if_data_can_be_saved(self):
         """
-        Test that data can be saved in the Block Model by
+        Test that data can be saved in the Floor Model by
         counting number of objects
         """
         object_count = Floor.query.count()
 
-        floor = Floor(name='2nd', block_id=1)
+        floor = Floor(name='2nd', office_id=1)
         floor.save()
 
         new_count = Floor.query.count()

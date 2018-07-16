@@ -27,4 +27,4 @@ class Location(Base, Utility):
     country = Column(Enum(CountryType))
     time_zone = Column(Enum(TimeZoneType))
     image_url = Column(String)
-    blocks = relationship('Block')
+    offices = relationship('Office')

@@ -3,7 +3,7 @@ query_get_rooms_in_location = '''{
 getRoomsInALocation(locationId:1){
     name
     abbreviation
-        blocks {
+        offices {
             name
             floors {
                 name
@@ -24,7 +24,7 @@ expected_query_get_rooms_in_location = {
             {
                     "name": "Uganda",
                     "abbreviation": "KLA",
-                    "blocks": [{
+                    "offices": [{
                         "name": "EC",
                         "floors": [{
                             "name": "3rd",
