@@ -4,6 +4,7 @@ from sqlalchemy.orm import relationship
 from helpers.database import Base
 from utilities.utility import Utility, validate_empty_fields
 from api.floor.models import Floor  # noqa: F401
+from api.wing.models import Wing  # noqa: F401
 
 
 class Room(Base, Utility):
@@ -15,6 +16,7 @@ class Room(Base, Utility):
     image_url = Column(String)
     calendar_id = Column(String)
     floor_id = Column(Integer, ForeignKey('floors.id'))
+    wing_id = Column(Integer, ForeignKey('wings.id'))
     floor = relationship('Floor')
     resources = relationship('Resource')
 
@@ -28,3 +30,4 @@ class Room(Base, Utility):
         self.image_url = kwargs['image_url']
         self.calendar_id = kwargs['calendar_id']
         self.floor_id = kwargs['floor_id']
+        self.wing_id = kwargs['wing_id']
