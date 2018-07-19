@@ -1,4 +1,4 @@
 version: "2"
 exclude_patterns:
-  - "helpers/"
-  - "alembic/"
+  - "helpers/auth/authentication.py"
+  - "alembic/calendar/events.py"
