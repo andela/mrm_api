@@ -4,9 +4,12 @@ from graphene_sqlalchemy import (SQLAlchemyObjectType)
 from graphql import GraphQLError
 
 from api.room.models import Room as RoomModel
+from api.office.models import Office
 from helpers.calendar.events import RoomSchedules
 from utilities.utility import validate_empty_fields, update_entity_fields
 from helpers.auth.authentication import Auth
+from helpers.auth.verify_ids_for_room import verify_ids
+from helpers.auth.check_office_name import assert_wing_is_required
 
 
 class Room(SQLAlchemyObjectType):
@@ -27,10 +30,15 @@ class CreateRoom(graphene.Mutation):
         image_url = graphene.String()
         floor_id = graphene.Int(required=True)
         calendar_id = graphene.String(required=True)
+        office_id = graphene.Int()
+        wing_id = graphene.Int()
     room = graphene.Field(Room)
 
     @Auth.user_roles('Admin')
-    def mutate(self, info, **kwargs):
+    def mutate(self, info, office_id, **kwargs):
+        verify_ids(kwargs, office_id)
+        get_office = Office.query.filter_by(id=office_id).first()
+        assert_wing_is_required(get_office.name, kwargs)
         room = RoomModel(**kwargs)
         room.save()
 

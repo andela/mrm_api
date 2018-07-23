@@ -8,6 +8,8 @@ import api.role.schema
 import api.user.schema
 import api.user_role.schema
 import api.devices.schema
+import api.office.schema
+import api.wing.schema
 
 
 class Query(
@@ -19,7 +21,8 @@ class Query(
     api.role.schema.Query,
     api.user.schema.Query,
     api.user_role.schema.Query,
-    api.devices.schema.Query
+    api.devices.schema.Query,
+    api.wing.schema.Query
 ):
     pass
 
@@ -31,7 +34,8 @@ class Mutation(
     api.user.schema.Mutation,
     api.user_role.schema.Mutation,
     api.devices.schema.Mutation,
-    api.location.schema.Mutation
+    api.location.schema.Mutation,
+    api.office.schema.Mutation,
 ):
     pass
 
