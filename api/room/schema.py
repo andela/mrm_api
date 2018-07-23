@@ -4,6 +4,9 @@ from graphene_sqlalchemy import (SQLAlchemyObjectType)
 from graphql import GraphQLError
 
 from api.room.models import Room as RoomModel
+from api.location.schema import Location, LocationModel
+from api.floor.schema import Floor, FloorModel
+from api.block.schema import Block, BlockModel
 from helpers.calendar.events import RoomSchedules
 from utilities.utility import validate_empty_fields, update_entity_fields
 from helpers.auth.authentication import Auth
@@ -45,6 +48,7 @@ class UpdateRoom(graphene.Mutation):
         capacity = graphene.Int()
         image_url = graphene.String()
         calendar_id = graphene.String()
+        location = graphene.String()
     room = graphene.Field(Room)
 
     @Auth.user_roles('Admin')
@@ -80,7 +84,9 @@ class DeleteRoom(graphene.Mutation):
 
 
 class Query(graphene.ObjectType):
-    all_rooms = graphene.List(Room)
+    all_rooms = graphene.List(
+        Room,
+        location=graphene.String())
     get_room_by_id = graphene.Field(
         Room,
         room_id=graphene.Int()
@@ -96,9 +102,17 @@ class Query(graphene.ObjectType):
         days=graphene.Int(),
     )
 
-    def resolve_all_rooms(self, info):
-        query = Room.get_query(info)
-        return query.all()
+    def resolve_all_rooms(self, info, location=None):
+        query_location = Location.get_query(info)
+        query_block = Block.get_query(info)
+        query_floor = Floor.get_query(info)
+        query_room = Room.get_query(info)
+        if location:
+            room_location = query_location.filter(LocationModel.name == location).first()  # noqa: E501
+            room_block = query_block.filter(BlockModel.location_id == room_location.id).first()  # noqa: E501
+            room_floor = query_floor.filter(FloorModel.block_id == room_block.id).first()  # noqa: E501
+            return query_room.filter(RoomModel.floor_id == room_floor.id).all()
+        return query_room.all()
 
     def resolve_get_room_by_id(self, info, room_id):
         query = Room.get_query(info)
