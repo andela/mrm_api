@@ -19,7 +19,7 @@ class TestEvents(BaseTestCase):
         of the response to see if its a googleapi object
         RoomSchedule function
         """
-        calendarId = 'andela.com_3137313531373531393135@resource.calendar.google.com'  # noqa: E501
+        calendarId = 'andela.com_3730363934383237313139@resource.calendar.google.com'  # noqa: E501
         response = RoomSchedules.get_room_schedules(self, calendarId, 7)
         assert type(response) is list
         self.assertNotEquals(response, [])

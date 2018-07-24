@@ -10,6 +10,7 @@ from utilities.utility import validate_empty_fields, update_entity_fields
 from helpers.auth.authentication import Auth
 from helpers.auth.verify_ids_for_room import verify_ids
 from helpers.auth.check_office_name import assert_wing_is_required
+from helpers.auth.add_office import verify_attributes
 
 
 class Room(SQLAlchemyObjectType):
@@ -36,6 +37,7 @@ class CreateRoom(graphene.Mutation):
 
     @Auth.user_roles('Admin')
     def mutate(self, info, office_id, **kwargs):
+        verify_attributes(kwargs)
         verify_ids(kwargs, office_id)
         get_office = Office.query.filter_by(id=office_id).first()
         assert_wing_is_required(get_office.name, kwargs)

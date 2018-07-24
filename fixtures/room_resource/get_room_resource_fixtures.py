@@ -43,19 +43,4 @@ get_room_resources_by_room_id_error = '''
 }
 '''
 
-get_room_resources_by_room_id_error_response = {
-  "errors": [
-    {
-      "message": "Room has no resource yet",
-      "locations": [
-        {
-          "line": 3,
-          "column": 5
-        }
-      ]
-    }
-  ],
-  "data": {
-    "getResourcesByRoomId": None
-  }
-}
+get_room_resources_by_room_id_error_response = "Room has no resource yet"

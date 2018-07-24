@@ -2,7 +2,6 @@ get_all_blocks_query = '''{
     allBlocks {
         id
         name
-        locationId
     }
 }
 '''
@@ -12,8 +11,7 @@ get_blocks_query_response = {
         "allBlocks": [
             {
                 "id": "1",
-                "name": "EC",
-                "locationId": 1
+                "name": "EC"
             }
         ]
     }

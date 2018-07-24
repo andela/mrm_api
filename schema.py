@@ -9,7 +9,6 @@ import api.user.schema
 import api.user_role.schema
 import api.devices.schema
 import api.office.schema
-import api.wing.schema
 
 
 class Query(
@@ -22,7 +21,6 @@ class Query(
     api.user.schema.Query,
     api.user_role.schema.Query,
     api.devices.schema.Query,
-    api.wing.schema.Query
 ):
     pass
 

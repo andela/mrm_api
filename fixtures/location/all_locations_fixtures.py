@@ -3,14 +3,17 @@ all_locations_query = '''
     allLocations{
         name
         abbreviation
-        blocks {
+        offices{
             name
-            floors {
+            blocks {
                 name
-                rooms {
-                    capacity
+                floors {
                     name
-                    roomType
+                    rooms {
+                        capacity
+                        name
+                        roomType
+                    }
                 }
             }
         }
@@ -24,17 +27,22 @@ expected_query_all_locations = {
         "allLocations": [{
             "name": "Uganda",
             "abbreviation": "KLA",
-            "blocks": [{
-                "name": "EC",
-                "floors": [{
-                    "name": "3rd",
-                    "rooms": [{
-                        "capacity": 6,
-                        "name": "Entebbe",  # noqa: E501
-                        "roomType": "meeting"  # noqa: E501
+            "offices": [
+                {
+                    "name": "St. Catherines",
+                    "blocks": [{
+                        "name": "EC",
+                        "floors": [{
+                            "name": "3rd",
+                            "rooms": [{
+                                "capacity": 6,
+                                "name": "Entebbe",  # noqa: E501
+                                "roomType": "meeting"  # noqa: E501
+                            }]
+                        }]
                     }]
-                }]
-            }]
+                }
+            ]
         }]
     }
 }
@@ -45,19 +53,21 @@ pass_an_arg_all_locations = '''
             name
             id
             abbreviation
-            blocks {
-                name
-                id
-            floors {
-                name
-                id
-                rooms {
-                    id
+            offices {
+                blocks {
                     name
-                    roomType
-                    capacity
+                    id
+                    floors {
+                        name
+                        id
+                        rooms {
+                            id
+                            name
+                            roomType
+                            capacity
+                        }
+                    }
                 }
-            }
             }
         }
     }'''
