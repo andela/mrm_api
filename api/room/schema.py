@@ -4,9 +4,14 @@ from graphene_sqlalchemy import (SQLAlchemyObjectType)
 from graphql import GraphQLError
 
 from api.room.models import Room as RoomModel
+from api.office.models import Office
 from helpers.calendar.events import RoomSchedules
+from helpers.calendar.calendar import check_calendar_id
 from utilities.utility import validate_empty_fields, update_entity_fields
 from helpers.auth.authentication import Auth
+from helpers.auth.verify_ids_for_room import verify_ids
+from helpers.auth.check_office_name import assert_wing_is_required
+from helpers.auth.add_office import verify_attributes
 
 
 class Room(SQLAlchemyObjectType):
@@ -27,10 +32,16 @@ class CreateRoom(graphene.Mutation):
         image_url = graphene.String()
         floor_id = graphene.Int(required=True)
         calendar_id = graphene.String(required=True)
+        office_id = graphene.Int()
+        wing_id = graphene.Int()
     room = graphene.Field(Room)
 
     @Auth.user_roles('Admin')
-    def mutate(self, info, **kwargs):
+    def mutate(self, info, office_id, **kwargs):
+        verify_attributes(kwargs)
+        verify_ids(kwargs, office_id)
+        get_office = Office.query.filter_by(id=office_id).first()
+        assert_wing_is_required(get_office.name, kwargs)
         room = RoomModel(**kwargs)
         room.save()
 
@@ -108,11 +119,8 @@ class Query(graphene.ObjectType):
         return check_room
 
     def resolve_room_occupants(self, info, calendar_id, days):
-        query = Room.get_query(info)
-        check_calendar_id = query.filter(
-            RoomModel.calendar_id == calendar_id
-        ).first()
-        if not check_calendar_id:
+        result = check_calendar_id(info, calendar_id)
+        if not result:
             raise GraphQLError("Invalid CalendarId")
         room_occupants = RoomSchedules.get_room_schedules(
             self,
@@ -123,11 +131,8 @@ class Query(graphene.ObjectType):
         )
 
     def resolve_room_schedule(self, info, calendar_id, days):
-        query = Room.get_query(info)
-        check_calendar_id = query.filter(
-            RoomModel.calendar_id == calendar_id
-        ).first()
-        if not check_calendar_id:
+        result = check_calendar_id(info, calendar_id)
+        if not result:
             raise GraphQLError("CalendarId given not assigned to any room on converge")  # noqa: E501
         room_schedule = RoomSchedules.get_room_schedules(
             self,

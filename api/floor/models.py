@@ -13,3 +13,4 @@ class Floor(Base, Utility):
     block_id = Column(Integer, ForeignKey('blocks.id'))
     block = relationship('Block')
     rooms = relationship('Room')
+    wings = relationship('Wing')

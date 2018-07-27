@@ -1,10 +1,11 @@
 import graphene
+from graphql import GraphQLError
 from graphene_sqlalchemy import SQLAlchemyObjectType
 from api.location.models import Location as LocationModel
 
 from api.devices.models import Devices as DevicesModel  # noqa: F401
 from api.room_resource.models import Resource as ResourceModel  # noqa: F401
-from utilities.utility import validate_country_field, validate_timezone_field
+from utilities.utility import validate_country_field, validate_timezone_field, update_entity_fields, validate_empty_fields  # noqa: E501
 
 
 class Location(SQLAlchemyObjectType):
@@ -30,6 +31,33 @@ class CreateLocation(graphene.Mutation):
         return CreateLocation(location=location)
 
 
+class UpdateLocation(graphene.Mutation):
+    class Arguments:
+        location_id = graphene.Int()
+        name = graphene.String()
+        abbreviation = graphene.String()
+        country = graphene.String()
+        image_url = graphene.String()
+        time_zone = graphene.String()
+    location = graphene.Field(Location)
+
+    def mutate(self, info, location_id, **kwargs):
+        location = Location.get_query(info)
+        location_object = location.filter(
+            LocationModel.id == location_id).first()
+        if not location_object:
+            raise GraphQLError("Location not found")
+        if "time_zone" in kwargs:
+            validate_timezone_field(**kwargs)
+        if "country" in kwargs:
+            validate_country_field(**kwargs)
+        if "name" in kwargs or "abbreviation" in kwargs or "imageUrl" in kwargs:  # noqa
+            validate_empty_fields(**kwargs)
+        update_entity_fields(location_object, **kwargs)
+        location_object.save()
+        return UpdateLocation(location=location_object)
+
+
 class Query(graphene.ObjectType):
     all_locations = graphene.List(Location)
     get_rooms_in_a_location = graphene.List(
@@ -49,3 +77,4 @@ class Query(graphene.ObjectType):
 
 class Mutation(graphene.ObjectType):
     create_location = CreateLocation.Field()
+    update_location = UpdateLocation.Field()

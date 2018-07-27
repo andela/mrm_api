@@ -13,6 +13,7 @@ from api.user.models import User
 from api.role.models import Role
 from api.user_role.models import UsersRole
 from api.devices.models import Devices
+from api.office.models import Office
 
 import sys
 import os
@@ -44,7 +45,9 @@ class BaseTestCase(TestCase):
             user_role.save()
             location = Location(name='Uganda', abbreviation='KLA')
             location.save()
-            block = Block(name='EC', location_id=location.id)
+            office = Office(name="St. Catherines", location_id=location.id)
+            office.save()
+            block = Block(name='EC', office_id=office.id)
             block.save()
             floor = Floor(name='3rd', block_id=block.id)
             floor.save()

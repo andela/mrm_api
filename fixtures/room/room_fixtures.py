@@ -31,6 +31,79 @@ room_mutation_response = {
     }
 }
 
+room_name_empty_mutation = '''
+    mutation {
+        createRoom(
+            name: "", roomType: "Meeting", capacity: 4, floorId: 1,
+            officeId: 1
+            calendarId:"andela.com_3836323338323230343935@resource.calendar.google.com",
+            imageUrl: "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg") {  # noqa: E501
+            room {
+                name
+                roomType
+                capacity
+                floorId
+                imageUrl
+            }
+        }
+    }
+'''
+
+room_invalid_officeId_mutation = '''
+    mutation {
+        createRoom(
+            name: "aso", roomType: "Meeting", capacity: 4, floorId: 1,
+            officeId: 10
+            calendarId:"andela.com_3836323338323230343935@resource.calendar.google.com",
+            imageUrl: "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg") {  # noqa: E501
+            room {
+                name
+                roomType
+                capacity
+                floorId
+                imageUrl
+            }
+        }
+    }
+'''
+
+room_invalid_floorId_mutation = '''
+    mutation {
+        createRoom(
+            name: "aso", roomType: "Meeting", capacity: 4, floorId: 10,
+            officeId: 1
+            calendarId:"andela.com_3836323338323230343935@resource.calendar.google.com",
+            imageUrl: "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg") {  # noqa: E501
+            room {
+                name
+                roomType
+                capacity
+                floorId
+                imageUrl
+            }
+        }
+    }
+'''
+
+room_invalid_wingId_mutation = '''
+    mutation {
+        createRoom(
+            name: "aso", roomType: "Meeting", capacity: 4, floorId: 1,
+            wingId: 3
+            officeId: 1
+            calendarId:"andela.com_3836323338323230343935@resource.calendar.google.com",
+            imageUrl: "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg") {  # noqa: E501
+            room {
+                name
+                roomType
+                capacity
+                floorId
+                imageUrl
+            }
+        }
+    }
+'''
+
 
 rooms_query = '''
     {
@@ -103,22 +176,7 @@ room_with_non_existant_id = '''{
 }
 '''
 
-room_query_with_non_existant_id_response = {
-    "errors": [
-        {
-            "message": "Room not found",
-            "locations": [
-                {
-                    "line": 2,
-                    "column": 5
-                }
-            ]
-        }
-    ],
-    "data": {
-        "getRoomById": null
-    }
-}
+room_query_with_non_existant_id_response = "Room not found"
 
 room_occupants_query = '''
                         {
