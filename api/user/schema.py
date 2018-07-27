@@ -3,6 +3,7 @@ import graphene
 from graphene_sqlalchemy import (SQLAlchemyObjectType)
 from graphql import GraphQLError
 from api.user.models import User as UserModel
+from api.user_role.models import UsersRole
 from helpers.auth.user_details import get_user_email_from_db
 from helpers.auth.authentication import Auth
 from helpers.auth.validator import verify_email
@@ -62,6 +63,28 @@ class DeleteUser(graphene.Mutation):
         return DeleteUser(user=exact_query_user)
 
 
+class ChangeUserRole(graphene.Mutation):
+    class Arguments:
+
+        email = graphene.String(required=True)
+        role_id = graphene.Int()
+    user = graphene.Field(User)
+
+    @Auth.user_roles('Admin')
+    def mutate(self, info, email, **kwargs):
+        query_user = User.get_query(info)
+        exact_user = query_user.filter(
+            UserModel.email == email).first()
+        if not exact_user:
+            raise GraphQLError("User not found")
+        user_role = UsersRole.query.filter_by(user_id=exact_user.id).first()
+        new_role = kwargs.pop('role_id')
+        user_role.role_id = new_role
+        user_role.save()
+        return ChangeUserRole(user=exact_user)
+
+
 class Mutation(graphene.ObjectType):
     create_user = CreateUser.Field()
     delete_user = DeleteUser.Field()
+    change_user_role = ChangeUserRole.Field()
