@@ -3,14 +3,17 @@ query_get_rooms_in_location = '''{
 getRoomsInALocation(locationId:1){
     name
     abbreviation
-        blocks {
+        offices {
             name
-            floors {
+            blocks {
                 name
-                rooms {
-                    capacity
+                floors {
                     name
-                    roomType
+                    rooms {
+                        capacity
+                        name
+                        roomType
+                    }
                 }
             }
         }
@@ -24,16 +27,21 @@ expected_query_get_rooms_in_location = {
             {
                     "name": "Uganda",
                     "abbreviation": "KLA",
-                    "blocks": [{
-                        "name": "EC",
-                        "floors": [{
-                            "name": "3rd",
-                            "rooms": [{
-                                "capacity": 6,  # noqa: E501
-                                "name": "Entebbe",  # noqa: E501
-                                "roomType": "meeting",  # noqa: E501
+                    "offices": [
+                        {
+                            "name": "St. Catherines",
+                            "blocks": [{
+                                "name": "EC",
+                                "floors": [{
+                                    "name": "3rd",
+                                    "rooms": [{
+                                        "capacity": 6,  # noqa: E501
+                                        "name": "Entebbe",  # noqa: E501
+                                        "roomType": "meeting",  # noqa: E501
+                                    }]
                             }]
-                    }]
+                        }
+                    ]
                 }]
             }
         ]

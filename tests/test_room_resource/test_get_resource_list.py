@@ -1,3 +1,7 @@
+import sys
+import os
+import json
+
 from tests.base import BaseTestCase
 from fixtures.room_resource.get_room_resource_fixtures import (
     resource_query, resource_query_response, get_room_resources_by_room_id,
@@ -6,9 +10,6 @@ from fixtures.room_resource.get_room_resource_fixtures import (
 )
 from helpers.database import db_session
 
-
-import sys
-import os
 sys.path.append(os.getcwd())
 
 
@@ -24,12 +25,12 @@ class TestGetRoomResource(BaseTestCase):
         self.assertEqual(execute_query, expected_responese)
 
     def test_get_room_resources_by_room_id_error(self):
-        execute_query = self.client.execute(
-            get_room_resources_by_room_id_error,
-            context_value={'session': db_session})
-
-        expected_responese = get_room_resources_by_room_id_error_response
-        self.assertEqual(execute_query, expected_responese)
+        response = self.app_test.post(
+            '/mrm?query='+get_room_resources_by_room_id_error)
+        actual_response = json.loads(response.data)
+        expected_response = get_room_resources_by_room_id_error_response
+        self.assertEquals(
+            actual_response["errors"][0]["message"], expected_response)
 
     def test_get_room_resources_by_room_id(self):
 
