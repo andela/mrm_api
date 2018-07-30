@@ -32,7 +32,9 @@ from api.room_resource.models import Resource
 from api.user.models import User
 from api.user_role.models import UsersRole
 from api.role.models import Role
-from api.devices.models import Devices 
+from api.devices.models import Devices
+from api.wing.models import Wing
+from api.office.models import Office
 
 target_metadata = Base.metadata
 

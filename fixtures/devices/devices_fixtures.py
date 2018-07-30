@@ -107,19 +107,4 @@ query_with_non_existant_id = '''
             }
 '''
 
-non_existant_id_response = {
-                                "errors": [
-                                    {
-                                        "message": "DeviceId not found",
-                                        "locations": [
-                                            {
-                                                "line": 3,
-                                                "column": 13
-                                                }
-                                                ]
-                                                }
-                                                ],
-                                "data": {
-                                    "updateDevice": null
-                                        }
-                                        }
+non_existant_id_response = "DeviceId not found"

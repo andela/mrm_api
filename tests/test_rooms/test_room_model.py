@@ -7,33 +7,6 @@ sys.path.append(os.getcwd())
 
 
 class TestRoomModel(BaseTestCase):
-
-    def test_room_creation_with_name_empty(self):
-        """
-        Test room creation with name field empty
-        """
-        with self.assertRaises(AttributeError):
-            room = Room(
-                name="",
-                room_type="Meeting",
-                capacity=2,
-                floor_id=1
-            )
-            room.save()
-
-    def test_room_creation_with_type_empty(self):
-        """
-        Test room creation with room type field empty
-        """
-        with self.assertRaises(AttributeError):
-            room = Room(
-                name="Mbarara",
-                room_type="",
-                capacity=2,
-                floor_id=1
-            )
-            room.save()
-
     def test_if_data_can_be_saved(self):
         """
         Test that data can be saved in the Room Model by
