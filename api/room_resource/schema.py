@@ -12,6 +12,14 @@ class Resource(SQLAlchemyObjectType):
     class Meta:
         model = ResourceModel
 
+class PaginatedResource(graphene.ObjectType):
+    pages = graphene.Int()
+    limit = graphene.Int()
+    has_next = graphene.Boolean()
+    has_previous = graphene.Boolean()
+    resources = graphene.List(Resource)
+    
+
 
 # def PaginatedResource(**kwargs):
 #     print("page info is", kwargs)

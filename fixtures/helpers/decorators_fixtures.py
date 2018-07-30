@@ -34,6 +34,7 @@ room_mutation_query = '''
           calendarId: "id-w09e9slkj"
           roomType: "Meeting",
           capacity: 1,
+          officeId: 1
           floorId: 1,
           imageUrl: "http://url.com") {
             room {
