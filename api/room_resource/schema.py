@@ -12,13 +12,34 @@ class Resource(SQLAlchemyObjectType):
     class Meta:
         model = ResourceModel
 
+
+# def PaginatedResource(**kwargs):
+#     print("page info is", kwargs)
+#     return kwargs
+
+
 class PaginatedResource(graphene.ObjectType):
     pages = graphene.Int()
-    limit = graphene.Int()
     has_next = graphene.Boolean()
     has_previous = graphene.Boolean()
     resources = graphene.List(Resource)
     
+    def resolve_resources(self, info, **kwargs):
+        print("this is kwargs", kwargs)
+        page = kwargs.pop("page")
+        per_page = kwargs.pop("per_page")
+        if page < 1:
+            return GraphQLError("No page requested")
+        page = page - 1
+
+        query = Resource.get_query(info)
+        print("this is query", query)
+        result = query.limit(per_page).offset(page*per_page)
+        # import pdb; pdb.set_trace()
+        if result.count() == 0: 
+            return GraphQLError("No more resources")
+        return result 
+       
 
 
 class CreateResource(graphene.Mutation):
@@ -79,22 +100,15 @@ class DeleteResource(graphene.Mutation):
 
 class Query(graphene.ObjectType):
     
-    all_resources = graphene.List(PaginatedResource, page = graphene.Int(),
-                    per_page = graphene.Int())
-    # page_info = graphene.List(PaginatedResource)
+    all_resources = graphene.Field(PaginatedResource, page=graphene.Int(),
+                            per_page=graphene.Int())
     get_resources_by_room_id = graphene.List(lambda: Resource,
                                              room_id=graphene.Int())
 
-    def resolve_all_resources(self, info, page, per_page):
-        if page < 1:
-            return GraphQLError("No page requested")
-        page = page - 1
-        query = Resource.get_query(info)
-        result = query.limit(per_page).offset(page*per_page)
-        # import pdb; pdb.set_trace()
-        if result.count() == 0:
-            return GraphQLError("No more resources")
-        return result        
+    def resolve_all_resources(self, info, **kwargs):
+        print("the kwargs are:", kwargs)
+        resp = PaginatedResource(kwargs)
+        return resp        
 
     
     def resolve_get_resources_by_room_id(self, info, room_id):
@@ -103,12 +117,7 @@ class Query(graphene.ObjectType):
         if not check_room:
             raise GraphQLError("Room has no resource yet")
 
-        return query.filter(ResourceModel.room_id == room_id)
-
-    # def resolve_page_info(self, info):
-    #     my_info = PaginatedResource
-    #     # import pdb; pdb.set_trace()
-    #     return my_info       
+        return query.filter(ResourceModel.room_id == room_id)      
 
     
     def resolve_get_resources_by_room_id(self, info, room_id):
