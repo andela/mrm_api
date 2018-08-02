@@ -1,10 +1,12 @@
 import graphene
+from math import ceil
 from graphene_sqlalchemy import SQLAlchemyObjectType, SQLAlchemyConnectionField
 from graphql import GraphQLError
 
 from api.room_resource.models import Resource as ResourceModel
 from utilities.utility import validate_empty_fields, update_entity_fields
 from helpers.auth.authentication import Auth
+# from helpers.paginators.resource_paginator import Pagination
 
 
 class Resource(SQLAlchemyObjectType):
@@ -13,27 +15,25 @@ class Resource(SQLAlchemyObjectType):
         model = ResourceModel
 
 
-# def PaginatedResource(**kwargs):
-#     print("page info is", kwargs)
-#     return kwargs
-
-
 class PaginatedResource(graphene.ObjectType):
     pages = graphene.Int()
     has_next = graphene.Boolean()
     has_previous = graphene.Boolean()
     resources = graphene.List(Resource)
+
+    def __init__(self, **kwargs):
+        self.page = kwargs.get('page')
+        self.per_page = kwargs.get('per_page')
     
-    def resolve_resources(self, info, **kwargs):
-        print("this is kwargs", kwargs)
-        page = kwargs.pop("page")
-        per_page = kwargs.pop("per_page")
+    def resolve_resources(self, info):
+        page = self.page
+        per_page = self.per_page
         if page < 1:
             return GraphQLError("No page requested")
         page = page - 1
+        has_next = False
 
         query = Resource.get_query(info)
-        print("this is query", query)
         result = query.limit(per_page).offset(page*per_page)
         # import pdb; pdb.set_trace()
         if result.count() == 0: 
@@ -106,8 +106,7 @@ class Query(graphene.ObjectType):
                                              room_id=graphene.Int())
 
     def resolve_all_resources(self, info, **kwargs):
-        print("the kwargs are:", kwargs)
-        resp = PaginatedResource(kwargs)
+        resp = PaginatedResource(**kwargs)
         return resp        
 
     
