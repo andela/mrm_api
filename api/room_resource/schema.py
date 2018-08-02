@@ -15,10 +15,10 @@ class Resource(SQLAlchemyObjectType):
 
 
 class PaginatedResource(graphene.ObjectType):
-    pages = graphene.Int(pages = graphene.Int())
-    query_total = graphene.Int(query_total = graphene.Int())
-    has_next = graphene.Boolean(has_next = graphene.Boolean())
-    has_previous = graphene.Boolean(has_previous = graphene.Boolean())
+    pages = graphene.Int(pages=graphene.Int())
+    query_total = graphene.Int(query_total=graphene.Int())
+    has_next = graphene.Boolean(has_next=graphene.Boolean())
+    has_previous = graphene.Boolean(has_previous=graphene.Boolean())
     resources = graphene.List(Resource)
 
     def __init__(self, **kwargs):
@@ -26,7 +26,7 @@ class PaginatedResource(graphene.ObjectType):
         self.per_page = kwargs.get('per_page')
         self.query_total
         self.pages
-    
+
     def resolve_resources(self, info):
         page = self.page
         per_page = self.per_page
@@ -38,7 +38,7 @@ class PaginatedResource(graphene.ObjectType):
         self.query_total = query.count()
         result = query.limit(per_page).offset(page*per_page)
         # import pdb; pdb.set_trace()
-        if result.count() == 0: 
+        if result.count() == 0:
             return GraphQLError("No more resources")
         return result
 
@@ -66,9 +66,6 @@ class PaginatedResource(graphene.ObjectType):
         else:
             has_previous = False
         return has_previous
-
-
-       
 
 
 class CreateResource(graphene.Mutation):
@@ -128,26 +125,16 @@ class DeleteResource(graphene.Mutation):
 
 
 class Query(graphene.ObjectType):
-    
+
     all_resources = graphene.Field(PaginatedResource, page=graphene.Int(),
-                            per_page=graphene.Int())
+                                   per_page=graphene.Int())
     get_resources_by_room_id = graphene.List(lambda: Resource,
                                              room_id=graphene.Int())
 
     def resolve_all_resources(self, info, **kwargs):
         resp = PaginatedResource(**kwargs)
-        return resp        
+        return resp
 
-    
-    def resolve_get_resources_by_room_id(self, info, room_id):
-        query = Resource.get_query(info)
-        check_room = query.filter(ResourceModel.room_id == room_id).first()
-        if not check_room:
-            raise GraphQLError("Room has no resource yet")
-
-        return query.filter(ResourceModel.room_id == room_id)
-
-    
     def resolve_get_resources_by_room_id(self, info, room_id):
         query = Resource.get_query(info)
         check_room = query.filter(ResourceModel.room_id == room_id).first()
