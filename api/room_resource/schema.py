@@ -1,12 +1,11 @@
 import graphene
 from math import ceil
-from graphene_sqlalchemy import SQLAlchemyObjectType, SQLAlchemyConnectionField
+from graphene_sqlalchemy import SQLAlchemyObjectType
 from graphql import GraphQLError
 
 from api.room_resource.models import Resource as ResourceModel
 from utilities.utility import validate_empty_fields, update_entity_fields
 from helpers.auth.authentication import Auth
-# from helpers.paginators.resource_paginator import Pagination
 
 
 class Resource(SQLAlchemyObjectType):
@@ -16,14 +15,17 @@ class Resource(SQLAlchemyObjectType):
 
 
 class PaginatedResource(graphene.ObjectType):
-    pages = graphene.Int()
-    has_next = graphene.Boolean()
-    has_previous = graphene.Boolean()
+    pages = graphene.Int(pages = graphene.Int())
+    query_total = graphene.Int(query_total = graphene.Int())
+    has_next = graphene.Boolean(has_next = graphene.Boolean())
+    has_previous = graphene.Boolean(has_previous = graphene.Boolean())
     resources = graphene.List(Resource)
 
     def __init__(self, **kwargs):
         self.page = kwargs.get('page')
         self.per_page = kwargs.get('per_page')
+        self.query_total
+        self.pages
     
     def resolve_resources(self, info):
         page = self.page
@@ -31,14 +33,41 @@ class PaginatedResource(graphene.ObjectType):
         if page < 1:
             return GraphQLError("No page requested")
         page = page - 1
-        has_next = False
 
         query = Resource.get_query(info)
+        self.query_total = query.count()
         result = query.limit(per_page).offset(page*per_page)
         # import pdb; pdb.set_trace()
         if result.count() == 0: 
             return GraphQLError("No more resources")
-        return result 
+        return result
+
+    def resolve_pages(self, pages):
+        self.pages = ceil(self.query_total / self.per_page)
+        pages = self.pages
+        return pages
+
+    def resolve_has_next(self, has_next):
+        page = self.page
+        pages = self.pages
+        pages = self.resolve_pages(pages)
+        if page < pages:
+            has_next = True
+        else:
+            has_next = False
+        return has_next
+
+    def resolve_has_previous(self, has_previous):
+        page = self.page
+        pages = self.pages
+        pages = self.resolve_pages(pages)
+        if (page > 1) and (pages > 1) and (page <= pages):
+            has_previous = True
+        else:
+            has_previous = False
+        return has_previous
+
+
        
 
 
@@ -116,7 +145,7 @@ class Query(graphene.ObjectType):
         if not check_room:
             raise GraphQLError("Room has no resource yet")
 
-        return query.filter(ResourceModel.room_id == room_id)      
+        return query.filter(ResourceModel.room_id == room_id)
 
     
     def resolve_get_resources_by_room_id(self, info, room_id):
