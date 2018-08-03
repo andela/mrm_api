@@ -13,6 +13,14 @@ class Resource(SQLAlchemyObjectType):
     class Meta:
         model = ResourceModel
 
+class PaginatedResource(graphene.ObjectType):
+    pages = graphene.Int()
+    limit = graphene.Int()
+    has_next = graphene.Boolean()
+    has_previous = graphene.Boolean()
+    resources = graphene.List(Resource)
+    
+
 
 class PaginatedResource(graphene.ObjectType):
     pages = graphene.Int()
@@ -141,6 +149,7 @@ class Query(graphene.ObjectType):
         resp = PaginatedResource(**kwargs)
         return resp
 
+    
     def resolve_get_resources_by_room_id(self, info, room_id):
         query = Resource.get_query(info)
         check_room = query.filter(ResourceModel.room_id == room_id).first()
