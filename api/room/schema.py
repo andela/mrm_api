@@ -6,7 +6,6 @@ from graphql import GraphQLError
 from api.room.models import Room as RoomModel
 from api.office.models import Office
 from helpers.calendar.events import RoomSchedules
-from helpers.calendar.calendar import check_calendar_id
 from utilities.utility import validate_empty_fields, update_entity_fields
 from helpers.auth.authentication import Auth
 from helpers.auth.verify_ids_for_room import verify_ids
@@ -119,8 +118,11 @@ class Query(graphene.ObjectType):
         return check_room
 
     def resolve_room_occupants(self, info, calendar_id, days):
-        result = check_calendar_id(info, calendar_id)
-        if not result:
+        query = Room.get_query(info)
+        check_calendar_id = query.filter(
+            RoomModel.calendar_id == calendar_id
+        ).first()
+        if not check_calendar_id:
             raise GraphQLError("Invalid CalendarId")
         room_occupants = RoomSchedules.get_room_schedules(
             self,
@@ -131,8 +133,11 @@ class Query(graphene.ObjectType):
         )
 
     def resolve_room_schedule(self, info, calendar_id, days):
-        result = check_calendar_id(info, calendar_id)
-        if not result:
+        query = Room.get_query(info)
+        check_calendar_id = query.filter(
+            RoomModel.calendar_id == calendar_id
+        ).first()
+        if not check_calendar_id:
             raise GraphQLError("CalendarId given not assigned to any room on converge")  # noqa: E501
         room_schedule = RoomSchedules.get_room_schedules(
             self,
