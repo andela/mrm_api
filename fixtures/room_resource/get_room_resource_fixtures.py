@@ -1,18 +1,24 @@
 resource_query = '''
     query {
         allResources{
-                    name
+                    resources{
+                      name
+                    }
               }
         }
 '''
 
 resource_query_response = {
   "data": {
-    "allResources": [{
-        "name": "Markers"
-      }]
-    }
+    "allResources": {
+      "resources": [
+        {
+          "name": "Markers"
+        }
+      ]
+      }
   }
+}
 
 get_room_resources_by_room_id = '''
 {
@@ -31,6 +37,37 @@ get_room_resources_by_room_id_response = {
         "name": "Markers"
       }
     ]
+  }
+}
+
+get_paginated_room_resources = '''
+ {
+  allResources(page:1, perPage:2){
+   resources{
+      name
+   }
+   hasNext
+   hasPrevious
+   pages
+}
+}
+'''
+
+get_paginated_room_resources_response = {
+  "data": {
+    "allResources": {
+      "resources": [
+        {
+          "name": "Speaker"
+        },
+        {
+          "name": "Chair"
+        }
+      ],
+      "hasNext": 'true',
+      "hasPrevious": 'false',
+      "pages": '2'
+    }
   }
 }
 
