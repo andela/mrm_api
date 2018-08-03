@@ -6,6 +6,7 @@ from graphql import GraphQLError
 from api.room_resource.models import Resource as ResourceModel
 from utilities.utility import validate_empty_fields, update_entity_fields
 from helpers.auth.authentication import Auth
+# from helpers.paginators.resource_paginator import Pagination
 
 
 class Resource(SQLAlchemyObjectType):
@@ -41,7 +42,6 @@ class PaginatedResource(graphene.ObjectType):
             page = page - 1
             self.query_total = query.count()
             result = query.limit(per_page).offset(page*per_page)
-            # import pdb; pdb.set_trace()
             if result.count() == 0:
                 return GraphQLError("No more resources")
             return result
