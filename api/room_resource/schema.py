@@ -16,10 +16,10 @@ class Resource(SQLAlchemyObjectType):
 
 
 class PaginatedResource(graphene.ObjectType):
-    pages = graphene.Int(pages=graphene.Int())
-    query_total = graphene.Int(query_total=graphene.Int())
-    has_next = graphene.Boolean(has_next=graphene.Boolean())
-    has_previous = graphene.Boolean(has_previous=graphene.Boolean())
+    pages = graphene.Int()
+    query_total = graphene.Int()
+    has_next = graphene.Boolean()
+    has_previous = graphene.Boolean()
     resources = graphene.List(Resource)
 
     def __init__(self, **kwargs):
