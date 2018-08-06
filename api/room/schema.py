@@ -94,7 +94,13 @@ class Query(graphene.ObjectType):
     get_room_by_id = graphene.Field(
         Room,
         room_id=graphene.Int()
+        )
+
+    get_room_by_name = graphene.List(
+        Room,
+        name=graphene.String()
     )
+
     room_schedule = graphene.Field(
         Calendar,
         calendar_id=graphene.String(),
@@ -116,6 +122,15 @@ class Query(graphene.ObjectType):
         if not check_room:
             raise GraphQLError("Room not found")
         return check_room
+
+    def resolve_get_room_by_name(self, info, name):
+        query = Room.get_query(info)
+        if name == "":
+            raise GraphQLError("Please input Room Name")
+        check_room_name = list(query.filter(RoomModel.name.ilike("%" + name + "%")).all())   # noqa: E501
+        if not check_room_name:
+            raise GraphQLError("Room not found")
+        return check_room_name
 
     def resolve_room_occupants(self, info, calendar_id, days):
         query = Room.get_query(info)
