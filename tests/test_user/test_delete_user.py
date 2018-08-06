@@ -4,7 +4,8 @@ import json
 
 from tests.base import BaseTestCase
 from fixtures.user.delete_user import (
-    delete_user, expected_query_after_delete, delete_self, user_not_found)
+    delete_user, expected_query_after_delete, delete_self, user_not_found,
+    expected_query_after_delete_for_admin)
 from fixtures.token.token_fixture import (admin_api_token, user_api_token)
 from api.user.models import User
 from api.role.models import Role
@@ -45,10 +46,9 @@ class TestDeleteUser(BaseTestCase):
         api_headers = {'token': admin_api_token}
         response = self.app_test.post('/mrm?query='+delete_user,
                                       headers=api_headers)
-        expected_response = "You are not authorized to delete an Admin"
+        expected_response = expected_query_after_delete_for_admin
         actual_response = json.loads(response.data)
-        self.assertIn(expected_response,
-                      actual_response["errors"][0]["message"])
+        self.assertEquals(expected_response, actual_response)
 
     def test_delete_self(self):
         api_headers = {'token': admin_api_token}

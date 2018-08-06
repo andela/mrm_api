@@ -64,3 +64,21 @@ expected_query_after_delete = {
         }
     }
 }
+
+expected_query_after_delete_for_admin = {
+    "data": {
+        "deleteUser": {
+            "user": {
+                "id": "2",
+                "email": "new.user@andela.com",
+                "location": "Kampala",
+                "roles": [
+                    {
+                        "id": "1",
+                        "role": "Admin"
+                    }
+                ]
+            }
+        }
+    }
+}

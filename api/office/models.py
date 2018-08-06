@@ -6,7 +6,7 @@ from utilities.utility import Utility
 from api.location.models import Location  # noqa: F401
 from api.block import models
 from helpers.database import db_session
-from helpers.auth.check_office_name import check_office_name
+from helpers.auth.validator import check_office_name
 
 
 class Office(Base, Utility):
