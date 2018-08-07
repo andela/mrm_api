@@ -1,4 +1,5 @@
 import graphene
+from math import ceil
 
 from graphene_sqlalchemy import (SQLAlchemyObjectType)
 from graphql import GraphQLError
@@ -47,6 +48,66 @@ class CreateRoom(graphene.Mutation):
         return CreateRoom(room=room)
 
 
+class PaginatedRooms(graphene.ObjectType):
+    pages = graphene.Int()
+    query_total = graphene.Int()
+    has_next = graphene.Boolean()
+    has_previous = graphene.Boolean()
+    rooms = graphene.List(Room)
+
+    def __init__(self, **kwargs):
+        self.page = kwargs.pop('page', None)
+        self.per_page = kwargs.pop('per_page', None)
+        self.query_total
+        self.pages
+
+    def resolve_rooms(self, info):
+        page = self.page
+        per_page = self.per_page
+        query = Room.get_query(info)
+        if not page:
+            return query.all()
+
+        if page:
+            if page < 1:
+                return GraphQLError("No page requested")
+
+            page = page - 1
+            self.query_total = query.count()
+            result = query.limit(per_page).offset(page*per_page)
+            if result.count() == 0:
+                return GraphQLError("No more resources")
+            return result
+
+    def resolve_pages(self, pages):
+        if self.per_page:
+            self.pages = ceil(self.query_total / self.per_page)
+        pages = self.pages
+        return pages
+
+    def resolve_has_next(self, has_next):
+        if self.page:
+            page = self.page
+            pages = self.pages
+            pages = self.resolve_pages(pages)
+            if page < pages:
+                has_next = True
+            else:
+                has_next = False
+        return has_next
+
+    def resolve_has_previous(self, has_previous):
+        if self.page:
+            page = self.page
+            pages = self.resolve_pages(self.pages)
+            if (page > 1) and (pages > 1) and (page <= pages):
+                has_previous = True
+            else:
+                has_previous = False
+
+        return has_previous
+
+
 class UpdateRoom(graphene.Mutation):
     class Arguments:
         room_id = graphene.Int()
@@ -90,7 +151,8 @@ class DeleteRoom(graphene.Mutation):
 
 
 class Query(graphene.ObjectType):
-    all_rooms = graphene.List(Room)
+    all_rooms = graphene.Field(PaginatedRooms, page=graphene.Int(),
+                                   per_page=graphene.Int())
     get_room_by_id = graphene.Field(
         Room,
         room_id=graphene.Int()
@@ -106,9 +168,9 @@ class Query(graphene.ObjectType):
         days=graphene.Int(),
     )
 
-    def resolve_all_rooms(self, info):
-        query = Room.get_query(info)
-        return query.all()
+    def resolve_all_rooms(self, info, **kwargs):
+        response = PaginatedRooms(**kwargs)
+        return response
 
     def resolve_get_room_by_id(self, info, room_id):
         query = Room.get_query(info)
