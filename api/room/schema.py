@@ -152,7 +152,7 @@ class DeleteRoom(graphene.Mutation):
 
 class Query(graphene.ObjectType):
     all_rooms = graphene.Field(PaginatedRooms, page=graphene.Int(),
-                                   per_page=graphene.Int())
+                               per_page=graphene.Int())
     get_room_by_id = graphene.Field(
         Room,
         room_id=graphene.Int()
