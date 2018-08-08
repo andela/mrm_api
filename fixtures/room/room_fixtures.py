@@ -248,3 +248,71 @@ room_schedule_of_non_existant_calendar_id_response = {
         "roomSchedule": null
     }
 }
+
+room_search_by_name = '''
+{
+    getRoomByName(name:"Entebbe"){
+        name
+    }
+}
+'''
+room_search_by_name_response = {
+    "data": {
+        "getRoomByName": [
+            {
+                "name": "Entebbe"
+                }]
+    }
+}
+
+room_search_by_empty_name = '''
+{
+    getRoomByName(name:""){
+        name
+        }
+}
+
+'''
+room_search_by_empty_name_response = {
+    "errors": [
+        {
+           "message": "Please input Room Name",
+           "locations": [
+               {
+                   "line": 3,
+                   "column": 5
+                   }
+                   ], "path": [
+                       "getRoomByName"
+                       ]
+                       }
+                       ],  "data": {
+                           "getRoomByName": null
+                           }
+                           }
+
+room_search_by_invalid_name = '''
+{
+    getRoomByName(name:"bbbb"){
+        name
+    }
+}
+'''
+
+room_search_by_invalid_name_response = {
+    "errors": [
+        {
+            "message": "Room not found",
+            "locations": [
+                {
+                    "line": 3,
+                    "column": 5
+                    }
+                ], "path": [
+                    "getRoomByName"
+                    ]
+        }
+    ], "data": {
+        "getRoomByName": null
+    }
+}
