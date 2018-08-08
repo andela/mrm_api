@@ -1,4 +1,5 @@
 alembic==0.9.8
+bugsnag==3.4.2
 coverage==4.5.1
 Flask==0.12.2
 Flask-Cors==3.0.4
