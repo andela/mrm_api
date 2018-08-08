@@ -106,14 +106,16 @@ room_invalid_wingId_mutation = '''
 
 
 rooms_query = '''
-    {
-    allRooms{
-                name
-                capacity
-                roomType
-                imageUrl
-                }
+query {
+  allRooms{
+   rooms{
+      name
+      capacity
+      roomType
+      imageUrl
+        }
     }
+}
     '''
 db_rooms_query = '''
     {
@@ -139,13 +141,45 @@ db_rooms_query_response = {
 
 query_rooms_response = {
     "data": {
-        "allRooms": [{
-                "name": "Entebbe",
-                "capacity": 6,
-                "roomType": "meeting",
-                "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg"  # noqa: E501
-            }]
+        "allRooms": {
+            "rooms": [
+                {
+                    "name": "Entebbe",
+                    "capacity": 6,
+                    "roomType": "meeting",
+                    "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg"  # noqa: E501
+                }
+            ]
+        }
     }
+}
+
+paginated_rooms_query = '''
+ query {
+  allRooms(page:1, perPage:1){
+   rooms{
+      name
+   }
+   hasNext
+   hasPrevious
+   pages
+}
+}
+'''
+
+paginated_rooms_response = {
+  "data": {
+    "allRooms": {
+      "rooms": [
+        {
+          "name": "Entebbe"
+        }
+      ],
+      "hasNext": False,
+      "hasPrevious": False,
+      "pages": 1
+    }
+  }
 }
 
 room_query_by_id = '''
