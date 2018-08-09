@@ -1,6 +1,22 @@
 delete_user = '''
 mutation {
-    deleteUser(userId: 2) {
+    deleteUser(email: "new.user@andela.com") {
+        user{
+            id
+            email
+            location
+            roles {
+                id
+                role
+            }
+        }
+    }
+}
+'''
+
+delete_user_2 = '''
+mutation {
+    deleteUser(email: "test.test@andela.com") {
         user{
             id
             email
@@ -16,7 +32,7 @@ mutation {
 
 delete_self = '''
 mutation {
-    deleteUser(userId: 1) {
+    deleteUser(email: "patrick.walukagga@andela.com") {
         user{
             id
             email
@@ -32,7 +48,7 @@ mutation {
 
 user_not_found = '''
 mutation {
-    deleteUser(userId: 8) {
+    deleteUser(email: "test@andela.com") {
         user{
             id
             email

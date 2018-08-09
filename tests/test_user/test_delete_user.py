@@ -5,7 +5,7 @@ import json
 from tests.base import BaseTestCase
 from fixtures.user.delete_user import (
     delete_user, expected_query_after_delete, delete_self, user_not_found,
-    expected_query_after_delete_for_admin)
+    expected_query_after_delete_for_admin, delete_user_2)
 from fixtures.token.token_fixture import (admin_api_token, user_api_token)
 from api.user.models import User
 from api.role.models import Role
@@ -32,7 +32,7 @@ class TestDeleteUser(BaseTestCase):
                               role_id=role.id)
         user_role.save()
         api_headers = {'token': admin_api_token}
-        response = self.app_test.post('/mrm?query='+delete_user,
+        response = self.app_test.post('/mrm?query='+delete_user_2,
                                       headers=api_headers)
         expected_response = expected_query_after_delete
         self.assertEquals(json.loads(response.data), expected_response)
