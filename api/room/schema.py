@@ -11,7 +11,7 @@ from helpers.calendar.calendar import check_calendar_id
 from utilities.utility import validate_empty_fields, update_entity_fields
 from helpers.auth.authentication import Auth
 from helpers.auth.verify_ids_for_room import verify_ids
-from helpers.auth.check_office_name import assert_wing_is_required
+from helpers.auth.validator import assert_wing_is_required
 from helpers.auth.add_office import verify_attributes
 
 

@@ -40,10 +40,11 @@ class RoomSchedules(Credentials):
     # Define Attendees here
         for event in calendar_events:
             all_attendees = []
-            for attendee in event['attendees']:
-                attendees = attendee.get('email', attendee.get('email'))
-                match = re.match(
-                    r"(^[a-zA-Z0-9_.+-]+@andela+\.com+$)", attendees)
-                if match:
-                    all_attendees.append(attendee.get('email'))
+            if event.get('attendees'):
+                for attendee in event['attendees']:
+                    attendees = attendee.get('email', attendee.get('email'))
+                    match = re.match(
+                        r"(^[a-zA-Z0-9_.+-]+@andela+\.com+$)", attendees)
+                    if match:
+                        all_attendees.append(attendee.get('email'))
         return [all_attendees, output]

@@ -13,3 +13,8 @@ def assert_wing_is_required(office, kwargs):
     else:
         if kwargs.get('wing_id'):
             raise AttributeError("wing_id is not required for this office")
+
+
+def verify_email(email):
+    return bool(re.match('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$',
+                email))
