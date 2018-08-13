@@ -32,7 +32,7 @@ mutation {
 
 delete_self = '''
 mutation {
-    deleteUser(email: "patrick.walukagga@andela.com") {
+    deleteUser(email: "peter.walugembe@andela.com") {
         user{
             id
             email

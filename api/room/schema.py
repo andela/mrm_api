@@ -7,12 +7,12 @@ from graphql import GraphQLError
 from api.room.models import Room as RoomModel
 from api.office.models import Office
 from helpers.calendar.events import RoomSchedules
-from helpers.calendar.calendar import check_calendar_id
 from utilities.utility import validate_empty_fields, update_entity_fields
 from helpers.auth.authentication import Auth
 from helpers.auth.verify_ids_for_room import verify_ids
 from helpers.auth.validator import assert_wing_is_required
 from helpers.auth.add_office import verify_attributes
+from helpers.room_filter.room_filter import room_filter
 
 
 class Room(SQLAlchemyObjectType):
@@ -23,6 +23,10 @@ class Room(SQLAlchemyObjectType):
 class Calendar(graphene.ObjectType):
     events = graphene.String()
     occupants = graphene.String()
+
+
+class RoomFilter(graphene.ObjectType):
+    rooms = graphene.List(Room)
 
 
 class CreateRoom(graphene.Mutation):
@@ -61,21 +65,25 @@ class PaginatedRooms(graphene.ObjectType):
         self.per_page = kwargs.pop('per_page', None)
         self.query_total
         self.pages
+        self.filter_data = {}
+        self.filter_data.update(**kwargs)
 
-    def resolve_rooms(self, info):
+    def resolve_rooms(self, info, **kwargs):
         page = self.page
         per_page = self.per_page
+        filter_data = self.filter_data
         query = Room.get_query(info)
+        exact_query = room_filter(query, filter_data)
         if not page:
-            return query.all()
+            return exact_query.all()
 
         if page:
             if page < 1:
                 return GraphQLError("No page requested")
 
             page = page - 1
-            self.query_total = query.count()
-            result = query.limit(per_page).offset(page*per_page)
+            self.query_total = exact_query.count()
+            result = exact_query.limit(per_page).offset(page*per_page)
             if result.count() == 0:
                 return GraphQLError("No more resources")
             return result
@@ -152,16 +160,25 @@ class DeleteRoom(graphene.Mutation):
 
 
 class Query(graphene.ObjectType):
-    all_rooms = graphene.Field(PaginatedRooms, page=graphene.Int(),
-                               per_page=graphene.Int())
+    all_rooms = graphene.Field(
+        PaginatedRooms,
+        page=graphene.Int(),
+        per_page=graphene.Int(),
+        capacity=graphene.Int(),
+        resources=graphene.String(),
+        location=graphene.String()
+        )
     get_room_by_id = graphene.Field(
         Room,
         room_id=graphene.Int()
         )
-
     get_room_by_name = graphene.List(
         Room,
         name=graphene.String()
+        )
+    get_room_by_id = graphene.Field(
+        Room,
+        room_id=graphene.Int(),
     )
 
     room_schedule = graphene.Field(
@@ -196,8 +213,11 @@ class Query(graphene.ObjectType):
         return check_room_name
 
     def resolve_room_occupants(self, info, calendar_id, days):
-        result = check_calendar_id(info, calendar_id)
-        if not result:
+        query = Room.get_query(info)
+        check_calendar_id = query.filter(
+            RoomModel.calendar_id == calendar_id
+        ).first()
+        if not check_calendar_id:
             raise GraphQLError("Invalid CalendarId")
         room_occupants = RoomSchedules.get_room_schedules(
             self,
@@ -208,8 +228,11 @@ class Query(graphene.ObjectType):
         )
 
     def resolve_room_schedule(self, info, calendar_id, days):
-        result = check_calendar_id(info, calendar_id)
-        if not result:
+        query = Room.get_query(info)
+        check_calendar_id = query.filter(
+            RoomModel.calendar_id == calendar_id
+        ).first()
+        if not check_calendar_id:
             raise GraphQLError("CalendarId given not assigned to any room on converge")  # noqa: E501
         room_schedule = RoomSchedules.get_room_schedules(
             self,
