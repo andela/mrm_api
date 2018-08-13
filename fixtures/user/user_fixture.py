@@ -22,15 +22,18 @@ user_mutation_response = {
 
 user_query = '''
 query {
-  users{
-    email,
-    location
-  }
+    users{
+      users{
+         email,
+         location
+      }
+   }
 }
 '''
 
 user_query_response = {
   "data": {
+    "users": {
     "users": [
       {
         "email": "patrick.walukagga@andela.com",
@@ -41,6 +44,37 @@ user_query_response = {
         "location": "Lagos"
       },
     ]
+    }
+  }
+}
+
+paginated_users_query = '''
+query {
+    users(page:1, perPage:1){
+      users{
+         email
+         location
+      }
+      hasNext
+      hasPrevious
+      pages
+   }
+}
+'''
+
+paginated_users_response = {
+  "data": {
+    "users": {
+      "users": [
+        {
+          "email": "patrick.walukagga@andela.com",
+          "location": "Kampala"
+        }
+      ],
+      "hasNext": False,
+      "hasPrevious": False,
+      "pages": 1
+    }
   }
 }
 
