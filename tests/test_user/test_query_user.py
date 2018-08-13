@@ -32,9 +32,7 @@ class TestQueryUser(BaseTestCase):
 
     def test_paginate__users_query(self):
         response = self.app_test.post('/mrm?query='+paginated_users_query)
-        print("the awaited response is!!!!!!!!!!!!!!!!!!", paginated_users_response)
         paginate_query = json.loads(response.data)
-        print("the returned response is???????????????????????????", paginate_query)
         expected_response = paginated_users_response
         self.assertEqual(paginate_query, expected_response)
 

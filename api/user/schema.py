@@ -28,6 +28,7 @@ class CreateUser(graphene.Mutation):
 
         return CreateUser(user=user)
 
+
 class PaginatedUsers(graphene.ObjectType):
     pages = graphene.Int()
     query_total = graphene.Int()
@@ -87,9 +88,10 @@ class PaginatedUsers(graphene.ObjectType):
 
         return has_previous
 
+
 class Query(graphene.ObjectType):
     users = graphene.Field(PaginatedUsers, page=graphene.Int(),
-                               per_page=graphene.Int())
+                           per_page=graphene.Int())
     user = graphene.Field(lambda: User, email=graphene.String())
 
     def resolve_users(self, info, **kwargs):

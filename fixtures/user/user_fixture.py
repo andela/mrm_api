@@ -34,16 +34,16 @@ query {
 user_query_response = {
   "data": {
     "users": {
-    "users": [
-      {
-        "email": "peter.walugembe@andela.com",
-        "location": "Kampala"
-      },
-      {
-        "email": "mrm@andela.com",
-        "location": "Lagos"
-      },
-    ]
+      "users": [
+        {
+          "email": "peter.walugembe@andela.com",
+          "location": "Kampala"
+        },
+        {
+          "email": "mrm@andela.com",
+          "location": "Lagos"
+        },
+      ]
     }
   }
 }
@@ -67,7 +67,7 @@ paginated_users_response = {
     "users": {
       "users": [
         {
-          "email": "patrick.walukagga@andela.com",
+          "email": "peter.walugembe@andela.com",
           "location": "Kampala"
         }
       ],
