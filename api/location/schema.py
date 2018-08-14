@@ -5,7 +5,9 @@ from api.location.models import Location as LocationModel
 
 from api.devices.models import Devices as DevicesModel  # noqa: F401
 from api.room_resource.models import Resource as ResourceModel  # noqa: F401
+from api.room.schema import Room
 from utilities.utility import validate_country_field, validate_timezone_field, update_entity_fields, validate_empty_fields  # noqa: E501
+from helpers.room_filter.room_filter import room_join_location
 
 
 class Location(SQLAlchemyObjectType):
@@ -61,7 +63,7 @@ class UpdateLocation(graphene.Mutation):
 class Query(graphene.ObjectType):
     all_locations = graphene.List(Location)
     get_rooms_in_a_location = graphene.List(
-        lambda: Location,
+        lambda: Room,
         location_id=graphene.Int()
     )
 
@@ -70,9 +72,10 @@ class Query(graphene.ObjectType):
         return query.all()
 
     def resolve_get_rooms_in_a_location(self, info, location_id):
-        query = Location.get_query(info)
-        result = query.filter(LocationModel.id == location_id)
-        return result
+        query = Room.get_query(info)
+        exact_query = room_join_location(query)
+        result = exact_query.filter(LocationModel.id == location_id)
+        return result.all()
 
 
 class Mutation(graphene.ObjectType):
