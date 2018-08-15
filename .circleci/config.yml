@@ -100,7 +100,7 @@ jobs:
             gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
       - run:
           name: Deploy to gcloud
-          command: gcloud beta compute instance-groups managed rolling-action replace mrm-sandbox-backend-instance-group --region europe-west1
+          command: gcloud beta compute instance-groups managed rolling-action replace mrm-staging-backend-instance-group --region europe-west1
 
 workflows:
   version: 2
@@ -112,5 +112,5 @@ workflows:
             - build
           filters:
             branches:
-              only: ch-159794383-fix-instance-name
+              only: develop
 
