@@ -2,21 +2,9 @@
 query_get_rooms_in_location = '''{
 getRoomsInALocation(locationId:1){
     name
-    abbreviation
-        offices {
-            name
-            blocks {
-                name
-                floors {
-                    name
-                    rooms {
-                        capacity
-                        name
-                        roomType
-                    }
-                }
-            }
-        }
+    capacity
+    roomType
+    imageUrl
     }
 }
 '''
@@ -25,24 +13,10 @@ expected_query_get_rooms_in_location = {
 "data": {
         "getRoomsInALocation": [
             {
-                    "name": "Uganda",
-                    "abbreviation": "KLA",
-                    "offices": [
-                        {
-                            "name": "St. Catherines",
-                            "blocks": [{
-                                "name": "EC",
-                                "floors": [{
-                                    "name": "3rd",
-                                    "rooms": [{
-                                        "capacity": 6,  # noqa: E501
-                                        "name": "Entebbe",  # noqa: E501
-                                        "roomType": "meeting",  # noqa: E501
-                                    }]
-                            }]
-                        }
-                    ]
-                }]
+                "name": "Entebbe",
+                "capacity": 6,
+                "roomType": "meeting",
+                "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg"  # noqa: E501
             }
         ]
     }
