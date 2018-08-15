@@ -31,11 +31,15 @@ class SearchRoomsByName(BaseTestCase):
         search_room_empty_query = self.app_test.post(
             '/mrm?query='+room_search_by_empty_name, headers=api_headers)
         actual_response = json.loads(search_room_empty_query.data)
-        self.assertEquals(actual_response, room_search_by_empty_name_response)
+        expected_response = room_search_by_empty_name_response
+        self.assertEquals(
+            actual_response["errors"][0]['message'], expected_response)
 
     def test_search_room_by_invalid_name(self):
         api_headers = {'token': user_api_token}
         search_room_by_invalid_name = self.app_test.post(
             '/mrm?query='+room_search_by_invalid_name, headers=api_headers)
         actual_response = json.loads(search_room_by_invalid_name.data)
-        self.assertEquals(actual_response, room_search_by_invalid_name_response)
+        expected_response = room_search_by_invalid_name_response
+        self.assertEquals(
+            actual_response["errors"][0]['message'], expected_response)

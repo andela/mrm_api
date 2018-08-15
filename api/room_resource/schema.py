@@ -1,11 +1,11 @@
 import graphene
-from math import ceil
 from graphene_sqlalchemy import SQLAlchemyObjectType
 from graphql import GraphQLError
 
 from api.room_resource.models import Resource as ResourceModel
 from utilities.utility import validate_empty_fields, update_entity_fields
 from helpers.auth.authentication import Auth
+from helpers.pagination.paginate import Paginate
 
 
 class Resource(SQLAlchemyObjectType):
@@ -14,18 +14,8 @@ class Resource(SQLAlchemyObjectType):
         model = ResourceModel
 
 
-class PaginatedResource(graphene.ObjectType):
-    pages = graphene.Int()
-    query_total = graphene.Int()
-    has_next = graphene.Boolean()
-    has_previous = graphene.Boolean()
+class PaginatedResource(Paginate):
     resources = graphene.List(Resource)
-
-    def __init__(self, **kwargs):
-        self.page = kwargs.pop('page', None)
-        self.per_page = kwargs.pop('per_page', None)
-        self.query_total
-        self.pages
 
     def resolve_resources(self, info):
         page = self.page
@@ -44,34 +34,6 @@ class PaginatedResource(graphene.ObjectType):
             if result.count() == 0:
                 return GraphQLError("No more resources")
             return result
-
-    def resolve_pages(self, pages):
-        if self.per_page:
-            self.pages = ceil(self.query_total / self.per_page)
-        pages = self.pages
-        return pages
-
-    def resolve_has_next(self, has_next):
-        if self.page:
-            page = self.page
-            pages = self.pages
-            pages = self.resolve_pages(pages)
-            if page < pages:
-                has_next = True
-            else:
-                has_next = False
-        return has_next
-
-    def resolve_has_previous(self, has_previous):
-        if self.page:
-            page = self.page
-            pages = self.resolve_pages(self.pages)
-            if (page > 1) and (pages > 1) and (page <= pages):
-                has_previous = True
-            else:
-                has_previous = False
-
-        return has_previous
 
 
 class CreateResource(graphene.Mutation):
