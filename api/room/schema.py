@@ -1,5 +1,4 @@
 import graphene
-from math import ceil
 
 from graphene_sqlalchemy import (SQLAlchemyObjectType)
 from graphql import GraphQLError
@@ -13,6 +12,7 @@ from helpers.auth.verify_ids_for_room import verify_ids
 from helpers.auth.validator import assert_wing_is_required
 from helpers.auth.add_office import verify_attributes
 from helpers.room_filter.room_filter import room_filter
+from helpers.pagination.paginate import Paginate
 
 
 class Room(SQLAlchemyObjectType):
@@ -53,20 +53,8 @@ class CreateRoom(graphene.Mutation):
         return CreateRoom(room=room)
 
 
-class PaginatedRooms(graphene.ObjectType):
-    pages = graphene.Int()
-    query_total = graphene.Int()
-    has_next = graphene.Boolean()
-    has_previous = graphene.Boolean()
+class PaginatedRooms(Paginate):
     rooms = graphene.List(Room)
-
-    def __init__(self, **kwargs):
-        self.page = kwargs.pop('page', None)
-        self.per_page = kwargs.pop('per_page', None)
-        self.query_total
-        self.pages
-        self.filter_data = {}
-        self.filter_data.update(**kwargs)
 
     def resolve_rooms(self, info, **kwargs):
         page = self.page
@@ -87,34 +75,6 @@ class PaginatedRooms(graphene.ObjectType):
             if result.count() == 0:
                 return GraphQLError("No more resources")
             return result
-
-    def resolve_pages(self, pages):
-        if self.per_page:
-            self.pages = ceil(self.query_total / self.per_page)
-        pages = self.pages
-        return pages
-
-    def resolve_has_next(self, has_next):
-        if self.page:
-            page = self.page
-            pages = self.pages
-            pages = self.resolve_pages(pages)
-            if page < pages:
-                has_next = True
-            else:
-                has_next = False
-        return has_next
-
-    def resolve_has_previous(self, has_previous):
-        if self.page:
-            page = self.page
-            pages = self.resolve_pages(self.pages)
-            if (page > 1) and (pages > 1) and (page <= pages):
-                has_previous = True
-            else:
-                has_previous = False
-
-        return has_previous
 
 
 class UpdateRoom(graphene.Mutation):
