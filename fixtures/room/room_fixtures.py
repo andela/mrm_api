@@ -307,23 +307,7 @@ room_search_by_empty_name = '''
 }
 
 '''
-room_search_by_empty_name_response = {
-    "errors": [
-        {
-           "message": "Please input Room Name",
-           "locations": [
-               {
-                   "line": 3,
-                   "column": 5
-                   }
-                   ], "path": [
-                       "getRoomByName"
-                       ]
-                       }
-                       ],  "data": {
-                           "getRoomByName": null
-                           }
-                           }
+room_search_by_empty_name_response = "Please input Room Name"
 
 room_search_by_invalid_name = '''
 {
@@ -333,23 +317,8 @@ room_search_by_invalid_name = '''
 }
 '''
 
-room_search_by_invalid_name_response = {
-    "errors": [
-        {
-            "message": "Room not found",
-            "locations": [
-                {
-                    "line": 3,
-                    "column": 5
-                    }
-                ], "path": [
-                    "getRoomByName"
-                    ]
-        }
-    ], "data": {
-        "getRoomByName": null
-    }
-}
+room_search_by_invalid_name_response = "Room not found"
+
 filter_rooms_by_capacity = '''
 query {
   allRooms(capacity:6){
