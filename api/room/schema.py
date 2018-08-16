@@ -127,15 +127,16 @@ class Query(graphene.ObjectType):
         capacity=graphene.Int(),
         resources=graphene.String(),
         location=graphene.String()
-        )
+    )
     get_room_by_id = graphene.Field(
         Room,
         room_id=graphene.Int()
-        )
+    )
+
     get_room_by_name = graphene.List(
         Room,
         name=graphene.String()
-        )
+    )
     get_room_by_id = graphene.Field(
         Room,
         room_id=graphene.Int(),
