@@ -11,6 +11,7 @@ class Paginate(graphene.ObjectType):
     def __init__(self, **kwargs):
         self.page = kwargs.pop('page', None)
         self.per_page = kwargs.pop('per_page', None)
+        self.unique = kwargs.pop('unique', None)
         self.query_total
         self.pages
         self.filter_data = {}
