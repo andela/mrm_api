@@ -6,9 +6,11 @@ from tests.base import BaseTestCase
 from fixtures.room_resource.get_room_resource_fixtures import (
     resource_query, resource_query_response, get_room_resources_by_room_id,
     get_room_resources_by_room_id_response, get_room_resources_by_room_id_error,
-    get_room_resources_by_room_id_error_response
+    get_room_resources_by_room_id_error_response,
+    filter_unique_resources, filter_unique_resources_response
 )
 from helpers.database import db_session
+from fixtures.token.token_fixture import (user_api_token)
 
 sys.path.append(os.getcwd())
 
@@ -41,3 +43,10 @@ class TestGetRoomResource(BaseTestCase):
         expected_responese = get_room_resources_by_room_id_response
 
         self.assertEqual(execute_query, expected_responese)
+
+    def test_get_unique_resources(self):
+        api_headers = {'token': user_api_token}
+        response = self.app_test.post(
+            '/mrm?query='+filter_unique_resources, headers=api_headers)
+        actual_response = json.loads(response.data)
+        self.assertEquals(actual_response, filter_unique_resources_response)

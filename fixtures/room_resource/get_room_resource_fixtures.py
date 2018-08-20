@@ -81,3 +81,24 @@ get_room_resources_by_room_id_error = '''
 '''
 
 get_room_resources_by_room_id_error_response = "Room has no resource yet"
+
+filter_unique_resources = '''
+query {
+  allResources(unique: true){
+   resources{
+        name
+        }
+    }
+}
+    '''
+filter_unique_resources_response = {
+    "data": {
+        "allResources": {
+            "resources": [
+                {
+                    "name": "Markers"
+                }
+            ]
+        }
+    }
+}

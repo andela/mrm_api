@@ -20,8 +20,11 @@ class PaginatedResource(Paginate):
     def resolve_resources(self, info):
         page = self.page
         per_page = self.per_page
+        unique = self.unique
         query = Resource.get_query(info)
         if not page:
+            if unique:
+                return query.distinct(ResourceModel.name).all()
             return query.all()
 
         if page:
@@ -94,8 +97,11 @@ class DeleteResource(graphene.Mutation):
 
 class Query(graphene.ObjectType):
 
-    all_resources = graphene.Field(PaginatedResource, page=graphene.Int(),
-                                   per_page=graphene.Int())
+    all_resources = graphene.Field(
+        PaginatedResource,
+        page=graphene.Int(),
+        per_page=graphene.Int(),
+        unique=graphene.Boolean())
     get_resources_by_room_id = graphene.List(lambda: Resource,
                                              room_id=graphene.Int())
 
