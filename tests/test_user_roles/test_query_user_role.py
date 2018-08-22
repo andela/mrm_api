@@ -1,4 +1,4 @@
-from tests.base import BaseTestCase
+from tests.base import BaseTestCase, change_user_role_helper
 from fixtures.user_role.user_role_fixtures import (
     user_role_query, user_role_query_response,
     query_user_by_user_id, query_user_by_user_id_response, change_user_role_mutation_query, change_unavailable_user_role_mutation_query, change_unavailable_user_role_mutation_response,  # noqa E501
@@ -7,7 +7,7 @@ from fixtures.user_role.user_role_fixtures import (
 from helpers.database import db_session
 from api.user.models import User
 from api.user_role.models import UsersRole
-from fixtures.token.token_fixture import admin_api_token, user_api_token
+from fixtures.token.token_fixture import admin_api_token
 
 import sys
 import os
@@ -63,13 +63,8 @@ class TestQueryUserRole(BaseTestCase):
         expected_response = change_user_role_mutation_response
         self.assertEqual(actual_response, expected_response)
 
-    def test_change_unavailable_user_role(self):
-        api_headers = {'token': admin_api_token}
-        user = User(email='mrm@andela.com', location="Lagos")
-        user.save()
-        user_role = UsersRole(user_id=user.id, role_id=1)
-        user_role.save()
-        db_session().commit()
+    @change_user_role_helper
+    def test_change_unavailable_user_role(self, api_headers):
 
         query_response = self.app_test.post(
             '/mrm?query='+change_unavailable_user_role_mutation_query,
@@ -79,13 +74,8 @@ class TestQueryUserRole(BaseTestCase):
         expected_response = change_unavailable_user_role_mutation_response
         self.assertEqual(actual_response, expected_response)
 
-    def test_change_user_role_by_default_user(self):
-        api_headers = {'token': user_api_token}
-        user = User(email='mrm@andela.com', location="Lagos")
-        user.save()
-        user_role = UsersRole(user_id=user.id, role_id=1)
-        user_role.save()
-        db_session().commit()
+    @change_user_role_helper
+    def test_change_user_role_by_default_user(self, api_headers):
 
         query_response = self.app_test.post(
             '/mrm?query='+change_user_role_mutation_query, headers=api_headers)

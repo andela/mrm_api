@@ -5,7 +5,7 @@ from graphql import GraphQLError
 from api.room_resource.models import Resource as ResourceModel
 from utilities.utility import validate_empty_fields, update_entity_fields
 from helpers.auth.authentication import Auth
-from helpers.pagination.paginate import Paginate
+from helpers.pagination.paginate import Paginate, validate_page
 
 
 class Resource(SQLAlchemyObjectType):
@@ -26,17 +26,12 @@ class PaginatedResource(Paginate):
             if unique:
                 return query.distinct(ResourceModel.name).all()
             return query.all()
-
-        if page:
-            if page < 1:
-                return GraphQLError("No page requested")
-
-            page = page - 1
-            self.query_total = query.count()
-            result = query.limit(per_page).offset(page*per_page)
-            if result.count() == 0:
-                return GraphQLError("No more resources")
-            return result
+        page = validate_page(page)
+        self.query_total = query.count()
+        result = query.limit(per_page).offset(page*per_page)
+        if result.count() == 0:
+            return GraphQLError("No more resources")
+        return result
 
 
 class CreateResource(graphene.Mutation):

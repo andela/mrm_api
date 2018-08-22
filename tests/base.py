@@ -14,6 +14,7 @@ from api.role.models import Role
 from api.user_role.models import UsersRole
 from api.devices.models import Devices
 from api.office.models import Office
+from fixtures.token.token_fixture import user_api_token
 
 import sys
 import os
@@ -78,3 +79,15 @@ class BaseTestCase(TestCase):
         with app.app_context():
             db_session.remove()
             Base.metadata.drop_all(bind=engine)
+
+
+def change_user_role_helper(func):
+    def func_wrapper(self):
+        api_headers = {'token': user_api_token}
+        user = User(email='mrm@andela.com', location="Lagos")
+        user.save()
+        user_role = UsersRole(user_id=user.id, role_id=1)
+        user_role.save()
+        db_session().commit()
+        return api_headers
+    return func_wrapper
