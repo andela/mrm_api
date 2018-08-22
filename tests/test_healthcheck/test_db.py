@@ -2,7 +2,7 @@ from tests.base import BaseTestCase
 
 from graphene.test import Client
 from healthcheck_schema import healthcheck_schema
-from fixtures.room.room_fixtures import (
+from fixtures.room.create_room_fixtures import (
     db_rooms_query,
     db_rooms_query_response,
 )

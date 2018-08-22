@@ -3,7 +3,7 @@ import os
 import json
 
 from tests.base import BaseTestCase
-from fixtures.room.room_fixtures import (
+from fixtures.room.filter_room_fixtures import (
     filter_rooms_by_capacity,
     filter_rooms_by_capacity_response,
     filter_rooms_by_location,
@@ -20,7 +20,7 @@ from fixtures.room.room_fixtures import (
     filter_rooms_by_resources_capacity_response,
     filter_rooms_by_resources_location,
     filter_rooms_by_resources_location_response
-    )
+)
 
 from fixtures.token.token_fixture import (user_api_token)
 

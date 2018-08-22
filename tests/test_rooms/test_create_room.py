@@ -5,8 +5,8 @@ from tests.base import BaseTestCase
 from fixtures.token.token_fixture import admin_api_token
 from fixtures.helpers.decorators_fixtures import (
     query_string, query_string_response
-    )
-from fixtures.room.room_fixtures import (
+)
+from fixtures.room.create_room_fixtures import (
     room_name_empty_mutation, room_invalid_officeId_mutation,
     room_invalid_floorId_mutation, room_invalid_wingId_mutation)
 
