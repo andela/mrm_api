@@ -7,7 +7,7 @@ from api.user_role.models import UsersRole
 from helpers.auth.user_details import get_user_email_from_db
 from helpers.auth.authentication import Auth
 from helpers.auth.validator import verify_email
-from helpers.pagination.paginate import Paginate
+from helpers.pagination.paginate import Paginate, validate_page
 
 
 class User(SQLAlchemyObjectType):
@@ -39,17 +39,12 @@ class PaginatedUsers(Paginate):
         query = User.get_query(info)
         if not page:
             return query.all()
-
-        if page:
-            if page < 1:
-                return GraphQLError("No page requested")
-
-            page = page - 1
-            self.query_total = query.count()
-            result = query.limit(per_page).offset(page*per_page)
-            if result.count() == 0:
-                return GraphQLError("No more resources")
-            return result
+        page = validate_page(page)
+        self.query_total = query.count()
+        result = query.limit(per_page).offset(page*per_page)
+        if result.count() == 0:
+            return GraphQLError("No more resources")
+        return result
 
 
 class Query(graphene.ObjectType):

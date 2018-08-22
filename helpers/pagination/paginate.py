@@ -1,5 +1,6 @@
 import graphene
 from math import ceil
+from graphql import GraphQLError
 
 
 class Paginate(graphene.ObjectType):
@@ -44,3 +45,10 @@ class Paginate(graphene.ObjectType):
                 has_previous = False
 
         return has_previous
+
+
+def validate_page(page):
+    if page < 1:
+        return GraphQLError("No page requested")
+    else:
+        return page - 1

@@ -12,7 +12,7 @@ from helpers.auth.verify_ids_for_room import verify_ids
 from helpers.auth.validator import assert_wing_is_required
 from helpers.auth.add_office import verify_attributes
 from helpers.room_filter.room_filter import room_filter
-from helpers.pagination.paginate import Paginate
+from helpers.pagination.paginate import Paginate, validate_page
 
 
 class Room(SQLAlchemyObjectType):
@@ -64,17 +64,12 @@ class PaginatedRooms(Paginate):
         exact_query = room_filter(query, filter_data)
         if not page:
             return exact_query.all()
-
-        if page:
-            if page < 1:
-                return GraphQLError("No page requested")
-
-            page = page - 1
-            self.query_total = exact_query.count()
-            result = exact_query.limit(per_page).offset(page*per_page)
-            if result.count() == 0:
-                return GraphQLError("No more resources")
-            return result
+        page = validate_page(page)
+        self.query_total = exact_query.count()
+        result = exact_query.limit(per_page).offset(page*per_page)
+        if result.count() == 0:
+            return GraphQLError("No more resources")
+        return result
 
 
 class UpdateRoom(graphene.Mutation):
