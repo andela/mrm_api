@@ -67,7 +67,7 @@ class Authentication:
                 role.save()
             if not user:
                 user_data = User(email=email, location=user_info['location'],
-                name=name, picture=picture)
+                                 name=name, picture=picture)
                 user_data.save()
                 user_role = UsersRole(user_id=user_data.id, role_id=role.id)
                 user_role.save()

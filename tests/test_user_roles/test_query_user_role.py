@@ -21,7 +21,9 @@ class TestQueryUserRole(BaseTestCase):
         """
         Testing for query User role
         """
-        user = User(email="info@andela.com", location="Lagos")
+        user = User(email="info@andela.com", location="Lagos",
+                    name="test test",
+                    picture="www.andela.com/testuser")
         user.save()
         user_role = UsersRole(user_id=user.id, role_id=1)
         user_role.save()
@@ -35,7 +37,9 @@ class TestQueryUserRole(BaseTestCase):
         self.assertEqual(execute_query, expected_responese)
 
     def test_query_users_role_by_role(self):
-        user = User(email='mrm@andela.com', location="Lagos")
+        user = User(email='mrm@andela.com', location="Lagos",
+                    name="test test",
+                    picture="www.andela.com/testuser")
         user.save()
         user_role = UsersRole(user_id=user.id, role_id=1)
         user_role.save()
@@ -50,7 +54,9 @@ class TestQueryUserRole(BaseTestCase):
 
     def test_change_user_role(self):
         api_headers = {'token': admin_api_token}
-        user = User(email='mrm@andela.com', location="Lagos")
+        user = User(email='mrm@andela.com', location="Lagos",
+                    name="test test",
+                    picture="www.andela.com/testuser")
         user.save()
         user_role = UsersRole(user_id=user.id, role_id=1)
         user_role.save()

@@ -10,7 +10,6 @@ def get_user_details(token, user_id):
                             headers=header)
     info = response.content.decode('utf-8')
     data = json.loads(info)
-    print('the data from the token is:::::::::::::::::::::::::::', data)
     user_data = {}
     user_data['email'] = data['email']
     user_data['name'] = data['name']
