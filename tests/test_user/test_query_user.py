@@ -19,7 +19,9 @@ class TestQueryUser(BaseTestCase):
         """
         Testing for User creation
         """
-        user = User(email='mrm@andela.com', location="Lagos")
+        user = User(email='mrm@andela.com', location="Lagos",
+                    name="test test",
+                    picture="www.andela.com/test")
         user.save()
         db_session().commit()
 
@@ -37,7 +39,9 @@ class TestQueryUser(BaseTestCase):
         self.assertEqual(paginate_query, expected_response)
 
     def test_query_users_by_email(self):
-        user = User(email='mrm@andela.com', location="Lagos")
+        user = User(email='mrm@andela.com', location="Lagos",
+                    name="test test",
+                    picture="www.andela.com/test")
         user.save()
         db_session().commit()
 

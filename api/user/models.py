@@ -11,11 +11,15 @@ class User(Base, Utility):
     id = Column(Integer, primary_key=True)
     email = Column(String, nullable=False, unique=True)
     location = Column(String, nullable=False)
+    name = Column(String, nullable=False)
+    picture = Column(String, nullable=True)
     roles = relationship('Role', secondary='users_roles')
 
     def __init__(self, **kwargs):
-
+        print("the kwargs are>>>>>>>>>>>>>>>>>>>>>>>>>", kwargs)
         validate_empty_fields(**kwargs)
 
         self.email = kwargs['email']
         self.location = kwargs['location']
+        self.name = kwargs['name']
+        self.picture = kwargs['picture']

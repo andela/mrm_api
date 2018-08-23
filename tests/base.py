@@ -38,7 +38,8 @@ class BaseTestCase(TestCase):
         with app.app_context():
             Base.metadata.create_all(bind=engine)
             admin_user = User(email="peter.walugembe@andela.com",
-                              location="Kampala")
+                              location="Kampala", name="Peter Walugembe",
+                              picture="https://www.andela.com/walugembe")
             admin_user.save()
             role = Role(role="Admin")
             role.save()
@@ -84,7 +85,8 @@ class BaseTestCase(TestCase):
 def change_user_role_helper(func):
     def func_wrapper(self):
         api_headers = {'token': user_api_token}
-        user = User(email='mrm@andela.com', location="Lagos")
+        user = User(email='mrm@andela.com', location="Lagos",
+                    name='this user', picture='www.andela.com/user')
         user.save()
         user_role = UsersRole(user_id=user.id, role_id=1)
         user_role.save()
