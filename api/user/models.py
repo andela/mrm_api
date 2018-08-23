@@ -16,7 +16,6 @@ class User(Base, Utility):
     roles = relationship('Role', secondary='users_roles')
 
     def __init__(self, **kwargs):
-        print("the kwargs are>>>>>>>>>>>>>>>>>>>>>>>>>", kwargs)
         validate_empty_fields(**kwargs)
 
         self.email = kwargs['email']
