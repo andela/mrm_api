@@ -2,7 +2,7 @@
 """
 from tests.base import BaseTestCase
 
-from fixtures.room.room_fixtures import (
+from fixtures.room.query_room_fixtures import (
     room_occupants_query,
     room_occupants_query_with_non_existant_calendar_id,
     room_occupants_of_non_existant_calendar_id_response
