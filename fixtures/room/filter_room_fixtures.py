@@ -26,7 +26,7 @@ filter_rooms_by_capacity_response = {
 }
 filter_rooms_by_location = '''
 query {
-  allRooms(location:"Uganda"){
+  allRooms(location:"Kampala"){
    rooms{
       name
       capacity
@@ -73,7 +73,7 @@ filter_rooms_by_resources_response = {
 }
 filter_rooms_by_resources_location_capacity = '''
 query {
-  allRooms(location:"Uganda",capacity:6,resources:"Markers"){
+  allRooms(location:"Kampala",capacity:6,resources:"Markers"){
    rooms{
       name
       capacity
@@ -118,7 +118,7 @@ filter_rooms_by_non_existant_datay_response = {
 }
 filter_rooms_by_location_capacity = '''
 query {
-  allRooms(location:"Uganda",capacity:6){
+  allRooms(location:"Kampala",capacity:6){
    rooms{
       name
       capacity
@@ -144,7 +144,7 @@ filter_rooms_by_location_capacity_response = {
 }
 filter_rooms_by_resources_capacity = '''
 query {
-  allRooms(location:"Uganda",capacity:6,resources:"Markers"){
+  allRooms(location:"Kampala",capacity:6,resources:"Markers"){
    rooms{
       name
       capacity
@@ -170,7 +170,7 @@ filter_rooms_by_resources_capacity_response = {
 }
 filter_rooms_by_resources_location = '''
 query {
-  allRooms(location:"Uganda",resources:"Markers"){
+  allRooms(location:"Kampala",resources:"Markers"){
    rooms{
       name
       capacity

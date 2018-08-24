@@ -3,11 +3,10 @@ from graphene_sqlalchemy import SQLAlchemyObjectType
 from graphql import GraphQLError
 
 from api.office.models import Office as OfficeModel
-from api.location.models import Location as LocationModel
-from api.location.schema import Location
+from api.location.models import Location
 from helpers.auth.authentication import Auth
-from helpers.room_filter.room_filter import office_join_location, lagos_office_join_location  # noqa: E501
-from helpers.auth.user_details import get_user_from_db
+from helpers.room_filter.room_filter import room_join_location, lagos_office_join_location  # noqa: E501
+from helpers.auth.admin_roles import admin_roles
 
 
 class Office(SQLAlchemyObjectType):
@@ -23,12 +22,11 @@ class CreateOffice(graphene.Mutation):
 
     @Auth.user_roles('Admin')
     def mutate(self, info, **kwargs):
-        query = Location.get_query(info)
-        location = query.filter(
-            LocationModel.id == kwargs['location_id']).first()
-        admin_details = get_user_from_db()
-        if location.name != admin_details.location:
-            raise GraphQLError("You cannot make changes outside your location")
+        location = Location.query.filter_by(id=kwargs['location_id']).first()
+        if not location:
+            raise GraphQLError("Location not found")
+        admin_roles.create_office(location_id=kwargs['location_id'])
+
         office = OfficeModel(**kwargs)
         office.save()
         return CreateOffice(office=office)
@@ -52,7 +50,7 @@ class Query(graphene.ObjectType):
             return result.all()
 
         else:
-            exact_query = office_join_location(query)
+            exact_query = room_join_location(query)
             result = exact_query.filter(OfficeModel.name == name)
             return result.all()
 

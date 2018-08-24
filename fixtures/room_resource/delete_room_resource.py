@@ -23,3 +23,15 @@ expected_query_after_delete = {
         }
     }
 }
+
+delete_non_existant_resource = '''
+mutation {
+    deleteResource(resourceId: 12) {
+        resource {
+            roomId
+            id
+            name
+        }
+    }
+}
+'''

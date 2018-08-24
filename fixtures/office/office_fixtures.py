@@ -1,3 +1,4 @@
+null = None
 office_mutation_query = '''
     mutation {
         createOffice(name: "The Crest", locationId:1 ) {
@@ -71,6 +72,21 @@ get_office_by_name_response = {
 office_mutation_query_Different_Location = '''
     mutation {
         createOffice(name: "The Crest", locationId:2 ) {
+            office {
+                name
+                locationId
+                blocks {
+                    id
+                    name
+                }
+            }
+        }
+    }
+'''
+
+office_mutation_query_non_existant_ID = '''
+    mutation {
+        createOffice(name: "The Crest", locationId:10 ) {
             office {
                 name
                 locationId

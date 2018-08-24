@@ -3,12 +3,12 @@ from graphene_sqlalchemy import SQLAlchemyObjectType
 from graphql import GraphQLError
 
 from api.room_resource.models import Resource as ResourceModel
-from api.room.models import Room
+from api.room.models import Room as RoomModel
 from utilities.utility import validate_empty_fields, update_entity_fields
 from helpers.auth.authentication import Auth
+from helpers.auth.admin_roles import admin_roles
 from helpers.pagination.paginate import Paginate, validate_page
-from helpers.auth.user_details import get_user_from_db
-from helpers.room_filter.room_filter import location_join_resources, location_join_room  # noqa: E501
+from helpers.room_filter.room_filter import location_join_room
 
 
 class Resource(SQLAlchemyObjectType):
@@ -47,14 +47,11 @@ class CreateResource(graphene.Mutation):
 
     @Auth.user_roles('Admin')
     def mutate(self, info, **kwargs):
-        admin_details = get_user_from_db()
         location_query = location_join_room()
-        exact_location_query = location_query.filter(
-            Room.id == kwargs['room_id']).first()
-        if not exact_location_query:
-            raise GraphQLError("No Room Found")
-        if admin_details.location != exact_location_query.name:
-            raise GraphQLError("You cannot make changes outside your location")
+        room_location = location_query.filter(RoomModel.id == kwargs['room_id']).first()  # noqa: E501
+        if not room_location:
+            raise GraphQLError("Room not found")
+        admin_roles.update_delete_rooms_create_resource(room_id=kwargs['room_id'])  # noqa: E501
 
         resource = ResourceModel(**kwargs)
         resource.save()
@@ -72,19 +69,13 @@ class UpdateRoomResource(graphene.Mutation):
 
     @Auth.user_roles('Admin')
     def mutate(self, info, resource_id, **kwargs):
-        admin_details = get_user_from_db()
         validate_empty_fields(**kwargs)
         query = Resource.get_query(info)
         exact_resource = query.filter(ResourceModel.id == resource_id).first()
-
-        location_query = location_join_resources()
-        exact_location_query = location_query.filter(
-            ResourceModel.id == resource_id).first()
-        if not exact_location_query:
+        if not exact_resource:
             raise GraphQLError("Resource not found")
 
-        if admin_details.location != exact_location_query.name:
-            raise GraphQLError("You cannot make changes outside your location")
+        admin_roles.update_resource(resource_id, room_id=kwargs['room_id'])
 
         update_entity_fields(exact_resource, **kwargs)
         exact_resource.save()
@@ -99,20 +90,13 @@ class DeleteResource(graphene.Mutation):
 
     @Auth.user_roles('Admin')
     def mutate(self, info, resource_id, **kwargs):
-        admin_details = get_user_from_db()
         query_room_resource = Resource.get_query(info)
         exact_room_resource = query_room_resource.filter(
             ResourceModel.id == resource_id).first()
-
-        location_query = location_join_resources()
-        exact_location_query = location_query.filter(
-            ResourceModel.id == resource_id).first()
-        if admin_details.location != exact_location_query.name:
-            raise GraphQLError("You cannot make changes outside your location")
-
         if not exact_room_resource:
             raise GraphQLError("Resource not found")
 
+        admin_roles.delete_resource(resource_id)
         exact_room_resource.delete()
         return DeleteResource(resource=exact_room_resource)
 

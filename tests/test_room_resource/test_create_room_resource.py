@@ -41,4 +41,4 @@ class TestCreateRoomResource(BaseTestCase):
         response = self.app_test.post(
                                     '/mrm?query='+resource_mutation_0_room_id,
                                     headers=api_headers)
-        self.assertIn("No Room Found", str(response.data))
+        self.assertIn("Room not found", str(response.data))
