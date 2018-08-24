@@ -1,9 +1,10 @@
 import json
 
 from tests.base import BaseTestCase
-from fixtures.room.room_fixtures import (
+from fixtures.room.create_room_fixtures import (
     rooms_query,
-    query_rooms_response,
+    query_rooms_response)
+from fixtures.room.query_room_fixtures import (
     paginated_rooms_query,
     paginated_rooms_response,
     room_query_by_id,

@@ -4,14 +4,14 @@ import json
 
 
 from tests.base import BaseTestCase
-from fixtures.room.room_fixtures import (
+from fixtures.room.query_room_fixtures import (
     room_search_by_name,
     room_search_by_name_response,
     room_search_by_empty_name,
     room_search_by_empty_name_response,
     room_search_by_invalid_name,
     room_search_by_invalid_name_response
-    )
+)
 
 from fixtures.token.token_fixture import (user_api_token)
 
