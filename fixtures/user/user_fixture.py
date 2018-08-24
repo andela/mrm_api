@@ -1,9 +1,13 @@
 user_mutation_query = '''
 mutation {
-  createUser(email: "mrm@andela.com", location: "Lagos"){
+  createUser(email: "mrm@andela.com", location: "Lagos",
+            name: "this user"
+            picture: "www.andela.com/user"){
     user {
       email,
-      location
+      location,
+      name,
+      picture
     }
   }
 }
@@ -14,7 +18,9 @@ user_mutation_response = {
     "createUser": {
       "user": {
         "email": "mrm@andela.com",
-        "location": "Lagos"
+        "location": "Lagos",
+        "name": "this user",
+        "picture": "www.andela.com/user"
       }
     }
   }

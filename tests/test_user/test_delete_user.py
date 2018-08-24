@@ -24,7 +24,8 @@ class TestDeleteUser(BaseTestCase):
 
     def test_deleteuser_when_admin(self):
         user = User(email="test.test@andela.com",
-                    location="Lagos")
+                    location="Lagos", name="test test",
+                    picture="www.andela.com/test")
         user.save()
         role = Role(role="Default User")
         role.save()
@@ -39,7 +40,8 @@ class TestDeleteUser(BaseTestCase):
 
     def test_user_delete_admin(self):
         admin_user = User(email="new.user@andela.com",
-                          location="Kampala")
+                          location="Kampala", name="test test",
+                          picture="www.andela.com/test")
         admin_user.save()
         user_role = UsersRole(user_id=admin_user.id, role_id=1)
         user_role.save()

@@ -16,7 +16,9 @@ class TestCreateUserRole(BaseTestCase):
         """
         Testing for User Role creation
         """
-        user = User(email="info@andela.com", location="Lagos")
+        user = User(email="info@andela.com", location="Lagos",
+                    name="test test",
+                    picture="www.andela.com/test")
         user.save()
         db_session().commit()
 

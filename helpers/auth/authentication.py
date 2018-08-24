@@ -58,13 +58,16 @@ class Authentication:
         """
         try:
             email = user_info['email']
+            name = user_info['name']
+            picture = user_info['picture']
             user = User.query.filter_by(email=email).first()
             role = Role.query.filter_by(role='Default User').first()
             if not role:
                 role = Role(role='Default User')
                 role.save()
             if not user:
-                user_data = User(email=email, location=user_info['location'])
+                user_data = User(email=email, location=user_info['location'],
+                                 name=name, picture=picture)
                 user_data.save()
                 user_role = UsersRole(user_id=user_data.id, role_id=role.id)
                 user_role.save()
