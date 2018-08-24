@@ -4,7 +4,7 @@ from graphene_sqlalchemy import (SQLAlchemyObjectType)
 from graphql import GraphQLError
 from api.user.models import User as UserModel
 from api.user_role.models import UsersRole
-from helpers.auth.user_details import get_user_email_from_db
+from helpers.auth.user_details import get_user_from_db
 from helpers.auth.authentication import Auth
 from helpers.auth.validator import verify_email
 from helpers.pagination.paginate import Paginate, validate_page
@@ -73,13 +73,15 @@ class DeleteUser(graphene.Mutation):
         query_user = User.get_query(info)
         exact_query_user = query_user.filter(
             UserModel.email == email).first()
-        user_email_from_db = get_user_email_from_db()
+        user_from_db = get_user_from_db()
         if not verify_email(email):
             raise GraphQLError("Invalid email format")
         if not exact_query_user:
             raise GraphQLError("User not found")
-        if user_email_from_db == email:
+        if user_from_db.email == email:
             raise GraphQLError("You cannot delete yourself")
+        if user_from_db.location != exact_query_user.location:
+            raise GraphQLError("You cannot make changes outside your location")
         exact_query_user.delete()
         return DeleteUser(user=exact_query_user)
 
@@ -96,8 +98,11 @@ class ChangeUserRole(graphene.Mutation):
         query_user = User.get_query(info)
         exact_user = query_user.filter(
             UserModel.email == email).first()
+        user_from_db = get_user_from_db()
         if not exact_user:
             raise GraphQLError("User not found")
+        if user_from_db.location != exact_user.location:
+            raise GraphQLError("You cannot make changes outside your location")
         user_role = UsersRole.query.filter_by(user_id=exact_user.id).first()
         new_role = kwargs.pop('role_id')
         user_role.role_id = new_role

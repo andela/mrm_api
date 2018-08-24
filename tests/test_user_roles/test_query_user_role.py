@@ -54,7 +54,7 @@ class TestQueryUserRole(BaseTestCase):
 
     def test_change_user_role(self):
         api_headers = {'token': admin_api_token}
-        user = User(email='mrm@andela.com', location="Lagos",
+        user = User(email='mrm@andela.com', location="Kampala",
                     name="test test",
                     picture="www.andela.com/testuser")
         user.save()

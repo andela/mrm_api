@@ -68,3 +68,17 @@ get_office_by_name_response = {
         }]
     }
     }
+office_mutation_query_Different_Location = '''
+    mutation {
+        createOffice(name: "The Crest", locationId:2 ) {
+            office {
+                name
+                locationId
+                blocks {
+                    id
+                    name
+                }
+            }
+        }
+    }
+'''

@@ -19,8 +19,8 @@ def get_user_details(token, user_id):
     return user_data
 
 
-def get_user_email_from_db():
+def get_user_from_db():
     user_token = authentication.Auth.decode_token()
     user_email = user_token['email']
     user = User.query.filter_by(email=user_email).first()
-    return user.email
+    return user

@@ -69,7 +69,7 @@ expected_query_after_delete = {
             "user": {
                 "id": "2",
                 "email": "test.test@andela.com",
-                "location": "Lagos",
+                "location": "Kampala",
                 "roles": [
                     {
                         "id": "2",

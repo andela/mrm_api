@@ -5,6 +5,7 @@ from graphql import GraphQLError
 
 from api.room.models import Room as RoomModel
 from api.office.models import Office
+from api.location.models import Location
 from helpers.calendar.events import RoomSchedules
 from utilities.utility import validate_empty_fields, update_entity_fields
 from helpers.auth.authentication import Auth
@@ -13,6 +14,8 @@ from helpers.auth.validator import assert_wing_is_required
 from helpers.auth.add_office import verify_attributes
 from helpers.room_filter.room_filter import room_filter
 from helpers.pagination.paginate import Paginate, validate_page
+from helpers.auth.user_details import get_user_from_db
+from helpers.room_filter.room_filter import location_join_room
 
 
 class Room(SQLAlchemyObjectType):
@@ -43,9 +46,13 @@ class CreateRoom(graphene.Mutation):
 
     @Auth.user_roles('Admin')
     def mutate(self, info, office_id, **kwargs):
+        admin_details = get_user_from_db()
         verify_attributes(kwargs)
         verify_ids(kwargs, office_id)
         get_office = Office.query.filter_by(id=office_id).first()
+        location = Location.query.filter_by(id=get_office.location_id).first()
+        if admin_details.location != location.name:
+            raise GraphQLError("You cannot make changes outside your location")
         assert_wing_is_required(get_office.name, kwargs)
         room = RoomModel(**kwargs)
         room.save()
@@ -84,12 +91,19 @@ class UpdateRoom(graphene.Mutation):
 
     @Auth.user_roles('Admin')
     def mutate(self, info, room_id, **kwargs):
+        admin_details = get_user_from_db()
         validate_empty_fields(**kwargs)
-
         query_room = Room.get_query(info)
         exact_room = query_room.filter(RoomModel.id == room_id).first()
-        if not exact_room:
-            raise GraphQLError("RoomId not found")
+
+        location_query = location_join_room()
+        exact_location_query = location_query.filter(
+            RoomModel.id == room_id).first()
+        if not exact_location_query:
+            raise GraphQLError("Room not found")
+        if admin_details.location != exact_location_query.name:
+            raise GraphQLError("You cannot make changes outside your location")
+
         update_entity_fields(exact_room, **kwargs)
 
         exact_room.save()
@@ -104,11 +118,19 @@ class DeleteRoom(graphene.Mutation):
 
     @Auth.user_roles('Admin')
     def mutate(self, info, room_id, **kwargs):
+        admin_details = get_user_from_db()
         query_room = Room.get_query(info)
         exact_room = query_room.filter(
             RoomModel.id == room_id).first()
-        if not exact_room:
-            raise GraphQLError("RoomId not found")
+
+        location_query = location_join_room()
+        exact_location_query = location_query.filter(
+            RoomModel.id == room_id).first()
+        if not exact_location_query:
+            raise GraphQLError("Room not found")
+
+        if admin_details.location != exact_location_query.name:
+            raise GraphQLError("You cannot make changes outside your location")
 
         exact_room.delete()
         return DeleteRoom(room=exact_room)

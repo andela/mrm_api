@@ -37,4 +37,4 @@ class TestUpdateRoomResorce(BaseTestCase):
             '/mrm?query=' +
             non_existant_resource_id_query,
             headers=api_headers)
-        self.assertIn("ResourceId not Found", str(response.data))
+        self.assertIn("Resource not found", str(response.data))
