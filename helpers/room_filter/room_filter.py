@@ -4,6 +4,7 @@ from api.floor.models import Floor
 from api.block.models import Block
 from api.office.models import Office
 from api.location.models import Location
+from api.wing.models import Wing
 
 
 def resource_join_location(query):
@@ -35,6 +36,21 @@ def room_join_location(query):
     query_office = query_block.join(Office)
     query_location = query_office.join(Location)
     return query_location
+
+
+def office_join_location(query):
+    query_floor = query.join(Floor.rooms)
+    query_block = query_floor.join(Block)
+    query_office = query_block.join(Office)
+    query_location = query_office.join(Location)
+    return query_location
+
+
+def lagos_office_join_location(query):
+    query_block = query.join(Block)
+    query_floor = query_block.join(Floor)
+    query_wing = query_floor.join(Wing)
+    return query_wing
 
 
 def room_filter(query, filter_data):

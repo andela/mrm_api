@@ -2,7 +2,7 @@ import re
 
 
 def check_office_name(office_name):
-    return bool(re.match('^(epic\s?towers?||the\s?crest)$',
+    return bool(re.match('^(epic\s?towers?||the\s?crest)$',  # noqa: E501
                          office_name, re.IGNORECASE))
 
 

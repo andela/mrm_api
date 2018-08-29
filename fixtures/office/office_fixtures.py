@@ -29,3 +29,42 @@ office_mutation_response = {
         }
     }
 }
+
+get_office_by_name = '''
+query{
+    getOfficeByName(name:"St. Catherines"){
+        name
+        id
+        blocks{
+            name
+            floors{
+                name
+                id
+                rooms{
+                name
+                  id
+                    }
+                    }
+                    }
+                }
+        }
+'''
+
+get_office_by_name_response = {
+    'data': {
+        'getOfficeByName': [{
+            'name': 'St. Catherines',
+            'id': '1',
+            'blocks': [{
+                'name': 'EC',
+                'floors': [{
+                    'name': '3rd',
+                    'id': '1',
+                    'rooms': [{
+                       'name': 'Entebbe',
+                       'id': '1'}]
+                }]
+            }]
+        }]
+    }
+    }
