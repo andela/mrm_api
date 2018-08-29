@@ -8,6 +8,7 @@ from api.office.models import Office
 from helpers.calendar.events import RoomSchedules
 from utilities.utility import validate_empty_fields, update_entity_fields
 from helpers.auth.authentication import Auth
+from helpers.auth.admin_roles import admin_roles
 from helpers.auth.verify_ids_for_room import verify_ids
 from helpers.auth.validator import assert_wing_is_required
 from helpers.auth.add_office import verify_attributes
@@ -46,6 +47,11 @@ class CreateRoom(graphene.Mutation):
         verify_attributes(kwargs)
         verify_ids(kwargs, office_id)
         get_office = Office.query.filter_by(id=office_id).first()
+        if not get_office:
+            raise GraphQLError("No Office Found")
+
+        admin_roles.create_rooms(office_id)
+
         assert_wing_is_required(get_office.name, kwargs)
         room = RoomModel(**kwargs)
         room.save()
@@ -85,11 +91,12 @@ class UpdateRoom(graphene.Mutation):
     @Auth.user_roles('Admin')
     def mutate(self, info, room_id, **kwargs):
         validate_empty_fields(**kwargs)
-
         query_room = Room.get_query(info)
         exact_room = query_room.filter(RoomModel.id == room_id).first()
         if not exact_room:
-            raise GraphQLError("RoomId not found")
+            raise GraphQLError("Room not found")
+
+        admin_roles.update_delete_rooms_create_resource(room_id)
         update_entity_fields(exact_room, **kwargs)
 
         exact_room.save()
@@ -108,8 +115,9 @@ class DeleteRoom(graphene.Mutation):
         exact_room = query_room.filter(
             RoomModel.id == room_id).first()
         if not exact_room:
-            raise GraphQLError("RoomId not found")
+            raise GraphQLError("Room not found")
 
+        admin_roles.update_delete_rooms_create_resource(room_id)
         exact_room.delete()
         return DeleteRoom(room=exact_room)
 

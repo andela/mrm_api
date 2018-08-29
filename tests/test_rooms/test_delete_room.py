@@ -25,4 +25,4 @@ class TestDeleteRoom(BaseTestCase):
         api_headers = {'token': admin_api_token}
         response = self.app_test.post('/mrm?query='+delete_room_query_non_existant_room_id, # noqa : E501
                                       headers=api_headers)
-        self.assertIn("RoomId not found", str(response.data))
+        self.assertIn("Room not found", str(response.data))

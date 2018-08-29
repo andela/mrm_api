@@ -24,7 +24,7 @@ class TestDeleteUser(BaseTestCase):
 
     def test_deleteuser_when_admin(self):
         user = User(email="test.test@andela.com",
-                    location="Lagos", name="test test",
+                    location="Kampala", name="test test",
                     picture="www.andela.com/test")
         user.save()
         role = Role(role="Default User")

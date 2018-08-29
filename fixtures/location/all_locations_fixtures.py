@@ -25,7 +25,7 @@ all_locations_query = '''
 expected_query_all_locations = {
     "data": {
         "allLocations": [{
-            "name": "Uganda",
+            "name": "Kampala",
             "abbreviation": "KLA",
             "offices": [
                 {
@@ -43,6 +43,11 @@ expected_query_all_locations = {
                     }]
                 }
             ]
+        },
+        {
+            "name": "Nairobi",
+            "abbreviation": "NBO",
+            "offices": []
         }]
     }
 }

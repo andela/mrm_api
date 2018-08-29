@@ -3,7 +3,7 @@ import os
 
 from tests.base import BaseTestCase
 from fixtures.room_resource.delete_room_resource import (  # noqa: F401
-  delete_resource, expected_query_after_delete)  # noqa: F401
+  delete_resource, expected_query_after_delete, delete_non_existant_resource)  # noqa: E501
 from helpers.database import db_session  # noqa: F401
 from fixtures.token.token_fixture import (admin_api_token, user_api_token)
 
@@ -26,3 +26,10 @@ class TestDeleteRoomResource(BaseTestCase):
         response = self.app_test.post('/mrm?query='+delete_resource,
                                       headers=api_headers)
         self.assertIn("Markers", str(response.data))
+
+    def test_non_existant_deleteresource_mutation(self):
+
+        api_headers = {'token': admin_api_token}
+        response = self.app_test.post('/mrm?query='+delete_non_existant_resource,  # noqa: E501
+                                      headers=api_headers)
+        self.assertIn("Resource not found", str(response.data))

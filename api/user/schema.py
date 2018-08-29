@@ -4,7 +4,7 @@ from graphene_sqlalchemy import (SQLAlchemyObjectType)
 from graphql import GraphQLError
 from api.user.models import User as UserModel
 from api.user_role.models import UsersRole
-from helpers.auth.user_details import get_user_email_from_db
+from helpers.auth.user_details import get_user_from_db
 from helpers.auth.authentication import Auth
 from helpers.auth.validator import verify_email
 from helpers.pagination.paginate import Paginate, validate_page
@@ -73,12 +73,12 @@ class DeleteUser(graphene.Mutation):
         query_user = User.get_query(info)
         exact_query_user = query_user.filter(
             UserModel.email == email).first()
-        user_email_from_db = get_user_email_from_db()
+        user_from_db = get_user_from_db()
         if not verify_email(email):
             raise GraphQLError("Invalid email format")
         if not exact_query_user:
             raise GraphQLError("User not found")
-        if user_email_from_db == email:
+        if user_from_db.email == email:
             raise GraphQLError("You cannot delete yourself")
         exact_query_user.delete()
         return DeleteUser(user=exact_query_user)

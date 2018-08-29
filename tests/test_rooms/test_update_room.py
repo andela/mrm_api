@@ -36,7 +36,7 @@ class TestUpdateRoom(BaseTestCase):
         api_headers = {'token': admin_api_token}
         response = self.app_test.post('/mrm?query='+query_room_id_non_existant,
                                       headers=api_headers)
-        self.assertIn("RoomId not found", str(response.data))
+        self.assertIn("Room not found", str(response.data))
 
     def test_update_with_empty_field(self):
         api_headers = {'token': admin_api_token}
