@@ -33,11 +33,11 @@ class RoomFilter(graphene.ObjectType):
 class CreateRoom(graphene.Mutation):
     class Arguments:
         name = graphene.String(required=True)
-        room_type = graphene.String(required=True)
+        room_type = graphene.String()
         capacity = graphene.Int(required=True)
         image_url = graphene.String()
         floor_id = graphene.Int(required=True)
-        calendar_id = graphene.String(required=True)
+        calendar_id = graphene.String()
         office_id = graphene.Int()
         wing_id = graphene.Int()
     room = graphene.Field(Room)
