@@ -11,7 +11,7 @@ class Room(Base, Utility):
     __tablename__ = 'rooms'
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False, unique=True)
-    room_type = Column(String, nullable=False)
+    room_type = Column(String)
     capacity = Column(Integer, nullable=False)
     image_url = Column(String)
     calendar_id = Column(String)
