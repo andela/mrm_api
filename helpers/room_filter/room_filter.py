@@ -39,6 +39,20 @@ def room_join_location(query):
     return query_location
 
 
+def room_join_office(query):
+    """
+    Join room model upto office model via foreign keys
+    :param
+        queryset
+    :return
+        queryset
+    """
+    query_floor = query.join(Floor.rooms)
+    query_block = query_floor.join(Block)
+    query_office = query_block.join(Office)
+    return query_office
+
+
 def lagos_office_join_location(query):
     query_block = query.join(Block)
     query_floor = query_block.join(Floor)

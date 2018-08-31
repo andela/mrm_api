@@ -68,7 +68,7 @@ get_office_by_name_response = {
             }]
         }]
     }
-    }
+}
 office_mutation_query_Different_Location = '''
     mutation {
         createOffice(name: "The Crest", locationId:2 ) {
@@ -98,6 +98,36 @@ office_mutation_query_non_existant_ID = '''
         }
     }
 '''
+
+office_mutation_query_duplicate_name = '''
+    mutation {
+        createOffice (name: "St. Catherines", locationId: 1) {
+            office {
+                name
+            }
+        }
+    }
+'''
+
+office_mutation_query_duplicate_name_responce = {
+        "errors": [
+            {
+                "message": "St. Catherines Office already exists",
+                "locations": [
+                    {
+                        "line": 3,
+                        "column": 9
+                    }
+                ],
+                "path": [
+                    "createOffice"
+                ]
+            }
+        ],
+        "data": {
+            "createOffice": null
+        }
+    }
 
 delete_office_mutation = '''
 mutation{
