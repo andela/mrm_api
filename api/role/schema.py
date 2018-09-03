@@ -2,6 +2,7 @@ import graphene
 
 from graphene_sqlalchemy import (SQLAlchemyObjectType)
 from api.role.models import Role as RoleModel
+from helpers.auth.error_handler import SaveContextManager
 
 
 class Role(SQLAlchemyObjectType):
@@ -18,9 +19,8 @@ class CreateRole(graphene.Mutation):
 
     def mutate(self, info, **kwargs):
         role = RoleModel(**kwargs)
-        role.save()
-
-        return CreateRole(role=role)
+        with SaveContextManager(role, kwargs.get('role'), 'Role'):
+            return CreateRole(role=role)
 
 
 class Query(graphene.ObjectType):

@@ -8,6 +8,7 @@ from helpers.auth.user_details import get_user_from_db
 from helpers.auth.authentication import Auth
 from helpers.auth.validator import verify_email
 from helpers.pagination.paginate import Paginate, validate_page
+from helpers.auth.error_handler import SaveContextManager
 
 
 class User(SQLAlchemyObjectType):
@@ -27,9 +28,8 @@ class CreateUser(graphene.Mutation):
 
     def mutate(self, info, **kwargs):
         user = UserModel(**kwargs)
-        user.save()
-
-        return CreateUser(user=user)
+        with SaveContextManager(user, kwargs.get('email'), 'User email'):
+            return CreateUser(user=user)
 
 
 class PaginatedUsers(Paginate):

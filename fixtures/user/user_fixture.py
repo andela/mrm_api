@@ -1,3 +1,5 @@
+null = None
+
 user_mutation_query = '''
 mutation {
   createUser(email: "mrm@andela.com", location: "Lagos",
@@ -14,16 +16,36 @@ mutation {
 '''
 
 user_mutation_response = {
-  "data": {
-    "createUser": {
-      "user": {
-        "email": "mrm@andela.com",
-        "location": "Lagos",
-        "name": "this user",
-        "picture": "www.andela.com/user"
-      }
+    "data": {
+        "createUser": {
+            "user": {
+                "email": "mrm@andela.com",
+                "location": "Lagos",
+                "name": "this user",
+                "picture": "www.andela.com/user"
+            }
+        }
     }
-  }
+}
+
+user_duplication_mutation_response = {
+    "errors": [
+        {
+            "message": "mrm@andela.com User email already exists",
+            "locations": [
+                {
+                    "line": 3,
+                    "column": 3
+                }
+            ],
+            "path": [
+                "createUser"
+            ]
+        }
+    ],
+    "data": {
+        "createUser": null
+    }
 }
 
 user_query = '''
@@ -38,20 +60,20 @@ query {
 '''
 
 user_query_response = {
-  "data": {
-    "users": {
-      "users": [
-        {
-          "email": "peter.walugembe@andela.com",
-          "location": "Kampala"
-        },
-        {
-          "email": "mrm@andela.com",
-          "location": "Lagos"
-        },
-      ]
+    "data": {
+        "users": {
+            "users": [
+                {
+                    "email": "peter.walugembe@andela.com",
+                    "location": "Kampala"
+                },
+                {
+                    "email": "mrm@andela.com",
+                    "location": "Lagos"
+                },
+            ]
+        }
     }
-  }
 }
 
 paginated_users_query = '''
@@ -69,19 +91,19 @@ query {
 '''
 
 paginated_users_response = {
-  "data": {
-    "users": {
-      "users": [
-        {
-          "email": "peter.walugembe@andela.com",
-          "location": "Kampala"
+    "data": {
+        "users": {
+            "users": [
+                {
+                    "email": "peter.walugembe@andela.com",
+                    "location": "Kampala"
+                }
+            ],
+            "hasNext": False,
+            "hasPrevious": False,
+            "pages": 1
         }
-      ],
-      "hasNext": False,
-      "hasPrevious": False,
-      "pages": 1
     }
-  }
 }
 
 query_user_by_email = '''
@@ -94,10 +116,10 @@ query_user_by_email = '''
 '''
 
 query_user_email_response = {
-  "data": {
-    "user": {
-      "email": "mrm@andela.com",
-      "location": "Lagos"
+    "data": {
+        "user": {
+            "email": "mrm@andela.com",
+            "location": "Lagos"
+        }
     }
-  }
 }
