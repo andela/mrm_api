@@ -32,6 +32,24 @@ class CreateOffice(graphene.Mutation):
         return CreateOffice(office=office)
 
 
+class DeleteOffice(graphene.Mutation):
+
+    class Arguments:
+        office_id = graphene.Int(required=True)
+    office = graphene.Field(Office)
+
+    @Auth.user_roles('Admin')
+    def mutate(self, info, office_id, **kwargs):
+        query_office = Office.get_query(info)
+        exact_office = query_office.filter(OfficeModel.id == office_id).first()  # noqa: E501
+        if not exact_office:
+            raise GraphQLError("Office not found")
+
+        admin_roles.delete_office(office_id)
+        exact_office.delete()
+        return DeleteOffice(office=exact_office)
+
+
 class Query(graphene.ObjectType):
     get_office_by_name = graphene.List(
         Office,
@@ -57,3 +75,4 @@ class Query(graphene.ObjectType):
 
 class Mutation(graphene.ObjectType):
     create_office = CreateOffice.Field()
+    delete_office = DeleteOffice.Field()

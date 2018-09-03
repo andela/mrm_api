@@ -98,3 +98,35 @@ office_mutation_query_non_existant_ID = '''
         }
     }
 '''
+
+delete_office_mutation = '''
+mutation{
+    deleteOffice(officeId: 1){
+        office{
+            name
+        }
+    }
+}
+'''
+
+delete_non_existent_office_mutation = '''
+
+mutation{
+    deleteOffice(officeId: 10){
+        office{
+            name
+        }
+    }
+}
+
+'''
+
+delete_unauthorised_location_mutation = '''
+mutation{
+    deleteOffice(officeId: 2){
+        office{
+            name
+        }
+    }
+}
+'''
