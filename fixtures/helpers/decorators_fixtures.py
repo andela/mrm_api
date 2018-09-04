@@ -36,6 +36,7 @@ room_mutation_query = '''
           capacity: 1,
           officeId: 1
           floorId: 1,
+          blockId: 1,
           imageUrl: "http://url.com") {
             room {
                 name

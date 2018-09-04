@@ -9,8 +9,11 @@ from fixtures.helpers.decorators_fixtures import (
 from fixtures.room.create_room_fixtures import (
     room_name_empty_mutation, room_invalid_officeId_mutation,
     room_invalid_floorId_mutation, room_invalid_wingId_mutation,
-    room_mutation_query_duplicate_name, room_mutation_query_duplicate_name_response)   # noqa : E501
-
+    room_mutation_query_duplicate_name,
+    room_mutation_query_duplicate_name_response)   # noqa : E501
+from fixtures.room.create_room_in_block_fixtures import (
+    room_valid_blockId_mutation, room_invalid_blockId_mutation,
+    expected_room_valid_blockId_mutation_response)
 
 sys.path.append(os.getcwd())
 
@@ -87,3 +90,27 @@ class TestCreateRoom(BaseTestCase):
         expected_response = room_mutation_query_duplicate_name_response
         actual_response = json.loads(response.data)
         self.assertEqual(expected_response, actual_response)
+
+    def test_room_creation_with_valid_blockId(self):
+        """
+        Test room creation with  invalid officeId
+        """
+        api_headers = {'token': admin_api_token}
+        response = self.app_test.post(
+            '/mrm?query='+room_valid_blockId_mutation, headers=api_headers)
+        actual_response = json.loads(response.data)
+        expected_response = expected_room_valid_blockId_mutation_response
+        self.assertEquals(
+            actual_response, expected_response)
+
+    def test_room_creation_with_invalid_blockId(self):
+        """
+        Test room creation with  invalid wingId
+        """
+        api_headers = {'token': admin_api_token}
+        response = self.app_test.post(
+            '/mrm?query='+room_invalid_blockId_mutation, headers=api_headers)
+        actual_response = json.loads(response.data)
+        expected_response = "Block with such id does not exist"
+        self.assertEquals(
+            actual_response["errors"][0]["message"], expected_response)

@@ -214,6 +214,7 @@ room_mutation_query_duplicate_name = '''
     mutation {
         createRoom(
             name: "Entebbe", roomType: "Meeting", capacity: 4, floorId: 1, officeId: 1
+            blockId: 1
             calendarId:"andela.com_3836323338323230343935@resource.calendar.google.com",
             imageUrl: "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg") { # noqa: E501
             room {
