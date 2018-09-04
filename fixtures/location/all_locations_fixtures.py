@@ -47,7 +47,12 @@ expected_query_all_locations = {
         {
             "name": "Nairobi",
             "abbreviation": "NBO",
-            "offices": []
+            "offices": [
+                {
+                    "name": "dojo",
+                    "blocks": []
+                }
+            ]
         }]
     }
 }

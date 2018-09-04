@@ -51,6 +51,8 @@ class BaseTestCase(TestCase):
             location_two.save()
             office = Office(name="St. Catherines", location_id=location.id)
             office.save()
+            office_two = Office(name="dojo", location_id=location_two.id)
+            office_two.save()
             block = Block(name='EC', office_id=office.id)
             block.save()
             floor = Floor(name='3rd', block_id=block.id)

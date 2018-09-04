@@ -50,5 +50,12 @@ class Admin_roles():
         if admin_details.location != resource_location.name:
             raise GraphQLError("You are not authorized to make changes in " + resource_location.name)  # noqa: E501
 
+    def delete_office(self, office_id):
+        admin_details = get_user_from_db()
+        get_office = Office.query.filter_by(id=office_id).first()
+        location = Location.query.filter_by(id=get_office.location_id).first()
+        if admin_details.location != location.name:
+            raise GraphQLError("You are not authorized to delete an office in " + location.name)  # noqa: E501
+
 
 admin_roles = Admin_roles()

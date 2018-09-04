@@ -36,7 +36,7 @@ class Mutation(
     api.user_role.schema.Mutation,
     api.devices.schema.Mutation,
     api.location.schema.Mutation,
-    api.office.schema.Mutation,
+    api.office.schema.Mutation
 ):
     pass
 
