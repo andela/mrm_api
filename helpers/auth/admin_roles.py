@@ -10,7 +10,7 @@ from helpers.room_filter.room_filter import location_join_resources, location_jo
 
 class Admin_roles():
 
-    def create_rooms(self, office_id):
+    def create_rooms_update_office(self, office_id):
         admin_details = get_user_from_db()
         get_office = Office.query.filter_by(id=office_id).first()
         location = Location.query.filter_by(id=get_office.location_id).first()

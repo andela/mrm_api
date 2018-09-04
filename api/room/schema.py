@@ -50,8 +50,7 @@ class CreateRoom(graphene.Mutation):
         if not get_office:
             raise GraphQLError("No Office Found")
 
-        admin_roles.create_rooms(office_id)
-
+        admin_roles.create_rooms_update_office(office_id)
         assert_wing_is_required(get_office.name, kwargs)
         room = RoomModel(**kwargs)
         room.save()
