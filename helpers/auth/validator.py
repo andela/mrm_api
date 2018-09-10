@@ -1,4 +1,5 @@
 import re
+from graphql import GraphQLError
 
 
 def check_office_name(office_name):
@@ -17,4 +18,17 @@ def assert_wing_is_required(office, kwargs):
 
 def verify_email(email):
     return bool(re.match('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$',
-                email))
+                         email))
+
+
+class ErrorHandler():
+    '''Handles error'''
+
+    def check_conflict(self, entity_name, entity):
+        # Database integrity error
+        raise GraphQLError(
+            '{} {} already exists'.format(entity_name, entity))
+
+    def db_connection(self):
+        # Database connection error
+        raise GraphQLError('Error: Could not connect to Db')
