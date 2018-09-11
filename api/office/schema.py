@@ -9,6 +9,7 @@ from utilities.utility import update_entity_fields, validate_empty_fields
 from helpers.auth.authentication import Auth
 from helpers.room_filter.room_filter import room_join_location, lagos_office_join_location  # noqa: E501
 from helpers.auth.admin_roles import admin_roles
+from helpers.auth.error_handler import SaveContextManager
 
 
 class Office(SQLAlchemyObjectType):
@@ -28,10 +29,9 @@ class CreateOffice(graphene.Mutation):
         if not location:
             raise GraphQLError("Location not found")
         admin_roles.create_office(location_id=kwargs['location_id'])
-
         office = OfficeModel(**kwargs)
-        office.save()
-        return CreateOffice(office=office)
+        with SaveContextManager(office, kwargs['name'], 'Office'):
+            return CreateOffice(office=office)
 
 
 class DeleteOffice(graphene.Mutation):

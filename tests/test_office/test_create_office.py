@@ -5,7 +5,8 @@ import json
 from tests.base import BaseTestCase
 from fixtures.token.token_fixture import admin_api_token
 from fixtures.office.office_fixtures import (office_mutation_query, office_mutation_response, office_mutation_query_Different_Location,  # noqa : E501
-office_mutation_query_non_existant_ID)
+office_mutation_query_non_existant_ID, office_mutation_query_duplicate_name,
+office_mutation_query_duplicate_name_responce)
 
 sys.path.append(os.getcwd())
 
@@ -41,5 +42,15 @@ class TestCreateOffice(BaseTestCase):
 
         api_header = {'token': admin_api_token}
         response = self.app_test.post(
-            '/mrm?query='+office_mutation_query_non_existant_ID, headers=api_header)  # noqa : E501 
+            '/mrm?query='+office_mutation_query_non_existant_ID, headers=api_header)  # noqa : E501
         self.assertIn("Location not found", str(response.data))
+
+    def test_office_creation_with_an_already_existent_name(self):
+        """
+        Testing for office creation with an already existing office name
+        """
+        api_header = {'token': admin_api_token}
+        response = self.app_test.post(
+            '/mrm?query='+office_mutation_query_duplicate_name, headers=api_header)  # noqa : E501
+        actual_response = json.loads(response.data)  # noqa: E501
+        self.assertEquals(actual_response, office_mutation_query_duplicate_name_responce)  # noqa: E501

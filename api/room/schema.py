@@ -11,8 +11,9 @@ from helpers.auth.authentication import Auth
 from helpers.auth.admin_roles import admin_roles
 from helpers.auth.verify_ids_for_room import verify_ids
 from helpers.auth.validator import assert_wing_is_required
+from helpers.auth.validator import ErrorHandler
 from helpers.auth.add_office import verify_attributes
-from helpers.room_filter.room_filter import room_filter
+from helpers.room_filter.room_filter import room_filter, room_join_office
 from helpers.pagination.paginate import Paginate, validate_page
 
 
@@ -38,7 +39,7 @@ class CreateRoom(graphene.Mutation):
         image_url = graphene.String()
         floor_id = graphene.Int(required=True)
         calendar_id = graphene.String()
-        office_id = graphene.Int()
+        office_id = graphene.Int(required=True)
         wing_id = graphene.Int()
     room = graphene.Field(Room)
 
@@ -51,6 +52,13 @@ class CreateRoom(graphene.Mutation):
             raise GraphQLError("No Office Found")
 
         admin_roles.create_rooms_update_office(office_id)
+        query = Room.get_query(info)
+        exact_query = room_join_office(query)
+        result = exact_query.filter(
+            Office.id == office_id, RoomModel.name == kwargs.get('name'))
+        if result.count() > 0:
+            ErrorHandler.check_conflict(self, kwargs['name'], 'Room')
+
         assert_wing_is_required(get_office.name, kwargs)
         room = RoomModel(**kwargs)
         room.save()
