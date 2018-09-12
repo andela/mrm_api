@@ -47,7 +47,7 @@ class DeleteOffice(graphene.Mutation):
         if not exact_office:
             raise GraphQLError("Office not found")
 
-        admin_roles.delete_office(office_id)
+        admin_roles.create_rooms_update_delete_office(office_id)
         exact_office.delete()
         return DeleteOffice(office=exact_office)
 
@@ -65,7 +65,7 @@ class UpdateOffice(graphene.Mutation):
         exact_office = get_office.filter(OfficeModel.id == office_id).first()
         if not exact_office:
             raise GraphQLError("Office not found")
-        admin_roles.create_rooms_update_office(office_id)
+        admin_roles.create_rooms_update_delete_office(office_id)
         try:
             update_entity_fields(exact_office, **kwargs)
             exact_office.save()
