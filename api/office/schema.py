@@ -10,6 +10,7 @@ from helpers.auth.authentication import Auth
 from helpers.room_filter.room_filter import room_join_location, lagos_office_join_location  # noqa: E501
 from helpers.auth.admin_roles import admin_roles
 from helpers.auth.error_handler import SaveContextManager
+from helpers.pagination.paginate import Paginate, validate_page
 
 
 class Office(SQLAlchemyObjectType):
@@ -75,11 +76,37 @@ class UpdateOffice(graphene.Mutation):
         return UpdateOffice(office=exact_office)
 
 
+class PaginateOffices(Paginate):
+    offices = graphene.List(Office)
+
+    def resolve_offices(self, info, **kwargs):
+        page = self.page
+        per_page = self.per_page
+        query = Office.get_query(info)
+        if not page:
+            return query.all()
+        page = validate_page(page)
+        self.query_total = query.count()
+        result = query.limit(per_page).offset(page*per_page)
+        if result.count() == 0:
+            return GraphQLError("No more offices")
+        return result
+
+
 class Query(graphene.ObjectType):
     get_office_by_name = graphene.List(
         Office,
         name=graphene.String()
     )
+    all_offices = graphene.Field(
+        PaginateOffices,
+        page=graphene.Int(),
+        per_page=graphene.Int()
+    )
+
+    def resolve_all_offices(self, info, **kwargs):
+        response = PaginateOffices(**kwargs)
+        return response
 
     def resolve_get_office_by_name(self, info, name):
         query = Office.get_query(info)

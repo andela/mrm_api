@@ -160,3 +160,77 @@ mutation{
     }
 }
 '''
+
+paginated_offices_query = '''
+query {
+    allOffices(page:1, perPage:2){
+        offices{
+            name
+            id
+        }
+        hasNext
+        hasPrevious
+        pages
+    }
+}
+'''
+offices_query_response = {
+    "data": {
+        "allOffices": {
+            "offices": [
+                {
+                    "name": "St. Catherines",
+                    "id": "1"
+                },
+                {
+                    "name": "dojo",
+                    "id": "2"
+                }
+            ],
+            "hasNext": False,
+            "hasPrevious": False,
+            "pages": 1
+        }
+    }
+}
+
+offices_query = '''
+query {
+    allOffices{
+        offices{
+            name
+            id
+        }
+    }
+}
+'''
+all_offices_query_response = {
+    "data": {
+        "allOffices": {
+            "offices": [
+                {
+                    "name": "St. Catherines",
+                    "id": "1"
+                },
+                {
+                    "name": "dojo",
+                    "id": "2"
+                }
+            ]
+        }
+    }
+}
+
+paginated_offices_non_existing_page_query = '''
+query {
+    allOffices(page:2, perPage:2){
+        offices{
+            name
+            id
+        }
+        hasNext
+        hasPrevious
+        pages
+    }
+}
+'''
