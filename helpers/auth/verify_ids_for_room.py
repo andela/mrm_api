@@ -3,7 +3,7 @@ from api.floor.models import Floor
 from api.wing.models import Wing
 
 
-def verify_ids(kwargs, office_id):
+def verify_ids(office_id, kwargs):
     get_office = Office.query.filter_by(id=office_id).first()
     if not get_office:
         raise AttributeError("Office Id does not exist")
