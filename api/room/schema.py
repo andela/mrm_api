@@ -51,7 +51,7 @@ class CreateRoom(graphene.Mutation):
         if not get_office:
             raise GraphQLError("No Office Found")
 
-        admin_roles.create_rooms_update_office(office_id)
+        admin_roles.create_rooms_update_delete_office(office_id)
         query = Room.get_query(info)
         exact_query = room_join_office(query)
         result = exact_query.filter(

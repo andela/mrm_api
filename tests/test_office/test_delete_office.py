@@ -23,4 +23,4 @@ class TestDeleteOffice(BaseTestCase):
         api_headers = {'token': admin_api_token}
         response = self.app_test.post('mrm?query='+delete_unauthorised_location_mutation,  # noqa: E501
                                       headers=api_headers)
-        self.assertIn("You are not authorized to delete an office in Nairobi", str(response.data))  # noqa: E501
+        self.assertIn("You are not authorized to make changes in Nairobi", str(response.data))  # noqa: E501

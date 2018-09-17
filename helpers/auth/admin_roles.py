@@ -10,7 +10,7 @@ from helpers.room_filter.room_filter import location_join_resources, location_jo
 
 class Admin_roles():
 
-    def create_rooms_update_office(self, office_id):
+    def create_rooms_update_delete_office(self, office_id):
         admin_details = get_user_from_db()
         get_office = Office.query.filter_by(id=office_id).first()
         location = Location.query.filter_by(id=get_office.location_id).first()
@@ -49,13 +49,6 @@ class Admin_roles():
         resource_location = location_query.filter(ResourceModel.id == resource_id).first()   # noqa: E501
         if admin_details.location != resource_location.name:
             raise GraphQLError("You are not authorized to make changes in " + resource_location.name)  # noqa: E501
-
-    def delete_office(self, office_id):
-        admin_details = get_user_from_db()
-        get_office = Office.query.filter_by(id=office_id).first()
-        location = Location.query.filter_by(id=get_office.location_id).first()
-        if admin_details.location != location.name:
-            raise GraphQLError("You are not authorized to delete an office in " + location.name)  # noqa: E501
 
 
 admin_roles = Admin_roles()
