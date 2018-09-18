@@ -6,6 +6,7 @@ from graphql import GraphQLError
 from api.room.models import Room as RoomModel
 from api.office.models import Office
 from helpers.calendar.events import RoomSchedules
+from helpers.calendar.analytics import RoomAnalytics
 from utilities.utility import validate_empty_fields, update_entity_fields
 from helpers.auth.authentication import Auth
 from helpers.auth.admin_roles import admin_roles
@@ -163,6 +164,20 @@ class Query(graphene.ObjectType):
         days=graphene.Int(),
     )
 
+    analytics_for_room_least_used_per_week = graphene.Field(
+        Calendar,
+        location_id=graphene.Int(),
+        week_start=graphene.String(),
+        week_end=graphene.String(),
+    )
+
+    def check_valid_calendar_id(self, query, calendar_id):
+        check_calendar_id = query.filter(
+            RoomModel.calendar_id == calendar_id
+        ).first()
+        if not check_calendar_id:
+            raise GraphQLError("CalendarId given not assigned to any room on converge")  # noqa: E501
+
     def resolve_all_rooms(self, info, **kwargs):
         response = PaginatedRooms(**kwargs)
         return response
@@ -185,11 +200,7 @@ class Query(graphene.ObjectType):
 
     def resolve_room_occupants(self, info, calendar_id, days):
         query = Room.get_query(info)
-        check_calendar_id = query.filter(
-            RoomModel.calendar_id == calendar_id
-        ).first()
-        if not check_calendar_id:
-            raise GraphQLError("Invalid CalendarId")
+        Query.check_valid_calendar_id(self, query, calendar_id)
         room_occupants = RoomSchedules.get_room_schedules(
             self,
             calendar_id,
@@ -200,17 +211,23 @@ class Query(graphene.ObjectType):
 
     def resolve_room_schedule(self, info, calendar_id, days):
         query = Room.get_query(info)
-        check_calendar_id = query.filter(
-            RoomModel.calendar_id == calendar_id
-        ).first()
-        if not check_calendar_id:
-            raise GraphQLError("CalendarId given not assigned to any room on converge")  # noqa: E501
+        Query.check_valid_calendar_id(self, query, calendar_id)
         room_schedule = RoomSchedules.get_room_schedules(
             self,
             calendar_id,
             days)
         return Calendar(
             events=room_schedule[1]
+        )
+
+    @Auth.user_roles('Admin')
+    def resolve_analytics_for_room_least_used_per_week(self, info, location_id, week_start, week_end):  # noqa: E501
+        query = Room.get_query(info)
+        room_analytics = RoomAnalytics.get_least_used_room_week(
+            self, query, location_id, week_start, week_end
+        )
+        return Calendar(
+            events=room_analytics
         )
 
 
