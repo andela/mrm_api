@@ -27,7 +27,6 @@ class RoomAnalytics(Credentials):
        :methods
            get_least_used_room_week
     """
-
     def convert_date(self, date):
         return datetime.strptime(date, '%b %d %Y').isoformat() + 'Z'
 
