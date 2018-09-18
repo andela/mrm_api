@@ -63,7 +63,8 @@ class RoomAnalytics(Credentials):
             - location_id
         """
         exact_query = room_join_location(query)
-        rooms_in_locations = exact_query.filter(LocationModel.id == location_id)
+        rooms_in_locations = exact_query.filter(
+            LocationModel.id == location_id)
         if not rooms_in_locations.all():
             raise GraphQLError("No rooms in this location")
         result = [{'name': room.name, 'calendar_id': room.calendar_id}
