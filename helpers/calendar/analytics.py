@@ -1,5 +1,6 @@
 from datetime import datetime
 import dateutil.parser
+from dateutil.relativedelta import relativedelta
 from graphql import GraphQLError
 import graphene
 from collections import Counter
@@ -75,6 +76,7 @@ class RoomAnalytics(Credentials):
         event_details = {}
         if event.get('attendees'):
             for resource in event.get('attendees'):
+
                 if resource.get('resource') and resource.get('email') == calendar_id:  # noqa: E501
                     event_details["minutes"] = RoomAnalytics.get_time_duration_for_event(  # noqa: E501
                         self, event['start'].get(
@@ -101,9 +103,9 @@ class RoomAnalytics(Credentials):
                             has_events=detail['has_events'],
                             count=0)
                         result.append(output)
-            elif len(room_details) == number_of_events_in_room:
+            elif len(room_details) == number_of_events_in_room and 'has_events' not in room_details[0].keys():  # noqa: E501
                 events_count = Counter(detail['minutes']
-                                       for detail in room_details if detail)
+                                       for detail in room_details if 'minutes' in detail.keys())  # noqa: E501
                 duration_of_events_in_room = [
                     EventsDuration(
                         duration_in_minutes=event_duration,
@@ -147,4 +149,40 @@ class RoomAnalytics(Credentials):
             res.append(output)
         analytics = RoomAnalytics.get_room_statistics(
             self, number_of_least_events, res)
+        return analytics
+
+    def get_most_used_room_per_month(self, query, month, year, location_id):
+        """ Get analytics for the most used room(s) per morth in a location
+         :params
+            - month, year, location_id
+        """
+        date = month + ' 1 ' + str(year)
+        startdate = RoomAnalytics.convert_date(self, date)
+        date_after_month = (datetime.strptime(date, '%b %d %Y') + relativedelta(months=1)).isoformat() + 'Z'  # noqa: E501
+
+        rooms_available = RoomAnalytics.get_calendar_id_name(
+            self, query, location_id)
+        rooms = []
+        res = []
+        for room in rooms_available:
+            calendar_events = RoomAnalytics.get_all_events_in_a_room(
+                self, room['calendar_id'], startdate, date_after_month)
+            output = []
+            if not calendar_events:
+                output.append({'RoomName': room['name'], 'has_events': False})
+                rooms_with_max_events = 0
+                rooms.append(rooms_with_max_events)
+
+            else:
+                for event in calendar_events:
+                    if event.get('attendees'):
+                        event_details = RoomAnalytics.get_event_details(
+                            self, event, room['calendar_id'])
+                        output.append(event_details)
+                rooms.append(len(output))
+            res.append(output)
+        rooms_with_max_events = max(rooms)
+
+        analytics = RoomAnalytics.get_room_statistics(
+            self, rooms_with_max_events, res)
         return analytics

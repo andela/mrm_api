@@ -188,6 +188,13 @@ class Query(graphene.ObjectType):
         week_end=graphene.String(),
     )
 
+    most_used_room_per_month_analytics = graphene.Field(
+        Analytics,
+        location_id=graphene.Int(),
+        month=graphene.String(),
+        year=graphene.Int(),
+    )
+
     def check_valid_calendar_id(self, query, calendar_id):
         check_calendar_id = query.filter(
             RoomModel.calendar_id == calendar_id
@@ -243,6 +250,15 @@ class Query(graphene.ObjectType):
         room_analytics = RoomAnalytics.get_least_used_room_week(
             self, query, location_id, week_start, week_end
         )
+        return Analytics(
+            analytics=room_analytics
+        )
+
+    @Auth.user_roles('Admin')
+    def resolve_most_used_room_per_month_analytics(self, info, month, year, location_id):  # noqa: E501
+        query = Room.get_query(info)
+        room_analytics = RoomAnalytics.get_most_used_room_per_month(
+            self, query, month, year, location_id)
         return Analytics(
             analytics=room_analytics
         )

@@ -1,4 +1,20 @@
 null = None
+
+most_used_room_in_a_month_analytics_invalid_location_query = '''
+    {
+        mostUsedRoomPerMonthAnalytics(month:"Dec", year:2018, locationId:19)
+        {
+            analytics {
+                roomName
+                count
+                events {
+                    durationInMinutes
+                    numberOfMeetings
+                }
+            }
+        }
+    }
+'''
 get_least_used_room_per_week_query = '''
     {
         analyticsForRoomLeastUsedPerWeek(
@@ -19,6 +35,51 @@ get_least_used_room_per_week_query = '''
         }
     }
 '''
+
+most_used_room_in_a_month_analytics_invalid_location_response = {
+        "errors": [
+            {
+                "message": "No rooms in this location",
+                "locations": [
+                    {
+                        "line": 3,
+                        "column": 9
+                    }
+                ],
+                "path": [
+                    "mostUsedRoomPerMonthAnalytics"
+                ]
+            }
+        ],
+        "data": {
+            "mostUsedRoomPerMonthAnalytics": null
+        }
+    }
+
+get_most_used_room_in_a_month_analytics_query = '''
+    {
+        mostUsedRoomPerMonthAnalytics(month:"Dec", year:2018, locationId:1)
+        {
+            analytics {
+                roomName
+                count
+            }
+        }
+    }
+'''
+
+get_most_used_room_in_a_month_analytics_response = {
+        "data": {
+            "mostUsedRoomPerMonthAnalytics": {
+                "analytics": [
+                    {
+                        "roomName": "Nairobi - 2nd Floor Block A Khartoum (1)",
+                        "count": 21
+                    }
+                ]
+            }
+        }
+    }
 
 get_least_used_room_per_week_response = {
     "data": {
