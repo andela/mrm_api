@@ -184,3 +184,18 @@ class RoomAnalytics(Credentials):
         analytics = RoomAnalytics.get_room_statistics(
             self, rooms_with_max_events, res)
         return analytics
+
+    def get_meetings_per_room(self, query, location_id, timeMin, timeMax):
+        day_start = RoomAnalytics.convert_date(self, timeMin)
+        day_end = RoomAnalytics.convert_date(self, timeMax)
+
+        rooms_available = RoomAnalytics.get_calendar_id_name(
+            self, query, location_id)
+        res = []
+        for room in rooms_available:
+
+            calendar_events = RoomAnalytics.get_all_events_in_a_room(
+                self, room['calendar_id'], day_start, day_end)
+            room_details = RoomStatistics(room_name=room["name"], count=len(calendar_events))  # noqa: E501
+            res.append(room_details)
+        return res

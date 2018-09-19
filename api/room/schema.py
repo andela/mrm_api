@@ -195,6 +195,13 @@ class Query(graphene.ObjectType):
         year=graphene.Int(),
     )
 
+    analytics_for_meetings_per_room = graphene.Field(
+        Analytics,
+        location_id=graphene.Int(),
+        day_start=graphene.String(),
+        day_end=graphene.String(),
+    )
+
     def check_valid_calendar_id(self, query, calendar_id):
         check_calendar_id = query.filter(
             RoomModel.calendar_id == calendar_id
@@ -261,6 +268,15 @@ class Query(graphene.ObjectType):
             self, query, month, year, location_id)
         return Analytics(
             analytics=room_analytics
+        )
+
+    def resolve_analytics_for_meetings_per_room(self, info, location_id, day_start, day_end):  # noqa: E501
+        query = Room.get_query(info)
+        meeting_summary = RoomAnalytics.get_meetings_per_room(
+            self, query, location_id, day_start, day_end
+        )
+        return Analytics(
+            analytics=meeting_summary
         )
 
 
