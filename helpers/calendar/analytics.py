@@ -1,5 +1,6 @@
 from datetime import datetime
 import dateutil.parser
+from graphql import GraphQLError
 
 from .credentials import Credentials
 from api.location.models import Location as LocationModel
@@ -11,6 +12,8 @@ class RoomAnalytics(Credentials):
        :methods
            get_least_used_room_week
     """
+    def convert_date(self, date):
+        return datetime.strptime(date, '%b %d %Y').isoformat() + 'Z'
 
     def get_time_duration_for_event(self, start_time, end_time):
         """ Calculate duration range of an event
@@ -30,6 +33,8 @@ class RoomAnalytics(Credentials):
         """
         exact_query = room_join_location(query)
         rooms_in_locations = exact_query.filter(LocationModel.id == location_id)
+        if not rooms_in_locations.all():
+            raise GraphQLError("No rooms in this location")
         result = []
         for room in rooms_in_locations.all():
             room_details = {}
@@ -69,18 +74,22 @@ class RoomAnalytics(Credentials):
             event_details["summary"] = event.get("summary")
         return event_details
 
-    def get_room_statistics(self, number_of_events, all_details):
+    def get_room_statistics(self, number_of_events_in_room, all_details):
         """ Get summary statistics for room
          :params
-            - number_of_events
+            - number_of_events_in_room
             - all_details(List of list of events in a room)
         """
         result = []
         for room_details in all_details:
-            if len(room_details) == number_of_events:
+            if number_of_events_in_room == 0:
+                for detail in room_details:
+                    if 'has_no_events' in detail.keys():
+                        result.append(detail)
+            elif len(room_details) == number_of_events_in_room:
                 output = {
-                    'RoomName': room_details[0]['roomName'],
-                    'count': number_of_events
+                    'RoomName': room_details[0]['roomName'] or None,
+                    'count': number_of_events_in_room
                 }
                 events = {}
                 for detail in room_details:
@@ -99,27 +108,26 @@ class RoomAnalytics(Credentials):
             - calendar_id, location_id
             - week_start, week_end(Time range)
         """
-        week_start = datetime.strptime(
-            week_start, '%b %d %Y').isoformat() + 'Z'
-        week_end = datetime.strptime(
-            week_end, '%b %d %Y').isoformat() + 'Z'
+        week_start = RoomAnalytics.convert_date(self, week_start)
+        week_end = RoomAnalytics.convert_date(self, week_end)
 
         rooms_available = RoomAnalytics.get_calendar_id_name(
             self, query, location_id)
         res = []
-        no_least_events = float("inf")
+        number_of_least_events = float('inf')
         for room in rooms_available:
             calendar_events = RoomAnalytics.get_all_events_in_a_room(
                 self, room['calendar_id'], week_start, week_end)
             output = []
             if not calendar_events:
-                output.append({})
+                output.append({'RoomName': room['name'], 'has_no_events': True})
+                number_of_least_events = 0
             for event in calendar_events:
                 event_details = RoomAnalytics.get_event_details(self, event)
                 output.append(event_details)
-            if len(output) < no_least_events:
-                no_least_events = len(output)
+            if len(output) < number_of_least_events:
+                number_of_least_events = len(output)
             res.append(output)
         analytics = RoomAnalytics.get_room_statistics(
-            self, no_least_events, res)
+            self, number_of_least_events, res)
         return analytics
