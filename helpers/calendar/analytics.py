@@ -232,12 +232,10 @@ class RoomAnalytics(Credentials):
     def get_meetings_per_room(self, query, location_id, timeMin, timeMax):
         day_start = RoomAnalytics.convert_date(self, timeMin)
         day_end = RoomAnalytics.convert_date(self, timeMax)
-
         rooms_available = RoomAnalytics.get_calendar_id_name(
             self, query, location_id)
         res = []
         for room in rooms_available:
-
             calendar_events = RoomAnalytics.get_all_events_in_a_room(
                 self, room['calendar_id'], day_start, day_end)
             room_details = RoomStatistics(room_name=room["name"], count=len(calendar_events))  # noqa: E501
@@ -279,3 +277,34 @@ class RoomAnalytics(Credentials):
             result.append(output)
 
         return result
+
+    def get_most_used_room_week(self, query, location_id, week_start, week_end):  # noqa: E501
+        """ Get analytics for most used room per week
+         :params
+            - calendar_id, location_id
+            - week_start, week_end(Time range)
+        """
+        week_start = RoomAnalytics.convert_date(self, week_start)
+        week_end = RoomAnalytics.convert_date(self, week_end)
+        rooms_available = RoomAnalytics.get_calendar_id_name(
+            self, query, location_id)
+        res = []
+        number_of_most_events = 0
+        for room in rooms_available:
+            calendar_events = RoomAnalytics.get_all_events_in_a_room(
+                self, room['calendar_id'], week_start, week_end)
+            output = []
+            if not calendar_events:
+                output.append({'RoomName': room['name'], 'has_events': False})
+                number_of_most_events = 0
+            else:
+                for event in calendar_events:
+                    event_details = RoomAnalytics.get_event_details(
+                        self, event, room['calendar_id'])
+                    output.append(event_details)
+                if len(output) > number_of_most_events:
+                    number_of_most_events = len(output)
+            res.append(output)
+        analytics = RoomAnalytics.get_room_statistics(
+            self, number_of_most_events, res)
+        return analytics
