@@ -20,25 +20,7 @@ role_mutation_response = {
     }
 }
 
-role_duplication_mutation_response = {
-    "errors": [
-        {
-            "message": "DevOps Role already exists",
-            "locations": [
-                {
-                    "line": 3,
-                    "column": 3
-                }
-            ],
-            "path": [
-                "createRole"
-            ]
-        }
-    ],
-    "data": {
-        "createRole": null
-    }
-}
+role_duplication_mutation_response = "DevOps Role already exists"
 
 role_query = '''
 query {

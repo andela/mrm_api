@@ -227,22 +227,4 @@ room_mutation_query_duplicate_name = '''
     }
 '''
 
-room_mutation_query_duplicate_name_response = {
-        "errors": [
-            {
-                "message": "Entebbe Room already exists",
-                "locations": [
-                    {
-                        "line": 3,
-                        "column": 9
-                    }
-                ],
-                "path": [
-                    "createRoom"
-                ]
-            }
-        ],
-        "data": {
-            "createRoom": null
-        }
-    }
+room_mutation_query_duplicate_name_response = "Entebbe Room already exists"

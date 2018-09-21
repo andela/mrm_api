@@ -32,5 +32,6 @@ class TestCreateRole(BaseTestCase):
         query_response = self.client.execute(
             role_mutation_query, context_value={'session': db_session})
 
-        expected_responese = role_duplication_mutation_response
-        self.assertEqual(query_response, expected_responese)
+        expected_response = role_duplication_mutation_response
+        self.assertEquals(
+            query_response["errors"][0]["message"], expected_response)

@@ -37,3 +37,20 @@ get_least_used_room_without_event_response = {
         "analyticsForRoomLeastUsedPerWeek": {
             'events': "[{'RoomName': 'Entebbe', 'has_no_events': True}]"}}
 }
+
+most_used_room_per_day_query = '''
+{
+    mostUsedRoomPerDay(locationId:1, date: "Sep 18 2018") {
+        analytics
+   }
+}
+'''
+
+most_used_room_per_day_response = {
+    'data': {
+        'mostUsedRoomPerDay': {
+            'analytics':
+            ["{'RoomName': 'Nairobi - 2nd Floor Block A Khartoum (1)', 'count': 2, 'Events in minutes': {'120.0': 1, '25.0': 1}}"]  # noqa: E501
+        }
+    }
+}

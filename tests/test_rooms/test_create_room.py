@@ -86,4 +86,5 @@ class TestCreateRoom(BaseTestCase):
             '/mrm?query='+room_mutation_query_duplicate_name, headers=api_header)  # noqa : E501
         expected_response = room_mutation_query_duplicate_name_response
         actual_response = json.loads(response.data)
-        self.assertEqual(expected_response, actual_response)
+        self.assertEquals(
+            actual_response["errors"][0]["message"], expected_response)

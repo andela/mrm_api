@@ -35,4 +35,5 @@ class TestCreateUser(BaseTestCase):
             context_value={'session': db_session})
 
         expected_response = user_duplication_mutation_response
-        self.assertEqual(query_response, expected_response)
+        self.assertEquals(
+            query_response["errors"][0]["message"], expected_response)

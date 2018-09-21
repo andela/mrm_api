@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import dateutil.parser
 from graphql import GraphQLError
 
@@ -130,4 +130,34 @@ class RoomAnalytics(Credentials):
             res.append(output)
         analytics = RoomAnalytics.get_room_statistics(
             self, number_of_least_events, res)
+        return analytics
+
+    def get_most_used_rooms_per_day(self, query, location_id, date):
+        """ Get analytics for most used rooms per day
+         :params
+            - calendar_id, location_id
+            - date
+        """
+        day_start = datetime.strptime(date, '%b %d %Y').isoformat() + 'Z'
+        day_end = (datetime.strptime(date, '%b %d %Y') + timedelta(days=1)).isoformat() + 'Z'  # noqa: E501
+
+        rooms_available = RoomAnalytics.get_calendar_id_name(
+            self, query, location_id)
+        res = []
+        number_of_most_events = 0
+        for room in rooms_available:
+            calendar_events = RoomAnalytics.get_all_events_in_a_room(
+                self, room['calendar_id'], day_start, day_end)
+            output = []
+            if not calendar_events:
+                output.append({'RoomName': room['name'], 'has_no_events': True})
+                number_of_most_events = 0
+            for event in calendar_events:
+                event_details = RoomAnalytics.get_event_details(self, event)
+                output.append(event_details)
+            if len(output) > number_of_most_events:
+                number_of_most_events = len(output)
+            res.append(output)
+        analytics = RoomAnalytics.get_room_statistics(
+            self, number_of_most_events, res)
         return analytics

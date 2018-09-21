@@ -109,25 +109,7 @@ office_mutation_query_duplicate_name = '''
     }
 '''
 
-office_mutation_query_duplicate_name_responce = {
-        "errors": [
-            {
-                "message": "St. Catherines Office already exists",
-                "locations": [
-                    {
-                        "line": 3,
-                        "column": 9
-                    }
-                ],
-                "path": [
-                    "createOffice"
-                ]
-            }
-        ],
-        "data": {
-            "createOffice": null
-        }
-    }
+office_mutation_query_duplicate_name_responce = "St. Catherines Office already exists"  # noqa: E501
 
 delete_office_mutation = '''
 mutation{

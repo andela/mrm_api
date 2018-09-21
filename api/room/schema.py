@@ -28,6 +28,10 @@ class Calendar(graphene.ObjectType):
     occupants = graphene.String()
 
 
+class Analytics(graphene.ObjectType):
+    analytics = graphene.List(graphene.String)
+
+
 class RoomFilter(graphene.ObjectType):
     rooms = graphene.List(Room)
 
@@ -171,6 +175,12 @@ class Query(graphene.ObjectType):
         week_end=graphene.String(),
     )
 
+    most_used_room_per_day = graphene.Field(
+        Analytics,
+        location_id=graphene.Int(),
+        date=graphene.String()
+    )
+
     def check_valid_calendar_id(self, query, calendar_id):
         check_calendar_id = query.filter(
             RoomModel.calendar_id == calendar_id
@@ -228,6 +238,16 @@ class Query(graphene.ObjectType):
         )
         return Calendar(
             events=room_analytics
+        )
+
+    @Auth.user_roles('Admin')
+    def resolve_most_used_room_per_day(self, info, location_id, date):  # noqa: E501
+        query = Room.get_query(info)
+        room_analytics = RoomAnalytics.get_most_used_rooms_per_day(
+            self, query, location_id, date)
+        print('the room analytics are........', room_analytics)
+        return Analytics(
+            analytics=room_analytics
         )
 
 

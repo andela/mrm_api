@@ -28,25 +28,7 @@ user_mutation_response = {
     }
 }
 
-user_duplication_mutation_response = {
-    "errors": [
-        {
-            "message": "mrm@andela.com User email already exists",
-            "locations": [
-                {
-                    "line": 3,
-                    "column": 3
-                }
-            ],
-            "path": [
-                "createUser"
-            ]
-        }
-    ],
-    "data": {
-        "createUser": null
-    }
-}
+user_duplication_mutation_response = "mrm@andela.com User email already exists"
 
 user_query = '''
 query {

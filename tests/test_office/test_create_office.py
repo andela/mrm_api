@@ -53,4 +53,6 @@ class TestCreateOffice(BaseTestCase):
         response = self.app_test.post(
             '/mrm?query='+office_mutation_query_duplicate_name, headers=api_header)  # noqa : E501
         actual_response = json.loads(response.data)  # noqa: E501
-        self.assertEquals(actual_response, office_mutation_query_duplicate_name_responce)  # noqa: E501
+        self.assertEquals(
+            actual_response["errors"][0]["message"],
+            office_mutation_query_duplicate_name_responce)
