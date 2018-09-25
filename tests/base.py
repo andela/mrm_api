@@ -88,12 +88,12 @@ class BaseTestCase(TestCase):
 
 def change_user_role_helper(func):
     def func_wrapper(self):
-        api_headers = {'token': user_api_token}
-        user = User(email='mrm@andela.com', location="Lagos",
-                    name='this user', picture='www.andela.com/user')
+        headers = {"Authorization": "Bearer" + " " + user_api_token}
+        user = User(email='mrm@andela.com', name='this user',
+                    location="Nairobi", picture='www.andela.com/user')
         user.save()
         user_role = UsersRole(user_id=user.id, role_id=1)
         user_role.save()
         db_session().commit()
-        return api_headers
+        return headers
     return func_wrapper

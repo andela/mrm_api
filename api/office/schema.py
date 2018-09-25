@@ -10,6 +10,7 @@ from helpers.auth.authentication import Auth
 from helpers.room_filter.room_filter import room_join_location, lagos_office_join_location  # noqa: E501
 from helpers.auth.admin_roles import admin_roles
 from helpers.auth.error_handler import SaveContextManager
+from helpers.pagination.paginate import Paginate, validate_page
 
 
 class Office(SQLAlchemyObjectType):
@@ -47,7 +48,7 @@ class DeleteOffice(graphene.Mutation):
         if not exact_office:
             raise GraphQLError("Office not found")
 
-        admin_roles.delete_office(office_id)
+        admin_roles.create_rooms_update_delete_office(office_id)
         exact_office.delete()
         return DeleteOffice(office=exact_office)
 
@@ -65,7 +66,7 @@ class UpdateOffice(graphene.Mutation):
         exact_office = get_office.filter(OfficeModel.id == office_id).first()
         if not exact_office:
             raise GraphQLError("Office not found")
-        admin_roles.create_rooms_update_office(office_id)
+        admin_roles.create_rooms_update_delete_office(office_id)
         try:
             update_entity_fields(exact_office, **kwargs)
             exact_office.save()
@@ -75,11 +76,37 @@ class UpdateOffice(graphene.Mutation):
         return UpdateOffice(office=exact_office)
 
 
+class PaginateOffices(Paginate):
+    offices = graphene.List(Office)
+
+    def resolve_offices(self, info, **kwargs):
+        page = self.page
+        per_page = self.per_page
+        query = Office.get_query(info)
+        if not page:
+            return query.all()
+        page = validate_page(page)
+        self.query_total = query.count()
+        result = query.limit(per_page).offset(page*per_page)
+        if result.count() == 0:
+            return GraphQLError("No more offices")
+        return result
+
+
 class Query(graphene.ObjectType):
     get_office_by_name = graphene.List(
         Office,
         name=graphene.String()
     )
+    all_offices = graphene.Field(
+        PaginateOffices,
+        page=graphene.Int(),
+        per_page=graphene.Int()
+    )
+
+    def resolve_all_offices(self, info, **kwargs):
+        response = PaginateOffices(**kwargs)
+        return response
 
     def resolve_get_office_by_name(self, info, name):
         query = Office.get_query(info)

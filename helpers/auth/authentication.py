@@ -1,14 +1,21 @@
+import json
 import jwt
 
 from flask import request, jsonify
 from functools import wraps
+
+import requests
 from graphql import GraphQLError
 from sqlalchemy.exc import SQLAlchemyError
 
 from api.user.models import User
 from api.role.models import Role
 from api.user_role.models import UsersRole
-from helpers.auth.user_details import get_user_details
+
+from helpers.database import db_session
+
+
+api_url = "https://api-prod.andela.com/api/v1/"
 
 
 class Authentication:
@@ -19,7 +26,7 @@ class Authentication:
     """
 
     def get_token(self):
-        token = request.headers.get('token')  # get token from headers
+        token = request.headers['Authorization'].split()[1]
         return token
 
     def decode_token(self):
@@ -38,7 +45,8 @@ class Authentication:
                 }), 401
 
             payload = jwt.decode(auth_token, verify=False)
-            return payload['UserInfo']  # Return User Info
+            self.user_info = payload['UserInfo']
+            return payload['UserInfo']
         except jwt.ExpiredSignatureError:
             return jsonify({
                 'message': 'Signature expired. Please log in again.'}), 401
@@ -47,7 +55,7 @@ class Authentication:
                 'message': 'Invalid token. Please Provide a valid token!'
             }), 401
 
-    def save_user(self, user_info):
+    def save_user(self):
         """
         Save user to database.
 
@@ -57,20 +65,23 @@ class Authentication:
             bloolean
         """
         try:
-            email = user_info['email']
-            name = user_info['name']
-            picture = user_info['picture']
+            email = self.user_info['email']
+            name = self.user_info['name']
+            picture = self.user_info['picture']
             user = User.query.filter_by(email=email).first()
             role = Role.query.filter_by(role='Default User').first()
             if not role:
                 role = Role(role='Default User')
                 role.save()
+
             if not user:
-                user_data = User(email=email, location=user_info['location'],
-                                 name=name, picture=picture)
-                user_data.save()
-                user_role = UsersRole(user_id=user_data.id, role_id=role.id)
-                user_role.save()
+                try:
+                    user_data = User(email=email, name=name, picture=picture)
+                    user_data.save()
+                    user_role = UsersRole(user_id=user_data.id, role_id=role.id)
+                    user_role.save()
+                except Exception as e:
+                    db_session.rollback()
         except SQLAlchemyError:
             pass
         return True
@@ -82,11 +93,20 @@ class Authentication:
             def wrapper(*args, **kwargs):
                 user_data = self.decode_token()
                 if type(user_data) is dict:
-                    user_info = get_user_details(self.get_token(),
-                                                 user_data['id'])
-                    self.save_user(user_info)
+                    self.save_user()
                     email = user_data['email']
                     user = User.query.filter_by(email=email).first()
+                    headers = {"Authorization": 'Bearer ' + self.get_token()}
+                    data = requests.get(api_url + "users?email=%s" % user.email,
+                                        headers=headers)
+                    response = json.loads(data.content.decode("utf-8"))
+                    if response['values'][0]['location']:
+                        user.location = \
+                            response['values'][0]['location']['name']
+                        user.save()
+                    else:
+                        user.location = "Nairobi"
+                        user.save()
                     user_role = UsersRole.query.filter_by(
                         user_id=user.id).first()
                     role = Role.query.filter_by(id=user_role.role_id).first()

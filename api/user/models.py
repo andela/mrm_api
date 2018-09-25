@@ -10,7 +10,7 @@ class User(Base, Utility):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
     email = Column(String, nullable=False, unique=True)
-    location = Column(String, nullable=False)
+    location = Column(String, nullable=True)
     name = Column(String, nullable=False)
     picture = Column(String, nullable=True)
     roles = relationship('Role', secondary='users_roles')
@@ -19,6 +19,5 @@ class User(Base, Utility):
         validate_empty_fields(**kwargs)
 
         self.email = kwargs['email']
-        self.location = kwargs['location']
         self.name = kwargs['name']
         self.picture = kwargs['picture']

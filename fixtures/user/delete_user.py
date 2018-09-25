@@ -20,7 +20,6 @@ mutation {
         user{
             id
             email
-            location
             roles {
                 id
                 role
@@ -69,7 +68,6 @@ expected_query_after_delete = {
             "user": {
                 "id": "2",
                 "email": "test.test@andela.com",
-                "location": "Kampala",
                 "roles": [
                     {
                         "id": "2",
@@ -87,7 +85,6 @@ expected_query_after_delete_for_admin = {
             "user": {
                 "id": "2",
                 "email": "new.user@andela.com",
-                "location": "Kampala",
                 "roles": [
                     {
                         "id": "1",

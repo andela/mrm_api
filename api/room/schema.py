@@ -5,6 +5,8 @@ from graphql import GraphQLError
 
 from api.room.models import Room as RoomModel
 from api.office.models import Office
+from api.block.models import Block
+from api.floor.models import Floor
 from helpers.calendar.events import RoomSchedules
 from utilities.utility import validate_empty_fields, update_entity_fields
 from helpers.auth.authentication import Auth
@@ -41,29 +43,40 @@ class CreateRoom(graphene.Mutation):
         calendar_id = graphene.String()
         office_id = graphene.Int(required=True)
         wing_id = graphene.Int()
+        block_id = graphene.Int()
     room = graphene.Field(Room)
 
     @Auth.user_roles('Admin')
     def mutate(self, info, office_id, **kwargs):
         verify_attributes(kwargs)
-        verify_ids(kwargs, office_id)
+        verify_ids(office_id, kwargs)
         get_office = Office.query.filter_by(id=office_id).first()
         if not get_office:
             raise GraphQLError("No Office Found")
 
-        admin_roles.create_rooms_update_office(office_id)
-        query = Room.get_query(info)
-        exact_query = room_join_office(query)
-        result = exact_query.filter(
-            Office.id == office_id, RoomModel.name == kwargs.get('name'))
-        if result.count() > 0:
-            ErrorHandler.check_conflict(self, kwargs['name'], 'Room')
-
-        assert_wing_is_required(get_office.name, kwargs)
-        room = RoomModel(**kwargs)
-        room.save()
-
-        return CreateRoom(room=room)
+        if 'block_id' in kwargs:
+            exact_block = Block.query.filter_by(id=kwargs['block_id']).first()
+            if not exact_block:
+                raise GraphQLError("Block with such id does not exist")
+            floor = Floor.query.filter_by(id=kwargs['floor_id']).first()
+            if floor.block_id == kwargs['block_id']:
+                admin_roles.create_rooms_update_delete_office(office_id)
+                query = Room.get_query(info)
+                exact_query = room_join_office(query)
+                result = exact_query.filter(
+                    Office.id == office_id,
+                    RoomModel.name == kwargs.get('name'))
+                if result.count() > 0:
+                    ErrorHandler.check_conflict(self, kwargs['name'], 'Room')
+                assert_wing_is_required(get_office.name, kwargs)
+                kwargs.pop('block_id')
+                room = RoomModel(**kwargs)
+                room.save()
+                return CreateRoom(room=room)
+            raise GraphQLError(
+                "Floor with such id does not exist in this block")
+        raise GraphQLError(
+            "Block id is required")
 
 
 class PaginatedRooms(Paginate):
