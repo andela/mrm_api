@@ -18,9 +18,9 @@ class TestCreateOffice(BaseTestCase):
         Testing for office creation
         """
 
-        api_header = {'token': admin_api_token}
+        headers = {"Authorization": "Bearer" + " " + admin_api_token}
         response = self.app_test.post(
-            '/mrm?query='+office_mutation_query, headers=api_header)
+            '/mrm?query='+office_mutation_query, headers=headers)
         expected_response = office_mutation_response
         actual_response = json.loads(response.data)
         self.assertEqual(expected_response, actual_response)
@@ -29,10 +29,10 @@ class TestCreateOffice(BaseTestCase):
         """
         Test creating office in different location
         """
-        api_header = {'token': admin_api_token}
+        headers = {"Authorization": "Bearer" + " " + admin_api_token}
         response = self.app_test.post(
             '/mrm?query='+office_mutation_query_Different_Location,
-            headers=api_header)
+            headers=headers)
         self.assertIn("You are not authorized to make changes in", str(response.data))  # noqa : E501
 
     def test_office_creation_with_non_existant_ID(self):
@@ -40,17 +40,17 @@ class TestCreateOffice(BaseTestCase):
         Testing for office creation with non existant ID
         """
 
-        api_header = {'token': admin_api_token}
+        headers = {"Authorization": "Bearer" + " " + admin_api_token}
         response = self.app_test.post(
-            '/mrm?query='+office_mutation_query_non_existant_ID, headers=api_header)  # noqa : E501
+            '/mrm?query='+office_mutation_query_non_existant_ID, headers=headers)  # noqa : E501
         self.assertIn("Location not found", str(response.data))
 
     def test_office_creation_with_an_already_existent_name(self):
         """
         Testing for office creation with an already existing office name
         """
-        api_header = {'token': admin_api_token}
+        headers = {"Authorization": "Bearer" + " " + admin_api_token}
         response = self.app_test.post(
-            '/mrm?query='+office_mutation_query_duplicate_name, headers=api_header)  # noqa : E501
+            '/mrm?query='+office_mutation_query_duplicate_name, headers=headers)  # noqa : E501
         actual_response = json.loads(response.data)  # noqa: E501
         self.assertEquals(actual_response, office_mutation_query_duplicate_name_responce)  # noqa: E501

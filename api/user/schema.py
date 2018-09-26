@@ -21,7 +21,7 @@ class CreateUser(graphene.Mutation):
 
     class Arguments:
         email = graphene.String(required=True)
-        location = graphene.String(required=True)
+        location = graphene.String(required=False)
         name = graphene.String(required=True)
         picture = graphene.String()
     user = graphene.Field(User)

@@ -2,12 +2,11 @@ null = None
 
 user_mutation_query = '''
 mutation {
-  createUser(email: "mrm@andela.com", location: "Lagos",
+  createUser(email: "mrm@andela.com"
             name: "this user"
             picture: "www.andela.com/user"){
     user {
       email,
-      location,
       name,
       picture
     }
@@ -20,7 +19,6 @@ user_mutation_response = {
         "createUser": {
             "user": {
                 "email": "mrm@andela.com",
-                "location": "Lagos",
                 "name": "this user",
                 "picture": "www.andela.com/user"
             }
@@ -53,7 +51,6 @@ query {
     users{
       users{
          email,
-         location
       }
    }
 }
@@ -65,11 +62,9 @@ user_query_response = {
             "users": [
                 {
                     "email": "peter.walugembe@andela.com",
-                    "location": "Kampala"
                 },
                 {
                     "email": "mrm@andela.com",
-                    "location": "Lagos"
                 },
             ]
         }
@@ -81,7 +76,6 @@ query {
     users(page:1, perPage:1){
       users{
          email
-         location
       }
       hasNext
       hasPrevious
@@ -95,13 +89,12 @@ paginated_users_response = {
         "users": {
             "users": [
                 {
-                    "email": "peter.walugembe@andela.com",
-                    "location": "Kampala"
+                    "email": "peter.walugembe@andela.com"
                 }
             ],
-            "hasNext": False,
+            "hasNext": True,
             "hasPrevious": False,
-            "pages": 1
+            "pages": 2
         }
     }
 }
@@ -109,8 +102,7 @@ paginated_users_response = {
 query_user_by_email = '''
  query {
   user(email: "mrm@andela.com"){
-    email,
-    location
+    email
   }
 }
 '''
@@ -119,7 +111,6 @@ query_user_email_response = {
     "data": {
         "user": {
             "email": "mrm@andela.com",
-            "location": "Lagos"
         }
     }
 }
