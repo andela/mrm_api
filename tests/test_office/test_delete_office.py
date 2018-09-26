@@ -3,7 +3,7 @@ import json
 from tests.base import BaseTestCase
 
 from fixtures.office.office_fixtures import (delete_office_mutation,
-delete_non_existent_office_mutation, 
+delete_non_existent_office_mutation,
 delete_unauthorised_location_mutation)  # noqa: E501
 from fixtures.token.token_fixture import admin_api_token
 
