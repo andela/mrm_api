@@ -2,13 +2,21 @@
 
 get_report() {
   echo ">>>>>>>>>>>>>>>>>>>>>>>>>> retrieve csv >>>>>>>>>>>>>>>>>>"
-  gsutil cp gs://deployment_report/deployment_report_test.csv ./deployment_report_test.csv
-  STARTDATE="$(date --date="7 days ago" '+%Y-%m-%d')"
+  gsutil cp gs://deployment_report/deployment_report_backend.csv ./deployment_report_backend.csv
+
+  # get start date and end date
+  STARTDATE="$(date --date="7 days ago" '+%Y-%m-%d %H:%M')"
   ENDDATE=$(date '+%Y-%m-%d %H:%M:%S')
-  FAILED_DEPLOYMENT=$(querycsv.py -i deployment_report_test.csv "select time, status from deployment_report_test where time between '${STARTDATE}' and '${ENDDATE}' and status = 'failed'")
-  SUCCESS_DEPLOYMENT=$(querycsv.py -i deployment_report_test.csv "select time, status from deployment_report_test where time between '${STARTDATE}' and '${ENDDATE}' and status = 'succeeded'")
-  FAILED_COUNT=$(( $(echo "$FAILED_DEPLOYMENT" | wc -l) - 2 ))
-  SUCCESS_COUNT=$(( $(echo "$SUCCESS_DEPLOYMENT" | wc -l) - 2 ))
+
+  # query csv file for failed and successful deployment
+querycsv.py -i deployment_report_backend.csv -o failed.csv "select count(*) time, status from deployment_report_backend where time between '${STARTDATE}' and '${ENDDATE}' and status = 'failed'"
+querycsv.py -i deployment_report_backend.csv -o passed.csv "select count(*) time, status from deployment_report_backend where time between '${STARTDATE}' and '${ENDDATE}' and status = 'succeeded'"
+
+
+
+# get count of failed and successful deployment
+FAILED_COUNT=$(python ~/project/.circleci/csv_parser.py failed.csv)
+SUCCESS_COUNT=$(python ~/project/.circleci/csv_parser.py passed.csv)
 
   DEPLOYMENT_REPORT_MESSAGE="Hi Team.\n
 Here is the deployment report for the week.\n
@@ -17,7 +25,7 @@ we had ${SUCCESS_COUNT} successful deployments and ${FAILED_COUNT} Failed deploy
 In Converge-Backend :devops:"
 }
 
-
+# send notification to slack
 send_notification() {
 
   # Sending the Slack notification
