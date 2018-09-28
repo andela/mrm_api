@@ -134,6 +134,41 @@ class RoomAnalytics(Credentials):
                 result.append(output)
         return result
 
+    def get_monthly_rooms_events(self, query, month, year, location_id):
+        """ Get event stats for all rooms in a specified month
+         :params
+            - location_id, month, year
+        """
+        date = month + ' 1 ' + str(year)
+        startdate = RoomAnalytics.convert_date(self, date)
+        date_after_month = (datetime.strptime(date, '%b %d %Y') + relativedelta(months=1)).isoformat() + 'Z'  # noqa: E501
+
+        rooms_available = RoomAnalytics.get_calendar_id_name(
+            self, query, location_id)
+        room_events_count = []
+        events_in_all_rooms = []
+        for room in rooms_available:
+            calendar_events = RoomAnalytics.get_all_events_in_a_room(
+                self, room['calendar_id'], startdate, date_after_month)
+            output = []
+            if not calendar_events:
+                output.append({'RoomName': room['name'], 'has_events': False})
+                room_with_no_events = 0
+                room_events_count.append(room_with_no_events)
+
+            else:
+                for event in calendar_events:
+                    if event.get('attendees'):
+                        event_details = RoomAnalytics.get_event_details(
+                            self, event, room['calendar_id'])
+                        output.append(event_details)
+                room_events_count.append(len(output))
+            events_in_all_rooms.append(output)
+        return dict(
+            events_in_all_rooms=events_in_all_rooms,
+            room_events_count=room_events_count
+        )
+
     def get_least_used_room_week(self, query, location_id, week_start, week_end):  # noqa: E501
         """ Get analytics for least used room per week
          :params
@@ -166,39 +201,31 @@ class RoomAnalytics(Credentials):
         return analytics
 
     def get_most_used_room_per_month(self, query, month, year, location_id):
-        """ Get analytics for the most used room(s) per morth in a location
+        """ Get analytics for the MOST used room(s) per morth in a location
          :params
             - month, year, location_id
         """
-        date = month + ' 1 ' + str(year)
-        startdate = RoomAnalytics.convert_date(self, date)
-        date_after_month = (datetime.strptime(date, '%b %d %Y') + relativedelta(months=1)).isoformat() + 'Z'  # noqa: E501
-
-        rooms_available = RoomAnalytics.get_calendar_id_name(
-            self, query, location_id)
-        rooms = []
-        res = []
-        for room in rooms_available:
-            calendar_events = RoomAnalytics.get_all_events_in_a_room(
-                self, room['calendar_id'], startdate, date_after_month)
-            output = []
-            if not calendar_events:
-                output.append({'RoomName': room['name'], 'has_events': False})
-                rooms_with_max_events = 0
-                rooms.append(rooms_with_max_events)
-
-            else:
-                for event in calendar_events:
-                    if event.get('attendees'):
-                        event_details = RoomAnalytics.get_event_details(
-                            self, event, room['calendar_id'])
-                        output.append(event_details)
-                rooms.append(len(output))
-            res.append(output)
-        rooms_with_max_events = max(rooms)
+        get_monthly_events = RoomAnalytics.get_monthly_rooms_events(
+            self, query, month, year, location_id)
+        rooms_with_max_events = max(get_monthly_events['room_events_count'])
+        res = get_monthly_events['events_in_all_rooms']
 
         analytics = RoomAnalytics.get_room_statistics(
             self, rooms_with_max_events, res)
+        return analytics
+
+    def get_least_used_room_per_month(self, query, month, year, location_id):
+        """ Get analytics for the LEAST used room(s) per morth in a location
+         :params
+            - month, year, location_id
+        """
+        get_monthly_events = RoomAnalytics.get_monthly_rooms_events(
+            self, query, month, year, location_id)
+        rooms_with_min_events = min(get_monthly_events['room_events_count'])
+        res = get_monthly_events['events_in_all_rooms']
+
+        analytics = RoomAnalytics.get_room_statistics(
+            self, rooms_with_min_events, res)
         return analytics
 
     def get_meetings_per_room(self, query, location_id, timeMin, timeMax):

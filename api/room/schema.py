@@ -209,6 +209,13 @@ class Query(graphene.ObjectType):
         day_end=graphene.String(),
     )
 
+    analytics_for_least_used_room_per_month = graphene.Field(
+        Analytics,
+        location_id=graphene.Int(),
+        month=graphene.String(),
+        year=graphene.Int(),
+    )
+
     def check_valid_calendar_id(self, query, calendar_id):
         check_calendar_id = query.filter(
             RoomModel.calendar_id == calendar_id
@@ -294,6 +301,15 @@ class Query(graphene.ObjectType):
         results = RoomAnalytics.get_daily_meetings_details(self, room_list, day_start)  # noqa: E501
 
         return Analytics(dailyDurationaAnalytics=results)
+
+    @Auth.user_roles('Admin')
+    def resolve_analytics_for_least_used_room_per_month(self, info, month, year, location_id):  # noqa: E501
+        query = Room.get_query(info)
+        room_analytics = RoomAnalytics.get_least_used_room_per_month(
+            self, query, month, year, location_id)
+        return Analytics(
+            analytics=room_analytics
+        )
 
 
 class Mutation(graphene.ObjectType):
