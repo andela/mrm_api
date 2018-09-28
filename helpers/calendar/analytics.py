@@ -76,7 +76,6 @@ class RoomAnalytics(Credentials):
         event_details = {}
         if event.get('attendees'):
             for resource in event.get('attendees'):
-
                 if resource.get('resource') and resource.get('email') == calendar_id:  # noqa: E501
                     event_details["minutes"] = RoomAnalytics.get_time_duration_for_event(  # noqa: E501
                         self, event['start'].get(
@@ -105,7 +104,7 @@ class RoomAnalytics(Credentials):
                         result.append(output)
             elif len(room_details) == number_of_events_in_room and 'has_events' not in room_details[0].keys():  # noqa: E501
                 events_count = Counter(detail['minutes']
-                                       for detail in room_details if 'minutes' in detail.keys())  # noqa: E501
+                                       for detail in room_details if detail)
                 duration_of_events_in_room = [
                     EventsDuration(
                         duration_in_minutes=event_duration,
