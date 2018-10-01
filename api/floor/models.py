@@ -12,5 +12,5 @@ class Floor(Base, Utility):
     name = Column(String, nullable=False)
     block_id = Column(Integer, ForeignKey('blocks.id'))
     block = relationship('Block')
-    rooms = relationship('Room')
-    wings = relationship('Wing')
+    rooms = relationship('Room', cascade="all, delete-orphan")
+    wings = relationship('Wing', cascade="all, delete-orphan")

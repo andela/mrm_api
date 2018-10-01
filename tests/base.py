@@ -72,7 +72,7 @@ class BaseTestCase(TestCase):
                 resource_id=resource.id,
                 last_seen="2018-06-08T11:17:58.785136",
                 date_added="2018-06-08T11:17:58.785136",
-                name="Samsung ",
+                name="Samsung",
                 location="Nairobi",
                 device_type="External Display"
             )
