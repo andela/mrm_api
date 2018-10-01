@@ -22,6 +22,13 @@ class RoomStatistics(graphene.ObjectType):
     has_events = graphene.Boolean()
 
 
+class RoomDailyDurations(graphene.ObjectType):
+    room_name = graphene.String()
+    count = graphene.Int()
+    events = graphene.List(EventsDuration)
+    total_duration = graphene.Int()
+
+
 class RoomAnalytics(Credentials):
     """Get room analytics
        :methods
@@ -29,6 +36,15 @@ class RoomAnalytics(Credentials):
     """
     def convert_date(self, date):
         return datetime.strptime(date, '%b %d %Y').isoformat() + 'Z'
+
+    def get_start_end_day_dates(self, day):
+        """
+        Returns start and end day dates in iso-format
+        """
+        start = (datetime.strptime(day, "%b %d %Y"))
+        startdate = start.isoformat() + 'Z'
+        end = (start + relativedelta(days=1)).isoformat() + 'Z'
+        return(startdate, end)
 
     def get_time_duration_for_event(self, start_time, end_time):
         """ Calculate duration range of an event
@@ -199,3 +215,39 @@ class RoomAnalytics(Credentials):
             room_details = RoomStatistics(room_name=room["name"], count=len(calendar_events))  # noqa: E501
             res.append(room_details)
         return res
+
+    def get_daily_meetings_details(self, rooms, day):
+        """
+        Get meeting durations for a particular day
+        """
+        result = []
+        start_date, end_date = RoomAnalytics.get_start_end_day_dates(self, day)
+        for room in rooms:
+            calendar_id = room.calendar_id
+            events = RoomAnalytics.get_all_events_in_a_room(self, calendar_id, start_date, end_date)  # noqa: E501
+
+            events_duration = []
+            for event in events:
+                start = event['start'].get('dateTime', event['start'].get('date'))  # noqa: E501
+                end = event['end'].get('dateTime', event['end'].get('date'))
+                duration = RoomAnalytics.get_time_duration_for_event(self, start, end)  # noqa: E501
+                events_duration.append(duration)
+
+            events_count = Counter(events_duration)
+
+            events_in_minutes = [
+                EventsDuration(
+                    duration_in_minutes=events_duration,
+                    number_of_meetings=events_count[events_duration])
+                for index, events_duration in enumerate(events_count)
+            ]
+
+            output = RoomDailyDurations(
+                room_name=room.name,
+                count=len(events_duration),
+                total_duration=sum(events_duration),
+                events=events_in_minutes
+            )
+            result.append(output)
+
+        return result
