@@ -58,7 +58,7 @@ most_used_room_in_a_month_analytics_invalid_location_response = {
 
 get_most_used_room_in_a_month_analytics_query = '''
     {
-        mostUsedRoomPerMonthAnalytics(month:"Dec", year:2018, locationId:1)
+        mostUsedRoomPerMonthAnalytics(month:"Jul", year:2018, locationId:1)
         {
             analytics {
                 roomName
@@ -73,8 +73,8 @@ get_most_used_room_in_a_month_analytics_response = {
             "mostUsedRoomPerMonthAnalytics": {
                 "analytics": [
                     {
-                        "roomName": "Nairobi - 2nd Floor Block A Khartoum (1)",
-                        "count": 21
+                        "roomName": "Entebbe",
+                        "count": 0
                     }
                 ]
             }
@@ -138,4 +138,51 @@ get_least_used_room_without_event_response = {
             ]
         }
     }
+}
+
+get_room_usage_analytics = '''
+{
+    analyticsForMeetingsPerRoom(locationId:1,
+    dayStart:"Sep 11 2018" dayEnd:"sep 12 2018"){
+        analytics{
+            roomName
+            count
+        }
+        }
+    }
+'''
+
+get_room_usage_anaytics_respone = {
+    "data": {
+        "analyticsForMeetingsPerRoom": {
+            "analytics": [{'roomName': 'Entebbe', 'count': 2}]
+        }
+    }
+}
+
+get_room_usage_analytics_invalid_location = '''
+{
+    analyticsForMeetingsPerRoom(locationId:20,
+    dayStart:"Sep 11 2018" dayEnd:"sep 12 2018"){
+        analytics{
+           roomName
+           count
+           }
+        }
+    }
+'''
+
+get_room_usage_analytics_invalid_location_response = {
+    'errors':
+    [
+        {
+            'message': 'No rooms in this location',
+            'locations': [{'line': 3, 'column': 5}],
+            'path': ['analyticsForMeetingsPerRoom']
+        }
+    ],
+        'data':
+            {
+                'analyticsForMeetingsPerRoom': None
+            }
 }
