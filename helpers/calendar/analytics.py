@@ -324,3 +324,12 @@ class RoomAnalytics(Credentials):
         start_date, day_after = RoomAnalytics.get_start_end_month_dates(self, month, year)  # noqa
         monthly_analytics = RoomAnalytics.meetings_duration_statistics(self, query, location_id, start_date, day_after)  # noqa: E501
         return monthly_analytics
+
+    def get_weekly_meetings_details(self, query, location_id, week_start, week_end):  # noqa: E501
+        """
+        Get weekly meeting durations details
+        """
+        week_start = RoomAnalytics.convert_date(self, week_start)
+        week_end, day_after = RoomAnalytics.get_start_end_day_dates(self, week_end)  # noqa: E501
+        weekly_analytics = RoomAnalytics.meetings_duration_statistics(self, query, location_id, week_start, day_after)  # noqa: E501
+        return weekly_analytics
