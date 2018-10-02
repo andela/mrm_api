@@ -141,13 +141,36 @@ get_least_used_room_without_event_response = {
 }
 
 get_room_usage_analytics = '''
-{
+    {
     analyticsForMeetingsPerRoom(locationId:1,
-    dayStart:"Sep 11 2018" dayEnd:"sep 12 2018"){
-        analytics{
-            roomName
-            count
+        dayStart:"Sep 11 2018" dayEnd:"sep 12 2018"){
+            analytics{
+                roomName
+                count
+            }
         }
+    }
+'''
+
+get_least_used_room_per_month = '''
+    {
+        analyticsForLeastUsedRoomPerMonth(month:"Jul", year:2018, locationId:1)
+        {
+            analytics {
+                roomName
+                count
+            }
+        }
+    }
+'''
+get_least_used_room_per_month = '''
+    {
+        analyticsForLeastUsedRoomPerMonth(month:"Jul", year:2018, locationId:1)
+        {
+            analytics {
+                roomName
+                count
+            }
         }
     }
 '''
@@ -156,6 +179,32 @@ get_room_usage_anaytics_respone = {
     "data": {
         "analyticsForMeetingsPerRoom": {
             "analytics": [{'roomName': 'Entebbe', 'count': 2}]
+                    }
+    }
+}
+
+get_least_used_room_per_month_response = {
+    'data': {
+        'analyticsForLeastUsedRoomPerMonth': {
+            'analytics': [
+                {
+                    'roomName': 'Entebbe',
+                    'count': 0
+                }
+            ]
+        }
+    }
+}
+
+get_least_used_room_per_month_response = {
+    'data': {
+        'analyticsForLeastUsedRoomPerMonth': {
+            'analytics': [
+                {
+                    'roomName': 'Entebbe',
+                    'count': 0
+                }
+            ]
         }
     }
 }
@@ -168,6 +217,18 @@ get_room_usage_analytics_invalid_location = '''
            roomName
            count
            }
+        }
+    }
+'''
+
+get_least_used_room_per_month_invalid_location = '''
+    {
+        analyticsForLeastUsedRoomPerMonth(month:"Jul", year:2018, locationId:99)
+        {
+            analytics {
+                roomName
+                count
+            }
         }
     }
 '''
@@ -186,3 +247,21 @@ get_room_usage_analytics_invalid_location_response = {
                 'analyticsForMeetingsPerRoom': None
             }
 }
+
+response_least_used_room_per_month_invalid_location = {
+    "errors": [
+        {
+            "message": "No rooms in this location",
+            "locations": [
+                {
+                    "line": 3,
+                    "column": 9
+                }
+            ],
+            "path": ["analyticsForLeastUsedRoomPerMonth"]
+        }
+    ],
+    "data": {
+        "analyticsForLeastUsedRoomPerMonth": null
+        }
+    }
