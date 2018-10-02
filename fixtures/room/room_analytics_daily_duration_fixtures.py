@@ -2,8 +2,8 @@ null = None
 
 get_daily_meetings_total_duration_query = '''
 query {
-    dailyDurationsOfMeetings(locationId:1, dayStart:"sep 10 2018"){
-        dailyDurationaAnalytics{
+    dailyDurationsOfMeetings(locationId:1, dayStart: "sep 10 2018"){
+        MeetingsDurationaAnalytics{
             roomName
             count
             totalDuration
@@ -19,7 +19,7 @@ query {
 get_daily_meetings_total_duration_response = {
     "data": {
         "dailyDurationsOfMeetings": {
-            "dailyDurationaAnalytics": [
+            "MeetingsDurationaAnalytics": [
                 {
                     "roomName": "Entebbe",
                     "count": 0,
