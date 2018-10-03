@@ -191,6 +191,12 @@ class Query(graphene.ObjectType):
         week_start=graphene.String(),
         week_end=graphene.String(),
     )
+    analytics_for_room_most_used_per_week = graphene.Field(
+        Analytics,
+        location_id=graphene.Int(),
+        week_start=graphene.String(),
+        week_end=graphene.String(),
+    )
 
     most_used_room_per_month_analytics = graphene.Field(
         Analytics,
@@ -280,6 +286,17 @@ class Query(graphene.ObjectType):
         return Analytics(
             analytics=room_analytics
         )
+
+    @Auth.user_roles('Admin')
+    def resolve_analytics_for_room_most_used_per_week(self, info, location_id, week_start, week_end):  # noqa: E501
+        query = Room.get_query(info)
+        room_analytics = RoomAnalytics.get_most_used_room_week(
+            self, query, location_id, week_start, week_end
+        )
+        room_most_used_per_week = Analytics(
+            analytics=room_analytics
+        )
+        return room_most_used_per_week
 
     def resolve_analytics_for_meetings_per_room(self, info, location_id, day_start, day_end):  # noqa: E501
         query = Room.get_query(info)
