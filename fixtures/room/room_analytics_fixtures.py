@@ -373,3 +373,31 @@ get_most_used_room_without_event_response = {
         }
     }
 }
+
+analytics_for_least_used_room_day = '''
+{
+    analyticsForLeastUsedRoomPerDay(locationId:1 day:"Jul 11 2018"){
+        analytics{
+            roomName
+            count
+            events{
+                durationInMinutes
+                numberOfMeetings
+            }
+            }
+        }
+    }
+'''
+
+analytics_for_least_used_room_day_response = {
+    "data": {
+        "analyticsForLeastUsedRoomPerDay": {
+            "analytics": [
+                {
+                    "roomName": "Entebbe",
+                    "count": 0,
+                    "events": null}
+            ]
+        }
+    }
+}

@@ -170,22 +170,13 @@ class RoomAnalytics(Credentials):
             room_events_count=room_events_count
         )
 
-    def get_least_used_room_week(self, query, location_id, week_start, week_end):  # noqa: E501
-        """ Get analytics for least used room per week
-         :params
-            - calendar_id, location_id
-            - week_start, week_end(Time range)
-        """
-        week_start = RoomAnalytics.convert_date(self, week_start)
-        week_end = RoomAnalytics.convert_date(self, week_end)
+    def get_least_used_rooms(self, rooms_available, time_start, time_end):
 
-        rooms_available = RoomAnalytics.get_calendar_id_name(
-            self, query, location_id)
         res = []
         number_of_least_events = float('inf')
         for room in rooms_available:
             calendar_events = RoomAnalytics.get_all_events_in_a_room(
-                self, room['calendar_id'], week_start, week_end)
+                self, room['calendar_id'], time_start, time_end)
             output = []
             if not calendar_events:
                 output.append({'RoomName': room['name'], 'has_events': False})
@@ -200,6 +191,29 @@ class RoomAnalytics(Credentials):
         analytics = RoomAnalytics.get_room_statistics(
             self, number_of_least_events, res)
         return analytics
+
+    def get_least_used_room_day(self, query, day, location_id):
+        """ Get event stats for all rooms in a specified day
+            :params
+                - location_id, day
+        """
+        day_start, day_end = RoomAnalytics.get_start_end_day_dates(self, day)
+        rooms_available = RoomAnalytics.get_calendar_id_name(
+            self, query, location_id)
+        return RoomAnalytics.get_least_used_rooms(self, rooms_available, day_start, day_end)  # noqa: E501
+
+    def get_least_used_room_week(self, query, location_id, week_start, week_end):  # noqa: E501
+        """ Get analytics for least used room per week
+         :params
+            - calendar_id, location_id
+            - week_start, week_end(Time range)
+        """
+        week_start = RoomAnalytics.convert_date(self, week_start)
+        week_end = RoomAnalytics.convert_date(self, week_end)
+
+        rooms_available = RoomAnalytics.get_calendar_id_name(
+            self, query, location_id)
+        return RoomAnalytics.get_least_used_rooms(self, rooms_available, week_start, week_end)  # noqa: E501
 
     def get_most_used_room_per_month(self, query, month, year, location_id):
         """ Get analytics for the MOST used room(s) per morth in a location

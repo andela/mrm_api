@@ -16,6 +16,8 @@ from fixtures.room.room_analytics_fixtures import (
     get_least_used_room_per_month_response,
     get_least_used_room_per_month_invalid_location,
     response_least_used_room_per_month_invalid_location,
+    analytics_for_least_used_room_day,
+    analytics_for_least_used_room_day_response,
     get_most_used_room_per_week_query,
     get_most_used_room_per_week_response,
     get_most_used_room_without_event_query,
@@ -106,3 +108,10 @@ class QueryRoomsAnalytics(BaseTestCase):
             get_monthly_meetings_total_duration_query,
             get_monthly_meetings_total_duration_response
         )
+
+    def test_analytics_for_least_used_room_day(self):
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            analytics_for_least_used_room_day,
+            analytics_for_least_used_room_day_response
+            )
