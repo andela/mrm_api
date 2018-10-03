@@ -156,7 +156,8 @@ class Query(graphene.ObjectType):
         per_page=graphene.Int(),
         capacity=graphene.Int(),
         resources=graphene.String(),
-        location=graphene.String()
+        location=graphene.String(),
+        office=graphene.String()
     )
     get_room_by_id = graphene.Field(
         Room,
@@ -166,10 +167,6 @@ class Query(graphene.ObjectType):
     get_room_by_name = graphene.List(
         Room,
         name=graphene.String()
-    )
-    get_room_by_id = graphene.Field(
-        Room,
-        room_id=graphene.Int(),
     )
 
     room_schedule = graphene.Field(

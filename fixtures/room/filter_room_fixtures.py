@@ -194,3 +194,68 @@ filter_rooms_by_resources_location_response = {
         }
     }
 }
+
+filter_rooms_by_office = '''
+query {
+  allRooms(office:"St. Catherines"){
+   rooms{
+      name
+      capacity
+      roomType
+      imageUrl
+        }
+    }
+}
+    '''
+
+filter_rooms_response = {
+    "data": {
+        "allRooms": {
+            "rooms": [
+                {
+                    "name": "Entebbe",
+                    "capacity": 6,
+                    "roomType": "meeting",
+                    "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg"  # noqa: E501
+                }
+            ]
+        }
+    }
+}
+
+filter_rooms_by_office_capacity = '''
+query {
+  allRooms(office:"St. Catherines", capacity:6){
+   rooms{
+      name
+      capacity
+      roomType
+      imageUrl
+        }
+    }
+}
+    '''
+filter_rooms_by_office_location = '''
+query {
+  allRooms(office:"St. Catherines", location:"Kampala"){
+   rooms{
+      name
+      capacity
+      roomType
+      imageUrl
+        }
+    }
+}
+    '''
+filter_rooms_by_office_capacity_location = '''
+query {
+  allRooms(capacity:6 ,location:"Kampala", office:"St. Catherines"){
+   rooms{
+      name
+      capacity
+      roomType
+      imageUrl
+        }
+    }
+}
+    '''
