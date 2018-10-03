@@ -17,6 +17,14 @@ from fixtures.room.room_analytics_fixtures import (
     get_room_usage_anaytics_respone,
     get_room_usage_analytics_invalid_location,
     get_room_usage_analytics_invalid_location_response,
+    get_least_used_room_per_month,
+    get_least_used_room_per_month_response,
+    get_least_used_room_per_month_invalid_location,
+    response_least_used_room_per_month_invalid_location,
+    get_most_used_room_per_week_query,
+    get_most_used_room_per_week_response,
+    get_most_used_room_without_event_query,
+    get_most_used_room_without_event_response
 
 )
 
@@ -77,4 +85,38 @@ class QueryRoomsAnalytics(BaseTestCase):
             headers=headers)
         actual_response = json.loads(response.data)
         expected_response = get_room_usage_analytics_invalid_location_response
+        self.assertEquals(actual_response, expected_response)
+
+    def test_analytics_for_least_used_room_monthly(self):
+        headers = {"Authorization": "Bearer" + " " + admin_api_token}
+        response = self.app_test.post(
+            '/mrm?query=' + get_least_used_room_per_month,
+            headers=headers)
+        actual_response = json.loads(response.data)
+        expected_response = get_least_used_room_per_month_response
+        self.assertEquals(actual_response, expected_response)
+
+    def test_analytics_for_least_used_room_monthly_invalid_location(self):
+        headers = {"Authorization": "Bearer" + " " + admin_api_token}
+        response = self.app_test.post(
+            '/mrm?query=' + get_least_used_room_per_month_invalid_location,
+            headers=headers)
+        actual_response = json.loads(response.data)
+        expected_response = response_least_used_room_per_month_invalid_location
+        self.assertEquals(actual_response, expected_response)
+
+    def test_analytics_for_most_used_room_weekly(self):
+        headers = {"Authorization": "Bearer" + " " + admin_api_token}
+        analytics_query = self.app_test.post(
+            '/mrm?query=' + get_most_used_room_per_week_query, headers=headers)  # noqa: E501
+        actual_response = json.loads(analytics_query.data)
+        expected_response = get_most_used_room_per_week_response
+        self.assertEquals(actual_response, expected_response)
+
+    def test_analytics_for_most_used_room_without_event_weekly(self):
+        headers = {"Authorization": "Bearer" + " " + admin_api_token}
+        analytics_query = self.app_test.post(
+            '/mrm?query=' + get_most_used_room_without_event_query, headers=headers)  # noqa: E501
+        actual_response = json.loads(analytics_query.data)
+        expected_response = get_most_used_room_without_event_response
         self.assertEquals(actual_response, expected_response)

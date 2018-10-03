@@ -3,8 +3,9 @@ import json
 from tests.base import BaseTestCase
 
 from fixtures.office.office_fixtures import (delete_office_mutation,
-delete_non_existent_office_mutation,
-delete_unauthorised_location_mutation)  # noqa: E501
+                                             delete_office_mutation_response,
+                                             delete_non_existent_office_mutation,  # noqa: E501
+                                             delete_unauthorised_location_mutation)  # noqa: E501
 from fixtures.token.token_fixture import admin_api_token
 
 
@@ -13,7 +14,8 @@ class TestDeleteOffice(BaseTestCase):
         headers = {"Authorization": "Bearer" + " " + admin_api_token}
         response = self.app_test.post('/mrm?query='+delete_office_mutation,
                                       headers=headers)
-        self.assertIn("St. Catherines", str(response.data))
+        actual_response = json.loads(response.data)
+        self.assertEquals(delete_office_mutation_response, actual_response)
 
     def test_delete_non_existent_office(self):
         headers = {"Authorization": "Bearer" + " " + admin_api_token}

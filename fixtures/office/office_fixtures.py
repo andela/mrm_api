@@ -109,17 +109,91 @@ office_mutation_query_duplicate_name = '''
     }
 '''
 
-office_mutation_query_duplicate_name_responce = "St. Catherines Office already exists"  # noqa: E501
+office_mutation_query_duplicate_name_responce = {
+    "errors": [
+        {
+            "message": "St. Catherines Office already exists",
+            "locations": [
+                {
+                    "line": 3,
+                    "column": 9
+                }
+            ],
+            "path": [
+                "createOffice"
+            ]
+        }
+    ],
+    "data": {
+        "createOffice": null
+    }
+}
 
 delete_office_mutation = '''
 mutation{
     deleteOffice(officeId: 1){
         office{
             name
+            blocks{
+                name
+                floors{
+                    name
+                    rooms{
+                        name
+                        roomType
+                        capacity
+                        resources{
+                            name
+                            quantity
+                            devices{
+                                name
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
 '''
+
+delete_office_mutation_response = {
+    "data": {
+        "deleteOffice": {
+            "office": {
+                "name": "St. Catherines",
+                "blocks": [
+                    {
+                        "name": "EC",
+                        "floors": [
+                            {
+                                "name": "3rd",
+                                "rooms": [
+                                    {
+                                        "name": "Entebbe",
+                                        "roomType": "meeting",
+                                        "capacity": 6,
+                                        "resources": [
+                                            {
+                                                "name": "Markers",
+                                                "quantity": 3,
+                                                "devices": [
+                                                    {
+                                                        "name": "Samsung"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    }
+}
 
 delete_non_existent_office_mutation = '''
 

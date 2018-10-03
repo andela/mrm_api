@@ -70,7 +70,7 @@ def location_join_resources():
     return location_query
 
 
-def room_filter(query, filter_data):
+def room_filter(query, filter_data):  # noqa: ignore=C901
     """
     Filters for rooms by given specifics and
     returns all rooms if no specific is passed
@@ -83,15 +83,19 @@ def room_filter(query, filter_data):
     location = filter_data.pop("location", None)
     capacity = filter_data.pop("capacity", None)
     resources = filter_data.pop("resources", None)
+    office = filter_data.pop("office", None)
 
-    if location and not (resources or capacity):
+    if location and not (resources or capacity or office):
         query = room_join_location(query)
         return query.filter(Location.name.ilike('%' + location + '%'))
-    elif capacity and not (resources or location):
+    elif capacity and not (resources or location or office):
         return query.filter(RoomModel.capacity == capacity)
-    elif resources and not (capacity or location):
+    elif resources and not (capacity or location or office):
         query = query.join(Resource.room)
         return query.filter(Resource.name.ilike('%' + resources + '%'))
+    elif office and not (capacity or location or resources):
+        query = room_join_office(query)
+        return query.filter(Office.name.ilike('%' + office + '%'))
     elif (resources and capacity) and not location:
         query = query.join(Resource.room)
         query = query.filter(RoomModel.capacity == capacity)
@@ -104,7 +108,20 @@ def room_filter(query, filter_data):
         query = resource_join_location(query)
         query = query.filter(Resource.name.ilike('%' + resources + '%'))
         return query.filter(Location.name.ilike('%' + location + '%'))
-    elif location and capacity and resources:
+    elif (office and capacity) and not (location or resources):
+        query = room_join_office(query)
+        query = query.filter(RoomModel.capacity == capacity)
+        return query.filter(Office.name.ilike('%' + office + '%'))
+    elif (office and location) and not (capacity or resources):
+        query = room_join_location(query)
+        query = query.filter(Location.name.ilike('%' + location + '%'))
+        return query.filter(Office.name.ilike('%' + office + '%'))
+    elif(office and location and capacity) and not resources:
+        query = room_join_location(query)
+        query = query.filter(RoomModel.capacity == capacity)
+        query = query.filter(Location.name.ilike('%' + location + '%'))
+        return query.filter(Office.name.ilike('%' + office + '%'))
+    elif (location and capacity and resources) and not office:
         query = resource_join_location(query)
         query = query.filter(RoomModel.capacity == capacity)
         query = query.filter(Resource.name.ilike('%' + resources + '%'))

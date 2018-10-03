@@ -12,4 +12,4 @@ class Block(Base, Utility):
     name = Column(String, nullable=False)
     office_id = Column(Integer, ForeignKey('offices.id'))
     offices = relationship('Office')
-    floors = relationship('Floor')
+    floors = relationship('Floor', cascade="all, delete-orphan")

@@ -160,7 +160,8 @@ class Query(graphene.ObjectType):
         per_page=graphene.Int(),
         capacity=graphene.Int(),
         resources=graphene.String(),
-        location=graphene.String()
+        location=graphene.String(),
+        office=graphene.String()
     )
     get_room_by_id = graphene.Field(
         Room,
@@ -170,10 +171,6 @@ class Query(graphene.ObjectType):
     get_room_by_name = graphene.List(
         Room,
         name=graphene.String()
-    )
-    get_room_by_id = graphene.Field(
-        Room,
-        room_id=graphene.Int(),
     )
 
     room_schedule = graphene.Field(
@@ -198,6 +195,12 @@ class Query(graphene.ObjectType):
         week_start=graphene.String(),
         week_end=graphene.String(),
     )
+    analytics_for_room_most_used_per_week = graphene.Field(
+        Analytics,
+        location_id=graphene.Int(),
+        week_start=graphene.String(),
+        week_end=graphene.String(),
+    )
 
     most_used_room_per_month_analytics = graphene.Field(
         Analytics,
@@ -211,6 +214,13 @@ class Query(graphene.ObjectType):
         location_id=graphene.Int(),
         day_start=graphene.String(),
         day_end=graphene.String(),
+    )
+
+    analytics_for_least_used_room_per_month = graphene.Field(
+        Analytics,
+        location_id=graphene.Int(),
+        month=graphene.String(),
+        year=graphene.Int(),
     )
 
     def check_valid_calendar_id(self, query, calendar_id):
@@ -310,6 +320,17 @@ class Query(graphene.ObjectType):
             analytics=room_analytics
         )
 
+    @Auth.user_roles('Admin')
+    def resolve_analytics_for_room_most_used_per_week(self, info, location_id, week_start, week_end):  # noqa: E501
+        query = Room.get_query(info)
+        room_analytics = RoomAnalytics.get_most_used_room_week(
+            self, query, location_id, week_start, week_end
+        )
+        room_most_used_per_week = Analytics(
+            analytics=room_analytics
+        )
+        return room_most_used_per_week
+
     def resolve_analytics_for_meetings_per_room(self, info, location_id, day_start, day_end):  # noqa: E501
         query = Room.get_query(info)
         meeting_summary = RoomAnalytics.get_meetings_per_room(
@@ -327,6 +348,15 @@ class Query(graphene.ObjectType):
         results = RoomAnalytics.get_daily_meetings_details(self, room_list, day_start)  # noqa: E501
 
         return Analytics(dailyDurationaAnalytics=results)
+
+    @Auth.user_roles('Admin')
+    def resolve_analytics_for_least_used_room_per_month(self, info, month, year, location_id):  # noqa: E501
+        query = Room.get_query(info)
+        room_analytics = RoomAnalytics.get_least_used_room_per_month(
+            self, query, month, year, location_id)
+        return Analytics(
+            analytics=room_analytics
+        )
 
 
 class Mutation(graphene.ObjectType):
