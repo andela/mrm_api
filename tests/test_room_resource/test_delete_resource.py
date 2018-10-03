@@ -15,21 +15,21 @@ class TestDeleteRoomResource(BaseTestCase):
 
     def test_deleteresource_mutation_when_not_admin(self):
 
-        api_headers = {'token': user_api_token}
+        headers = {"Authorization": "Bearer" + " " + user_api_token}
         response = self.app_test.post('/mrm?query='+delete_resource,
-                                      headers=api_headers)
+                                      headers=headers)
         self.assertIn("You are not authorized to perform this action",
                       str(response.data))
 
     def test_deleteresource_mutation_when_admin(self):
-        api_headers = {'token': admin_api_token}
+        headers = {"Authorization": "Bearer" + " " + admin_api_token}
         response = self.app_test.post('/mrm?query='+delete_resource,
-                                      headers=api_headers)
+                                      headers=headers)
         self.assertIn("Markers", str(response.data))
 
     def test_non_existant_deleteresource_mutation(self):
 
-        api_headers = {'token': admin_api_token}
+        headers = {"Authorization": "Bearer" + " " + admin_api_token}
         response = self.app_test.post('/mrm?query='+delete_non_existant_resource,  # noqa: E501
-                                      headers=api_headers)
+                                      headers=headers)
         self.assertIn("Resource not found", str(response.data))

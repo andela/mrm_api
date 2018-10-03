@@ -13,8 +13,8 @@ sys.path.append(os.getcwd())
 
 class GetOfficeByName(BaseTestCase):
     def test_get_office_by_name(self):
-        api_headers = {'token': user_api_token}
+        headers = {"Authorization": "Bearer" + " " + user_api_token}
         get_office_query = self.app_test.post(
-            '/mrm?query='+get_office_by_name, headers=api_headers)
+            '/mrm?query='+get_office_by_name, headers=headers)
         actual_response = json.loads(get_office_query.data)
         self.assertEquals(actual_response, get_office_by_name_response)

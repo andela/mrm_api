@@ -53,7 +53,7 @@ class TestQueryUserRole(BaseTestCase):
         self.assertEqual(execute_query, expected_response)
 
     def test_change_user_role(self):
-        api_headers = {'token': admin_api_token}
+        headers = {"Authorization": "Bearer" + " " + admin_api_token}
         user = User(email='mrm@andela.com', location="Kampala",
                     name="test test",
                     picture="www.andela.com/testuser")
@@ -63,28 +63,28 @@ class TestQueryUserRole(BaseTestCase):
         db_session().commit()
 
         query_response = self.app_test.post(
-            '/mrm?query='+change_user_role_mutation_query, headers=api_headers)
+            '/mrm?query='+change_user_role_mutation_query, headers=headers)
         actual_response = json.loads(query_response.data)
 
         expected_response = change_user_role_mutation_response
         self.assertEqual(actual_response, expected_response)
 
     @change_user_role_helper
-    def test_change_unavailable_user_role(self, api_headers):
-
+    def test_change_unavailable_user_role(self):
+        headers = {"Authorization": "Bearer" + " " + admin_api_token}
         query_response = self.app_test.post(
             '/mrm?query='+change_unavailable_user_role_mutation_query,
-            headers=api_headers)
+            headers=headers)
         actual_response = json.loads(query_response.data)
 
         expected_response = change_unavailable_user_role_mutation_response
         self.assertEqual(actual_response, expected_response)
 
     @change_user_role_helper
-    def test_change_user_role_by_default_user(self, api_headers):
-
+    def test_change_user_role_by_default_user(self):
+        headers = {"Authorization": "Bearer" + " " + admin_api_token}
         query_response = self.app_test.post(
-            '/mrm?query='+change_user_role_mutation_query, headers=api_headers)
+            '/mrm?query='+change_user_role_mutation_query, headers=headers)
         actual_response = json.loads(query_response.data)
 
         expected_response = "You are not authorized to perform this action"

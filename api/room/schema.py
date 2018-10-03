@@ -5,8 +5,11 @@ from graphql import GraphQLError
 
 from api.room.models import Room as RoomModel
 from api.office.models import Office
+from api.block.models import Block
+from api.floor.models import Floor
+from api.location.models import Location as LocationModel
 from helpers.calendar.events import RoomSchedules
-from helpers.calendar.analytics import RoomAnalytics
+from helpers.calendar.analytics import RoomAnalytics, RoomStatistics, RoomDailyDurations  # noqa: E501
 from utilities.utility import validate_empty_fields, update_entity_fields
 from helpers.auth.authentication import Auth
 from helpers.auth.admin_roles import admin_roles
@@ -14,13 +17,18 @@ from helpers.auth.verify_ids_for_room import verify_ids
 from helpers.auth.validator import assert_wing_is_required
 from helpers.auth.validator import ErrorHandler
 from helpers.auth.add_office import verify_attributes
-from helpers.room_filter.room_filter import room_filter, room_join_office
+from helpers.room_filter.room_filter import room_filter, room_join_office, room_join_location  # noqa: E501
 from helpers.pagination.paginate import Paginate, validate_page
 
 
 class Room(SQLAlchemyObjectType):
     class Meta:
         model = RoomModel
+
+
+class Analytics(graphene.ObjectType):
+    analytics = graphene.List(RoomStatistics)
+    dailyDurationaAnalytics = graphene.List(RoomDailyDurations)
 
 
 class Calendar(graphene.ObjectType):
@@ -46,29 +54,40 @@ class CreateRoom(graphene.Mutation):
         calendar_id = graphene.String()
         office_id = graphene.Int(required=True)
         wing_id = graphene.Int()
+        block_id = graphene.Int()
     room = graphene.Field(Room)
 
     @Auth.user_roles('Admin')
     def mutate(self, info, office_id, **kwargs):
         verify_attributes(kwargs)
-        verify_ids(kwargs, office_id)
+        verify_ids(office_id, kwargs)
         get_office = Office.query.filter_by(id=office_id).first()
         if not get_office:
             raise GraphQLError("No Office Found")
 
-        admin_roles.create_rooms_update_office(office_id)
-        query = Room.get_query(info)
-        exact_query = room_join_office(query)
-        result = exact_query.filter(
-            Office.id == office_id, RoomModel.name == kwargs.get('name'))
-        if result.count() > 0:
-            ErrorHandler.check_conflict(self, kwargs['name'], 'Room')
-
-        assert_wing_is_required(get_office.name, kwargs)
-        room = RoomModel(**kwargs)
-        room.save()
-
-        return CreateRoom(room=room)
+        if 'block_id' in kwargs:
+            exact_block = Block.query.filter_by(id=kwargs['block_id']).first()
+            if not exact_block:
+                raise GraphQLError("Block with such id does not exist")
+            floor = Floor.query.filter_by(id=kwargs['floor_id']).first()
+            if floor.block_id == kwargs['block_id']:
+                admin_roles.create_rooms_update_delete_office(office_id)
+                query = Room.get_query(info)
+                exact_query = room_join_office(query)
+                result = exact_query.filter(
+                    Office.id == office_id,
+                    RoomModel.name == kwargs.get('name'))
+                if result.count() > 0:
+                    ErrorHandler.check_conflict(self, kwargs['name'], 'Room')
+                assert_wing_is_required(get_office.name, kwargs)
+                kwargs.pop('block_id')
+                room = RoomModel(**kwargs)
+                room.save()
+                return CreateRoom(room=room)
+            raise GraphQLError(
+                "Floor with such id does not exist in this block")
+        raise GraphQLError(
+            "Block id is required")
 
 
 class PaginatedRooms(Paginate):
@@ -167,6 +186,39 @@ class Query(graphene.ObjectType):
         calendar_id=graphene.String(),
         days=graphene.Int(),
     )
+    daily_durations_of_meetings = graphene.Field(
+        Analytics,
+        location_id=graphene.Int(),
+        day_start=graphene.String(),
+    )
+
+    analytics_for_room_least_used_per_week = graphene.Field(
+        Analytics,
+        location_id=graphene.Int(),
+        week_start=graphene.String(),
+        week_end=graphene.String(),
+    )
+
+    most_used_room_per_month_analytics = graphene.Field(
+        Analytics,
+        location_id=graphene.Int(),
+        month=graphene.String(),
+        year=graphene.Int(),
+    )
+
+    analytics_for_meetings_per_room = graphene.Field(
+        Analytics,
+        location_id=graphene.Int(),
+        day_start=graphene.String(),
+        day_end=graphene.String(),
+    )
+
+    def check_valid_calendar_id(self, query, calendar_id):
+        check_calendar_id = query.filter(
+            RoomModel.calendar_id == calendar_id
+        ).first()
+        if not check_calendar_id:
+            raise GraphQLError("CalendarId given not assigned to any room on converge")  # noqa: E501
 
     analytics_for_room_least_used_per_week = graphene.Field(
         Calendar,
@@ -236,8 +288,8 @@ class Query(graphene.ObjectType):
         room_analytics = RoomAnalytics.get_least_used_room_week(
             self, query, location_id, week_start, week_end
         )
-        return Calendar(
-            events=room_analytics
+        return Analytics(
+            analytics=room_analytics
         )
 
     @Auth.user_roles('Admin')
@@ -245,10 +297,36 @@ class Query(graphene.ObjectType):
         query = Room.get_query(info)
         room_analytics = RoomAnalytics.get_most_used_rooms_per_day(
             self, query, location_id, date)
-        print('the room analytics are........', room_analytics)
         return Analytics(
             analytics=room_analytics
         )
+
+    @Auth.user_roles('Admin')
+    def resolve_most_used_room_per_month_analytics(self, info, month, year, location_id):  # noqa: E501
+        query = Room.get_query(info)
+        room_analytics = RoomAnalytics.get_most_used_room_per_month(
+            self, query, month, year, location_id)
+        return Analytics(
+            analytics=room_analytics
+        )
+
+    def resolve_analytics_for_meetings_per_room(self, info, location_id, day_start, day_end):  # noqa: E501
+        query = Room.get_query(info)
+        meeting_summary = RoomAnalytics.get_meetings_per_room(
+            self, query, location_id, day_start, day_end
+        )
+        return Analytics(
+            analytics=meeting_summary
+        )
+
+    @Auth.user_roles('Admin')
+    def resolve_daily_durations_of_meetings(self, info, location_id, day_start):  # noqa: E501
+        query = Room.get_query(info)
+        new_query = room_join_location(query)
+        room_list = new_query.filter(LocationModel.id == location_id).all()
+        results = RoomAnalytics.get_daily_meetings_details(self, room_list, day_start)  # noqa: E501
+
+        return Analytics(dailyDurationaAnalytics=results)
 
 
 class Mutation(graphene.ObjectType):

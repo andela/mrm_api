@@ -45,8 +45,8 @@ class TestGetRoomResource(BaseTestCase):
         self.assertEqual(execute_query, expected_responese)
 
     def test_get_unique_resources(self):
-        api_headers = {'token': user_api_token}
+        headers = {"Authorization": "Bearer" + " " + user_api_token}
         response = self.app_test.post(
-            '/mrm?query='+filter_unique_resources, headers=api_headers)
+            '/mrm?query='+filter_unique_resources, headers=headers)
         actual_response = json.loads(response.data)
         self.assertEquals(actual_response, filter_unique_resources_response)
