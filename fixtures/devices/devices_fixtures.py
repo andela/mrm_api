@@ -21,7 +21,7 @@ expected_response_devices = {
                                             "resourceId": 1,
                                             "lastSeen": "2018-06-08T11:17:58.785136",  # noqa: E501
                                             "dateAdded": "2018-06-08T11:17:58.785136",  # noqa: E501
-                                            "name": "Samsung ",
+                                            "name": "Samsung",
                                             "location": "Nairobi"
                                             }
                                             ]

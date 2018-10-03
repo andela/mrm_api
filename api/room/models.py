@@ -18,4 +18,4 @@ class Room(Base, Utility):
     floor_id = Column(Integer, ForeignKey('floors.id'))
     wing_id = Column(Integer, ForeignKey('wings.id'))
     floor = relationship('Floor')
-    resources = relationship('Resource')
+    resources = relationship('Resource', cascade="all, delete-orphan")
