@@ -112,6 +112,6 @@ class TestCreateRoom(BaseTestCase):
         response = self.app_test.post(
             '/mrm?query='+room_invalid_blockId_mutation, headers=headers)
         actual_response = json.loads(response.data)
-        expected_response = "Block with such id does not exist"
+        expected_response = "Block with such id does not exist in this office"
         self.assertEquals(
             actual_response["errors"][0]["message"], expected_response)
