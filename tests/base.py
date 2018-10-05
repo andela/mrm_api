@@ -14,10 +14,11 @@ from api.role.models import Role
 from api.user_role.models import UsersRole
 from api.devices.models import Devices
 from api.office.models import Office
-from fixtures.token.token_fixture import user_api_token
+from fixtures.token.token_fixture import user_api_token, admin_api_token
 
 import sys
 import os
+import json
 
 
 sys.path.append(os.getcwd())
@@ -84,6 +85,69 @@ class BaseTestCase(TestCase):
         with app.app_context():
             db_session.remove()
             Base.metadata.drop_all(bind=engine)
+
+
+class CommonTestCases(BaseTestCase):
+    """Common test cases throught the code.
+    This code is used to reduce duplication
+    :params
+        - admin_token_assert_equal
+        - admin_token_assert_in
+        - user_token_assert_equal
+        - user_token_assert_in
+    """
+
+    def admin_token_assert_equal(self, query, expected_response):
+        """
+        Make a request with admin token and use assertEquals
+        to compare the values
+
+        :params
+            - query, expected_response
+        """
+        headers = {"Authorization": "Bearer" + " " + admin_api_token}
+        response = self.app_test.post(
+            '/mrm?query=' + query, headers=headers)
+        actual_response = json.loads(response.data)
+        self.assertEquals(actual_response, expected_response)
+
+    def admin_token_assert_in(self, query, expected_response):
+        """
+        Make a request with admin token and use assertIn
+        to compare the values
+
+        :params
+            - query, expected_response
+        """
+        headers = {"Authorization": "Bearer" + " " + admin_api_token}
+        response = self.app_test.post('/mrm?query=' + query, headers=headers)
+        self.assertIn(expected_response, str(response.data))
+
+    def user_token_assert_equal(self, query, expected_response):
+        """
+        Make a request with user token and use assertEquals
+        to compare the values
+
+        :params
+            - query, expected_response
+        """
+        headers = {"Authorization": "Bearer" + " " + user_api_token}
+        response = self.app_test.post(
+            '/mrm?query=' + query, headers=headers)
+        actual_response = json.loads(response.data)
+        self.assertEquals(actual_response, expected_response)
+
+    def user_token_assert_in(self, query, expected_response):
+        """
+        Make a request with user token and use assertIn
+        to compare the values
+
+        :params
+            - query, expected_response
+        """
+        headers = {"Authorization": "Bearer" + " " + user_api_token}
+        response = self.app_test.post('/mrm?query=' + query, headers=headers)
+        self.assertIn(expected_response, str(response.data))
 
 
 def change_user_role_helper(func):
