@@ -1,7 +1,6 @@
 import sys
 import os
-import json
-from tests.base import BaseTestCase
+from tests.base import BaseTestCase, CommonTestCases
 from fixtures.token.token_fixture import admin_api_token
 from fixtures.helpers.decorators_fixtures import (
     query_string, query_string_response
@@ -35,83 +34,68 @@ class TestCreateRoom(BaseTestCase):
         """
         Test room creation with name field empty
         """
-
-        headers = {"Authorization": "Bearer" + " " + admin_api_token}
-        response = self.app_test.post(
-            '/mrm?query='+room_name_empty_mutation, headers=headers)
-        actual_response = json.loads(response.data)
-        expected_response = "name is required field"
-        self.assertEquals(
-            actual_response["errors"][0]["message"], expected_response)
+        CommonTestCases.admin_token_assert_in(
+            self,
+            room_name_empty_mutation,
+            "name is required field"
+        )
 
     def test_room_creation_with_invalid_officeId(self):
         """
         Test room creation with  invalid officeId
         """
-        headers = {"Authorization": "Bearer" + " " + admin_api_token}
-
-        response = self.app_test.post(
-            '/mrm?query='+room_invalid_officeId_mutation, headers=headers)
-        actual_response = json.loads(response.data)
-        expected_response = "Office Id does not exist"
-        self.assertEquals(
-            actual_response["errors"][0]["message"], expected_response)
+        CommonTestCases.admin_token_assert_in(
+            self,
+            room_invalid_officeId_mutation,
+            "Office Id does not exist"
+        )
 
     def test_room_creation_with_invalid_floorId(self):
         """
         Test room creation with  invalid floorId
         """
-        headers = {"Authorization": "Bearer" + " " + admin_api_token}
-        response = self.app_test.post(
-            '/mrm?query='+room_invalid_floorId_mutation, headers=headers)
-        actual_response = json.loads(response.data)
-        expected_response = "Floor Id does not exist"
-        self.assertEquals(
-            actual_response["errors"][0]["message"], expected_response)
+        CommonTestCases.admin_token_assert_in(
+            self,
+            room_invalid_floorId_mutation,
+            "Floor Id does not exist"
+        )
 
     def test_room_creation_with_invalid_wingId(self):
         """
         Test room creation with  invalid wingId
         """
-        headers = {"Authorization": "Bearer" + " " + admin_api_token}
-        response = self.app_test.post(
-            '/mrm?query='+room_invalid_wingId_mutation, headers=headers)
-        actual_response = json.loads(response.data)
-        expected_response = "Wing Id does not exist"
-        self.assertEquals(
-            actual_response["errors"][0]["message"], expected_response)
+        CommonTestCases.admin_token_assert_in(
+            self,
+            room_invalid_wingId_mutation,
+            "Wing Id does not exist"
+        )
 
     def test_room_creation_with_duplicate_name(self):
         """
         Test room creation with an already existing room name
         """
-        headers = {"Authorization": "Bearer" + " " + admin_api_token}
-        response = self.app_test.post(
-            '/mrm?query='+room_mutation_query_duplicate_name, headers=headers)  # noqa : E501
-        expected_response = room_mutation_query_duplicate_name_response
-        actual_response = json.loads(response.data)
-        self.assertEqual(expected_response, actual_response)
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            room_mutation_query_duplicate_name,
+            room_mutation_query_duplicate_name_response
+        )
 
     def test_room_creation_with_valid_blockId(self):
         """
         Test room creation with  invalid officeId
         """
-        headers = {"Authorization": "Bearer" + " " + admin_api_token}
-        response = self.app_test.post(
-            '/mrm?query='+room_valid_blockId_mutation, headers=headers)
-        actual_response = json.loads(response.data)
-        expected_response = expected_room_valid_blockId_mutation_response
-        self.assertEquals(
-            actual_response, expected_response)
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            room_valid_blockId_mutation,
+            expected_room_valid_blockId_mutation_response
+        )
 
     def test_room_creation_with_invalid_blockId(self):
         """
         Test room creation with  invalid wingId
         """
-        headers = {"Authorization": "Bearer" + " " + admin_api_token}
-        response = self.app_test.post(
-            '/mrm?query='+room_invalid_blockId_mutation, headers=headers)
-        actual_response = json.loads(response.data)
-        expected_response = "Block with such id does not exist in this office"
-        self.assertEquals(
-            actual_response["errors"][0]["message"], expected_response)
+        CommonTestCases.admin_token_assert_in(
+            self,
+            room_invalid_blockId_mutation,
+            "Block with such id does not exist in this office"
+        )

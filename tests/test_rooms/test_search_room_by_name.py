@@ -1,9 +1,8 @@
 import sys
 import os
-import json
 
 
-from tests.base import BaseTestCase
+from tests.base import BaseTestCase, CommonTestCases
 from fixtures.room.query_room_fixtures import (
     room_search_by_name,
     room_search_by_name_response,
@@ -13,33 +12,27 @@ from fixtures.room.query_room_fixtures import (
     room_search_by_invalid_name_response
 )
 
-from fixtures.token.token_fixture import (user_api_token)
-
 sys.path.append(os.getcwd())
 
 
 class SearchRoomsByName(BaseTestCase):
     def test_search_room_by_name(self):
-        headers = {"Authorization": "Bearer" + " " + user_api_token}
-        search_room_query = self.app_test.post(
-            '/mrm?query='+room_search_by_name, headers=headers)
-        actual_response = json.loads(search_room_query.data)
-        self.assertEquals(actual_response, room_search_by_name_response)
+        CommonTestCases.user_token_assert_equal(
+            self,
+            room_search_by_name,
+            room_search_by_name_response
+        )
 
     def test_search_room_by_empty_name(self):
-        headers = {"Authorization": "Bearer" + " " + user_api_token}
-        search_room_empty_query = self.app_test.post(
-            '/mrm?query='+room_search_by_empty_name, headers=headers)
-        actual_response = json.loads(search_room_empty_query.data)
-        expected_response = room_search_by_empty_name_response
-        self.assertEquals(
-            actual_response["errors"][0]['message'], expected_response)
+        CommonTestCases.user_token_assert_in(
+            self,
+            room_search_by_empty_name,
+            room_search_by_empty_name_response
+        )
 
     def test_search_room_by_invalid_name(self):
-        headers = {"Authorization": "Bearer" + " " + user_api_token}
-        search_room_by_invalid_name = self.app_test.post(
-            '/mrm?query='+room_search_by_invalid_name, headers=headers)
-        actual_response = json.loads(search_room_by_invalid_name.data)
-        expected_response = room_search_by_invalid_name_response
-        self.assertEquals(
-            actual_response["errors"][0]['message'], expected_response)
+        CommonTestCases.user_token_assert_in(
+            self,
+            room_search_by_invalid_name,
+            room_search_by_invalid_name_response
+        )

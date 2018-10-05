@@ -1,9 +1,7 @@
 import sys
 import os
-import json
 
-from tests.base import BaseTestCase
-from fixtures.token.token_fixture import admin_api_token
+from tests.base import BaseTestCase, CommonTestCases
 from fixtures.office.update_office_fixture import (
     update_office_in_another_location_query,
     update_office_with_wrong_ID_query,
@@ -20,32 +18,38 @@ class TestUpdateOffice(BaseTestCase):
         """
         Test updating an existing office
         """
-        headers = {"Authorization": "Bearer" + " " + admin_api_token}
-        response = self.app_test.post('/mrm?query='+update_office_query, headers=headers)  # noqa: E501
-        expected_response = office_mutation_response
-        actual_response = json.loads(response.data)
-        self.assertEqual(expected_response, actual_response)
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            update_office_query,
+            office_mutation_response
+        )
 
     def test_updating_non_existant_office(self):
         """
         Test updating a non existing office
         """
-        headers = {"Authorization": "Bearer" + " " + admin_api_token}
-        response = self.app_test.post('/mrm?query='+update_office_with_wrong_ID_query, headers=headers)  # noqa: E501
-        self.assertIn("Office not found", str(response.data))
+        CommonTestCases.admin_token_assert_in(
+            self,
+            update_office_with_wrong_ID_query,
+            "Office not found"
+        )
 
     def test_updating_office_name_with_an_existing_name(self):
         """
         Test updating office name with an already existing name
         """
-        headers = {"Authorization": "Bearer" + " " + admin_api_token}
-        response = self.app_test.post('/mrm?query='+update_office_with_same_Name_query, headers=headers)  # noqa: E501
-        self.assertIn("Action Failed", str(response.data))
+        CommonTestCases.admin_token_assert_in(
+            self,
+            update_office_with_same_Name_query,
+            "Action Failed"
+        )
 
     def test_updating_office_in_another_location(self):
         """
         Test updating office in another location
         """
-        headers = {"Authorization": "Bearer" + " " + admin_api_token}
-        response = self.app_test.post('/mrm?query='+update_office_in_another_location_query, headers=headers)  # noqa: E501
-        self.assertIn("You are not authorized to make changes in", str(response.data))  # noqa: E501
+        CommonTestCases.admin_token_assert_in(
+            self,
+            update_office_in_another_location_query,
+            "You are not authorized to make changes in"
+        )

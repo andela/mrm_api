@@ -1,12 +1,13 @@
 import sys
 import os
-import json
 
-from tests.base import BaseTestCase
-from fixtures.token.token_fixture import admin_api_token
-from fixtures.office.office_fixtures import (office_mutation_query, office_mutation_response, office_mutation_query_Different_Location,  # noqa : E501
-office_mutation_query_non_existant_ID, office_mutation_query_duplicate_name,
-office_mutation_query_duplicate_name_responce)
+from tests.base import BaseTestCase, CommonTestCases
+from fixtures.office.office_fixtures import (
+    office_mutation_query, office_mutation_response,
+    office_mutation_query_Different_Location,
+    office_mutation_query_non_existant_ID,
+    office_mutation_query_duplicate_name,
+    office_mutation_query_duplicate_name_responce)
 
 sys.path.append(os.getcwd())
 
@@ -17,40 +18,38 @@ class TestCreateOffice(BaseTestCase):
         """
         Testing for office creation
         """
-
-        headers = {"Authorization": "Bearer" + " " + admin_api_token}
-        response = self.app_test.post(
-            '/mrm?query='+office_mutation_query, headers=headers)
-        expected_response = office_mutation_response
-        actual_response = json.loads(response.data)
-        self.assertEqual(expected_response, actual_response)
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            office_mutation_query,
+            office_mutation_response
+        )
 
     def test_create_office_different_location(self):
         """
         Test creating office in different location
         """
-        headers = {"Authorization": "Bearer" + " " + admin_api_token}
-        response = self.app_test.post(
-            '/mrm?query='+office_mutation_query_Different_Location,
-            headers=headers)
-        self.assertIn("You are not authorized to make changes in", str(response.data))  # noqa : E501
+        CommonTestCases.admin_token_assert_in(
+            self,
+            office_mutation_query_Different_Location,
+            "You are not authorized to make changes in"
+        )
 
     def test_office_creation_with_non_existant_ID(self):
         """
         Testing for office creation with non existant ID
         """
-
-        headers = {"Authorization": "Bearer" + " " + admin_api_token}
-        response = self.app_test.post(
-            '/mrm?query='+office_mutation_query_non_existant_ID, headers=headers)  # noqa : E501
-        self.assertIn("Location not found", str(response.data))
+        CommonTestCases.admin_token_assert_in(
+            self,
+            office_mutation_query_non_existant_ID,
+            "Location not found"
+        )
 
     def test_office_creation_with_an_already_existent_name(self):
         """
         Testing for office creation with an already existing office name
         """
-        headers = {"Authorization": "Bearer" + " " + admin_api_token}
-        response = self.app_test.post(
-            '/mrm?query='+office_mutation_query_duplicate_name, headers=headers)  # noqa : E501
-        actual_response = json.loads(response.data)  # noqa: E501
-        self.assertEquals(actual_response, office_mutation_query_duplicate_name_responce)  # noqa: E501
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            office_mutation_query_duplicate_name,
+            office_mutation_query_duplicate_name_responce
+        )
