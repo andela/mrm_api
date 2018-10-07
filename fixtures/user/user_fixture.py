@@ -114,3 +114,43 @@ query_user_email_response = {
         }
     }
 }
+
+change_user_role_mutation = '''
+mutation{
+    changeUserRole(email:"peter.walugembe@andela.com", roleId: 1){
+        user{
+            name
+            roles{
+                role
+            }
+        }
+    }
+}
+'''
+
+change_user_role_mutation_response = {
+    "data": {
+        "changeUserRole": {
+            "user": {
+                "name": "Peter Walugembe",
+                "roles": [
+                    {
+                        "role": "Admin"
+                    }
+                ]
+            }
+        }
+    }
+}
+
+change_user_role_to_non_existence_role_mutation = '''
+mutation{
+    changeUserRole(email:"peter.walugembe@andela.com", roleId: 10){
+        user{
+            name
+        }
+    }
+}
+'''
+
+change_user_role_to_non_existing_role_mutation_response = "Role id 10 does not exist"  # noqa: E501

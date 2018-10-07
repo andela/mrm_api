@@ -101,8 +101,8 @@ class ChangeUserRole(graphene.Mutation):
         user_role = UsersRole.query.filter_by(user_id=exact_user.id).first()
         new_role = kwargs.pop('role_id')
         user_role.role_id = new_role
-        user_role.save()
-        return ChangeUserRole(user=exact_user)
+        with SaveContextManager(user_role, 'Role id', new_role):
+            return ChangeUserRole(user=exact_user)
 
 
 class Mutation(graphene.ObjectType):
