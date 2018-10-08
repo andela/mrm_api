@@ -20,12 +20,6 @@ class RoomStatistics(graphene.ObjectType):
     count = graphene.Int()
     events = graphene.List(EventsDuration)
     has_events = graphene.Boolean()
-
-
-class RoomDailyDurations(graphene.ObjectType):
-    room_name = graphene.String()
-    count = graphene.Int()
-    events = graphene.List(EventsDuration)
     total_duration = graphene.Int()
 
 
@@ -36,6 +30,12 @@ class RoomAnalytics(Credentials):
     """
     def convert_date(self, date):
         return datetime.strptime(date, '%b %d %Y').isoformat() + 'Z'
+
+    def get_start_end_month_dates(self, month, year):
+        date = month + ' 1 ' + str(year)
+        start_date = RoomAnalytics.convert_date(self, date)
+        day_after = (datetime.strptime(date, '%b %d %Y') + relativedelta(months=1)).isoformat() + 'Z'  # noqa: E501
+        return(start_date, day_after)
 
     def get_start_end_day_dates(self, day):
         """
@@ -242,16 +242,15 @@ class RoomAnalytics(Credentials):
             res.append(room_details)
         return res
 
-    def get_daily_meetings_details(self, rooms, day):
+    def meetings_duration_statistics(self, query, location_id, start_date, end_date):  # noqa: E501
         """
-        Get meeting durations for a particular day
+        Get meeting durations statistics
         """
+        rooms = RoomAnalytics.get_calendar_id_name(
+            self, query, location_id)
         result = []
-        start_date, end_date = RoomAnalytics.get_start_end_day_dates(self, day)
         for room in rooms:
-            calendar_id = room.calendar_id
-            events = RoomAnalytics.get_all_events_in_a_room(self, calendar_id, start_date, end_date)  # noqa: E501
-
+            events = RoomAnalytics.get_all_events_in_a_room(self, room['calendar_id'], start_date, end_date)  # noqa: E501
             events_duration = []
             for event in events:
                 start = event['start'].get('dateTime', event['start'].get('date'))  # noqa: E501
@@ -268,14 +267,13 @@ class RoomAnalytics(Credentials):
                 for index, events_duration in enumerate(events_count)
             ]
 
-            output = RoomDailyDurations(
-                room_name=room.name,
+            output = RoomStatistics(
+                room_name=room["name"],
                 count=len(events_duration),
                 total_duration=sum(events_duration),
                 events=events_in_minutes
             )
             result.append(output)
-
         return result
 
     def get_most_used_room_week(self, query, location_id, week_start, week_end):  # noqa: E501
@@ -308,3 +306,21 @@ class RoomAnalytics(Credentials):
         analytics = RoomAnalytics.get_room_statistics(
             self, number_of_most_events, res)
         return analytics
+
+    def get_daily_meetings_details(self, query, location_id, day):  # noqa: E501
+        """
+        Get daily meetings durations details
+        """
+        start_date, day_after = RoomAnalytics.get_start_end_day_dates(self, day)  # noqa
+        daily_analytics = RoomAnalytics.meetings_duration_statistics(self, query, location_id, start_date, day_after)  # noqa: E501
+        return daily_analytics
+
+    def get_meeting_duration_of_room_per_month(self, query, month, year, location_id):  # noqa
+        """ Get analytics for thetotal meeting duration of room(s) per
+        morth in a location
+         :params
+            - month, year, location_id
+        """
+        start_date, day_after = RoomAnalytics.get_start_end_month_dates(self, month, year)  # noqa
+        monthly_analytics = RoomAnalytics.meetings_duration_statistics(self, query, location_id, start_date, day_after)  # noqa: E501
+        return monthly_analytics

@@ -22,6 +22,10 @@ from fixtures.room.room_analytics_fixtures import (
     get_most_used_room_without_event_response
 
 )
+from fixtures.room.room_monthly_meeting_duration_fixtures import (
+    get_monthly_meetings_total_duration_query,
+    get_monthly_meetings_total_duration_response
+)
 
 
 class QueryRoomsAnalytics(BaseTestCase):
@@ -94,4 +98,11 @@ class QueryRoomsAnalytics(BaseTestCase):
             self,
             get_most_used_room_without_event_query,
             get_most_used_room_without_event_response
+        )
+
+    def test_total_monthly_meeting_durations(self):
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            get_monthly_meetings_total_duration_query,
+            get_monthly_meetings_total_duration_response
         )
