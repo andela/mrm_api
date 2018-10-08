@@ -1,9 +1,7 @@
 import sys
 import os
-import json
 
-from tests.base import BaseTestCase
-from fixtures.token.token_fixture import user_api_token
+from tests.base import BaseTestCase, CommonTestCases
 from fixtures.office.office_fixtures import (
     get_office_by_name,
     get_office_by_name_response)
@@ -13,8 +11,8 @@ sys.path.append(os.getcwd())
 
 class GetOfficeByName(BaseTestCase):
     def test_get_office_by_name(self):
-        headers = {"Authorization": "Bearer" + " " + user_api_token}
-        get_office_query = self.app_test.post(
-            '/mrm?query='+get_office_by_name, headers=headers)
-        actual_response = json.loads(get_office_query.data)
-        self.assertEquals(actual_response, get_office_by_name_response)
+        CommonTestCases.user_token_assert_equal(
+            self,
+            get_office_by_name,
+            get_office_by_name_response
+        )

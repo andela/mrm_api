@@ -66,9 +66,9 @@ class CreateRoom(graphene.Mutation):
             raise GraphQLError("No Office Found")
 
         if 'block_id' in kwargs:
-            exact_block = Block.query.filter_by(id=kwargs['block_id']).first()
+            exact_block = Block.query.filter_by(id=kwargs['block_id'], office_id=office_id).first()  # noqa: E501
             if not exact_block:
-                raise GraphQLError("Block with such id does not exist")
+                raise GraphQLError("Block with such id does not exist in this office")  # noqa: E501
             floor = Floor.query.filter_by(id=kwargs['floor_id']).first()
             if floor.block_id == kwargs['block_id']:
                 admin_roles.create_rooms_update_delete_office(office_id)
