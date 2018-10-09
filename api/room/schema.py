@@ -191,6 +191,13 @@ class Query(graphene.ObjectType):
         year=graphene.Int(),
     )
 
+    weekly_durations_of_meetings = graphene.Field(
+        Analytics,
+        location_id=graphene.Int(),
+        week_start=graphene.String(),
+        week_end=graphene.String(),
+    )
+
     analytics_for_room_least_used_per_week = graphene.Field(
         Analytics,
         location_id=graphene.Int(),
@@ -330,6 +337,12 @@ class Query(graphene.ObjectType):
     def resolve_monthly_durations_of_meetings(self, info, month, year, location_id):  # noqa: E501
         query = Room.get_query(info)
         results = RoomAnalytics.get_meeting_duration_of_room_per_month(self, query, month, year, location_id)  # noqa
+        return Analytics(MeetingsDurationaAnalytics=results)
+
+    @Auth.user_roles('Admin')
+    def resolve_weekly_durations_of_meetings(self, info, location_id, week_start, week_end):  # noqa: E501
+        query = Room.get_query(info)
+        results = RoomAnalytics.get_weekly_meetings_details(self, query, location_id, week_start, week_end)  # noqa: E501
         return Analytics(MeetingsDurationaAnalytics=results)
 
     @Auth.user_roles('Admin')
