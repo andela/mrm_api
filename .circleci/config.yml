@@ -108,17 +108,17 @@ jobs:
               gcloud beta compute instance-groups managed rolling-action replace mrm-prod-backend-instance-group-prod --zone europe-west1-b
             fi
       - run:
-            name: Register deployment status (succeeded)
-            when: on_success
-            command: |
-                bash ~/project/.circleci/gcloud_bucket.sh succeeded
+          name: Register deployment status (succeeded)
+          when: on_success
+          command: |
+            bash ~/project/.circleci/gcloud_bucket.sh succeeded
       - run:
-            name: Register deployment status (failed)
-            when: on_fail
-            command: |
-                bash ~/project/.circleci/gcloud_bucket.sh failed
+          name: Register deployment status (failed)
+          when: on_fail
+          command: |
+            bash ~/project/.circleci/gcloud_bucket.sh failed
 
-  deployement-report:
+  deployment-report:
     docker:
       - image: google/cloud-sdk
         environment:
@@ -155,15 +155,19 @@ workflows:
             - build
           filters:
             branches:
-              only: 
+              only:
                 - develop
                 - master
+
+  #cron job set to run e very friday on 15:00
   schedule-workflow:
     triggers:
       - schedule:
-          cron: "15 15 * * 5"
+          cron: "0 15 * * 5"
           filters:
             branches:
-              only: develop
+              only:
+                - develop
+                - master
     jobs:
-      - deployement-report
+      - deployment-report

@@ -1,28 +1,39 @@
-#! /usr/bash
+#! /usr/bin/env bash
+
+# get start date and end date
+STARTDATE=$(date --date="7 days ago" '+%Y-%m-%d %H:%M')
+ENDDATE=$(date '+%Y-%m-%d %H:%M:%S')
+
+run_query() {
+  BRANCH=$1
+
+  QUERY="select COALESCE(sum(status = 'failed'),0)\
+  as failed, COALESCE(sum(status = 'succeeded'),0)\
+  as succeeded from deployment_report_backend\
+  where (branch = '${BRANCH}') and (time between '${STARTDATE}' and '${ENDDATE}')"
+
+  # run SQL query on csv to and send output into a csv file
+  querycsv.py -i ~/project/.circleci/deployment_report_backend.csv -o ~/project/.circleci/result.csv ${QUERY}
+
+  # retrieve query output from csv
+  MESSAGE=$(python ~/project/.circleci/csv_parser.py ~/project/.circleci/result.csv $BRANCH)
+  rm ~/project/.circleci/result.csv
+  echo $MESSAGE
+}
 
 get_report() {
-  echo ">>>>>>>>>>>>>>>>>>>>>>>>>> retrieve csv >>>>>>>>>>>>>>>>>>"
-  gsutil cp gs://deployment_report/deployment_report_backend.csv ./deployment_report_backend.csv
+  # retrieve csv from bucket
+  gsutil cp gs://deployment_report/deployment_report_backend.csv ~/project/.circleci/deployment_report_backend.csv
 
-  # get start date and end date
-  STARTDATE="$(date --date="7 days ago" '+%Y-%m-%d %H:%M')"
-  ENDDATE=$(date '+%Y-%m-%d %H:%M:%S')
+  # generate report for each branch
+  DEVELOP_REPORT=$(run_query develop)
+  MASTER_REPORT=$(run_query master)
 
-  # query csv file for failed and successful deployment
-querycsv.py -i deployment_report_backend.csv -o failed.csv "select count(*) time, status from deployment_report_backend where time between '${STARTDATE}' and '${ENDDATE}' and status = 'failed'"
-querycsv.py -i deployment_report_backend.csv -o passed.csv "select count(*) time, status from deployment_report_backend where time between '${STARTDATE}' and '${ENDDATE}' and status = 'succeeded'"
+  DEPLOYMENT_REPORT_MESSAGE="Weekly Deployment Report for Converge Backend \n
+${DEVELOP_REPORT}\n
+${MASTER_REPORT}\n"
 
-
-
-# get count of failed and successful deployment
-FAILED_COUNT=$(python ~/project/.circleci/csv_parser.py failed.csv)
-SUCCESS_COUNT=$(python ~/project/.circleci/csv_parser.py passed.csv)
-
-  DEPLOYMENT_REPORT_MESSAGE="Hi Team.\n
-Here is the deployment report for the week.\n
-Between ${STARTDATE} and ${ENDDATE},\n
-we had ${SUCCESS_COUNT} successful deployments and ${FAILED_COUNT} Failed deployments.\n
-In Converge-Backend :devops:"
+  echo $DEPLOYMENT_REPORT_MESSAGE
 }
 
 # send notification to slack
