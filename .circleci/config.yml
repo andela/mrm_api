@@ -100,7 +100,12 @@ jobs:
             gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
       - run:
           name: Deploy to gcloud
-          command: gcloud beta compute instance-groups managed rolling-action replace mrm-staging-backend-instance-group --zone europe-west1-b
+          command: |
+            if [[ ${CIRCLE_BRANCH} == 'develop' ]]; then
+              gcloud beta compute instance-groups managed rolling-action replace mrm-prod-backend-instance-group-staging --zone europe-west1-b
+            elif [[ ${CIRCLE_BRANCH} == 'master' ]]; then
+              gcloud beta compute instance-groups managed rolling-action replace mrm-prod-backend-instance-group-prod --zone europe-west1-b
+            fi
 
 workflows:
   version: 2
@@ -112,5 +117,7 @@ workflows:
             - build
           filters:
             branches:
-              only: develop
+              only: 
+                - develop
+                - master
 
