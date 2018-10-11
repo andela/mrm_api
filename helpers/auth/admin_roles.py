@@ -50,5 +50,13 @@ class Admin_roles():
         if admin_details.location != resource_location.name:
             raise GraphQLError("You are not authorized to make changes in " + resource_location.name)  # noqa: E501
 
+    def admin_location_for_analytics_view(self):
+        """
+        Return admin's location for viewing analytics data
+        """
+        admin_details = get_user_from_db()
+        location = Location.query.filter_by(name=admin_details.location).first()
+        return location.id
+
 
 admin_roles = Admin_roles()

@@ -1,6 +1,6 @@
 get_monthly_meetings_total_duration_query = '''
     {
-        monthlyDurationsOfMeetings(month:"Jul", year:2018, locationId:1)
+        monthlyDurationsOfMeetings(month:"Jul", year:2018)
         {
             MeetingsDurationaAnalytics {
                 roomName

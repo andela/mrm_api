@@ -2,7 +2,7 @@ null = None
 
 get_daily_meetings_total_duration_query = '''
 query {
-    dailyDurationsOfMeetings(locationId:1, dayStart:"sep 10 2018"){
+    dailyDurationsOfMeetings(dayStart:"sep 10 2018"){
         MeetingsDurationaAnalytics{
             roomName
             count
@@ -33,7 +33,7 @@ get_daily_meetings_total_duration_response = {
 
 get_weekly_meetings_total_duration_query = '''
 query {
-    weeklyDurationsOfMeetings(locationId:1, weekStart:"Jan 3 2018", weekEnd:"Jan 9 2018"){  # noqa: E501
+    weeklyDurationsOfMeetings(weekStart:"Jan 3 2018", weekEnd:"Jan 9 2018"){  # noqa: E501
         MeetingsDurationaAnalytics{
             roomName
             count
