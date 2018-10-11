@@ -6,8 +6,8 @@ from functools import wraps
 
 import requests
 from graphql import GraphQLError
-from sqlalchemy.exc import SQLAlchemyError
 from flask_json import JsonError
+from sqlalchemy.exc import SQLAlchemyError
 
 from api.user.models import User
 from api.role.models import Role
@@ -80,7 +80,8 @@ class Authentication:
                 try:
                     user_data = User(email=email, name=name, picture=picture)
                     user_data.save()
-                    user_role = UsersRole(user_id=user_data.id, role_id=role.id)
+                    user_role = UsersRole(
+                        user_id=user_data.id, role_id=role.id)
                     user_role.save()
                     notification_settings = NotificationModel(
                         user_id=user_data.id)
@@ -102,8 +103,9 @@ class Authentication:
                     email = user_data['email']
                     user = User.query.filter_by(email=email).first()
                     headers = {"Authorization": 'Bearer ' + self.get_token()}
-                    data = requests.get(api_url + "users?email=%s" % user.email,
-                                        headers=headers)
+                    data = requests.get(
+                        api_url + "users?email=%s" % user.email,
+                        headers=headers)
                     response = json.loads(data.content.decode("utf-8"))
                     if response['values'][0]['location']:
                         user.location = \

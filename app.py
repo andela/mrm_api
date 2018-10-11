@@ -1,13 +1,14 @@
 from flask import Flask
+
 from flask_graphql import GraphQLView
 from flask_cors import CORS
 from flask_json import FlaskJSON
-from helpers.auth.authentication import Auth
 
 from config import config
 from helpers.database import db_session
 from schema import schema
 from healthcheck_schema import healthcheck_schema
+from helpers.auth.authentication import Auth
 from api.analytics.analytics_request import AnalyticsRequest
 
 

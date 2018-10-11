@@ -1,5 +1,6 @@
-from flask import jsonify
+from flask import jsonify, render_template, make_response
 import pandas as pd
+import pdfkit
 
 from helpers.calendar.analytics_helper import CommonAnalytics
 
@@ -115,3 +116,21 @@ class AnalyticsReport():
         report_jpeg = WriteFile.analytics_report_image(self, df1, df2, outputfile="report.jpeg", format="jpeg")  # noqa: E501
 
         return report_jpeg
+
+    def get_analytics_pdf_reports(self, query, start_date, end_date):
+        report_data_frame = AnalyticsReport.generate_combined_analytics_report(
+            self, query, start_date, end_date)
+        WriteFile.write_to_html_file(
+            report_data_frame['Most Used Rooms'],
+            report_data_frame['Least Used Rooms'],
+            '<h1>Room Analytics Report Summary</h1><p> <h2>Report Period: From ' + str(start_date) + ' to ' + str(end_date) + '</h2>',   # noqa
+            'templates/analytics_report.html'
+            )
+        rendered = render_template('analytics_report.html')
+
+        pdf_file = pdfkit.from_string(rendered, False)
+        response = make_response(pdf_file)
+        response.headers['Content-Type'] = 'application/pdf'
+        response.headers['Content-Disposition'] = 'attachment; filename=analytics_report.pdf'  # noqa
+
+        return response
