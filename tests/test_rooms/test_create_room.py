@@ -11,8 +11,8 @@ from fixtures.room.create_room_fixtures import (
     room_mutation_query_duplicate_name,
     room_mutation_query_duplicate_name_response)   # noqa : E501
 from fixtures.room.create_room_in_block_fixtures import (
-    room_valid_blockId_mutation, room_invalid_blockId_mutation,
-    expected_room_valid_blockId_mutation_response)
+    room_blockId_not_required_mutation
+    )
 
 sys.path.append(os.getcwd())
 
@@ -80,22 +80,12 @@ class TestCreateRoom(BaseTestCase):
             room_mutation_query_duplicate_name_response
         )
 
-    def test_room_creation_with_valid_blockId(self):
+    def test_room_creation_when_blockId_not_required(self):
         """
-        Test room creation with  invalid officeId
-        """
-        CommonTestCases.admin_token_assert_equal(
-            self,
-            room_valid_blockId_mutation,
-            expected_room_valid_blockId_mutation_response
-        )
-
-    def test_room_creation_with_invalid_blockId(self):
-        """
-        Test room creation with  invalid wingId
+        Test room creation with Block ID not required
         """
         CommonTestCases.admin_token_assert_in(
             self,
-            room_invalid_blockId_mutation,
-            "Block with such id does not exist in this office"
+            room_blockId_not_required_mutation,
+            "Block ID is not required for this office"
         )
