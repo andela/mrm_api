@@ -5,15 +5,13 @@ from graphql import GraphQLError
 
 from api.room.models import Room as RoomModel
 from api.office.models import Office
-from api.block.models import Block
-from api.floor.models import Floor
 from helpers.calendar.events import RoomSchedules
 from helpers.calendar.analytics import RoomAnalytics, RoomStatistics  # noqa: E501
 from utilities.utility import validate_empty_fields, update_entity_fields
 from helpers.auth.authentication import Auth
 from helpers.auth.admin_roles import admin_roles
-from helpers.auth.verify_ids_for_room import verify_ids
-from helpers.auth.validator import assert_wing_is_required
+from helpers.auth.verify_ids_for_room import verify_ids, validate_block
+from helpers.auth.validator import assert_wing_is_required, assert_block_id_is_required  # noqa: E501
 from helpers.auth.validator import ErrorHandler
 from helpers.auth.add_office import verify_attributes
 from helpers.room_filter.room_filter import room_filter, room_join_office  # noqa: E501
@@ -60,29 +58,23 @@ class CreateRoom(graphene.Mutation):
         if not get_office:
             raise GraphQLError("No Office Found")
 
-        if 'block_id' in kwargs:
-            exact_block = Block.query.filter_by(id=kwargs['block_id'], office_id=office_id).first()  # noqa: E501
-            if not exact_block:
-                raise GraphQLError("Block with such id does not exist in this office")  # noqa: E501
-            floor = Floor.query.filter_by(id=kwargs['floor_id']).first()
-            if floor.block_id == kwargs['block_id']:
-                admin_roles.create_rooms_update_delete_office(office_id)
-                query = Room.get_query(info)
-                exact_query = room_join_office(query)
-                result = exact_query.filter(
-                    Office.id == office_id,
-                    RoomModel.name == kwargs.get('name'))
-                if result.count() > 0:
-                    ErrorHandler.check_conflict(self, kwargs['name'], 'Room')
-                assert_wing_is_required(get_office.name, kwargs)
-                kwargs.pop('block_id')
-                room = RoomModel(**kwargs)
-                room.save()
-                return CreateRoom(room=room)
-            raise GraphQLError(
-                "Floor with such id does not exist in this block")
-        raise GraphQLError(
-            "Block id is required")
+        admin_roles.create_rooms_update_delete_office(office_id)
+        query = Room.get_query(info)
+        exact_query = room_join_office(query)
+        result = exact_query.filter(
+            Office.id == office_id,
+            RoomModel.name == kwargs.get('name'))
+        if result.count() > 0:
+            ErrorHandler.check_conflict(self, kwargs['name'], 'Room')
+        assert_block_id_is_required(get_office.name, kwargs)
+        validate_block(office_id, kwargs)
+        assert_wing_is_required(get_office.name, kwargs)
+        # remove block ID from kwargs, can't be saved in rooms model
+        if kwargs.get('block_id'):
+            kwargs.pop('block_id')
+        room = RoomModel(**kwargs)
+        room.save()
+        return CreateRoom(room=room)
 
 
 class PaginatedRooms(Paginate):
