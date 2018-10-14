@@ -52,6 +52,9 @@ class AnalyticsRequest():
         if file_type == 'CSV':
             response = AnalyticsReport.get_csv_analytics_report(
                 self, query, start_date, end_date)
+        elif file_type == 'JPEG':
+            response = AnalyticsReport.get_jpeg_analytics_report(
+                self, query, start_date, end_date)
         else:
             response = AnalyticsReport.get_json_analytics_report(
                 self, query, start_date, end_date)
