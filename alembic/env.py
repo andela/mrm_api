@@ -35,6 +35,7 @@ from api.role.models import Role
 from api.devices.models import Devices
 from api.wing.models import Wing
 from api.office.models import Office
+from api.events.models import Events
 
 target_metadata = Base.metadata
 
