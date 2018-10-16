@@ -5,6 +5,7 @@ from helpers.database import Base
 from utilities.utility import Utility
 from api.floor.models import Floor  # noqa: F401
 from api.wing.models import Wing  # noqa: F401
+from api.events.models import Events  # noqa: F401
 
 
 class Room(Base, Utility):
@@ -19,3 +20,4 @@ class Room(Base, Utility):
     wing_id = Column(Integer, ForeignKey('wings.id'))
     floor = relationship('Floor')
     resources = relationship('Resource', cascade="all, delete-orphan")
+    events = relationship('Events', cascade="all, delete-orphan")

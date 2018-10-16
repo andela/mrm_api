@@ -1,4 +1,4 @@
-from tests.base import BaseTestCase
+from tests.base import BaseTestCase, CommonTestCases
 from fixtures.user.user_fixture import (
     user_query, user_query_response,
     query_user_by_email, query_user_email_response,
@@ -9,7 +9,6 @@ from api.user.models import User
 
 import sys
 import os
-import json
 sys.path.append(os.getcwd())
 
 
@@ -40,10 +39,11 @@ class TestQueryUser(BaseTestCase):
         self.client.execute(
             user_query, context_value={'session': db_session})
 
-        response = self.app_test.post('/mrm?query='+paginated_users_query)
-        paginate_query = json.loads(response.data)
-        expected_response = paginated_users_response
-        self.assertEqual(paginate_query, expected_response)
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            paginated_users_query,
+            paginated_users_response
+        )
 
     def test_query_users_by_email(self):
         user = User(email='mrm@andela.com',

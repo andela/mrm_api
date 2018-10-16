@@ -16,6 +16,15 @@ def assert_wing_is_required(office, kwargs):
             raise AttributeError("wing_id is not required for this office")
 
 
+def assert_block_id_is_required(office, kwargs):
+    if re.match('^(st\s?catherines?)$', office, re.IGNORECASE):
+        if not kwargs.get('block_id'):
+            raise AttributeError("block_id is required for this office")
+    else:
+        if kwargs.get('block_id'):
+            raise AttributeError("Block ID is not required for this office")
+
+
 def verify_email(email):
     return bool(re.match('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$',
                          email))

@@ -10,6 +10,7 @@ import api.user_role.schema
 import api.devices.schema
 import api.office.schema
 import api.wing.schema
+import api.events.schema
 
 
 class Query(
@@ -36,7 +37,8 @@ class Mutation(
     api.user_role.schema.Mutation,
     api.devices.schema.Mutation,
     api.location.schema.Mutation,
-    api.office.schema.Mutation
+    api.office.schema.Mutation,
+    api.events.schema.Mutation
 ):
     pass
 
