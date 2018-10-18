@@ -54,3 +54,42 @@ wrong_calendar_id_checkin_mutation = '''mutation {
         }
     }
 '''
+
+cancel_event_mutation = '''
+    mutation {
+        cancelledEvent(calendarId:
+        "andela.com_3630363835303531343031@resource.calendar.google.com",
+        eventId:"test_data_1235")
+        {
+            event{
+                eventId
+                roomId
+                checkedIn
+                cancelled
+                room{
+                    id
+                    name
+                    calendarId
+                }
+            }
+        }
+    }
+'''
+
+cancel_event_respone = {
+    "data": {
+        "cancelledEvent": {
+            "event": {
+                "eventId": "test_data_1235",
+                "roomId": 1,
+                "checkedIn": False,
+                "cancelled": True,
+                "room": {
+                    "id": "1",
+                    "name": "Entebbe",
+                    "calendarId": "andela.com_3630363835303531343031@resource.calendar.google.com"  # noqa: E501
+                }
+            }
+        }
+    }
+}

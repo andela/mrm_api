@@ -4,7 +4,9 @@ from tests.base import BaseTestCase, CommonTestCases
 from fixtures.events.event_checkin_fixtures import (
     event_checkin_mutation,
     event_checkin_response,
-    wrong_calendar_id_checkin_mutation
+    wrong_calendar_id_checkin_mutation,
+    cancel_event_mutation,
+    cancel_event_respone
 )
 
 sys.path.append(os.getcwd())
@@ -45,4 +47,14 @@ class TestEventCheckin(BaseTestCase):
             self,
             wrong_calendar_id_checkin_mutation,
             "This Calendar ID is not registered on Converge."
+        )
+
+    def test_cancel_event(self):
+        '''
+        Test that event status is updated to cancelled.
+        '''
+        CommonTestCases.user_token_assert_equal(
+            self,
+            cancel_event_mutation,
+            cancel_event_respone
         )
