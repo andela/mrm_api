@@ -4,6 +4,7 @@ from graphene_sqlalchemy import (SQLAlchemyObjectType)
 from graphql import GraphQLError
 from api.user.models import User as UserModel
 from api.user_role.models import UsersRole
+from api.notification.models import Notification as NotificationModel
 from helpers.auth.user_details import get_user_from_db
 from helpers.auth.authentication import Auth
 from helpers.auth.validator import verify_email
@@ -29,6 +30,8 @@ class CreateUser(graphene.Mutation):
     def mutate(self, info, **kwargs):
         user = UserModel(**kwargs)
         with SaveContextManager(user, kwargs.get('email'), 'User email'):
+            notification_settings = NotificationModel(user_id=user.id)
+            notification_settings.save()
             return CreateUser(user=user)
 
 

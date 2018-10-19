@@ -11,6 +11,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from api.user.models import User
 from api.role.models import Role
 from api.user_role.models import UsersRole
+from api.notification.models import Notification as NotificationModel
 
 from helpers.database import db_session
 
@@ -80,6 +81,9 @@ class Authentication:
                     user_data.save()
                     user_role = UsersRole(user_id=user_data.id, role_id=role.id)
                     user_role.save()
+                    notification_settings = NotificationModel(
+                        user_id=user_data.id)
+                    notification_settings.save()
                 except Exception as e:  # noqa
                     db_session.rollback()
         except SQLAlchemyError:
