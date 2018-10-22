@@ -1,4 +1,4 @@
-from tests.base import BaseTestCase, change_user_role_helper
+from tests.base import BaseTestCase, CommonTestCases, change_user_role_helper
 from fixtures.user_role.user_role_fixtures import (
     user_role_query, user_role_query_response,
     query_user_by_user_id, query_user_by_user_id_response, change_user_role_mutation_query, change_unavailable_user_role_mutation_query, change_unavailable_user_role_mutation_response,  # noqa E501
@@ -7,11 +7,9 @@ from fixtures.user_role.user_role_fixtures import (
 from helpers.database import db_session
 from api.user.models import User
 from api.user_role.models import UsersRole
-from fixtures.token.token_fixture import admin_api_token
 
 import sys
 import os
-import json
 sys.path.append(os.getcwd())
 
 
@@ -53,7 +51,6 @@ class TestQueryUserRole(BaseTestCase):
         self.assertEqual(execute_query, expected_response)
 
     def test_change_user_role(self):
-        headers = {"Authorization": "Bearer" + " " + admin_api_token}
         user = User(email='mrm@andela.com', location="Kampala",
                     name="test test",
                     picture="www.andela.com/testuser")
@@ -62,31 +59,24 @@ class TestQueryUserRole(BaseTestCase):
         user_role.save()
         db_session().commit()
 
-        query_response = self.app_test.post(
-            '/mrm?query='+change_user_role_mutation_query, headers=headers)
-        actual_response = json.loads(query_response.data)
-
-        expected_response = change_user_role_mutation_response
-        self.assertEqual(actual_response, expected_response)
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            change_user_role_mutation_query,
+            change_user_role_mutation_response
+        )
 
     @change_user_role_helper
     def test_change_unavailable_user_role(self):
-        headers = {"Authorization": "Bearer" + " " + admin_api_token}
-        query_response = self.app_test.post(
-            '/mrm?query='+change_unavailable_user_role_mutation_query,
-            headers=headers)
-        actual_response = json.loads(query_response.data)
-
-        expected_response = change_unavailable_user_role_mutation_response
-        self.assertEqual(actual_response, expected_response)
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            change_unavailable_user_role_mutation_query,
+            change_unavailable_user_role_mutation_response
+        )
 
     @change_user_role_helper
     def test_change_user_role_by_default_user(self):
-        headers = {"Authorization": "Bearer" + " " + admin_api_token}
-        query_response = self.app_test.post(
-            '/mrm?query='+change_user_role_mutation_query, headers=headers)
-        actual_response = json.loads(query_response.data)
-
-        expected_response = "You are not authorized to perform this action"
-        self.assertEqual(actual_response["errors"][0]["message"],
-                         expected_response)
+        CommonTestCases.admin_token_assert_in(
+            self,
+            change_user_role_mutation_query,
+            "You are not authorized to perform this action"
+        )
