@@ -2,7 +2,7 @@ import graphene
 from helpers.calendar.credentials import Credentials
 from api.room.models import Room as RoomModel
 from helpers.auth.authentication import Auth
-from helpers.calendar.analytics import RoomAnalytics
+from helpers.calendar.analytics_helper import CommonAnalytics
 
 
 class DeleteResponse(graphene.ObjectType):
@@ -20,7 +20,7 @@ class Query(graphene.ObjectType):
         Deletes all rooms with invalid calendar IDs.
         '''
         query = RoomModel.query
-        calendar_ids = RoomAnalytics.get_calendar_id_name(self, query)
+        calendar_ids = CommonAnalytics.get_calendar_id_name(self, query)
         service = Credentials.set_api_credentials(self)
 
         invalid_rooms = []
