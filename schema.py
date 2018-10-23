@@ -11,6 +11,7 @@ import api.devices.schema
 import api.office.schema
 import api.wing.schema
 import api.events.schema
+import utilities.calendar_ids_cleanup
 
 
 class Query(
@@ -24,7 +25,8 @@ class Query(
     api.user_role.schema.Query,
     api.devices.schema.Query,
     api.office.schema.Query,
-    api.wing.schema.Query
+    api.wing.schema.Query,
+    utilities.calendar_ids_cleanup.Query
 ):
     pass
 

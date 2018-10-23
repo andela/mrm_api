@@ -80,7 +80,7 @@ class Authentication:
                     user_data.save()
                     user_role = UsersRole(user_id=user_data.id, role_id=role.id)
                     user_role.save()
-                except Exception as e:
+                except Exception as e:  # noqa
                     db_session.rollback()
         except SQLAlchemyError:
             pass
