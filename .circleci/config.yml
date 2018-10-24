@@ -13,7 +13,7 @@ decode_credentials: &decode_credentials
 
 version: 2
 jobs:
-  build:
+  test:
     docker:
       # specify the version you desire here
       # use `-browsers` prefix for selenium tests, e.g. `3.6.1-browsers`
@@ -162,10 +162,10 @@ workflows:
   version: 2
   build-then-deploy:
     jobs:
-      - build
+      - test
       - deploy-job:
           requires:
-            - build
+            - test
           filters:
             branches:
               only:

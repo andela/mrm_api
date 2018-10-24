@@ -29,7 +29,7 @@ get_build_report() {
   elif [ "$CIRCLE_JOB" == 'deploy-job' -a  "$STATUS" == 'fail' ]; then
 
     MESSAGE_TEXT="Deployment Phase Failed  :scream:"
-    REBUILD_URL="https://circleci.com/actions/retry/github/andela/mrm_front/${CIRCLE_BUILD_NUM}"
+    REBUILD_URL="https://circleci.com/actions/retry/github/andela/mrm_api/${CIRCLE_BUILD_NUM}"
     ACTION_BUTTON="$(echo \
           "{\"type\": \"button\", \"text\": \"Rebuild\", \"url\": \"${REBUILD_URL}\"}", \
       )"
@@ -46,6 +46,7 @@ get_build_report() {
 
 }
 
+# send notification to slack
 send_notification() {
   curl -X POST --data-urlencode \
   "payload={
