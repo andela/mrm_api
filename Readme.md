@@ -58,10 +58,22 @@
         $ alembic upgrade head
         
         ```
+- Running asynchronous functionalities.
+
+    - Install redis with running the redis bash file `run-redis.sh`, this will also run the redis server (*Celery Message Broker*) for the first time.
+
+    - To run redis after it has been stopped run `redis-server`
+
+    - In a new terminal tab run the **Celery Message Worker** as:
+    ```
+    celery worker -A cworker.celery --loglevel=info
+    ```
+    
 - Run application.
     ```
     python manage.py runserver
     ```
+
 - Running Tests
  - To run tests and observe test coverage for various versions of python . Run the command below.
  ```

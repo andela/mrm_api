@@ -118,3 +118,7 @@ html_coverage_report/
 
 # credentials
 credentials.json
+
+# redis
+/redis-stable
+dump.rdb
