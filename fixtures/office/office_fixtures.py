@@ -14,22 +14,21 @@ office_mutation_query = '''
     }
 '''
 
+
 office_mutation_response = {
-    "data": {
-        "createOffice": {
-            "office": {
-                "name": "The Crest",
-                "locationId": 1,
-                "blocks": [
-                    {
-                        "id": '2',
-                        "name": "The Crest"
-                    }
-                ]
-            }
-        }
+    'errors': [{
+        'message': 'Office created but Emails not Sent',
+        'locations': [{
+            'line': 3,
+            'column': 9
+        }],
+        'path': ['createOffice']
+    }],
+    'data': {
+        'createOffice': None
     }
 }
+
 
 get_office_by_name = '''
 query{

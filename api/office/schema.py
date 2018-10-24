@@ -1,4 +1,6 @@
 import graphene
+# from flask.ext.mail import Mail, Message
+# from celery import Celery
 from graphene_sqlalchemy import SQLAlchemyObjectType
 from graphql import GraphQLError
 from sqlalchemy import exc
@@ -11,6 +13,7 @@ from helpers.room_filter.room_filter import room_join_location, lagos_office_joi
 from helpers.auth.admin_roles import admin_roles
 from helpers.auth.error_handler import SaveContextManager
 from helpers.pagination.paginate import Paginate, validate_page
+from helpers.email.email import office_created
 
 
 class Office(SQLAlchemyObjectType):
@@ -32,6 +35,9 @@ class CreateOffice(graphene.Mutation):
         admin_roles.create_office(location_id=kwargs['location_id'])
         office = OfficeModel(**kwargs)
         with SaveContextManager(office, kwargs['name'], 'Office'):
+            new_office = kwargs['name']
+            if not office_created(new_office):
+                raise GraphQLError("Office created but Emails not Sent")
             return CreateOffice(office=office)
 
 

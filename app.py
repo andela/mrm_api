@@ -1,11 +1,13 @@
 from flask import Flask
 from flask_graphql import GraphQLView
 from flask_cors import CORS
-
+from flask_mail import Mail
 from config import config
 from helpers.database import db_session
 from schema import schema
 from healthcheck_schema import healthcheck_schema
+
+mail = Mail()
 
 
 def create_app(config_name):
@@ -13,6 +15,7 @@ def create_app(config_name):
     CORS(app)
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
+    mail.init_app(app)
 
     app.add_url_rule(
         '/mrm',
