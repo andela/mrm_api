@@ -7,7 +7,8 @@ non_existent_user_notification_settings_query = '''
 getUserNotificationSettings (userId:100){
     id,
     userId,
-    deviceHealthNotification
+    deviceHealthNotification,
+    meetingUpdateNotification
 }
 }
 '''
@@ -40,7 +41,8 @@ missing_user_notification_table_query = '''
 getUserNotificationSettings (userId:1){
     id,
     userId,
-    deviceHealthNotification
+    deviceHealthNotification,
+    meetingUpdateNotification
 }
 }
 '''
@@ -51,7 +53,8 @@ missing_user_notification_table_response = {
             {
                 "id": "1",
                 "userId": 1,
-                "deviceHealthNotification": true
+                "deviceHealthNotification": true,
+                "meetingUpdateNotification": true
             }
         ]
         }
@@ -62,7 +65,8 @@ existing_user_notification_table_query = '''
 getUserNotificationSettings (userId:1){
     id,
     userId,
-    deviceHealthNotification
+    deviceHealthNotification,
+    meetingUpdateNotification
 }
 }
 '''
@@ -73,7 +77,8 @@ existing_user_notification_table_response = {
             {
                 "id": "1",
                 "userId": 1,
-                "deviceHealthNotification": true
+                "deviceHealthNotification": true,
+                "meetingUpdateNotification": true
             }
         ]
     }
@@ -85,11 +90,13 @@ existing_user_notification_table_response = {
 update_user_notification_settings_query = '''
  mutation {
     updateNotification(
-        deviceHealthNotification: true) {
+        deviceHealthNotification: true,
+        meetingUpdateNotification: false) {
         notification {
             id
             userId
             deviceHealthNotification
+            meetingUpdateNotification
         }
     }
 }
@@ -101,7 +108,8 @@ update_user_notification_settings_response = {
             "notification": {
                 "id": "1",
                 "userId": 2,
-                "deviceHealthNotification": true
+                "deviceHealthNotification": true,
+                "meetingUpdateNotification": false
             }
         }
     }

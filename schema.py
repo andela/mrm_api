@@ -13,7 +13,6 @@ import api.wing.schema
 import api.events.schema
 import utilities.calendar_ids_cleanup
 import api.notification.schema
-import utilities.calendar_ids_cleanup
 
 
 class Query(

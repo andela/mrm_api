@@ -9,3 +9,4 @@ class Notification(Base, Utility):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('users.id'))
     device_health_notification = Column(Boolean, default=True)
+    meeting_update_notification = Column(Boolean, default=True)

@@ -33,8 +33,8 @@ class Query(graphene.ObjectType):
 
 class UpdateNotification(graphene.Mutation):
     class Arguments:
-        device_health_notification = graphene.Boolean(required=True)
-
+        device_health_notification = graphene.Boolean()
+        meeting_update_notification = graphene.Boolean()
     notification = graphene.Field(Notification)
 
     @Auth.user_roles('Default User', 'Admin')
@@ -44,8 +44,12 @@ class UpdateNotification(graphene.Mutation):
             user_id=user.id).first()
         if not notification:
             notification = NotificationModel(user_id=user.id)
-        notification.device_health_notification = kwargs[
-            'device_health_notification']
+        if 'device_health_notification' in kwargs:
+            notification.device_health_notification = kwargs[
+                'device_health_notification']
+        if 'meeting_update_notification' in kwargs:
+            notification.meeting_update_notification = kwargs[
+                'meeting_update_notification']
         notification.save()
 
         return UpdateNotification(notification=notification)
