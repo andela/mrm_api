@@ -3,12 +3,12 @@ from graphql import GraphQLError
 
 
 def check_office_name(office_name):
-    return bool(re.match('^(epic\s?towers?||the\s?crest)$',  # noqa: E501
+    return bool(re.match('^(epic\s?towers?||the\s?crest)$',  # noqa
                          office_name, re.IGNORECASE))
 
 
 def assert_wing_is_required(office, kwargs):
-    if re.match('^(epic\s?towers?)$', office, re.IGNORECASE):
+    if re.match('^(epic\s?towers?)$', office, re.IGNORECASE):  # noqa
         if not kwargs.get('wing_id'):
             raise AttributeError("wing_id is required for this office")
     else:
@@ -17,7 +17,7 @@ def assert_wing_is_required(office, kwargs):
 
 
 def assert_block_id_is_required(office, kwargs):
-    if re.match('^(st\s?catherines?)$', office, re.IGNORECASE):
+    if re.match('^(st\s?catherines?)$', office, re.IGNORECASE):  # noqa
         if not kwargs.get('block_id'):
             raise AttributeError("block_id is required for this office")
     else:
@@ -26,7 +26,7 @@ def assert_block_id_is_required(office, kwargs):
 
 
 def verify_email(email):
-    return bool(re.match('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$',
+    return bool(re.match('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$',  # noqa
                          email))
 
 
