@@ -1,22 +1,7 @@
-from flask import render_template
-
-from flask_mail import Message, Mail
-
-from config import Config
+from .email_setup import SendEmail
 from api.user.models import User
-import celery
-
-mail = Mail()
-
-
-@celery.task
-def send_async_email(msg_dict):
-    """
-    Send office created email
-    """
-    msg = Message()
-    msg.__dict__.update(msg_dict)
-    mail.send(msg)
+from config import Config
+from flask import render_template
 
 
 def office_created(new_office):
@@ -28,16 +13,16 @@ def office_created(new_office):
             if user_role.role == 'Admin'
         ]
     ]
+    email = SendEmail(
+        'A new office has been added', recipients,
+        render_template('office_success.html', office_name=new_office))
 
-    msg = Message(
-        'A new office has been added',
-        recipients=recipients,
-        sender=Config.MAIL_USERNAME)
-    msg.html = render_template('office_success.html', office_name=new_office)
+    return email.send()
 
-    msg_dict = msg.__dict__
-    try:
-        send_async_email.apply_async(args=[msg_dict])
-        return True
-    except Exception as e:  # noqa
-        return False
+
+def email_invite(email, admin):
+    email = SendEmail(
+        "Invitaion to join Converge", [email],
+        render_template('invite.html', name=admin, domain=Config.DOMAIN_NAME))
+
+    return email.send()

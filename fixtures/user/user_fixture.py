@@ -27,20 +27,14 @@ user_mutation_response = {
 }
 
 user_duplication_mutation_response = {
-    "errors": [
-        {
-            "message": "mrm@andela.com User email already exists",
-            "locations": [
-                {
-                    "line": 3,
-                    "column": 3
-                }
-            ],
-            "path": [
-                "createUser"
-            ]
-        }
-    ],
+    "errors": [{
+        "message": "mrm@andela.com User email already exists",
+        "locations": [{
+            "line": 3,
+            "column": 3
+        }],
+        "path": ["createUser"]
+    }],
     "data": {
         "createUser": null
     }
@@ -87,11 +81,9 @@ query {
 paginated_users_response = {
     "data": {
         "users": {
-            "users": [
-                {
-                    "email": "peter.walugembe@andela.com"
-                }
-            ],
+            "users": [{
+                "email": "peter.walugembe@andela.com"
+            }],
             "hasNext": True,
             "hasPrevious": False,
             "pages": 2
@@ -133,11 +125,9 @@ change_user_role_mutation_response = {
         "changeUserRole": {
             "user": {
                 "name": "Peter Walugembe",
-                "roles": [
-                    {
-                        "role": "Admin"
-                    }
-                ]
+                "roles": [{
+                    "role": "Admin"
+                }]
             }
         }
     }
@@ -154,3 +144,26 @@ mutation{
 '''
 
 change_user_role_to_non_existing_role_mutation_response = "Role id 10 does not exist"  # noqa: E501
+
+send_invitation_to_existent_user_query = '''
+mutation{
+    inviteToConverge(email: "peter.walugembe@andela.com"){
+        email
+
+    }
+}
+'''
+
+send_invitation_to_existent_user_response = {
+    "errors": [{
+        "message": "User already joined Converge",
+        "locations": [{
+            "line": 3,
+            "column": 5
+        }],
+        "path": ["inviteToConverge"]
+    }],
+    "data": {
+        "inviteToConverge": null
+    }
+}

@@ -42,12 +42,8 @@ class Authentication:
             auth_token = self.get_token()
             if auth_token is None:
                 return jsonify({
-<<<<<<< HEAD
-                    'message': 'Invalid token. Please Provide a valid token!'
-=======
                     'message':
                     'Invalid token. Please Provide a valid token!'
->>>>>>> feat(send notifications): office created email notifications
                 }), 401
 
             payload = jwt.decode(auth_token, verify=False)
