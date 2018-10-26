@@ -13,7 +13,7 @@ decode_credentials: &decode_credentials
 
 version: 2
 jobs:
-  build:
+  test:
     docker:
       # specify the version you desire here
       # use `-browsers` prefix for selenium tests, e.g. `3.6.1-browsers`
@@ -81,6 +81,17 @@ jobs:
           path: test-reports
           destination: test-reports
 
+      - run:
+          name: Notifying slack channel (succeeded)
+          when: on_success
+          command: |
+            bash ~/repo/.circleci/notify_slack.sh success
+      - run:
+          name: Notifying slack channel (failed)
+          when: on_fail
+          command: |
+            bash ~/repo/.circleci/notify_slack.sh fail
+
   deploy-job:
     docker:
       - image: google/cloud-sdk
@@ -112,11 +123,13 @@ jobs:
           when: on_success
           command: |
             bash ~/project/.circleci/gcloud_bucket.sh succeeded
+            bash ~/project/.circleci/notify_slack.sh success
       - run:
           name: Register deployment status (failed)
           when: on_fail
           command: |
             bash ~/project/.circleci/gcloud_bucket.sh failed
+            bash ~/project/.circleci/notify_slack.sh fail
 
   deployment-report:
     docker:
@@ -149,10 +162,10 @@ workflows:
   version: 2
   build-then-deploy:
     jobs:
-      - build
+      - test
       - deploy-job:
           requires:
-            - build
+            - test
           filters:
             branches:
               only:
