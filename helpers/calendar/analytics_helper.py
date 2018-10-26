@@ -131,4 +131,4 @@ class CommonAnalytics(Credentials):
                                         has_events=True
                                         )
                 result.append(output)
-            return result
+        return result
