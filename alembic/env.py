@@ -31,6 +31,7 @@ from api.room.models import Room
 from api.room_resource.models import Resource
 from api.user.models import User
 from api.user_role.models import UsersRole
+from api.notification.models import Notification
 from api.role.models import Role
 from api.devices.models import Devices
 from api.wing.models import Wing

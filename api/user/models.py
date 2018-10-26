@@ -4,6 +4,7 @@ from sqlalchemy.orm import relationship
 from helpers.database import Base
 from utilities.utility import Utility, validate_empty_fields
 from api.user_role.models import UsersRole  # noqa: F401
+from api.notification.models import Notification  # noqa: F401
 
 
 class User(Base, Utility):
@@ -14,6 +15,8 @@ class User(Base, Utility):
     name = Column(String, nullable=False)
     picture = Column(String, nullable=True)
     roles = relationship('Role', secondary='users_roles')
+    notification_settings = relationship(
+        'Notification', cascade="all, delete-orphan")
 
     def __init__(self, **kwargs):
         validate_empty_fields(**kwargs)
