@@ -2,7 +2,7 @@ import sys
 import os
 
 from tests.base import BaseTestCase, CommonTestCases
-from fixtures.office.update_office_fixture import (
+from fixtures.office.update_delete_office_fixture import (
     update_office_in_another_location_query,
     update_office_with_wrong_ID_query,
     update_office_with_same_Name_query,
