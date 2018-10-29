@@ -2,7 +2,7 @@ import json
 
 from tests.base import BaseTestCase, CommonTestCases
 
-from fixtures.office.office_fixtures import (
+from fixtures.office.update_delete_office_fixture import (
     delete_office_mutation,
     delete_office_mutation_response,
     delete_non_existent_office_mutation,

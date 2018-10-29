@@ -3,6 +3,7 @@ import api.location.schema
 import api.block.schema
 import api.floor.schema
 import api.room.schema
+import api.room.schema_query
 import api.room_resource.schema
 import api.role.schema
 import api.user.schema
@@ -19,7 +20,7 @@ class Query(
     api.location.schema.Query,
     api.block.schema.Query,
     api.floor.schema.Query,
-    api.room.schema.Query,
+    api.room.schema_query.Query,
     api.room_resource.schema.Query,
     api.role.schema.Query,
     api.user.schema.Query,

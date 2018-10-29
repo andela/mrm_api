@@ -12,7 +12,7 @@ from fixtures.room.filter_room_fixtures import (
     filter_rooms_by_resources_location_capacity,
     filter_rooms_by_resources_location_capacityresponse,
     filter_rooms_by_non_existant_data,
-    filter_rooms_by_non_existant_datay_response,
+    filter_rooms_by_non_existant_data_response,
     filter_rooms_by_location_capacity,
     filter_rooms_by_location_capacity_response,
     filter_rooms_by_resources_capacity,
@@ -77,7 +77,7 @@ class RoomsFilter(BaseTestCase):
         CommonTestCases.user_token_assert_equal(
             self,
             filter_rooms_by_non_existant_data,
-            filter_rooms_by_non_existant_datay_response
+            filter_rooms_by_non_existant_data_response
         )
 
     def test_filter_room_by_resources_location(self):

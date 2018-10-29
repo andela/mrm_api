@@ -1,7 +1,5 @@
 from tests.base import BaseTestCase, CommonTestCases
-from fixtures.room.room_analytics_fixtures import (
-    get_most_used_room_in_a_month_analytics_query,
-    get_most_used_room_in_a_month_analytics_response,
+from fixtures.room.room_analytics_least_used_fixtures import (
     get_least_used_room_per_week_query,
     get_least_used_room_per_week_response,
     get_least_used_room_without_event_query,
@@ -11,13 +9,18 @@ from fixtures.room.room_analytics_fixtures import (
     get_least_used_room_per_month,
     get_least_used_room_per_month_response,
     analytics_for_least_used_room_day,
-    analytics_for_least_used_room_day_response,
+    analytics_for_least_used_room_day_response
+    )
+
+from fixtures.room.room_analytics_most_used_fixtures import (
+    get_most_used_room_in_a_month_analytics_query,
+    get_most_used_room_in_a_month_analytics_response,
     get_most_used_room_per_week_query,
     get_most_used_room_per_week_response,
     get_most_used_room_without_event_query,
     get_most_used_room_without_event_response
-
 )
+
 from fixtures.room.room_monthly_meeting_duration_fixtures import (
     get_monthly_meetings_total_duration_query,
     get_monthly_meetings_total_duration_response
