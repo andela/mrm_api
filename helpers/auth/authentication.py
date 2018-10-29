@@ -7,6 +7,7 @@ from functools import wraps
 import requests
 from graphql import GraphQLError
 from sqlalchemy.exc import SQLAlchemyError
+from flask_json import JsonError
 
 from api.user.models import User
 from api.role.models import Role
@@ -42,7 +43,7 @@ class Authentication:
             auth_token = self.get_token()
             if auth_token is None:
                 return jsonify({
-                   'message': 'Invalid token. Please Provide a valid token!'
+                    'message': 'Invalid token. Please Provide a valid token!'
                 }), 401
 
             payload = jwt.decode(auth_token, verify=False)
@@ -118,8 +119,10 @@ class Authentication:
                     if role.role in expected_args:
                         return func(*args, **kwargs)
                     else:
-                        raise GraphQLError(
-                            'You are not authorized to perform this action')
+                        res = 'You are not authorized to perform this action'
+                        if 'REST' in expected_args:
+                            raise JsonError(message=res, status=401)
+                        raise GraphQLError(res)
                 else:
                     raise GraphQLError(user_data[0].data)
             return wrapper
