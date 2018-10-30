@@ -10,10 +10,13 @@ Flask-GraphQL==1.4.1
 google-api-python-client==1.6.7
 graphene-sqlalchemy==2.0.0
 graphene==2.1
+imgkit==1.0.1
 MarkupSafe==1.0
 more-itertools==4.1.0
 numpy==1.15.2
+opencv-python==3.4.3.18
 pandas==0.23.4
+Pillow==5.3.0
 psycopg2-binary==2.7.4
 py==1.5.3
 pytest==3.5.0

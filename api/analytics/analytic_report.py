@@ -102,3 +102,16 @@ class AnalyticsReport():
 
         summary = WriteFile.wrte_csv(self, combined_report, 'Analytics_report.csv')  # noqa: E501
         return summary
+
+    def get_jpeg_analytics_report(self, query, start_time, end_time):
+        '''
+        Convert analytics for 5 least and most used rooms into a jpeg
+        '''
+        report_df = AnalyticsReport.generate_combined_analytics_report(
+            self, query, start_time, end_time)
+
+        df1 = report_df['Most Used Rooms']
+        df2 = report_df['Least Used Rooms']
+        report_jpeg = WriteFile.analytics_report_image(self, df1, df2, outputfile="report.jpeg", format="jpeg")  # noqa: E501
+
+        return report_jpeg
