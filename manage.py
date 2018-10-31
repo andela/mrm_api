@@ -4,6 +4,7 @@ import bugsnag
 from flask_script import Manager, Shell
 from bugsnag.flask import handle_exceptions
 
+
 # Configure bugnsag
 bugsnag.configure(
   api_key=os.getenv('BUGSNAG_API_TOKEN'),

@@ -4,11 +4,14 @@ from flask_cors import CORS
 from flask_json import FlaskJSON
 from helpers.auth.authentication import Auth
 
+from flask_mail import Mail
 from config import config
 from helpers.database import db_session
 from schema import schema
 from healthcheck_schema import healthcheck_schema
 from api.analytics.analytics_request import AnalyticsRequest
+
+mail = Mail()
 
 
 def create_app(config_name):
@@ -17,6 +20,7 @@ def create_app(config_name):
     FlaskJSON(app)
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
+    mail.init_app(app)
 
     app.add_url_rule(
         '/mrm',

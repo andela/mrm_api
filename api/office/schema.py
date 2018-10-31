@@ -11,6 +11,7 @@ from helpers.room_filter.room_filter import room_join_location, lagos_office_joi
 from helpers.auth.admin_roles import admin_roles
 from helpers.auth.error_handler import SaveContextManager
 from helpers.pagination.paginate import Paginate, validate_page
+from helpers.email.email import office_created
 
 
 class Office(SQLAlchemyObjectType):
@@ -22,6 +23,7 @@ class CreateOffice(graphene.Mutation):
     class Arguments:
         name = graphene.String(required=True)
         location_id = graphene.Int(required=True)
+
     office = graphene.Field(Office)
 
     @Auth.user_roles('Admin')
@@ -32,19 +34,23 @@ class CreateOffice(graphene.Mutation):
         admin_roles.create_office(location_id=kwargs['location_id'])
         office = OfficeModel(**kwargs)
         with SaveContextManager(office, kwargs['name'], 'Office'):
+            new_office = kwargs['name']
+            if not office_created(new_office):
+                raise GraphQLError("Office created but Emails not Sent")
             return CreateOffice(office=office)
 
 
 class DeleteOffice(graphene.Mutation):
-
     class Arguments:
         office_id = graphene.Int(required=True)
+
     office = graphene.Field(Office)
 
     @Auth.user_roles('Admin')
     def mutate(self, info, office_id, **kwargs):
         query_office = Office.get_query(info)
-        exact_office = query_office.filter(OfficeModel.id == office_id).first()  # noqa: E501
+        exact_office = query_office.filter(
+            OfficeModel.id == office_id).first()  # noqa: E501
         if not exact_office:
             raise GraphQLError("Office not found")
 
@@ -57,6 +63,7 @@ class UpdateOffice(graphene.Mutation):
     class Arguments:
         name = graphene.String()
         office_id = graphene.Int()
+
     office = graphene.Field(Office)
 
     @Auth.user_roles('Admin')
@@ -87,22 +94,16 @@ class PaginateOffices(Paginate):
             return query.all()
         page = validate_page(page)
         self.query_total = query.count()
-        result = query.limit(per_page).offset(page*per_page)
+        result = query.limit(per_page).offset(page * per_page)
         if result.count() == 0:
             return GraphQLError("No more offices")
         return result
 
 
 class Query(graphene.ObjectType):
-    get_office_by_name = graphene.List(
-        Office,
-        name=graphene.String()
-    )
+    get_office_by_name = graphene.List(Office, name=graphene.String())
     all_offices = graphene.Field(
-        PaginateOffices,
-        page=graphene.Int(),
-        per_page=graphene.Int()
-    )
+        PaginateOffices, page=graphene.Int(), per_page=graphene.Int())
 
     def resolve_all_offices(self, info, **kwargs):
         response = PaginateOffices(**kwargs)
