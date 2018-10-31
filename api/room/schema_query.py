@@ -1,11 +1,13 @@
 import graphene
 from graphql import GraphQLError
 from helpers.calendar.analytics import RoomAnalytics  # noqa: E501
+from helpers.calendar.ratios_and_utilization import RoomAnalyticsRatios
 from helpers.auth.authentication import Auth
 from api.room.schema import (PaginatedRooms, Calendar, Room)
 from helpers.calendar.events import RoomSchedules
 from helpers.calendar.analytics import RoomStatistics  # noqa: E501
 from api.room.models import Room as RoomModel
+from api.room.schema import CheckinsToBookingsRatio
 
 
 class Analytics(graphene.ObjectType):
@@ -64,6 +66,12 @@ class Query(graphene.ObjectType):
     analytics_for_meetings_per_room = graphene.Field(
         Analytics,
         start_date=graphene.String(required=True),
+        end_date=graphene.String(),
+    )
+
+    analytics_ratios = graphene.Field(
+        CheckinsToBookingsRatio,
+        start_date=graphene.String(),
         end_date=graphene.String(),
     )
 
@@ -152,3 +160,10 @@ class Query(graphene.ObjectType):
         query = Room.get_query(info)
         results = RoomAnalytics.get_meetings_duration_analytics(self, query, start_date, end_date)  # noqa: E501
         return Analytics(MeetingsDurationaAnalytics=results)
+
+    @Auth.user_roles('Admin')
+    def resolve_analytics_ratios(self, info, start_date, end_date):  # noqa: E501
+        query = Room.get_query(info)
+        ratio = RoomAnalyticsRatios.get_analytics_ratios(
+            self, query, start_date, end_date)
+        return ratio
