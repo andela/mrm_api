@@ -1,5 +1,6 @@
 import re
 from graphql import GraphQLError
+from helpers.calendar.credentials import Credentials
 
 
 def check_office_name(office_name):
@@ -28,6 +29,15 @@ def assert_block_id_is_required(office, kwargs):
 def verify_email(email):
     return bool(re.match('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$',  # noqa
                          email))
+
+
+def verify_calendar_id(calendar_id):
+    service = Credentials.set_api_credentials(Credentials)
+    try:
+        service.events().list(calendarId=calendar_id).execute()
+        return True
+    except Exception:
+        return False
 
 
 class ErrorHandler():

@@ -9,7 +9,9 @@ from fixtures.room.create_room_fixtures import (
     room_name_empty_mutation, room_invalid_officeId_mutation,
     room_invalid_floorId_mutation, room_invalid_wingId_mutation,
     room_mutation_query_duplicate_name,
-    room_mutation_query_duplicate_name_response)   # noqa : E501
+    room_mutation_query_duplicate_name_response,
+    room_invalid_calendar_id_mutation_query,
+    room_invalid_calendar_id_mutation_response)
 from fixtures.room.create_room_in_block_fixtures import (
     room_blockId_not_required_mutation
     )
@@ -88,4 +90,14 @@ class TestCreateRoom(BaseTestCase):
             self,
             room_blockId_not_required_mutation,
             "Block ID is not required for this office"
+        )
+
+    def test_room_creation_with_invalid_calendar_id(self):
+        """
+        Test room creation with Block ID not required
+        """
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            room_invalid_calendar_id_mutation_query,
+            room_invalid_calendar_id_mutation_response
         )

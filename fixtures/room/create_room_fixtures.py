@@ -160,6 +160,38 @@ room_invalid_wingId_mutation = '''
     }
 '''
 
+room_invalid_calendar_id_mutation_query = '''
+    mutation {
+        createRoom(
+            name: "Kigali", roomType: "Meeting", capacity: 6, floorId: 1, officeId: 1,
+            calendarId:"andela.com_38363233383232303439@resource.calendar.google.com",
+            imageUrl: "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg") {  # noqa: E501
+            room {
+                name
+            }
+        }
+    }
+'''
+
+room_invalid_calendar_id_mutation_response = {
+    "errors": [
+        {
+            "message": "Room calendar Id is invalid",
+            "locations": [
+                {
+                    "line": 3,
+                    "column": 9
+                }
+            ],
+            "path": [
+                "createRoom"
+                ]
+        }
+    ],
+    "data": {
+        "createRoom": null
+    }
+}
 
 rooms_query = '''
 query {
@@ -172,7 +204,8 @@ query {
         }
     }
 }
-    '''
+'''
+
 db_rooms_query = '''
     {
     rooms{
