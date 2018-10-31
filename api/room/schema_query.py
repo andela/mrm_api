@@ -75,6 +75,12 @@ class Query(graphene.ObjectType):
         end_date=graphene.String(),
     )
 
+    analytics_ratios = graphene.Field(
+        CheckinsToBookingsRatio,
+        start_date=graphene.String(required=True),
+        end_date=graphene.String(),
+    )
+
     def check_valid_calendar_id(self, query, calendar_id):
         check_calendar_id = query.filter(
             RoomModel.calendar_id == calendar_id
@@ -162,7 +168,7 @@ class Query(graphene.ObjectType):
         return Analytics(MeetingsDurationaAnalytics=results)
 
     @Auth.user_roles('Admin')
-    def resolve_analytics_ratios(self, info, start_date, end_date):  # noqa: E501
+    def resolve_analytics_ratios(self, info, start_date, end_date=None):  # noqa: E501
         query = Room.get_query(info)
         ratio = RoomAnalyticsRatios.get_analytics_ratios(
             self, query, start_date, end_date)

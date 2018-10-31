@@ -14,3 +14,11 @@ event_ratio_response = {
         }
     }
 }
+
+event_ratio_for_one_day_query = '''query {
+    analyticsRatios(startDate:"Jul 10 2018"){
+    Bookings
+    Checkins
+}
+}
+'''
