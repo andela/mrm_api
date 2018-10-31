@@ -6,8 +6,8 @@ from functools import wraps
 
 import requests
 from graphql import GraphQLError
-from sqlalchemy.exc import SQLAlchemyError
 from flask_json import JsonError
+from sqlalchemy.exc import SQLAlchemyError
 
 from api.user.models import User
 from api.role.models import Role

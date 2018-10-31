@@ -12,6 +12,7 @@ class AnalyticsRequest():
            validate_date
            validate_request
            get_analytic_report
+           get_analytic_report_pdf_file
     """
 
     def validate_date(self, start_date, end_date):
@@ -55,6 +56,10 @@ class AnalyticsRequest():
         elif file_type == 'JPEG':
             response = AnalyticsReport.get_jpeg_analytics_report(
                 self, query, start_date, end_date)
+        elif file_type == 'PDF':
+            response = AnalyticsReport.get_analytics_pdf_reports(
+                self, query, start_date, end_date)
+
         else:
             response = AnalyticsReport.get_json_analytics_report(
                 self, query, start_date, end_date)
