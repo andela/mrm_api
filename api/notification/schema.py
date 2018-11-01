@@ -2,7 +2,6 @@ import graphene
 from graphene_sqlalchemy import SQLAlchemyObjectType
 from graphql import GraphQLError
 
-from api.user.models import User
 from helpers.auth.authentication import Auth
 from api.notification.models import Notification as NotificationModel
 from helpers.auth.user_details import get_user_from_db
@@ -14,19 +13,17 @@ class Notification(SQLAlchemyObjectType):
 
 
 class Query(graphene.ObjectType):
+    get_user_notification_settings = graphene.List(Notification)
 
-    get_user_notification_settings = graphene.List(
-        lambda: Notification, user_id=graphene.Int(required=True))
-
-    def resolve_get_user_notification_settings(self, info, user_id):
-        user = User.query.filter_by(id=user_id).first()
-        if not user:
+    def resolve_get_user_notification_settings(self, info):
+        user = get_user_from_db()
+        if user is None:
             raise GraphQLError("User not found")
         query = Notification.get_query(info)
         notification = query.filter(
-            NotificationModel.user_id == user_id).first()
-        if not notification:
-            notification = NotificationModel(user_id=user_id)
+            NotificationModel.user_id == user.id).first()
+        if notification is None:
+            notification = NotificationModel(user_id=user.id)
             notification.save()
         return [notification]  # makes the response iterable
 

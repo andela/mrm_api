@@ -2,43 +2,12 @@ null = None
 true = True
 false = False
 
-non_existent_user_notification_settings_query = '''
-{
-getUserNotificationSettings (userId:100){
-    id,
-    userId,
-    deviceHealthNotification,
-    meetingUpdateNotification
-}
-}
-'''
-
-non_existent_user_notification_settings_response = {
-    "errors": [
-        {
-            "message": "User not found",
-            "locations": [
-                {
-                    "line": 2,
-                    "column": 2
-                }
-            ],
-            "path": [
-                "getUserNotificationSettings"
-            ]
-        }
-    ],
-    "data": {
-        "getUserNotificationSettings": null
-    }
-}
-
 # when run for the first time for a user not already in the notifications table,
 # the user is automatically added and the field is populated with the
 # default value (True).
-missing_user_notification_table_query = '''
+user_notification_query = '''
 {
-getUserNotificationSettings (userId:1){
+getUserNotificationSettings{
     id,
     userId,
     deviceHealthNotification,
@@ -47,7 +16,7 @@ getUserNotificationSettings (userId:1){
 }
 '''
 
-missing_user_notification_table_response = {
+user_notification_response = {
     "data": {
         "getUserNotificationSettings": [
             {
@@ -58,30 +27,6 @@ missing_user_notification_table_response = {
             }
         ]
         }
-}
-
-existing_user_notification_table_query = '''
-{
-getUserNotificationSettings (userId:1){
-    id,
-    userId,
-    deviceHealthNotification,
-    meetingUpdateNotification
-}
-}
-'''
-
-existing_user_notification_table_response = {
-    "data": {
-        "getUserNotificationSettings": [
-            {
-                "id": "1",
-                "userId": 1,
-                "deviceHealthNotification": true,
-                "meetingUpdateNotification": true
-            }
-        ]
-    }
 }
 
 # when run for the first time for a user not already in the notifications table,
@@ -107,7 +52,7 @@ update_user_notification_settings_response = {
         "updateNotification": {
             "notification": {
                 "id": "1",
-                "userId": 2,
+                "userId": 1,
                 "deviceHealthNotification": true,
                 "meetingUpdateNotification": false
             }
