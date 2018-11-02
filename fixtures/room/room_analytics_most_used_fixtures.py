@@ -2,7 +2,7 @@ null = None
 
 get_most_used_room_in_a_month_analytics_query = '''
     {
-        mostUsedRoomPerMonthAnalytics(month:"Jul", year:2018)
+        analyticsForMostUsedRooms(startDate:"Jul 1 2018", endDate:"Jul 31 2018")
         {
             analytics {
                 roomName
@@ -13,7 +13,7 @@ get_most_used_room_in_a_month_analytics_query = '''
 '''
 get_most_used_room_in_a_month_analytics_response = {
         "data": {
-            "mostUsedRoomPerMonthAnalytics": {
+            "analyticsForMostUsedRooms": {
                 "analytics": [
                     {
                         "roomName": "Entebbe",
@@ -26,9 +26,9 @@ get_most_used_room_in_a_month_analytics_response = {
 
 get_most_used_room_per_week_query = '''
      {
-        analyticsForRoomMostUsedPerWeek(
-            weekStart: "Aug 8 2018"
-            weekEnd: "Aug 12 2018"
+        analyticsForMostUsedRooms(
+            startDate: "Aug 8 2018"
+            endDate: "Aug 12 2018"
         )
         {
             analytics {
@@ -45,7 +45,7 @@ get_most_used_room_per_week_query = '''
 '''
 get_most_used_room_per_week_response = {
    "data": {
-        "analyticsForRoomMostUsedPerWeek": {
+        "analyticsForMostUsedRooms": {
             "analytics": [
                 {
                     "roomName": "Entebbe",
@@ -60,9 +60,9 @@ get_most_used_room_per_week_response = {
 
 get_most_used_room_without_event_query = '''
     {
-        analyticsForRoomMostUsedPerWeek(
-            weekStart: "Aug 8 2018"
-            weekEnd: "Aug 12 2018"
+        analyticsForMostUsedRooms(
+            startDate: "Aug 8 2018"
+            endDate: "Aug 12 2018"
         )
         {
             analytics {
@@ -80,7 +80,7 @@ get_most_used_room_without_event_query = '''
 
 get_most_used_room_without_event_response = {
     "data": {
-        "analyticsForRoomMostUsedPerWeek": {
+        "analyticsForMostUsedRooms": {
             "analytics": [
                 {
                     "roomName": "Entebbe",

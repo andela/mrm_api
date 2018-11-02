@@ -5,7 +5,7 @@ from fixtures.room.room_analytics_least_used_fixtures import (
     get_least_used_room_without_event_query,
     get_least_used_room_without_event_response,
     get_room_usage_analytics,
-    get_room_usage_anaytics_respone,
+    get_room_usage_anaytics_response,
     get_least_used_room_per_month,
     get_least_used_room_per_month_response,
     analytics_for_least_used_room_day,
@@ -54,7 +54,7 @@ class QueryRoomsAnalytics(BaseTestCase):
         CommonTestCases.admin_token_assert_equal(
             self,
             get_room_usage_analytics,
-            get_room_usage_anaytics_respone
+            get_room_usage_anaytics_response
         )
 
     def test_analytics_for_least_used_room_monthly(self):
