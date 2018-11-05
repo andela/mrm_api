@@ -52,19 +52,32 @@ class AnalyticsReport():
 
     def get_least_used_rooms(self, all_rooms_summary_df):
         '''
-        Get analytics for 5 least used rooms
+        Get analytics for the 10 least used rooms
         '''
+        # import pdb; pdb.set_trace()
         sorted_all_rooms_summary_df = all_rooms_summary_df.sort_values(
             'Meetings')
-        return sorted_all_rooms_summary_df.head(5)
+        try:
+            tenth_value = sorted_all_rooms_summary_df.loc[10, 'meetings']
+            top_ten = sorted_all_rooms_summary_df.loc[sorted_all_rooms_summary_df['meetings'] <= tenth_value]  # noqa
+        except KeyError:
+            top_ten = sorted_all_rooms_summary_df.head(10)
+
+        return top_ten
 
     def get_most_used_rooms(self, all_rooms_summary_df):
         '''
-        Get analytics for 5 most used rooms
+        Get analytics for the 10 most used rooms
         '''
         sorted_all_rooms_summary_df = all_rooms_summary_df.sort_values(
             'Meetings', ascending=False)
-        return sorted_all_rooms_summary_df.head(5)
+        try:
+            tenth_value = sorted_all_rooms_summary_df.loc[10, 'meetings']
+            top_ten = sorted_all_rooms_summary_df.loc[sorted_all_rooms_summary_df['meetings'] >= tenth_value]  # noqa
+        except KeyError:
+            top_ten = sorted_all_rooms_summary_df.head(10)
+
+        return top_ten
 
     def generate_combined_analytics_report(self, query, start_date, end_date):
         '''
