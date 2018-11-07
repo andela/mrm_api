@@ -1,6 +1,6 @@
 get_monthly_meetings_total_duration_query = '''
     {
-        monthlyDurationsOfMeetings(month:"Jul", year:2018)
+        analyticsForMeetingsDurations(startDate:"Jul 1 2018", endDate:"Jul 31 2018")  # noqa: E501
         {
             MeetingsDurationaAnalytics {
                 roomName
@@ -17,7 +17,7 @@ get_monthly_meetings_total_duration_query = '''
 
 get_monthly_meetings_total_duration_response = {
         "data": {
-            "monthlyDurationsOfMeetings": {
+            "analyticsForMeetingsDurations": {
                 "MeetingsDurationaAnalytics": [
                     {
                         "roomName": "Entebbe",

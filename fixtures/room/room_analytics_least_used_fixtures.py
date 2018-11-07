@@ -2,9 +2,9 @@ null = None
 
 get_least_used_room_per_week_query = '''
     {
-        analyticsForRoomLeastUsedPerWeek(
-            weekStart: "Sep 8 2018"
-            weekEnd: "Sep 15 2018"
+        analyticsForLeastUsedRooms(
+            startDate: "Sep 8 2018"
+            endDate: "Sep 15 2018"
         )
         {
             analytics {
@@ -20,29 +20,10 @@ get_least_used_room_per_week_query = '''
     }
 '''
 
-get_least_used_room_per_week_query = '''
-    {
-        analyticsForRoomLeastUsedPerWeek(
-            weekStart: "Sep 8 2018"
-            weekEnd: "Sep 15 2018"
-        )
-        {
-            analytics {
-                roomName
-                count
-                hasEvents
-                events {
-                    durationInMinutes
-                    numberOfMeetings
-                }
-            }
-        }
-    }
-'''
 
 get_least_used_room_per_week_response = {
     "data": {
-        "analyticsForRoomLeastUsedPerWeek": {
+        "analyticsForLeastUsedRooms": {
             "analytics": [
                 {
                     "roomName": "Nairobi - 2nd Floor Block A Khartoum (1)",
@@ -65,9 +46,9 @@ get_least_used_room_per_week_response = {
 
 get_least_used_room_without_event_query = '''
     {
-        analyticsForRoomLeastUsedPerWeek(
-            weekStart: "Aug 8 2018"
-            weekEnd: "Aug 12 2018"
+        analyticsForLeastUsedRooms(
+            startDate: "Aug 8 2018"
+            endDate: "Aug 12 2018"
         )
         {
             analytics {
@@ -85,7 +66,7 @@ get_least_used_room_without_event_query = '''
 
 get_least_used_room_without_event_response = {
     "data": {
-        "analyticsForRoomLeastUsedPerWeek": {
+        "analyticsForLeastUsedRooms": {
             "analytics": [
                 {
                     "roomName": "Entebbe",
@@ -101,7 +82,7 @@ get_least_used_room_without_event_response = {
 get_room_usage_analytics = '''
     {
     analyticsForMeetingsPerRoom(
-        dayStart:"Sep 11 2018" dayEnd:"sep 12 2018"){
+        startDate:"Sep 11 2018" endDate:"sep 12 2018"){
             analytics{
                 roomName
                 count
@@ -110,40 +91,29 @@ get_room_usage_analytics = '''
     }
 '''
 
-get_least_used_room_per_month = '''
-    {
-        analyticsForLeastUsedRoomPerMonth(month:"Jul", year:2018)
-        {
-            analytics {
-                roomName
-                count
-            }
-        }
-    }
-'''
-get_least_used_room_per_month = '''
-    {
-        analyticsForLeastUsedRoomPerMonth(month:"Jul", year:2018)
-        {
-            analytics {
-                roomName
-                count
-            }
-        }
-    }
-'''
-
-get_room_usage_anaytics_respone = {
+get_room_usage_anaytics_response = {
     "data": {
         "analyticsForMeetingsPerRoom": {
-            "analytics": [{'roomName': 'Entebbe', 'count': 2}]
+            "analytics": [{'roomName': 'Entebbe', 'count': 3}]
                     }
     }
 }
 
+get_least_used_room_per_month = '''
+    {
+        analyticsForLeastUsedRooms(startDate:"Jul 1 2018", endDate:"Jul 31 2018")  # noqa: E501
+        {
+            analytics {
+                roomName
+                count
+            }
+        }
+    }
+'''
+
 get_least_used_room_per_month_response = {
     'data': {
-        'analyticsForLeastUsedRoomPerMonth': {
+        'analyticsForLeastUsedRooms': {
             'analytics': [
                 {
                     'roomName': 'Entebbe',
@@ -154,22 +124,10 @@ get_least_used_room_per_month_response = {
     }
 }
 
-get_least_used_room_per_month_response = {
-    'data': {
-        'analyticsForLeastUsedRoomPerMonth': {
-            'analytics': [
-                {
-                    'roomName': 'Entebbe',
-                    'count': 0
-                }
-            ]
-        }
-    }
-}
 
 analytics_for_least_used_room_day = '''
 {
-    analyticsForLeastUsedRoomPerDay(day:"Jul 11 2018"){
+    analyticsForLeastUsedRooms(startDate:"Jul 11 2018"){
         analytics{
             roomName
             count
@@ -184,7 +142,7 @@ analytics_for_least_used_room_day = '''
 
 analytics_for_least_used_room_day_response = {
     "data": {
-        "analyticsForLeastUsedRoomPerDay": {
+        "analyticsForLeastUsedRooms": {
             "analytics": [
                 {
                     "roomName": "Entebbe",

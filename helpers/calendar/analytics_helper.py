@@ -25,23 +25,16 @@ class RoomStatistics(graphene.ObjectType):
 
 class CommonAnalytics(Credentials):
 
-    def convert_date(self, date):
-        return datetime.strptime(date, '%b %d %Y').isoformat() + 'Z'
-
-    def get_start_end_month_dates(self, month, year):
-        date = month + ' 1 ' + str(year)
-        start_date = CommonAnalytics.convert_date(self, date)
-        day_after = (datetime.strptime(date, '%b %d %Y') + relativedelta(months=1)).isoformat() + 'Z'  # noqa: E501
-        return(start_date, day_after)
-
-    def get_start_end_day_dates(self, day):
+    def convert_dates(self, start_date, end_date):
         """
-        Returns start and end day dates in iso-format
+        Convert date format and add one day to end_date
+        Google calendar is exclusive of end_date
         """
-        start = (datetime.strptime(day, "%b %d %Y"))
-        startdate = start.isoformat() + 'Z'
-        end = (start + relativedelta(days=1)).isoformat() + 'Z'
-        return(startdate, end)
+        if end_date is None:
+            end_date = start_date
+        start_date = datetime.strptime(start_date, '%b %d %Y').isoformat() + 'Z'
+        end_date = (datetime.strptime(end_date, "%b %d %Y") + relativedelta(days=1)).isoformat() + 'Z'  # noqa: E501
+        return(start_date, end_date)
 
     def get_time_duration_for_event(self, start_time, end_time):
         """ Calculate duration range of an event

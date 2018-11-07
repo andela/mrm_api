@@ -1,5 +1,3 @@
-from datetime import datetime
-from dateutil.relativedelta import relativedelta
 from collections import Counter
 from .credentials import Credentials
 from helpers.calendar.analytics_helper import (
@@ -10,133 +8,88 @@ from helpers.calendar.analytics_helper import (
 class RoomAnalytics(Credentials):
     """Get room analytics
        :methods
-           get_least_used_room_week
+           get_events_number_meetings_room_analytics
+           get_least_used_rooms_analytics
+           get_most_used_rooms_analytics
+           get_meetings_per_room_analytics
+           get_meetings_duration_analytics
     """
-    def get_monthly_rooms_events(self, query, month, year):
-        """ Get event stats for all rooms in a specified month
+    def get_events_number_meetings_room_analytics(self, query, start_date, end_date):  # noqa: E501
+        """ Get events in rooms and number of meetings per room
          :params
-            - month, year
+            - query
+            - start_date, end_date(Time range)
         """
-        date = month + ' 1 ' + str(year)
-        startdate = CommonAnalytics.convert_date(self, date)
-        date_after_month = (datetime.strptime(date, '%b %d %Y') + relativedelta(months=1)).isoformat() + 'Z'  # noqa: E501
-
+        start_date, end_date = CommonAnalytics.convert_dates(
+            self, start_date, end_date)
         rooms_available = CommonAnalytics.get_calendar_id_name(
             self, query)
-        room_events_count = []
-        events_in_all_rooms = []
+        result, number_of_meetings = [], []
         for room in rooms_available:
             calendar_events = CommonAnalytics.get_all_events_in_a_room(
-                self, room['calendar_id'], startdate, date_after_month)
+                self, room['calendar_id'], start_date, end_date)
             output = []
             if not calendar_events:
                 output.append({'RoomName': room['name'], 'has_events': False})
-                room_with_no_events = 0
-                room_events_count.append(room_with_no_events)
-
+                number_of_meetings.append(0)
             else:
                 for event in calendar_events:
                     if event.get('attendees'):
-                        event_details = CommonAnalytics.get_event_details(
-                            self, event, room['calendar_id'])
+                        event_details = CommonAnalytics.get_event_details(self, event, room['calendar_id'])  # noqa: E501
                         output.append(event_details)
-                room_events_count.append(len(output))
-            events_in_all_rooms.append(output)
-        return dict(
-            events_in_all_rooms=events_in_all_rooms,
-            room_events_count=room_events_count
-        )
+                number_of_meetings.append(len(output))
+            result.append(output)
+        return (result, number_of_meetings)
 
-    def get_least_used_rooms(self, rooms_available, time_start, time_end):
-
-        res = []
-        number_of_least_events = float('inf')
-        for room in rooms_available:
-            calendar_events = CommonAnalytics.get_all_events_in_a_room(
-                self, room['calendar_id'], time_start, time_end)
-            output = []
-            if not calendar_events:
-                output.append({'RoomName': room['name'], 'has_events': False})
-                number_of_least_events = 0
-            for event in calendar_events:
-                if event.get('attendees'):
-                    event_details = CommonAnalytics.get_event_details(self, event, room['calendar_id'])  # noqa: E501
-                    output.append(event_details)
-            if len(output) < number_of_least_events:
-                number_of_least_events = len(output)
-            res.append(output)
+    def get_least_used_rooms_analytics(self, query, start_date, end_date):  # noqa: E501
+        """ Get analytics for least used rooms
+         :params
+            - query
+            - start_date, end_date(Time range)
+        """
+        events_in_rooms, number_of_meetings = RoomAnalytics.get_events_number_meetings_room_analytics(  # noqa: E501
+            self, query, start_date, end_date)
         analytics = CommonAnalytics.get_room_statistics(
-            self, number_of_least_events, res)
+            self, min(number_of_meetings), events_in_rooms)
         return analytics
 
-    def get_least_used_room_day(self, query, day):
-        """ Get event stats for all rooms in a specified day
-            :params
-                - day
-        """
-        day_start, day_end = CommonAnalytics.get_start_end_day_dates(self, day)
-        rooms_available = CommonAnalytics.get_calendar_id_name(
-            self, query)
-        return RoomAnalytics.get_least_used_rooms(self, rooms_available, day_start, day_end)  # noqa: E501
-
-    def get_least_used_room_week(self, query, week_start, week_end):  # noqa: E501
-        """ Get analytics for least used room per week
+    def get_most_used_rooms_analytics(self, query, start_date, end_date):  # noqa: E501
+        """ Get analytics for most used room
          :params
-            - calendar_id
-            - week_start, week_end(Time range)
+            - query
+            - start_date, end_date(Time range)
         """
-        week_start = CommonAnalytics.convert_date(self, week_start)
-        week_end = CommonAnalytics.convert_date(self, week_end)
-
-        rooms_available = CommonAnalytics.get_calendar_id_name(
-            self, query)
-        return RoomAnalytics.get_least_used_rooms(self, rooms_available, week_start, week_end)  # noqa: E501
-
-    def get_most_used_room_per_month(self, query, month, year):
-        """ Get analytics for the MOST used room(s) per morth in a location
-         :params
-            - month, year
-        """
-        get_monthly_events = RoomAnalytics.get_monthly_rooms_events(
-            self, query, month, year)
-        rooms_with_max_events = max(get_monthly_events['room_events_count'])
-        res = get_monthly_events['events_in_all_rooms']
-
+        events_in_rooms, number_of_meetings = RoomAnalytics.get_events_number_meetings_room_analytics(  # noqa: E501
+            self, query, start_date, end_date)
         analytics = CommonAnalytics.get_room_statistics(
-            self, rooms_with_max_events, res)
+            self, max(number_of_meetings), events_in_rooms)
         return analytics
 
-    def get_least_used_room_per_month(self, query, month, year):
-        """ Get analytics for the LEAST used room(s) per morth in a location
+    def get_meetings_per_room_analytics(self, query, start_date, end_date):
+        """ Get analytics for meetings per room
          :params
-            - month, year
+            - query
+            - start_date, end_date(Time range)
         """
-        get_monthly_events = RoomAnalytics.get_monthly_rooms_events(
-            self, query, month, year)
-        rooms_with_min_events = min(get_monthly_events['room_events_count'])
-        res = get_monthly_events['events_in_all_rooms']
-
-        analytics = CommonAnalytics.get_room_statistics(
-            self, rooms_with_min_events, res)
-        return analytics
-
-    def get_meetings_per_room(self, query, timeMin, timeMax):
-        day_start = CommonAnalytics.convert_date(self, timeMin)
-        day_end = CommonAnalytics.convert_date(self, timeMax)
+        start_date, end_date = CommonAnalytics.convert_dates(
+            self, start_date, end_date)
         rooms_available = CommonAnalytics.get_calendar_id_name(
             self, query)
         res = []
         for room in rooms_available:
             calendar_events = CommonAnalytics.get_all_events_in_a_room(
-                self, room['calendar_id'], day_start, day_end)
+                self, room['calendar_id'], start_date, end_date)
             room_details = RoomStatistics(room_name=room["name"], count=len(calendar_events))  # noqa: E501
             res.append(room_details)
         return res
 
-    def meetings_duration_statistics(self, query, start_date, end_date):  # noqa: E501
+    def get_meetings_duration_analytics(self, query, start_date, end_date):  # noqa: E501
+        """ Get analytics for meetings durations in rooms
+         :params
+            - query
+            - start_date, end_date(Time range)
         """
-        Get meeting durations statistics
-        """
+        start_date, end_date = CommonAnalytics.convert_dates(self, start_date, end_date)  # noqa: E501
         rooms = CommonAnalytics.get_calendar_id_name(
             self, query)
         result = []
@@ -166,61 +119,3 @@ class RoomAnalytics(Credentials):
             )
             result.append(output)
         return result
-
-    def get_most_used_room_week(self, query, week_start, week_end):  # noqa: E501
-        """ Get analytics for most used room per week
-         :params
-            - calendar_id
-            - week_start, week_end(Time range)
-        """
-        week_start = CommonAnalytics.convert_date(self, week_start)
-        week_end = CommonAnalytics.convert_date(self, week_end)
-        rooms_available = CommonAnalytics.get_calendar_id_name(
-            self, query)
-        res = []
-        number_of_most_events = 0
-        for room in rooms_available:
-            calendar_events = CommonAnalytics.get_all_events_in_a_room(
-                self, room['calendar_id'], week_start, week_end)
-            output = []
-            if not calendar_events:
-                output.append({'RoomName': room['name'], 'has_events': False})
-                number_of_most_events = 0
-            else:
-                for event in calendar_events:
-                    event_details = CommonAnalytics.get_event_details(
-                        self, event, room['calendar_id'])
-                    output.append(event_details)
-                if len(output) > number_of_most_events:
-                    number_of_most_events = len(output)
-            res.append(output)
-        analytics = CommonAnalytics.get_room_statistics(
-            self, number_of_most_events, res)
-        return analytics
-
-    def get_daily_meetings_details(self, query, day):  # noqa: E501
-        """
-        Get daily meetings durations details
-        """
-        start_date, day_after = CommonAnalytics.get_start_end_day_dates(self, day)  # noqa
-        daily_analytics = RoomAnalytics.meetings_duration_statistics(self, query, start_date, day_after)  # noqa: E501
-        return daily_analytics
-
-    def get_meeting_duration_of_room_per_month(self, query, month, year):  # noqa
-        """ Get analytics for thetotal meeting duration of room(s) per
-        morth in a location
-         :params
-            - month, year
-        """
-        start_date, day_after = CommonAnalytics.get_start_end_month_dates(self, month, year)  # noqa
-        monthly_analytics = RoomAnalytics.meetings_duration_statistics(self, query, start_date, day_after)  # noqa: E501
-        return monthly_analytics
-
-    def get_weekly_meetings_details(self, query, week_start, week_end):  # noqa: E501
-        """
-        Get weekly meeting durations details
-        """
-        week_start = CommonAnalytics.convert_date(self, week_start)
-        week_end, day_after = CommonAnalytics.get_start_end_day_dates(self, week_end)  # noqa: E501
-        weekly_analytics = RoomAnalytics.meetings_duration_statistics(self, query, week_start, day_after)  # noqa: E501
-        return weekly_analytics

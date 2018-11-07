@@ -3,7 +3,6 @@ from graphene_sqlalchemy import (SQLAlchemyObjectType)
 from graphql import GraphQLError
 from api.room.models import Room as RoomModel
 from api.office.models import Office
-from helpers.calendar.analytics import RoomStatistics  # noqa: E501
 from utilities.utility import validate_empty_fields, update_entity_fields
 from helpers.auth.authentication import Auth
 from helpers.auth.admin_roles import admin_roles
@@ -18,11 +17,6 @@ from helpers.pagination.paginate import Paginate, validate_page
 class Room(SQLAlchemyObjectType):
     class Meta:
         model = RoomModel
-
-
-class Analytics(graphene.ObjectType):
-    analytics = graphene.List(RoomStatistics)
-    MeetingsDurationaAnalytics = graphene.List(RoomStatistics)
 
 
 class Calendar(graphene.ObjectType):

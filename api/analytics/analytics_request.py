@@ -14,14 +14,15 @@ class AnalyticsRequest():
            get_analytic_report
            get_analytic_report_pdf_file
     """
-
-    def validate_date(self, start_date, end_date):
+    def validate_date(self, request_data):
         '''
         Validate date params
         '''
+        if 'end_date' not in request_data:
+            request_data['end_date'] = None
         try:
-            start_date = CommonAnalytics.convert_date(self, start_date)
-            end_date = CommonAnalytics.convert_date(self, end_date)
+            start_date, end_date = CommonAnalytics.convert_dates(
+                self, request_data['start_date'], request_data['end_date'])  # noqa: E501
             return (start_date, end_date)
         except ValueError as err:
             raise JsonError(error=str(err), example='Sep 15 2018')
@@ -31,12 +32,12 @@ class AnalyticsRequest():
         Validate analytics report requests
         '''
         request_data = request.get_json()
-        if not all(param in request_data for param in ('start_date', 'end_date')):  # noqa: E501
+        if 'start_date' not in request_data:  # noqa: E501
             return jsonify(
-                {"Error": "Request must have start_date and end_date"}
+                {"Error": "Request must have a start_date"}
             ), 400
         start_date, end_date = AnalyticsRequest.validate_date(
-            self, request_data['start_date'], request_data['end_date'])
+            self, request_data)
         try:
             file_type = request_data['file_type'].upper()
         except (KeyError, AttributeError):
