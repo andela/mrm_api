@@ -28,6 +28,9 @@ class EventCheckin(graphene.Mutation):
     class Arguments:
         calendar_id = graphene.String(required=True)
         event_id = graphene.String(required=True)
+        event_title = graphene.String(required=True)
+        start_time = graphene.String(required=True)
+        end_time = graphene.String(required=True)
     event = graphene.Field(Events)
 
     def mutate(self, info, **kwargs):
@@ -35,6 +38,9 @@ class EventCheckin(graphene.Mutation):
         new_event = EventsModel(
             event_id=kwargs['event_id'],
             room_id=room_id,
+            event_title=kwargs['event_title'],
+            start_time=kwargs['start_time'],
+            end_time=kwargs['end_time'],
             checked_in=True,
             cancelled=False)
         new_event.save()
@@ -46,6 +52,9 @@ class CancelEvent(graphene.Mutation):
     class Arguments:
         calendar_id = graphene.String(required=True)
         event_id = graphene.String(required=True)
+        event_title = graphene.String(required=True)
+        start_time = graphene.String(required=True)
+        end_time = graphene.String(required=True)
     event = graphene.Field(Events)
 
     def mutate(self, info, **kwargs):
@@ -53,6 +62,9 @@ class CancelEvent(graphene.Mutation):
         cancelled_event = EventsModel(
             event_id=kwargs['event_id'],
             room_id=room_id,
+            event_title=kwargs['event_title'],
+            start_time=kwargs['start_time'],
+            end_time=kwargs['end_time'],
             checked_in=False,
             cancelled=True)
         cancelled_event.save()
