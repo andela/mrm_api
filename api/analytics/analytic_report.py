@@ -70,7 +70,6 @@ class AnalyticsReport():
         '''
         Get analytics for the 10 least used rooms
         '''
-        # import pdb; pdb.set_trace()
         sorted_all_rooms_summary_df = all_rooms_summary_df.sort_values(
             'Meetings')
         try:

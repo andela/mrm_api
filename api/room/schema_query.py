@@ -7,12 +7,16 @@ from api.room.schema import (PaginatedRooms, Calendar, Room)
 from helpers.calendar.events import RoomSchedules
 from helpers.calendar.analytics import RoomStatistics  # noqa: E501
 from api.room.models import Room as RoomModel
-from api.room.schema import CheckinsToBookingsRatio
+from api.room.schema import RatioOfCheckinsAndCancellations
 
 
 class Analytics(graphene.ObjectType):
     analytics = graphene.List(RoomStatistics)
     MeetingsDurationaAnalytics = graphene.List(RoomStatistics)
+
+
+class RatiosPerRoom(graphene.ObjectType):
+    ratios = graphene.List(RatioOfCheckinsAndCancellations)
 
 
 class Query(graphene.ObjectType):
@@ -70,7 +74,13 @@ class Query(graphene.ObjectType):
     )
 
     analytics_ratios = graphene.Field(
-        CheckinsToBookingsRatio,
+        RatioOfCheckinsAndCancellations,
+        start_date=graphene.String(required=True),
+        end_date=graphene.String(),
+    )
+
+    analytics_ratios_per_room = graphene.Field(
+        RatiosPerRoom,
         start_date=graphene.String(required=True),
         end_date=graphene.String(),
     )
@@ -167,3 +177,10 @@ class Query(graphene.ObjectType):
         ratio = RoomAnalyticsRatios.get_analytics_ratios(
             self, query, start_date, end_date)
         return ratio
+
+    @Auth.user_roles('Admin')
+    def resolve_analytics_ratios_per_room(self, info, start_date, end_date=None):  # noqa: E501
+        query = Room.get_query(info)
+        ratio = RoomAnalyticsRatios.get_analytics_ratios_per_room(
+            self, query, start_date, end_date)
+        return RatiosPerRoom(ratio)
