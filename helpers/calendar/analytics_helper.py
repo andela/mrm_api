@@ -8,6 +8,8 @@ from api.location.models import Location as LocationModel
 from helpers.room_filter.room_filter import room_join_location
 from helpers.auth.admin_roles import admin_roles
 from .credentials import Credentials
+from flask import request
+from flask_json import JsonError
 
 
 class EventsDuration(graphene.ObjectType):
@@ -56,7 +58,10 @@ class CommonAnalytics(Credentials):
         rooms_in_locations = exact_query.filter(
             LocationModel.id == location_id)
         if not rooms_in_locations.all():
-            raise GraphQLError("No rooms in this location")
+            if 'analytics' in request.url:
+                raise JsonError(Message='No rooms in this location')
+            else:
+                raise GraphQLError("No rooms in this location")
         result = [{'name': room.name, 'calendar_id': room.calendar_id}
                   for room in rooms_in_locations.all()]
         return result
