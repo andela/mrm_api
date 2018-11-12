@@ -1,4 +1,5 @@
 import graphene
+from graphql import GraphQLError
 
 from graphene_sqlalchemy import (SQLAlchemyObjectType)
 
@@ -19,6 +20,11 @@ class CreateUserRole(graphene.Mutation):
     user_role = graphene.Field(UsersRole)
 
     def mutate(self, info, **kwargs):
+        user_role = UserRoleModel.query.filter_by(user_id=kwargs['user_id'],
+                                                  role_id=kwargs['role_id']).\
+                                                  all()
+        if user_role:
+            raise GraphQLError("You cannot create user role twice")
         user_role = UserRoleModel(**kwargs)
         user_role.save()
 
