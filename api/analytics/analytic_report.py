@@ -27,11 +27,15 @@ class AnalyticsReport():
                 self, room['calendar_id'], start_date, end_date)
             if not calendar_events:
                 all_rooms_data_df.append({
-                    'RoomName': room['name'],
-                    'minutes': None, 'summary': None, 'attendees': 0})
+                    'roomName': room['name'],
+                    'minutes': 0,
+                    'summary': None,
+                    'attendees': 0
+                })
             for event in calendar_events:
                 if event.get('attendees'):
-                    event_details = CommonAnalytics.get_event_details(self, event, room['calendar_id'])  # noqa: E501
+                    event_details = CommonAnalytics.get_event_details(
+                        self, event, room['calendar_id'])
                     event_details['attendees'] = len(event.get('attendees'))
                     all_rooms_data_df.append(event_details)
         return pd.DataFrame(all_rooms_data_df)
@@ -40,14 +44,26 @@ class AnalyticsReport():
         '''
         Get a summarry data for all rooms in a dataframe
         '''
-        rooms_available = CommonAnalytics.get_calendar_id_name(
-            self, query)
+        rooms_available = CommonAnalytics.get_calendar_id_name(self, query)
         all_rooms_data_df = AnalyticsReport.get_dataframe(
             self, rooms_available, start_date, end_date)
-        rooms_summary_df = all_rooms_data_df['roomName'].value_counts().rename_axis(  # noqa: E501
-            'Room').reset_index(name='Meetings')
+
+        rooms_no_meetings_df = all_rooms_data_df.loc[
+            lambda all_rooms_data_df: all_rooms_data_df['minutes'] == 0].rename(
+                columns={
+                    'roomName': 'Room'
+                }).assign(Meetings=0)
+
+        rooms_no_meetings_df = rooms_no_meetings_df[['Room', 'Meetings']]
+
+        rooms_with_meeting_df = all_rooms_data_df[
+            all_rooms_data_df['minutes'] != 0]['roomName'].value_counts(
+            ).rename_axis('Room').reset_index(name='Meetings')
+        rooms_summary_df = pd.concat(
+            [rooms_no_meetings_df, rooms_with_meeting_df])
         rooms_summary_df['% Share of All Meetings'] = round(
-            rooms_summary_df['Meetings'] / rooms_summary_df['Meetings'].sum() * 100)  # noqa: E501
+            rooms_summary_df['Meetings'] / rooms_summary_df['Meetings'].sum() *
+            100)
         return rooms_summary_df
 
     def get_least_used_rooms(self, all_rooms_summary_df):
