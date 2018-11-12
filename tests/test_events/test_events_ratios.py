@@ -4,7 +4,9 @@ from tests.base import BaseTestCase, CommonTestCases
 from fixtures.events.events_ratios_fixtures import (
     event_ratio_query,
     event_ratio_response,
-    event_ratio_for_one_day_query
+    event_ratio_for_one_day_query,
+    event_ratio_per_room_query,
+    event_ratio_per_room_response,
 )
 
 sys.path.append(os.getcwd())
@@ -32,4 +34,15 @@ class TestEventRatios(BaseTestCase):
             self,
             event_ratio_for_one_day_query,
             event_ratio_response
+        )
+
+    def test_event_checkin_and_cancellation_ratio_per_room(self):
+        """
+        Test that an admin is able to get the ratio of checkins to bookings
+        for each individual room
+        """
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            event_ratio_per_room_query,
+            event_ratio_per_room_response
         )

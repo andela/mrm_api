@@ -19,9 +19,13 @@ class Room(SQLAlchemyObjectType):
         model = RoomModel
 
 
-class CheckinsToBookingsRatio(graphene.ObjectType):
-    Checkins = graphene.Int()
-    Bookings = graphene.Int()
+class RatioOfCheckinsAndCancellations(graphene.ObjectType):
+    room_name = graphene.String()
+    checkins = graphene.Int()
+    cancellations = graphene.Int()
+    bookings = graphene.Int()
+    checkins_percentage = graphene.Float()
+    cancellations_percentage = graphene.Float()
 
 
 class Calendar(graphene.ObjectType):
