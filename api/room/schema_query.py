@@ -71,12 +71,6 @@ class Query(graphene.ObjectType):
 
     analytics_ratios = graphene.Field(
         CheckinsToBookingsRatio,
-        start_date=graphene.String(),
-        end_date=graphene.String(),
-    )
-
-    analytics_ratios = graphene.Field(
-        CheckinsToBookingsRatio,
         start_date=graphene.String(required=True),
         end_date=graphene.String(),
     )
