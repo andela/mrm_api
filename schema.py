@@ -14,6 +14,7 @@ import api.wing.schema
 import api.events.schema
 import utilities.calendar_ids_cleanup
 import api.notification.schema
+import api.feedback.schema
 
 
 class Query(
@@ -44,7 +45,8 @@ class Mutation(
     api.location.schema.Mutation,
     api.office.schema.Mutation,
     api.events.schema.Mutation,
-    api.notification.schema.Mutation
+    api.notification.schema.Mutation,
+    api.feedback.schema.Mutation
 ):
     pass
 
