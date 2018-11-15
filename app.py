@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 
 from flask_graphql import GraphQLView
 from flask_cors import CORS
@@ -22,6 +22,10 @@ def create_app(config_name):
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
     mail.init_app(app)
+
+    @app.route("/", methods=['GET'])
+    def index():
+        return render_template('index.html')
 
     app.add_url_rule(
         '/mrm',
