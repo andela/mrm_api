@@ -58,6 +58,9 @@ user_query_response = {
                     "email": "peter.walugembe@andela.com",
                 },
                 {
+                    "email": "peter.adeoye@andela.com"
+                },
+                {
                     "email": "mrm@andela.com",
                 },
             ]
@@ -86,7 +89,7 @@ paginated_users_response = {
             }],
             "hasNext": True,
             "hasPrevious": False,
-            "pages": 2
+            "pages": 3
         }
     }
 }

@@ -53,6 +53,22 @@ expected_query_all_locations = {
                     "blocks": []
                 }
             ]
+        },
+        {
+            "name": "Lagos",
+            "abbreviation": "LOS",
+            "offices": [
+                {
+                    "name": "Epic tower",
+                    "blocks": [{
+                        "name": "Epic tower",
+                        "floors": [{
+                            "name": "2nd",
+                            "rooms": []
+                        }]
+                    }]
+                }
+            ]
         }]
     }
 }
