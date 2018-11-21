@@ -24,11 +24,11 @@ class CreateBlock(graphene.Mutation):
     @Auth.user_roles('Admin')
     def mutate(self, info, **kwargs):
         validate_empty_fields(**kwargs)
-        block_name = BlockModel.query.filter_by(name=kwargs['name']).all()
-        if len(block_name) > 0:
+        block_name = BlockModel.query.filter_by(name=kwargs['name'].title()).all() # noqa
+        if block_name:
             raise GraphQLError("Block aleady exists")
         get_office = Office.query.filter_by(id=kwargs['office_id']).first()
-        if get_office is None:
+        if not get_office:
             raise GraphQLError("Office not found")
         location = get_office.location.name
         if location.lower() == 'nairobi':

@@ -11,11 +11,11 @@ get_blocks_query_response = {
         "allBlocks": [
             {
                 "id": "1",
-                "name": "EC"
+                "name": "Ec"
             },
             {
                 "id": "2",
-                "name": "Epic tower"
+                "name": "Epic Tower"
             }
         ]
     }

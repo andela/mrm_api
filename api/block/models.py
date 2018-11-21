@@ -1,5 +1,5 @@
 from sqlalchemy import (Column, String, Integer, ForeignKey)
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, validates
 
 from helpers.database import Base
 from utilities.utility import Utility
@@ -13,3 +13,7 @@ class Block(Base, Utility):
     office_id = Column(Integer, ForeignKey('offices.id'))
     offices = relationship('Office')
     floors = relationship('Floor', cascade="all, delete-orphan")
+
+    @validates('name')
+    def convert_upper(self, key, value):
+        return value.title()

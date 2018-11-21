@@ -12,14 +12,14 @@ create_block_query = '''
 '''
 
 create_block_response = {
-    "data": {
-        "createBlock": {
-            "block": {
-                "officeId": 2,
-                "name": "blask"
-            }
-        }
+  "data": {
+    "createBlock": {
+      "block": {
+        "officeId": 2,
+        "name": "Blask"
+      }
     }
+  }
 }
 
 block_mutation_query_without_name = '''
@@ -35,7 +35,7 @@ block_mutation_query_without_name = '''
 
 block_creation_with_duplicate_name = '''
 mutation{
-  createBlock(officeId:1 name:"EC" ) {
+  createBlock(officeId:1 name:"Ec" ) {
     block{
       officeId
         name
@@ -45,23 +45,23 @@ mutation{
 '''
 
 block_creation_with_duplicate_name_response = {
-    "errors": [
+  "errors": [
+    {
+      "message": "Block aleady exists",
+      "locations": [
         {
-            "message": "Block aleady exists",
-            "locations": [
-                {
-                    "line": 3,
-                    "column": 3
-                }
-            ],
-            "path": [
-                "createBlock"
-            ]
+          "line": 3,
+          "column": 3
         }
-    ],
-    "data": {
-        "createBlock": null
+      ],
+      "path": [
+        "createBlock"
+      ]
     }
+  ],
+  "data": {
+    "createBlock": null
+  }
 }
 
 create_block_with_non_existing_office = '''
@@ -133,7 +133,7 @@ delete_block_response = {
     "data": {
         "DeleteBlock": {
             "block": {
-                "name": "EC",
+                "name": "Ec",
                 "id": "1"
             }
         }
