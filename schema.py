@@ -48,7 +48,8 @@ class Mutation(
     api.notification.schema.Mutation,
     api.feedback.schema.Mutation,
     api.block.schema.Mutation,
-    api.wing.schema.Mutation
+    api.wing.schema.Mutation,
+    api.floor.schema.Mutation,
 ):
     pass
 

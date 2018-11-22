@@ -1,5 +1,5 @@
 from sqlalchemy import (Column, String, Integer, ForeignKey)
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, validates
 
 from helpers.database import Base
 from utilities.utility import Utility
@@ -14,3 +14,7 @@ class Floor(Base, Utility):
     block = relationship('Block')
     rooms = relationship('Room', cascade="all, delete-orphan")
     wings = relationship('Wing', cascade="all, delete-orphan")
+
+    @validates('name')
+    def convert_capitalize(self, key, value):
+        return value.capitalize()

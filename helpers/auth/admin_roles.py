@@ -7,7 +7,7 @@ from api.block.models import Block
 from api.floor.models import Floor as FloorModel
 from api.room_resource.models import Resource as ResourceModel
 from helpers.auth.user_details import get_user_from_db
-from helpers.room_filter.room_filter import location_join_resources, location_join_room, location_join_block  # noqa: E501
+from helpers.room_filter.room_filter import location_join_resources, location_join_room, location_join_block, location_join_floor  # noqa: E501
 
 
 class Admin_roles():
@@ -25,6 +25,20 @@ class Admin_roles():
         room_location = location_query.filter(RoomModel.id == room_id).first()  # noqa: E501
         if admin_details.location != room_location.name:
             raise GraphQLError("You are not authorized to make changes in " + room_location.name)  # noqa: E501
+
+    def create_floor(self, block_id):
+        admin_details = get_user_from_db()
+        location_query = location_join_block()
+        block_location = location_query.filter_by(id=block_id).first()
+        if admin_details.location != block_location.name:
+            raise GraphQLError("You are not authorized to make changes in " + block_location.name)  # noqa: E501
+
+    def update_delete_floor(self, floor_id):
+        admin_details = get_user_from_db()
+        location_query = location_join_floor()
+        floor_location = location_query.filter_by(id=floor_id).first()
+        if admin_details.location != floor_location.name:
+            raise GraphQLError("You are not authorized to make changes in " + floor_location.name)  # noqa: E501
 
     def create_office(self, location_id):
         admin_details = get_user_from_db()

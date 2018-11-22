@@ -70,6 +70,11 @@ def location_join_block():
     return location_query
 
 
+def location_join_floor():
+    location_query = Location.query.join(Office).join(Block).join(Floor)
+    return location_query
+
+
 def location_join_resources():
     location_query = Location.query.join(Office).join(Block).join(Floor).join(Room).join(Resource)  # noqa: E501
     return location_query
