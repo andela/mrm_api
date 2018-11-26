@@ -12,14 +12,14 @@ create_block_query = '''
 '''
 
 create_block_response = {
-  "data": {
-    "createBlock": {
-      "block": {
-        "officeId": 2,
-        "name": "blask"
-      }
+    "data": {
+        "createBlock": {
+            "block": {
+                "officeId": 2,
+                "name": "blask"
+            }
+        }
     }
-  }
 }
 
 block_mutation_query_without_name = '''
@@ -45,23 +45,23 @@ mutation{
 '''
 
 block_creation_with_duplicate_name_response = {
-  "errors": [
-    {
-      "message": "Block aleady exists",
-      "locations": [
+    "errors": [
         {
-          "line": 3,
-          "column": 3
+            "message": "Block aleady exists",
+            "locations": [
+                {
+                    "line": 3,
+                    "column": 3
+                }
+            ],
+            "path": [
+                "createBlock"
+            ]
         }
-      ],
-      "path": [
-        "createBlock"
-      ]
+    ],
+    "data": {
+        "createBlock": null
     }
-  ],
-  "data": {
-    "createBlock": null
-  }
 }
 
 create_block_with_non_existing_office = '''
@@ -76,21 +76,130 @@ mutation{
 '''
 
 create_block_with_non_existing_office_response = {
-  "errors": [
-    {
-      "message": "Office not found",
-      "locations": [
+    "errors": [
         {
-          "line": 3,
-          "column": 3
+            "message": "Office not found",
+            "locations": [
+                {
+                    "line": 3,
+                    "column": 3
+                }
+            ],
+            "path": [
+                "createBlock"
+            ]
         }
-      ],
-      "path": [
-        "createBlock"
-      ]
+    ],
+    "data": {
+        "createBlock": null
     }
-  ],
-  "data": {
-    "createBlock": null
+}
+
+update_block = '''
+mutation{
+  updateBlock(name: "Block A", blockId: 1){
+    block{
+      name
+      id
+    }
   }
+}
+'''
+
+
+update_block_response = {
+    "data": {
+        "updateBlock": {
+            "block": {
+                "name": "Block A",
+                "id": "1"
+            }
+        }
+    }
+}
+
+delete_block = '''
+mutation{
+  DeleteBlock(blockId:1){
+    block{
+      name
+      id
+    }
+  }
+}
+'''
+
+delete_block_response = {
+    "data": {
+        "DeleteBlock": {
+            "block": {
+                "name": "EC",
+                "id": "1"
+            }
+        }
+    }
+}
+
+delete_non_existent_block = '''
+mutation{
+  DeleteBlock(blockId:431){
+    block{
+      name
+      id
+    }
+  }
+}
+'''
+
+delete_non_existent_block_response = {
+    "errors": [
+        {
+            "message": "Block not found",
+            "locations": [
+                {
+                    "line": 3,
+                    "column": 3
+                }
+            ],
+            "path": [
+                "DeleteBlock"
+            ]
+        }
+    ],
+    "data": {
+        "DeleteBlock": null
+    }
+}
+
+
+update_non_existent_block = '''
+mutation{
+  updateBlock(name: "Block A", blockId: 423){
+    block{
+      name
+      id
+    }
+  }
+}
+
+'''
+
+update_non_existent_block_response = {
+    "errors": [
+        {
+            "message": "Block not found",
+            "locations": [
+                {
+                    "line": 3,
+                    "column": 3
+                }
+            ],
+            "path": [
+                "updateBlock"
+            ]
+        }
+    ],
+    "data": {
+        "updateBlock": null
+    }
 }

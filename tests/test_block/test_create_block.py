@@ -7,7 +7,15 @@ from fixtures.block.create_block_fixtures import (
     block_mutation_query_without_name,
     create_block_with_non_existing_office,
     block_creation_with_duplicate_name,
-    block_creation_with_duplicate_name_response
+    block_creation_with_duplicate_name_response,
+    update_block,
+    update_block_response,
+    update_non_existent_block,
+    update_non_existent_block_response,
+    delete_block,
+    delete_block_response,
+    delete_non_existent_block,
+    delete_non_existent_block_response
 )
 
 
@@ -55,4 +63,44 @@ class TestCreateBlock(BaseTestCase):
             self,
             block_creation_with_duplicate_name,
             block_creation_with_duplicate_name_response
+        )
+
+    def test_update_block(self):
+        """
+        Test block creation with an already existing room name
+        """
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            update_block,
+            update_block_response
+        )
+
+    def test_update_non_existent_block(self):
+        """
+        Test block creation with an already existing room name
+        """
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            update_non_existent_block,
+            update_non_existent_block_response
+        )
+
+    def test_delete_block(self):
+        """
+        Test block creation with an already existing room name
+        """
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            delete_block,
+            delete_block_response
+        )
+
+    def test_delete_non_existent_block(self):
+        """
+        Test block creation with an already existing room name
+        """
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            delete_non_existent_block,
+            delete_non_existent_block_response
         )

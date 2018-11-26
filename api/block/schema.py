@@ -5,7 +5,8 @@ from api.block.models import Block as BlockModel
 from api.room.schema import Room
 from api.office.models import Office
 from helpers.room_filter.room_filter import room_join_location
-from utilities.utility import validate_empty_fields
+from helpers.auth.admin_roles import admin_roles
+from utilities.utility import validate_empty_fields, update_entity_fields
 from helpers.auth.authentication import Auth
 
 
@@ -38,6 +39,46 @@ class CreateBlock(graphene.Mutation):
         return CreateBlock(block=block)
 
 
+class UpdateBlock(graphene.Mutation):
+    class Arguments:
+        name = graphene.String(required=True)
+        block_id = graphene.Int(required=True)
+
+    block = graphene.Field(Block)
+
+    @Auth.user_roles("Admin")
+    def mutate(self, info, block_id, **kwargs):
+        validate_empty_fields(**kwargs)
+        query = Block.get_query(info)
+        exact_block = query.filter(BlockModel.id == block_id).first()
+        if not exact_block:
+            raise GraphQLError("Block not found")
+
+        admin_roles.update_delete_block(block_id)
+
+        update_entity_fields(exact_block, **kwargs)
+        exact_block.save()
+        return UpdateBlock(block=exact_block)
+
+
+class DeleteBlock(graphene.Mutation):
+    class Arguments:
+        block_id = graphene.Int(required=True)
+
+    block = graphene.Field(Block)
+
+    @Auth.user_roles("Admin")
+    def mutate(self, info, block_id, **kwargs):
+        query = Block.get_query(info)
+        exact_block = query.filter(BlockModel.id == block_id).first()
+        if not exact_block:
+            raise GraphQLError("Block not found")
+
+        admin_roles.update_delete_block(block_id)
+        exact_block.delete()
+        return DeleteBlock(block=exact_block)
+
+
 class Query(graphene.ObjectType):
     all_blocks = graphene.List(Block)
     get_rooms_in_a_block = graphene.List(
@@ -58,3 +99,5 @@ class Query(graphene.ObjectType):
 
 class Mutation(graphene.ObjectType):
     create_block = CreateBlock.Field()
+    update_block = UpdateBlock.Field()
+    Delete_block = DeleteBlock.Field()
