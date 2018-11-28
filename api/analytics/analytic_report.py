@@ -146,6 +146,24 @@ class AnalyticsReport():
         return report_jpeg
 
     def get_analytics_pdf_reports(self, query, start_date, end_date):
+        rendered = AnalyticsReport.write_analytics_to_html(
+            self, query, start_date, end_date)
+
+        pdf_file = pdfkit.from_string(rendered, False)
+        response = make_response(pdf_file)
+        response.headers['Content-Type'] = 'application/pdf'
+        response.headers['Content-Disposition'] = 'attachment; filename=analytics_report.pdf'  # noqa
+
+        return response
+
+    def get_analytics_html_reports(self, query, start_date, end_date):
+        rendered = AnalyticsReport.write_analytics_to_html(
+            self, query, start_date, end_date)
+        html_string = "{}".format("".join(rendered.splitlines()))
+
+        return jsonify(data=html_string)
+
+    def write_analytics_to_html(self, query, start_date, end_date):
         report_data_frame = AnalyticsReport.generate_combined_analytics_report(
             self, query, start_date, end_date)
         WriteFile.write_to_html_file(
@@ -156,9 +174,4 @@ class AnalyticsReport():
             )
         rendered = render_template('analytics_report.html')
 
-        pdf_file = pdfkit.from_string(rendered, False)
-        response = make_response(pdf_file)
-        response.headers['Content-Type'] = 'application/pdf'
-        response.headers['Content-Disposition'] = 'attachment; filename=analytics_report.pdf'  # noqa
-
-        return response
+        return rendered

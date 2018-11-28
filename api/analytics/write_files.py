@@ -91,12 +91,12 @@ class WriteFile():
         Write an entire dataframe to an HTML file with nice formatting.
         '''
         today = str(datetime.datetime.now())
-        result = '''
+        result = """
         <html>
         <head>
         <style>
             body {
-                font: 12pt Georgia, "Times New Roman", Times, serif;
+                font: 12pt Georgia, 'Times New Roman', Times, serif;
                 line-height: 1.5;
             }
             h1 {
@@ -158,10 +158,10 @@ class WriteFile():
         </style>
         </head>
         <body>
-            '''
-        result += '<h2> %s </h2>\n' % title + "<h3><P>Date generated:"+" " + today + "</p></h3><hr>"   # noqa
-        result += "\n\n<br><h2>Most Booked Rooms</h2>" + most_used_dataframe.to_html(index=False) + "<br><br><hr>"  # noqa
-        result += "\n\n<br><h2>Least Booked Rooms</h2>" + least_used_dataframe.to_html(index=False) + "<br><br><hr>"  # noqa
+            """
+        result += '<h2> %s </h2>\n' % title + '<h3><P>Date generated:'+' ' + today + '</p></h3><hr>'   # noqa
+        result += '\n\n<br><h2>Most Booked Rooms</h2>' + most_used_dataframe.to_html(index=False) + '<br><br><hr>'  # noqa
+        result += '\n\n<br><h2>Least Booked Rooms</h2>' + least_used_dataframe.to_html(index=False) + '<br><br><hr>'  # noqa
         result += '''
     </body>
     </html>
