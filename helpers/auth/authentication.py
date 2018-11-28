@@ -110,6 +110,14 @@ class Authentication:
                         api_url + "users?email=%s" % user.email,
                         headers=headers)
                     response = json.loads(data.content.decode("utf-8"))
+
+                    if 'error' in response:
+                        if 'REST' in expected_args:
+                            raise JsonError(
+                                message=response['error'],
+                                status=401)
+                        raise GraphQLError(response['error'])
+
                     if response['values'][0]['location']:
                         user.location = \
                             response['values'][0]['location']['name']
