@@ -5,7 +5,7 @@ from api.location.models import Location
 from api.room.models import Room as RoomModel
 from api.room_resource.models import Resource as ResourceModel
 from helpers.auth.user_details import get_user_from_db
-from helpers.room_filter.room_filter import location_join_resources, location_join_room  # noqa: E501
+from helpers.room_filter.room_filter import location_join_resources, location_join_room, location_join_block  # noqa: E501
 
 
 class Admin_roles():
@@ -57,6 +57,14 @@ class Admin_roles():
         admin_details = get_user_from_db()
         location = Location.query.filter_by(name=admin_details.location).first()
         return location.id
+
+    def update_delete_block(self, block_id):
+        admin_details = get_user_from_db()
+        location_query = location_join_block()
+        block_location = location_query.filter_by(id=block_id).first()
+        if admin_details.location != block_location.name:
+            raise GraphQLError(
+                "You are not authorized to make changes in " + block_location.name)  # noqa: E501
 
 
 admin_roles = Admin_roles()
