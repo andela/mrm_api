@@ -60,6 +60,9 @@ class AnalyticsRequest():
         elif file_type == 'PDF':
             response = AnalyticsReport.get_analytics_pdf_reports(
                 self, query, start_date, end_date)
+        elif file_type == 'HTML':
+            response = AnalyticsReport.get_analytics_html_reports(
+                self, query, start_date, end_date)
 
         else:
             response = AnalyticsReport.get_json_analytics_report(
