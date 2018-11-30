@@ -8,11 +8,15 @@ from helpers.calendar.events import RoomSchedules
 from helpers.calendar.analytics import RoomStatistics  # noqa: E501
 from api.room.models import Room as RoomModel
 from api.room.schema import RatioOfCheckinsAndCancellations
+from helpers.pagination.paginate import ListPaginate
 
 
 class Analytics(graphene.ObjectType):
     analytics = graphene.List(RoomStatistics)
     MeetingsDurationaAnalytics = graphene.List(RoomStatistics)
+    has_previous = graphene.Boolean()
+    has_next = graphene.Boolean()
+    pages = graphene.Int()
 
 
 class RatiosPerRoom(graphene.ObjectType):
@@ -54,6 +58,8 @@ class Query(graphene.ObjectType):
         Analytics,
         start_date=graphene.String(required=True),
         end_date=graphene.String(),
+        page=graphene.Int(),
+        per_page=graphene.Int(),
     )
 
     analytics_for_least_used_rooms = graphene.Field(
@@ -166,9 +172,16 @@ class Query(graphene.ObjectType):
         )
 
     @Auth.user_roles('Admin')
-    def resolve_analytics_for_meetings_durations(self, info, start_date, end_date=None):  # noqa: E501
+    def resolve_analytics_for_meetings_durations(self, info, start_date, end_date=None, per_page=None, page=None):  # noqa: E501
         query = Room.get_query(info)
         results = RoomAnalytics.get_meetings_duration_analytics(self, query, start_date, end_date)  # noqa: E501
+        if page and per_page:
+            paginated_results = ListPaginate(iterable=results, per_page=per_page, page=page)  # noqa: E501
+            current_page = paginated_results.current_page
+            has_previous = paginated_results.has_previous
+            has_next = paginated_results.has_next
+            pages = paginated_results.pages
+            return Analytics(MeetingsDurationaAnalytics=current_page, has_previous=has_previous, has_next=has_next, pages=pages)  # noqa: E501
         return Analytics(MeetingsDurationaAnalytics=results)
 
     @Auth.user_roles('Admin')
