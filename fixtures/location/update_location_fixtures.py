@@ -24,7 +24,7 @@ expected_query_update_all_fields = {
 
 query_location_id_non_existant = '''mutation{
   updateLocation(
-    locationId: 3,
+    locationId: 7,
     timeZone: "EAST_AFRICA_TIME",
     name: "Kigali",
     country: "Kenya",

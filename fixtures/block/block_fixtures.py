@@ -12,6 +12,10 @@ get_blocks_query_response = {
             {
                 "id": "1",
                 "name": "EC"
+            },
+            {
+                "id": "2",
+                "name": "Epic tower"
             }
         ]
     }

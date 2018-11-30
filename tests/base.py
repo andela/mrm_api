@@ -7,6 +7,7 @@ from helpers.database import engine, db_session, Base
 from api.location.models import Location
 from api.block.models import Block
 from api.floor.models import Floor
+from api.wing.models import Wing
 from api.room.models import Room
 from api.room_resource.models import Resource
 from api.user.models import User
@@ -14,8 +15,11 @@ from api.role.models import Role
 from api.user_role.models import UsersRole
 from api.devices.models import Devices
 from api.office.models import Office
-from fixtures.token.token_fixture import user_api_token, admin_api_token
-
+from fixtures.token.token_fixture import (
+    user_api_token,
+    admin_api_token,
+    admin_nigeria_token
+)
 import sys
 import os
 import json
@@ -42,22 +46,38 @@ class BaseTestCase(TestCase):
                               location="Kampala", name="Peter Walugembe",
                               picture="https://www.andela.com/walugembe")
             admin_user.save()
+            lagos_admin = User(email="peter.adeoye@andela.com",
+                               location="Lagos", name="Peter Adeoye",
+                               picture="https://www.andela.com/adeoye")
+            lagos_admin.save()
             role = Role(role="Admin")
             role.save()
             user_role = UsersRole(user_id=admin_user.id, role_id=role.id)
             user_role.save()
+            lagos_role = UsersRole(user_id=lagos_admin.id, role_id=role.id)
+            lagos_role.save()
             location = Location(name='Kampala', abbreviation='KLA')
             location.save()
             location_two = Location(name='Nairobi', abbreviation='NBO')
             location_two.save()
+            location_three = Location(name='Lagos', abbreviation='LOS')
+            location_three.save()
             office = Office(name="St. Catherines", location_id=location.id)
             office.save()
             office_two = Office(name="dojo", location_id=location_two.id)
             office_two.save()
             block = Block(name='EC', office_id=office.id)
             block.save()
+            office_three = Office(name="Epic tower", location_id=location_three.id)  # noqa: E501
+            office_three.save()
             floor = Floor(name='3rd', block_id=block.id)
             floor.save()
+            floor_two = Floor(name='2nd', block_id=2)
+            floor_two.save()
+            wing = Wing(name="Naija", floor_id=floor_two.id)
+            wing.save()
+            wing_two = Wing(name="Big Apple", floor_id=floor_two.id)
+            wing_two.save()
             room = Room(name='Entebbe',
                         room_type='meeting',
                         capacity=6,
@@ -111,6 +131,20 @@ class CommonTestCases(BaseTestCase):
         actual_response = json.loads(response.data)
         self.assertEquals(actual_response, expected_response)
 
+    def lagos_admin_token_assert_equal(self, query, expected_response):
+        """
+        Make a request with admin token and use assertEquals
+        to compare the values
+
+        :params
+            - query, expected_response
+        """
+        headers = {"Authorization": "Bearer" + " " + admin_nigeria_token}
+        response = self.app_test.post(
+            '/mrm?query=' + query, headers=headers)
+        actual_response = json.loads(response.data)
+        self.assertEquals(actual_response, expected_response)
+
     def admin_token_assert_in(self, query, expected_response):
         """
         Make a request with admin token and use assertIn
@@ -120,6 +154,18 @@ class CommonTestCases(BaseTestCase):
             - query, expected_response
         """
         headers = {"Authorization": "Bearer" + " " + admin_api_token}
+        response = self.app_test.post('/mrm?query=' + query, headers=headers)
+        self.assertIn(expected_response, str(response.data))
+
+    def lagos_admin_token_assert_in(self, query, expected_response):
+        """
+        Make a request with admin token and use assertIn
+        to compare the values
+
+        :params
+            - query, expected_response
+        """
+        headers = {"Authorization": "Bearer" + " " + admin_nigeria_token}
         response = self.app_test.post('/mrm?query=' + query, headers=headers)
         self.assertIn(expected_response, str(response.data))
 

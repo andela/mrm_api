@@ -131,7 +131,7 @@ office_mutation_query_duplicate_name_responce = {
 
 paginated_offices_query = '''
 query {
-    allOffices(page:1, perPage:2){
+    allOffices(page:1, perPage:3){
         offices{
             name
             id
@@ -153,6 +153,10 @@ offices_query_response = {
                 {
                     "name": "dojo",
                     "id": "2"
+                },
+                {
+                    "name": "Epic tower",
+                    "id": "3"
                 }
             ],
             "hasNext": False,
@@ -183,6 +187,10 @@ all_offices_query_response = {
                 {
                     "name": "dojo",
                     "id": "2"
+                },
+                {
+                    "name": "Epic tower",
+                    "id": "3"
                 }
             ]
         }
@@ -191,7 +199,7 @@ all_offices_query_response = {
 
 paginated_offices_non_existing_page_query = '''
 query {
-    allOffices(page:2, perPage:2){
+    allOffices(page:5, perPage:3){
         offices{
             name
             id

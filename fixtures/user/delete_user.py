@@ -66,7 +66,7 @@ expected_query_after_delete = {
     "data": {
         "deleteUser": {
             "user": {
-                "id": "2",
+                "id": "3",
                 "email": "test.test@andela.com",
                 "roles": [
                     {

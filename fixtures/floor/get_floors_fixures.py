@@ -14,6 +14,11 @@ get_floors_query_response = {
                 "id": "1",
                 "name": "3rd",
                 "blockId": 1
+            },
+            {
+                "id": "2",
+                "name": "2nd",
+                "blockId": 2
             }
         ]
     }
