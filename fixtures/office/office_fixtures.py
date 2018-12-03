@@ -56,7 +56,7 @@ get_office_by_name_response = {
             'name': 'St. Catherines',
             'id': '1',
             'blocks': [{
-                'name': 'EC',
+                'name': 'Ec',
                 'floors': [{
                     'name': '3rd',
                     'id': '1',

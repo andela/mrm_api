@@ -88,7 +88,7 @@ delete_office_mutation_response = {
                 "name": "St. Catherines",
                 "blocks": [
                     {
-                        "name": "EC",
+                        "name": "Ec",
                         "floors": [
                             {
                                 "name": "3rd",
