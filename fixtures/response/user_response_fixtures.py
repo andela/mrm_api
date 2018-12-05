@@ -17,11 +17,7 @@ create_rate_response = {
   "data": {
     "createRate": {
       "rating": {
-<<<<<<< HEAD
         "id": "2",
-=======
-        "id": "1",
->>>>>>> feat(feedback) create feedback question
         "questionId": 1,
         "roomId": 1,
         "rate": 2
@@ -38,10 +34,7 @@ mutation{
       questionId
       roomId
       rate
-<<<<<<< HEAD
       userId
-=======
->>>>>>> feat(feedback) create feedback question
       }
   }
 }
@@ -75,10 +68,7 @@ mutation{
       questionId
       roomId
       rate
-<<<<<<< HEAD
       userId
-=======
->>>>>>> feat(feedback) create feedback question
       }
   }
 }
@@ -112,10 +102,7 @@ mutation{
       questionId
       roomId
       rate
-<<<<<<< HEAD
       userId
-=======
->>>>>>> feat(feedback) create feedback question
       }
   }
 }
