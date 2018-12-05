@@ -197,3 +197,23 @@ class Query(graphene.ObjectType):
         ratio = RoomAnalyticsRatios.get_analytics_ratios_per_room(
             self, query, start_date, end_date)
         return RatiosPerRoom(ratio)
+
+
+class Subscription(graphene.ObjectType):
+    analytics_for_least_used_rooms = graphene.Field(
+        Analytics,
+        start_date=graphene.String(required=True),
+        end_date=graphene.String(),
+    )
+
+    @Auth.user_roles('Admin')
+    def resolve_analytics_for_least_used_rooms(self, info, start_date, end_date=None):  # noqa: E501
+        query = Room.get_query(info)
+        print(query)
+        room_analytics = RoomAnalytics.get_least_used_rooms_analytics(
+            self, query, start_date, end_date
+        )
+        print(room_analytics)
+        return Analytics(
+            analytics=room_analytics
+        )

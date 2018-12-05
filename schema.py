@@ -1,3 +1,4 @@
+from graphql.execution.middleware import MiddlewareManager
 import graphene
 import api.location.schema
 import api.block.schema
@@ -15,6 +16,7 @@ import api.events.schema
 import utilities.calendar_ids_cleanup
 import api.notification.schema
 import api.feedback.schema
+import api.M.schema
 
 
 class Query(
@@ -30,7 +32,8 @@ class Query(
     api.office.schema.Query,
     api.wing.schema.Query,
     utilities.calendar_ids_cleanup.Query,
-    api.notification.schema.Query
+    api.notification.schema.Query,
+    api.M.schema.Query
 ):
     pass
 
@@ -54,4 +57,14 @@ class Mutation(
     pass
 
 
-schema = graphene.Schema(query=Query, mutation=Mutation)
+class Subscription(api.room.schema_query.Subscription):
+    pass
+
+
+my_middleware_manager = MiddlewareManager(wrap_in_promise=False)
+
+
+schema = graphene.Schema(query=Query, mutation=Mutation,
+                         subscription=Subscription)
+schema.execute(middleware=my_middleware_manager,
+               allow_subscriptions=True)
