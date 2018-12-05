@@ -2,8 +2,8 @@ null = None
 
 check_non_existing_question = '''
 mutation{
-  createCheck(questionId:5, roomId:1, check:true) {
-    checking{
+  createResponse(questionId:5, roomId:1, check:true) {
+    response{
       id
       questionId
       roomId
@@ -24,19 +24,19 @@ check_non_existing_question_response = {
         }
       ],
       "path": [
-        "createCheck"
+        "createResponse"
       ]
     }
   ],
   "data": {
-    "createCheck": null
+    "createResponse": null
   }
 }
 
 check_with_non_existent_room = '''
 mutation{
-  createCheck(questionId:2, roomId:9, check:true) {
-    checking{
+  createResponse(questionId:2, roomId:9, check:true) {
+    response{
       id
       questionId
       roomId
@@ -48,8 +48,8 @@ mutation{
 
 create_check_query = '''
 mutation{
-  createCheck(questionId:2, roomId:1, check:true) {
-    checking{
+  createResponse(questionId:2, roomId:1, check:true) {
+    response{
       id
       questionId
       roomId
@@ -60,8 +60,8 @@ mutation{
 
 create_check_response = {
   "data": {
-    "createCheck": {
-      "checking": {
+    "createResponse": {
+      "response": {
         "id": "10",
         "questionId": 2,
         "roomId": 1
@@ -72,8 +72,8 @@ create_check_response = {
 
 select_check_question = '''
 mutation{
-  createCheck(questionId:1, roomId:1, check:true) {
-    checking{
+  createResponse(questionId:1, roomId:1, check:true) {
+    response{
       id
       questionId
       roomId

@@ -46,7 +46,7 @@ class TestCreateResponse(BaseTestCase):
         CommonTestCases.user_token_assert_in(
             self,
             rate_wrong_question,
-            "Select a rating question"
+            "Provide a check response"
         )
 
     def test_invalid_rating_number(self):
@@ -112,7 +112,7 @@ class TestCreateResponse(BaseTestCase):
         CommonTestCases.user_token_assert_in(
             self,
             select_check_question,
-            "Select a check question"
+            "Provide a rating response"
         )
 
     def test_create_suggestion(self):
@@ -145,7 +145,7 @@ class TestCreateResponse(BaseTestCase):
         CommonTestCases.user_token_assert_in(
             self,
             make_suggestion_on_wrong_question,
-            "Select the correct question"
+            "Provide a check response"
         )
 
     def test_suggestion_on_non_existent_question(self):

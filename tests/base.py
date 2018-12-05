@@ -148,7 +148,6 @@ class CommonTestCases(BaseTestCase):
         """
         Make a request with admin token and use assertEquals
         to compare the values
-
         :params
             - query, expected_response
         """
@@ -162,7 +161,6 @@ class CommonTestCases(BaseTestCase):
         """
         Make a request with admin token and use assertEquals
         to compare the values
-
         :params
             - query, expected_response
         """
@@ -176,7 +174,6 @@ class CommonTestCases(BaseTestCase):
         """
         Make a request with admin token and use assertIn
         to compare the values
-
         :params
             - query, expected_response
         """
@@ -188,7 +185,6 @@ class CommonTestCases(BaseTestCase):
         """
         Make a request with admin token and use assertIn
         to compare the values
-
         :params
             - query, expected_response
         """
@@ -200,7 +196,6 @@ class CommonTestCases(BaseTestCase):
         """
         Make a request with user token and use assertEquals
         to compare the values
-
         :params
             - query, expected_response
         """
@@ -214,7 +209,6 @@ class CommonTestCases(BaseTestCase):
         """
         Make a request with user token and use assertIn
         to compare the values
-
         :params
             - query, expected_response
         """

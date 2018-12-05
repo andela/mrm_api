@@ -21,7 +21,6 @@ class User(Base, Utility):
     notification_settings = relationship(
         'Notification', cascade="all, delete-orphan")
     feedback = relationship('Feedback', cascade="all, delete-orphan")
-    response = relationship('Response', cascade="all, delete-orphan")
 
     def __init__(self, **kwargs):
         validate_empty_fields(**kwargs)

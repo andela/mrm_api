@@ -11,5 +11,5 @@ class Question(Base, Utility):
     question = Column(String, nullable=False)
     start_date = Column(String, nullable=False)
     end_date = Column(String, nullable=False)
-    total_responses = Column(String, nullable=True)
+    total_views = Column(Integer, default=0)
     response = relationship('Response', cascade="all, delete-orphan")
