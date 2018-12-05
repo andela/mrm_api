@@ -50,6 +50,17 @@ def update_entity_fields(entity, **kwargs):
     return entity
 
 
+def validate_rating_field(**kwargs):
+    """
+    Function to validate rating fields when
+    saving an object
+    :params kwargs
+    """
+    rating = [1, 2, 3, 4, 5]
+    if kwargs['rate'] not in rating:
+        raise AttributeError("Please rate between 1 and 5")
+
+
 class Utility(object):
 
     def save(self):

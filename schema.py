@@ -15,6 +15,8 @@ import api.events.schema
 import utilities.calendar_ids_cleanup
 import api.notification.schema
 import api.feedback.schema
+import api.question.schema
+import api.response.schema
 
 
 class Query(
@@ -50,6 +52,8 @@ class Mutation(
     api.block.schema.Mutation,
     api.wing.schema.Mutation,
     api.floor.schema.Mutation,
+    api.question.schema.Mutation,
+    api.response.schema.Mutation
 ):
     pass
 
