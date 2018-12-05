@@ -3,6 +3,8 @@ from sqlalchemy.orm import relationship
 from helpers.database import Base
 from utilities.utility import Utility
 from api.question.models import Question  # noqa: F401
+from helpers.database import Base
+from utilities.utility import Utility
 
 
 class Response(Base, Utility):
