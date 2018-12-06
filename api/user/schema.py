@@ -1,7 +1,7 @@
 import graphene
-
 from graphene_sqlalchemy import (SQLAlchemyObjectType)
 from graphql import GraphQLError
+
 from api.user.models import User as UserModel
 from api.user_role.models import UsersRole
 from api.notification.models import Notification as NotificationModel
@@ -11,6 +11,7 @@ from helpers.auth.validator import verify_email
 from helpers.pagination.paginate import Paginate, validate_page
 from helpers.auth.error_handler import SaveContextManager
 from helpers.email.email import email_invite
+from helpers.user_filter.user_filter import user_filter
 
 
 class User(SQLAlchemyObjectType):
@@ -42,20 +43,28 @@ class PaginatedUsers(Paginate):
         page = self.page
         per_page = self.per_page
         query = User.get_query(info)
+        exact_query = user_filter(query, self.filter_data)
         if not page:
-            return query.all()
+            return exact_query.all()
         page = validate_page(page)
-        self.query_total = query.count()
-        result = query.limit(per_page).offset(page * per_page)
+        self.query_total = exact_query.count()
+        result = exact_query.limit(per_page).offset(page * per_page)
         if result.count() == 0:
-            return GraphQLError("No more resources")
+            return GraphQLError("No users found")
         return result
 
 
 class Query(graphene.ObjectType):
     users = graphene.Field(
-        PaginatedUsers, page=graphene.Int(), per_page=graphene.Int())
-    user = graphene.Field(lambda: User, email=graphene.String())
+        PaginatedUsers,
+        page=graphene.Int(),
+        per_page=graphene.Int(),
+        location_id=graphene.Int(),
+        role_id=graphene.Int(),
+        )
+    user = graphene.Field(
+        lambda: User,
+        email=graphene.String())
 
     def resolve_users(self, info, **kwargs):
         response = PaginatedUsers(**kwargs)

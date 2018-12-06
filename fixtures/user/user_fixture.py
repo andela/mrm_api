@@ -170,3 +170,48 @@ send_invitation_to_existent_user_response = {
         "inviteToConverge": null
     }
 }
+
+get_users_by_location = '''
+query{
+    users(page:1, perPage:1, locationId:1){
+        users{
+            name
+            location
+        }
+    }
+}
+'''
+
+get_users_by_location_and_role = '''
+query{
+    users(page:1, perPage:1, locationId:1, roleId:1){
+        users{
+            name
+            location
+        }
+    }
+}
+'''
+
+get_users_by_role = '''
+query{
+    users(page:1, perPage:1, roleId:1){
+        users{
+            name
+            location
+        }
+    }
+}
+'''
+get_user_by_role_reponse = {
+    'data': {
+        'users': {
+            'users': [
+                {
+                    'name': 'Peter Walugembe',
+                    'location': None
+                }
+            ]
+        }
+    }
+}
