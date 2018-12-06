@@ -26,6 +26,15 @@ from fixtures.room.room_monthly_meeting_duration_fixtures import (
     get_monthly_meetings_total_duration_response
 )
 
+from fixtures.room.room_analytics_bookings_count_fixtures import (
+    get_bookings_count_daily,
+    get_bookings_count_daily_response,
+    get_bookings_count_monthly,
+    get_bookings_count_monthly_response,
+    get_bookings_count_invalid_date_range,
+    get_bookings_count_invalid_date_range_response
+)
+
 
 class QueryRoomsAnalytics(BaseTestCase):
 
@@ -91,3 +100,21 @@ class QueryRoomsAnalytics(BaseTestCase):
             analytics_for_least_used_room_day,
             analytics_for_least_used_room_day_response
             )
+
+    def test_analytics_for_daily_bookings(self):
+        CommonTestCases.admin_token_assert_equal(
+            self, get_bookings_count_daily,
+            get_bookings_count_daily_response
+        )
+
+    def test_analytics_for_monthly_bookings(self):
+        CommonTestCases.admin_token_assert_equal(
+            self, get_bookings_count_monthly,
+            get_bookings_count_monthly_response
+        )
+
+    def test_analytics_for_bookings_invalid_date_range(self):
+        CommonTestCases.admin_token_assert_equal(
+            self, get_bookings_count_invalid_date_range,
+            get_bookings_count_invalid_date_range_response
+        )

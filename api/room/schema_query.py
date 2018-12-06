@@ -7,7 +7,8 @@ from api.room.schema import (PaginatedRooms, Calendar, Room)
 from helpers.calendar.events import RoomSchedules
 from helpers.calendar.analytics import RoomStatistics  # noqa: E501
 from api.room.models import Room as RoomModel
-from api.room.schema import RatioOfCheckinsAndCancellations
+from api.room.schema import (RatioOfCheckinsAndCancellations,
+                             BookingsAnalyticsCount)
 from helpers.pagination.paginate import ListPaginate
 
 
@@ -89,6 +90,12 @@ class Query(graphene.ObjectType):
         RatiosPerRoom,
         start_date=graphene.String(required=True),
         end_date=graphene.String(),
+    )
+
+    bookings_analytics_count = graphene.List(
+        BookingsAnalyticsCount,
+        start_date=graphene.String(required=True),
+        end_date=graphene.String(required=True),
     )
 
     def check_valid_calendar_id(self, query, calendar_id):
@@ -197,3 +204,10 @@ class Query(graphene.ObjectType):
         ratio = RoomAnalyticsRatios.get_analytics_ratios_per_room(
             self, query, start_date, end_date)
         return RatiosPerRoom(ratio)
+
+    @Auth.user_roles('Admin')
+    def resolve_bookings_analytics_count(self, info, start_date, end_date):  # noqa: E501
+        query = Room.get_query(info)
+        analytics = RoomAnalyticsRatios.get_bookings_analytics_count(
+            self, query, start_date, end_date)
+        return analytics
