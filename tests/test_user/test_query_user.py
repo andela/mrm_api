@@ -2,7 +2,9 @@ from tests.base import BaseTestCase, CommonTestCases
 from fixtures.user.user_fixture import (
     user_query, user_query_response,
     query_user_by_email, query_user_email_response,
-    paginated_users_query, paginated_users_response
+    paginated_users_query, paginated_users_response,
+    get_users_by_location, get_users_by_location_and_role,
+    get_user_by_role_reponse, get_users_by_role
 )
 from helpers.database import db_session
 from api.user.models import User
@@ -58,3 +60,27 @@ class TestQueryUser(BaseTestCase):
 
         expected_responese = query_user_email_response
         self.assertEqual(execute_query, expected_responese)
+
+    def test_get_users_by_location_error(self):
+        """
+        Testing that returns error for no users in location
+        """
+        CommonTestCases.admin_token_assert_in(
+            self, get_users_by_location, "No users found"
+        )
+
+    def test_get_user_by_role(self):
+        """
+        Testing that users can be filtered by role
+        """
+        CommonTestCases.admin_token_assert_equal(
+            self, get_users_by_role, get_user_by_role_reponse
+            )
+
+    def test_get_users_by_location_and_role(self):
+        """
+        Test for error returned for incorrect role id
+        """
+        CommonTestCases.user_token_assert_in(
+            self, get_users_by_location_and_role, "No users found"
+            )
