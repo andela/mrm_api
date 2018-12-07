@@ -99,21 +99,21 @@ class BaseTestCase(TestCase):
             )
             device.save()
             question_1 = Question(
-                question_type="Rate",
+                question_type="rate",
                 question="How will you rate the brightness of the room",
                 start_date="20 Nov 2018",
                 end_date="28 Nov 2018"
             )
             question_1.save()
             question_2 = Question(
-                question_type="Check",
+                question_type="check",
                 question="Is there anything missing in the room",
                 start_date="20 Nov 2018",
                 end_date="28 Nov 2018"
             )
             question_2.save()
             question_3 = Question(
-                question_type="Input",
+                question_type="input",
                 question="Any other suggestion",
                 start_date="20 Nov 2018",
                 end_date="28 Nov 2018"

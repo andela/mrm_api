@@ -34,7 +34,6 @@ mutation{
       questionId
       roomId
       rate
-      userId
       }
   }
 }
@@ -102,7 +101,6 @@ mutation{
       questionId
       roomId
       rate
-      userId
       }
   }
 }
@@ -136,7 +134,6 @@ mutation{
       questionId
       roomId
       rate
-      userId
       }
   }
 }

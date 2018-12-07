@@ -32,7 +32,7 @@ class CreateResponse(graphene.Mutation):
             raise GraphQLError("Question does not exist")
         question_type = get_question.question_type
         if question_type.lower() == 'rate':
-            if not kwargs['rate']:
+            if 'rate' not in kwargs:
                 raise GraphQLError("Provide a rating response")
             else:
                 validate_rating_field(**kwargs)
@@ -42,7 +42,7 @@ class CreateResponse(graphene.Mutation):
                 rating.save()
                 return CreateResponse(response=rating)
         if question_type.lower() == 'check':
-            if not kwargs['check']:
+            if 'check' not in kwargs:
                 raise GraphQLError("Provide a check response")
             checking = ResponseModel(
                 check=kwargs['check'],
@@ -51,7 +51,7 @@ class CreateResponse(graphene.Mutation):
             checking.save()
             return CreateResponse(response=checking)
         if question_type.lower() == 'input':
-            if not kwargs['text_area']:
+            if 'text_area' not in kwargs:
                 raise GraphQLError("Provide a text response")
             suggestion = ResponseModel(
                 text_area=kwargs['text_area'],
