@@ -1,5 +1,5 @@
 import graphene
-from datetime import datetime
+from datetime import datetime, timedelta
 import dateutil.parser
 from dateutil.relativedelta import relativedelta
 from graphql import GraphQLError
@@ -130,3 +130,50 @@ class CommonAnalytics(Credentials):
                                         )
                 result.append(output)
         return result
+
+    @staticmethod
+    def get_total_bookings(self, query, start_date, end_date):
+        bookings = 0
+        rooms = CommonAnalytics.get_calendar_id_name(self, query)
+        for room in rooms:
+            calendar_events = CommonAnalytics.get_all_events_in_a_room(
+                self, room["calendar_id"], start_date, end_date)
+            if calendar_events:
+                bookings += len(calendar_events)
+        return bookings
+
+    @staticmethod
+    def get_last_day_of_month(date_obj):
+        next_month = date_obj.replace(day=28) + timedelta(days=4)
+        end_of_month = next_month - timedelta(days=next_month.day)
+        return end_of_month.strftime("%b %d %Y")
+
+    @staticmethod
+    def get_list_of_dates(start, number_of_days):
+        dates = []
+        for num in range(0, number_of_days):
+            starting_date = (datetime.strptime(start, "%b %d %Y") + relativedelta(days=num)).isoformat() + 'Z'  # noqa E501
+            ending_date = (datetime.strptime(start, "%b %d %Y") + relativedelta(days=num+1)).isoformat() + 'Z'  # noqa E501
+            dates.append([starting_date, ending_date])
+        return dates
+
+    @staticmethod
+    def get_list_of_month_dates(start_date, start_dt, end_date, end_dt):
+        dates = []
+        diff = relativedelta(end_dt, start_dt)
+        number_of_months = diff.months
+        month_one_end = CommonAnalytics.get_last_day_of_month(start_dt)
+        month_one_end_date = datetime.strptime(month_one_end, '%b %d %Y').isoformat() + 'Z'  # noqa E501
+        dates.append([start_date, month_one_end_date])
+
+        for num in range(1, number_of_months):
+            month_start = start_dt.replace(day=1).strftime("%b %d %Y")
+            month_start_date = (datetime.strptime(month_start, "%b %d %Y") + relativedelta(months=num)).isoformat() + 'Z'  # noqa E501
+            month_end = CommonAnalytics.get_last_day_of_month(dateutil.parser.parse(month_start_date))  # noqa E501
+            month_end_date = datetime.strptime(month_end, '%b %d %Y').isoformat() + 'Z'  # noqa E501
+            dates.append([month_start_date, month_end_date])
+
+        last_month_start = (end_dt.replace(day=1)).strftime("%b %d %Y")
+        last_month_start_date = datetime.strptime(last_month_start, '%b %d %Y').isoformat() + 'Z'  # noqa E501
+        dates.append([last_month_start_date, end_date])
+        return dates

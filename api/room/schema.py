@@ -37,6 +37,11 @@ class RoomFilter(graphene.ObjectType):
     rooms = graphene.List(Room)
 
 
+class BookingsAnalyticsCount(graphene.ObjectType):
+    bookings = graphene.Int()
+    period = graphene.String()
+
+
 class CreateRoom(graphene.Mutation):
     class Arguments:
         name = graphene.String(required=True)
