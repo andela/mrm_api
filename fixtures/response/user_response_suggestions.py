@@ -17,7 +17,7 @@ create_suggestion_question_response = {
   "data": {
     "createSuggestion": {
       "suggestion": {
-        "id": "1",
+        "id": "2",
         "questionId": 3,
         "roomId": 1,
         "textArea": "Any other suggestion"

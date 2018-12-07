@@ -1,6 +1,8 @@
 from sqlalchemy import (Column, String, ForeignKey, Integer, Boolean)
+from sqlalchemy.orm import relationship
 from helpers.database import Base
 from utilities.utility import Utility
+from api.question.models import Question  # noqa: F401
 
 
 class Response(Base, Utility):
@@ -12,3 +14,5 @@ class Response(Base, Utility):
     rate = Column(Integer, nullable=True)
     check = Column(Boolean, nullable=True)
     text_area = Column(String, nullable=True)
+    question = relationship('Question')
+    room = relationship('Room')

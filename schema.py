@@ -16,6 +16,7 @@ import utilities.calendar_ids_cleanup
 import api.notification.schema
 import api.feedback.schema
 import api.question.schema
+import api.question.schema_query
 import api.response.schema
 
 
@@ -32,7 +33,8 @@ class Query(
     api.office.schema.Query,
     api.wing.schema.Query,
     utilities.calendar_ids_cleanup.Query,
-    api.notification.schema.Query
+    api.notification.schema.Query,
+    api.question.schema_query.Query
 ):
     pass
 

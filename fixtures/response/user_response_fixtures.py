@@ -17,7 +17,7 @@ create_rate_response = {
   "data": {
     "createRate": {
       "rating": {
-        "id": "1",
+        "id": "2",
         "questionId": 1,
         "roomId": 1,
         "rate": 2

@@ -1,6 +1,6 @@
 create_question_query = '''
  mutation{
-  createQuestion(questionType:"Rating",
+  createQuestion(questionType:"Rate",
   question:"How will you rate the brightness of the room",
   startDate:"20 Nov 2018", endDate:"28 Nov 2018") {
     question{
@@ -20,7 +20,7 @@ create_question_response = {
       "question": {
         "id": "4",
         "question": "How will you rate the brightness of the room",
-        "questionType": "Rating",
+        "questionType": "Rate",
         "startDate": "20 Nov 2018",
         "endDate": "28 Nov 2018"
       }

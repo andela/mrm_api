@@ -1,4 +1,5 @@
 from sqlalchemy import (Column, String, Integer)
+from sqlalchemy.orm import relationship
 from helpers.database import Base
 from utilities.utility import Utility
 
@@ -11,3 +12,4 @@ class Question(Base, Utility):
     start_date = Column(String, nullable=False)
     end_date = Column(String, nullable=False)
     total_responses = Column(String, nullable=True)
+    response = relationship('Response', cascade="all, delete-orphan")
