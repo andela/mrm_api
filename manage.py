@@ -13,20 +13,24 @@ bugsnag.configure(
 )
 
 # local imports
-from app import create_app  # noqa: E402
+from app import create_app, socketio # noqa: E402
+
 
 app = create_app(os.getenv('APP_SETTINGS') or 'default')
 handle_exceptions(app)
 manager = Manager(app)
 
 
-def make_shell_context():
-    return dict(app=app)
 
+
+def make_shell_context():
+    return socketio.run(app,
+                 host='127.0.0.1',
+                 port=8000, debug=True,)
 
 manager.add_command(
     "shell", Shell(
-        make_context=make_shell_context))
+        make_context=make_shell_context()))
 
 
 if __name__ == '__main__':
