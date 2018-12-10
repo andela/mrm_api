@@ -1,7 +1,6 @@
 import sys
 import os
 from tests.base import BaseTestCase, CommonTestCases
-from fixtures.token.token_fixture import admin_api_token
 from fixtures.helpers.decorators_fixtures import (
     query_string, query_string_response
 )
@@ -15,6 +14,7 @@ from fixtures.room.create_room_fixtures import (
 from fixtures.room.create_room_in_block_fixtures import (
     room_blockId_not_required_mutation
     )
+from fixtures.token.token_fixture import ADMIN_TOKEN
 
 sys.path.append(os.getcwd())
 
@@ -25,7 +25,7 @@ class TestCreateRoom(BaseTestCase):
         """
         Testing for room creation
         """
-        headers = {"Authorization": "Bearer" + " " + admin_api_token}
+        headers = {"Authorization": "Bearer" + " " + ADMIN_TOKEN}
 
         query = self.app_test.post(query_string, headers=headers)
         expected_response = query_string_response

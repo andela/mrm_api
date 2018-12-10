@@ -10,7 +10,7 @@ from fixtures.room_resource.get_room_resource_fixtures import (
     filter_unique_resources, filter_unique_resources_response
 )
 from helpers.database import db_session
-from fixtures.token.token_fixture import (user_api_token)
+from fixtures.token.token_fixture import USER_TOKEN
 
 sys.path.append(os.getcwd())
 
@@ -45,7 +45,7 @@ class TestGetRoomResource(BaseTestCase):
         self.assertEqual(execute_query, expected_responese)
 
     def test_get_unique_resources(self):
-        headers = {"Authorization": "Bearer" + " " + user_api_token}
+        headers = {"Authorization": "Bearer" + " " + USER_TOKEN}
         response = self.app_test.post(
             '/mrm?query='+filter_unique_resources, headers=headers)
         actual_response = json.loads(response.data)

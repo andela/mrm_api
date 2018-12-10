@@ -1,3 +1,7 @@
+import os
+import sys
+import json
+
 from flask_testing import TestCase
 from graphene.test import Client
 
@@ -16,13 +20,7 @@ from api.user_role.models import UsersRole
 from api.devices.models import Devices
 from api.office.models import Office
 from fixtures.token.token_fixture import (
-    user_api_token,
-    admin_api_token,
-    admin_nigeria_token
-)
-import sys
-import os
-import json
+    ADMIN_TOKEN, USER_TOKEN, ADMIN_NIGERIA_TOKEN)
 
 
 sys.path.append(os.getcwd())
@@ -125,7 +123,7 @@ class CommonTestCases(BaseTestCase):
         :params
             - query, expected_response
         """
-        headers = {"Authorization": "Bearer" + " " + admin_api_token}
+        headers = {"Authorization": "Bearer" + " " + ADMIN_TOKEN}
         response = self.app_test.post(
             '/mrm?query=' + query, headers=headers)
         actual_response = json.loads(response.data)
@@ -139,7 +137,7 @@ class CommonTestCases(BaseTestCase):
         :params
             - query, expected_response
         """
-        headers = {"Authorization": "Bearer" + " " + admin_nigeria_token}
+        headers = {"Authorization": "Bearer" + " " + ADMIN_NIGERIA_TOKEN}  # noqa E501
         response = self.app_test.post(
             '/mrm?query=' + query, headers=headers)
         actual_response = json.loads(response.data)
@@ -153,7 +151,7 @@ class CommonTestCases(BaseTestCase):
         :params
             - query, expected_response
         """
-        headers = {"Authorization": "Bearer" + " " + admin_api_token}
+        headers = {"Authorization": "Bearer" + " " + ADMIN_TOKEN}
         response = self.app_test.post('/mrm?query=' + query, headers=headers)
         self.assertIn(expected_response, str(response.data))
 
@@ -165,7 +163,7 @@ class CommonTestCases(BaseTestCase):
         :params
             - query, expected_response
         """
-        headers = {"Authorization": "Bearer" + " " + admin_nigeria_token}
+        headers = {"Authorization": "Bearer" + " " + ADMIN_NIGERIA_TOKEN}  # noqa E501
         response = self.app_test.post('/mrm?query=' + query, headers=headers)
         self.assertIn(expected_response, str(response.data))
 
@@ -177,7 +175,7 @@ class CommonTestCases(BaseTestCase):
         :params
             - query, expected_response
         """
-        headers = {"Authorization": "Bearer" + " " + user_api_token}
+        headers = {"Authorization": "Bearer" + " " + USER_TOKEN}
         response = self.app_test.post(
             '/mrm?query=' + query, headers=headers)
         actual_response = json.loads(response.data)
@@ -191,14 +189,14 @@ class CommonTestCases(BaseTestCase):
         :params
             - query, expected_response
         """
-        headers = {"Authorization": "Bearer" + " " + user_api_token}
+        headers = {"Authorization": "Bearer" + " " + USER_TOKEN}
         response = self.app_test.post('/mrm?query=' + query, headers=headers)
         self.assertIn(expected_response, str(response.data))
 
 
 def change_user_role_helper(func):
     def func_wrapper(self):
-        headers = {"Authorization": "Bearer" + " " + user_api_token}
+        headers = {"Authorization": "Bearer" + " " + USER_TOKEN}
         user = User(email='mrm@andela.com', name='this user',
                     location="Nairobi", picture='www.andela.com/user')
         user.save()
