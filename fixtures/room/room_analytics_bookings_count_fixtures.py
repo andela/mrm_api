@@ -80,3 +80,39 @@ get_bookings_count_invalid_date_range_response = {
         "bookingsAnalyticsCount": null
     }
 }
+
+get_bookings_count_monthly_diff_years = '''
+query {
+  bookingsAnalyticsCount(startDate:"Nov 1 2017", endDate:"May 1 2018"){
+   period
+   bookings
+  }
+}
+'''
+
+get_bookings_count_monthly_diff_years_response = {
+    'data': {
+        'bookingsAnalyticsCount': [{
+            'period': 'November',
+            'bookings': 0
+        }, {
+            'period': 'December',
+            'bookings': 0
+        }, {
+            'period': 'January',
+            'bookings': 0
+        }, {
+            'period': 'February',
+            'bookings': 0
+        }, {
+            'period': 'March',
+            'bookings': 0
+        }, {
+            'period': 'April',
+            'bookings': 0
+        }, {
+            'period': 'May',
+            'bookings': 0
+        }]
+    }
+}

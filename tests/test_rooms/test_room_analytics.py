@@ -32,7 +32,9 @@ from fixtures.room.room_analytics_bookings_count_fixtures import (
     get_bookings_count_monthly,
     get_bookings_count_monthly_response,
     get_bookings_count_invalid_date_range,
-    get_bookings_count_invalid_date_range_response
+    get_bookings_count_invalid_date_range_response,
+    get_bookings_count_monthly_diff_years,
+    get_bookings_count_monthly_diff_years_response,
 )
 
 
@@ -118,3 +120,8 @@ class QueryRoomsAnalytics(BaseTestCase):
             self, get_bookings_count_invalid_date_range,
             get_bookings_count_invalid_date_range_response
         )
+
+    def test_analytics_for_monthly_bookings_diff_years(self):
+        CommonTestCases.admin_token_assert_equal(
+            self, get_bookings_count_monthly_diff_years,
+            get_bookings_count_monthly_diff_years_response)
