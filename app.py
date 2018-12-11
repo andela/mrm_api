@@ -4,7 +4,7 @@ from flask_graphql import GraphQLView
 from flask_cors import CORS
 from flask_json import FlaskJSON
 from flask_socketio import SocketIO
-from threading import Lock
+from flask_executor import Executor
 
 from flask_mail import Mail
 from config import config
@@ -12,58 +12,57 @@ from helpers.database import db_session
 from schema import schema
 from healthcheck_schema import healthcheck_schema
 from helpers.auth.authentication import Auth
+from helpers.socket.socketio import Namespaceio
 from api.analytics.analytics_request import AnalyticsRequest
 
 async_mode = None
 
-mail = Mail()
+executor = Executor()
 socketio = SocketIO()
-thread = None
-thread_lock = Lock()
+mail = Mail()
 
 
-
-
-
-def create_app(config_name):
+def create_app(config_name):  # noqa: C901
     app = Flask(__name__)
     CORS(app)
     FlaskJSON(app)
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
     mail.init_app(app)
-    socketio.init_app(app,  path='/socket.io', async_mode=async_mode)
+    socketio.init_app(app)
+    executor.init_app(app)
 
-    def background_thread():
-        """Example of how to send server generated events to clients."""
-        count = 0
-        while True:
-            socketio.sleep(10)
-            count += 1
-            socketio.emit('my_response',
-                        {'data': 'Server generated event', 'count': count},
-                        namespace='/test')
+    def background_thread(status=False):
+        """
+        Send server generated events to the client
+        """
+        count = 4
 
+        while status and count > 0:
+            count -= 1
+            if count == 3:
+                socketio.emit(
+                    'my_response', {'data': 'processing request'},
+                    namespace='/io')
+                socketio.sleep(10)
+            elif count == 2:
+                socketio.emit(
+                    'my_response', {'data': 'data analysis'}, namespace='/io')
+                socketio.sleep(8)
+            elif count == 1:
+                socketio.emit(
+                    'my_response', {'data': 'almost done'}, namespace='/io')
+                socketio.sleep(6)
+            elif count == 0:
+                socketio.emit('my_response', {'data': 'done'}, namespace='/io')
 
-    @app.route("/")
+    @app.route('/')
     def index():
         return render_template('index.html', async_mode=socketio.async_mode)
 
-    @socketio.on('my_event', namespace='/test')
-    def testc_message(message):
-        # session['receive_count'] = session.get('receive_count', 0) + 1
-        emit('my_response',
-            {'data': message['data'], 'count': 1})
-
-    @socketio.on('connect', namespace='/test')
-    def testc_connect():
-        global thread
-        with thread_lock:
-            if thread is None:
-                thread = socketio.start_background_task(background_thread)
-        emit('my_response', {'data': 'Connected', 'count': 0})
-
-
+    socketio.on_namespace(
+        Namespaceio(
+            '/io', background_thread=background_thread, socketio=socketio))
 
     app.add_url_rule(
         '/mrm',
@@ -73,6 +72,7 @@ def create_app(config_name):
             graphiql=True   # for having the GraphiQL interface
         )
     )
+
     app.add_url_rule(
         '/_healthcheck',
         view_func=GraphQLView.as_view(
@@ -82,10 +82,16 @@ def create_app(config_name):
         )
     )
 
+    def analytic_respond():
+        return AnalyticsRequest.validate_request(AnalyticsRequest)
+
     @app.route("/analytics", methods=['POST'])
     @Auth.user_roles('Admin', 'REST')
     def analytics_report():
-        return AnalyticsRequest.validate_request(AnalyticsRequest)
+        future = executor.submit(analytic_respond)
+        while future.running():
+            background_thread(status=future.running())
+        return future.result()
 
     @app.teardown_appcontext
     def shutdown_session(exception=None):
