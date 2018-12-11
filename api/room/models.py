@@ -21,6 +21,7 @@ class Room(Base, Utility):
     calendar_id = Column(String)
     floor_id = Column(Integer, ForeignKey('floors.id'))
     wing_id = Column(Integer, ForeignKey('wings.id'))
+    cancellation_duration = Column(Integer, default=10)
     floor = relationship('Floor')
     resources = relationship('Resource', cascade="all, delete-orphan")
     events = relationship('Events', cascade="all, delete-orphan")
