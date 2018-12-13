@@ -166,10 +166,12 @@ class AnalyticsReport():
     def write_analytics_to_html(self, query, start_date, end_date):
         report_data_frame = AnalyticsReport.generate_combined_analytics_report(
             self, query, start_date, end_date)
+        start_date_formatted = CommonAnalytics.format_date(start_date)
+        end_date_formatted = CommonAnalytics.format_date(end_date)
         WriteFile.write_to_html_file(
             report_data_frame['Most Used Rooms'],
             report_data_frame['Least Used Rooms'],
-            '<h1>Room Analytics Report Summary</h1><p> <h2>Report Period: From ' + str(start_date) + ' to ' + str(end_date) + '</h2>',   # noqa
+            '<h1>Room Analytics Report Summary</h1><p> <h2>Report Period: From ' + start_date_formatted + ' to ' + end_date_formatted + '</h2>',   # noqa
             'templates/analytics_report.html'
             )
         rendered = render_template('analytics_report.html')
