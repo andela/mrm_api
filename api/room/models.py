@@ -1,6 +1,7 @@
 from sqlalchemy import (Column, String, Integer, ForeignKey, event)
 from sqlalchemy.orm import relationship
 from graphql import GraphQLError
+from sqlalchemy.schema import Sequence
 
 from helpers.database import Base, db_session
 from utilities.utility import Utility
@@ -13,7 +14,7 @@ from helpers.auth.validator import verify_calendar_id
 
 class Room(Base, Utility):
     __tablename__ = 'rooms'
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, Sequence('rooms_id_seq', start=1, increment=1), primary_key=True) # noqa
     name = Column(String, nullable=False)
     room_type = Column(String)
     capacity = Column(Integer, nullable=False)

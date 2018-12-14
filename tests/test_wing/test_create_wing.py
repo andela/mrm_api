@@ -74,7 +74,7 @@ class TestCreateWing(BaseTestCase):
         CommonTestCases.admin_token_assert_in(
             self,
             create_wing_other_location_admin,
-            "This action is restricted to Lagos Office admin"
+            "This action is restricted to Lagos Office only"
         )
 
     def test_create_wing_floor_notfound(self):

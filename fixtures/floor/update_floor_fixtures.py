@@ -2,7 +2,7 @@ null = None
 
 update_floor_mutation = '''
     mutation {
-        updateFloor(floorId:1, name:"2nd") {
+        updateFloor(floorId:4, name:"2nd") {
             floor {
             name,
             blockId
@@ -24,7 +24,7 @@ update_floor_mutation_response = {
 
 update_with_empty_field = '''
     mutation {
-        updateFloor(floorId:1, name:"") {
+        updateFloor(floorId:4, name:"") {
             floor {
             name,
             blockId
@@ -35,7 +35,7 @@ update_with_empty_field = '''
 
 floor_mutation_duplicate_name = '''
     mutation {
-        updateFloor(name: "3rd", floorId:1) {
+        updateFloor(name: "3rd", floorId:4) {
             floor {
             name
             blockId

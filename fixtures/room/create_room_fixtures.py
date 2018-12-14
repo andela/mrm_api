@@ -3,7 +3,7 @@ null = None
 room_mutation_query = '''
     mutation {
         createRoom(
-            name: "Mbarara", roomType: "Meeting", capacity: 4, floorId: 1,
+            name: "Mbarara", roomType: "Meeting", capacity: 4, floorId: 4, officeId: 1,
             calendarId:"andela.com_3836323338323230343935@resource.calendar.google.com",
             imageUrl: "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg") {  # noqa: E501
             room {
@@ -24,7 +24,7 @@ room_mutation_response = {
                 "name": "Mbarara",
                 "roomType": "Meeting",
                 "capacity": 4,
-                "floorId": 1,
+                "floorId": 4,
                 "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg"  # noqa: E501
             }
         }
@@ -34,7 +34,7 @@ room_mutation_response = {
 room_name_empty_mutation = '''
     mutation {
         createRoom(
-            name: "", roomType: "Meeting", capacity: 4, floorId: 1,
+            name: "", roomType: "Meeting", capacity: 4, floorId: 4,
             officeId: 1
             calendarId:"andela.com_3836323338323230343935@resource.calendar.google.com",
             imageUrl: "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg") {  # noqa: E501
@@ -52,7 +52,7 @@ room_name_empty_mutation = '''
 room_invalid_officeId_mutation = '''
     mutation {
         createRoom(
-            name: "aso", roomType: "Meeting", capacity: 4, floorId: 1,
+            name: "aso", roomType: "Meeting", capacity: 4, floorId: 4,
             officeId: 10
             calendarId:"andela.com_3836323338323230343935@resource.calendar.google.com",
             imageUrl: "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg") {  # noqa: E501
@@ -88,7 +88,7 @@ room_invalid_floorId_mutation = '''
 room_invalid_wingId_mutation = '''
     mutation {
         createRoom(
-            name: "aso", roomType: "Meeting", capacity: 4, floorId: 1,
+            name: "aso", roomType: "Meeting", capacity: 4, floorId: 4,
             wingId: 3
             officeId: 1
             calendarId:"andela.com_3836323338323230343935@resource.calendar.google.com",
@@ -108,7 +108,7 @@ room_invalid_wingId_mutation = '''
 room_invalid_officeId_mutation = '''
     mutation {
         createRoom(
-            name: "aso", roomType: "Meeting", capacity: 4, floorId: 1,
+            name: "aso", roomType: "Meeting", capacity: 4, floorId: 4,
             officeId: 10
             calendarId:"andela.com_3836323338323230343935@resource.calendar.google.com",
             imageUrl: "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg") {  # noqa: E501
@@ -144,7 +144,7 @@ room_invalid_floorId_mutation = '''
 room_invalid_wingId_mutation = '''
     mutation {
         createRoom(
-            name: "aso", roomType: "Meeting", capacity: 4, floorId: 1,
+            name: "aso", roomType: "Meeting", capacity: 4, floorId: 4,
             wingId: 3
             officeId: 1
             calendarId:"andela.com_3836323338323230343935@resource.calendar.google.com",
@@ -163,7 +163,7 @@ room_invalid_wingId_mutation = '''
 room_invalid_calendar_id_mutation_query = '''
     mutation {
         createRoom(
-            name: "Kigali", roomType: "Meeting", capacity: 6, floorId: 1, officeId: 1,
+            name: "Kigali", roomType: "Meeting", capacity: 6, floorId: 4, officeId: 1,
             calendarId:"andela.com_38363233383232303439@resource.calendar.google.com",
             imageUrl: "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg") {  # noqa: E501
             room {
@@ -246,7 +246,7 @@ query_rooms_response = {
 room_mutation_query_duplicate_name = '''
     mutation {
         createRoom(
-            name: "Entebbe", roomType: "Meeting", capacity: 4, floorId: 1, officeId: 1
+            name: "Entebbe", roomType: "Meeting", capacity: 4, floorId: 4, officeId: 1
             blockId: 1
             calendarId:"andela.com_3836323338323230343935@resource.calendar.google.com",
             imageUrl: "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg") { # noqa: E501

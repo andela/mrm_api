@@ -35,7 +35,7 @@ room_mutation_query = '''
           roomType: "Meeting",
           capacity: 1,
           officeId: 1
-          floorId: 1,
+          floorId: 4,
           imageUrl: "http://url.com") {
             room {
                 name
@@ -53,7 +53,7 @@ user_role_401_msg = b'{"errors":[{"message":"You are not authorized to perform t
 
 query_string = '/mrm?query='+room_mutation_query
 
-query_string_response = b'{"data":{"createRoom":{"room":{"name":"Syne","roomType":"Meeting","capacity":1,"floorId":1,"calendarId":"andela.com_3836323338323230343935@resource.calendar.google.com","imageUrl":"http://url.com"}}}}'  # noqa: E501
+query_string_response = b'{"data":{"createRoom":{"room":{"name":"Syne","roomType":"Meeting","capacity":1,"floorId":4,"calendarId":"andela.com_3836323338323230343935@resource.calendar.google.com","imageUrl":"http://url.com"}}}}'  # noqa: E501
 
 expired_token = jwt.encode(expired, SECRET_KEY)
 

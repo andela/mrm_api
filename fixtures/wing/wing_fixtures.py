@@ -2,7 +2,7 @@ null = None
 
 create_wing_mutation = '''
     mutation {
-        createWing(name: "Ginger bread" floorId:2) {
+        createWing(name: "Ginger bread" floorId:5) {
             wing {
                 id
                 name
@@ -24,7 +24,7 @@ create_wing_mutation_response = {
 
 duplicate_wing_mutation = '''
     mutation {
-        createWing(name: "Naija" floorId:2) {
+        createWing(name: "Naija" floorId:5) {
             wing {
                 id
                 name
@@ -55,7 +55,7 @@ duplicate_wing_mutation_response = {
 
 wing_creation_no_name = '''
     mutation {
-        createWing(name: "" floorId:1) {
+        createWing(name: "" floorId:4) {
             wing {
                 id
                 name
@@ -86,7 +86,7 @@ wing_creation_no_name_response = {
 
 create_wing_other_location = '''
     mutation {
-        createWing(name: "New" floorId:1) {
+        createWing(name: "New" floorId:4) {
             wing {
                 id
                 name
@@ -97,7 +97,7 @@ create_wing_other_location = '''
 
 create_wing_other_location_admin = '''
     mutation {
-        createWing(name: "New" floorId:2) {
+        createWing(name: "New" floorId:4) {
             wing {
                 id
                 name
