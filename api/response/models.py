@@ -8,7 +8,6 @@ from api.question.models import Question  # noqa: F401
 class Response(Base, Utility):
     __tablename__ = 'responses'
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey('users.id'))
     room_id = Column(Integer, ForeignKey('rooms.id'))
     question_id = Column(Integer, ForeignKey('questions.id'))
     rate = Column(Integer, nullable=True)

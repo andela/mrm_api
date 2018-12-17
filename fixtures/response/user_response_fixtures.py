@@ -2,8 +2,8 @@ null = None
 
 create_rate_query = '''
 mutation{
-  createRate(questionId:1, roomId:1, rate:2) {
-    rating{
+  createResponse(questionId:1, roomId:1, rate:2) {
+    response{
       id
       questionId
       roomId
@@ -15,8 +15,8 @@ mutation{
 
 create_rate_response = {
   "data": {
-    "createRate": {
-      "rating": {
+    "createResponse": {
+      "response": {
         "id": "2",
         "questionId": 1,
         "roomId": 1,
@@ -28,8 +28,8 @@ create_rate_response = {
 
 rate_wrong_question = '''
 mutation{
-  createRate(questionId:2, roomId:1, rate:2) {
-    rating{
+  createResponse(questionId:2, roomId:1, rate:2) {
+    response{
       id
       questionId
       roomId
@@ -43,7 +43,7 @@ mutation{
 rate_wrong_question_response = {
   "errors": [
     {
-      "message": "Select a rating question",
+      "message": "Provide a rating response",
       "locations": [
         {
           "line": 2,
@@ -51,19 +51,19 @@ rate_wrong_question_response = {
         }
       ],
       "path": [
-        "createRate"
+        "createResponse"
       ]
     }
   ],
   "data": {
-    "createRate": null
+    "createResponse": null
   }
 }
 
 rate_non_existing_question = '''
 mutation{
-  createRate(questionId:5, roomId:1, rate:2) {
-    rating{
+  createResponse(questionId:5, roomId:1, rate:2) {
+    response{
       id
       questionId
       roomId
@@ -85,19 +85,19 @@ rate_non_existing_question_response = {
         }
       ],
       "path": [
-        "createRate"
+        "createResponse"
       ]
     }
   ],
   "data": {
-    "createRate": null
+    "createResponse": null
   }
 }
 
 invalid_rating_number = '''
 mutation{
-  createRate(questionId:1, roomId:1, rate:6) {
-    rating{
+  createResponse(questionId:1, roomId:1, rate:6) {
+    response{
       id
       questionId
       roomId
@@ -119,20 +119,19 @@ invalid_rating_number_response = {
         }
       ],
       "path": [
-        "createRate"
+        "createResponse"
       ]
     }
   ],
   "data": {
-    "createRate": null
+    "createResponse": null
   }
 }
 
-
 rate_with_non_existent_room = '''
 mutation{
-  createRate(questionId:1, roomId:9, rate:2) {
-    rating{
+  createResponse(questionId:1, roomId:9, rate:2) {
+    response{
       id
       questionId
       roomId
@@ -154,11 +153,11 @@ rate_with_non_existent_room_response = {
         }
       ],
       "path": [
-        "createRate"
+        "createResponse"
       ]
     }
   ],
   "data": {
-    "createRate": null
+    "createResponse": null
   }
 }
