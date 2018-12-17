@@ -37,6 +37,9 @@ from api.devices.models import Devices
 from api.wing.models import Wing
 from api.office.models import Office
 from api.events.models import Events
+from api.question.models import Question
+from api.response.models import Response
+
 
 target_metadata = Base.metadata
 
