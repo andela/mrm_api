@@ -173,7 +173,7 @@ class CommonAnalytics(Credentials):
     def get_list_of_month_dates(start_date, start_dt, end_date, end_dt):
         dates = []
         diff = relativedelta(end_dt, start_dt)
-        number_of_months = diff.months
+        number_of_months = 12 * diff.years + diff.months
         month_one_end = CommonAnalytics.get_last_day_of_month(start_dt)
         month_one_end_date = datetime.strptime(month_one_end, '%b %d %Y').isoformat() + 'Z'  # noqa E501
         dates.append([start_date, month_one_end_date])
