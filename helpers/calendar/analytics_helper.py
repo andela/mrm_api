@@ -38,6 +38,18 @@ class CommonAnalytics(Credentials):
         end_date = (datetime.strptime(end_date, "%b %d %Y") + relativedelta(days=1)).isoformat() + 'Z'  # noqa: E501
         return(start_date, end_date)
 
+    def format_date(date):
+        '''
+        Convert ISO 8601 date to simple DD/MM/YYYY
+        :params
+            - date (in ISO format)
+        '''
+        try:
+            result = datetime.strptime(str(date), "%Y-%m-%dT%H:%M:%SZ")
+            return result.strftime('%d/%m/%Y')
+        except Exception:
+            return date
+
     def get_time_duration_for_event(self, start_time, end_time):
         """ Calculate duration range of an event
          :params

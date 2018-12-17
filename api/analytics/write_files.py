@@ -90,7 +90,7 @@ class WriteFile():
         '''
         Write an entire dataframe to an HTML file with nice formatting.
         '''
-        today = str(datetime.datetime.now())
+        today = str(datetime.datetime.now().strftime('%d/%m/%Y'))
         result = """
         <html>
         <head>
