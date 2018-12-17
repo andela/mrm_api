@@ -1,5 +1,6 @@
 from sqlalchemy import (Column, String, Integer, ForeignKey)
 from sqlalchemy.orm import relationship, validates
+from sqlalchemy.schema import Sequence
 
 from helpers.database import Base
 from utilities.utility import Utility
@@ -8,7 +9,8 @@ from api.block.models import Block   # noqa: F401
 
 class Floor(Base, Utility):
     __tablename__ = 'floors'
-    id = Column(Integer, primary_key=True)
+    type(id)
+    id = Column(Integer, Sequence('floors_id_seq', start=1, increment=1), primary_key=True) # noqa
     name = Column(String, nullable=False)
     block_id = Column(Integer, ForeignKey('blocks.id'))
     block = relationship('Block')

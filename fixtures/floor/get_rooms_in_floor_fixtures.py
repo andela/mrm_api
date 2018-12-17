@@ -1,6 +1,6 @@
 get_rooms_in_floor = '''
 {
-    getRoomsInAFloor(floorId: 1) {
+    getRoomsInAFloor(floorId: 4) {
         id
         name
         floorId
@@ -14,7 +14,7 @@ get_rooms_in_floor_response = {
             {
                 "id": "1",
                 "name": "Entebbe",
-                "floorId": 1
+                "floorId": 4
             }
         ]
     }

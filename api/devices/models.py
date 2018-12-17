@@ -1,5 +1,6 @@
 from sqlalchemy import (Column, String, Integer, DateTime, ForeignKey)
 from sqlalchemy.orm import relationship
+from sqlalchemy.schema import Sequence
 
 from helpers.database import Base
 from utilities.utility import Utility, validate_empty_fields
@@ -8,7 +9,7 @@ from api.room_resource.models import Resource  # noqa: F401
 
 class Devices(Base, Utility):
     __tablename__ = 'devices'
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, Sequence('devices_id_seq', start=1, increment=1), primary_key=True) # noqa
     name = Column(String, nullable=False)
     device_type = Column(String, nullable=False)
     date_added = Column(DateTime, nullable=False)

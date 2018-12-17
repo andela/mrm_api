@@ -59,7 +59,7 @@ get_office_by_name_response = {
                 'name': 'Ec',
                 'floors': [{
                     'name': '3rd',
-                    'id': '1',
+                    'id': '4',
                     'rooms': [{
                        'name': 'Entebbe',
                        'id': '1'}]

@@ -1,5 +1,6 @@
 from sqlalchemy import (Column, String, Integer, ForeignKey, event)
 from sqlalchemy.orm import relationship
+from sqlalchemy.schema import Sequence
 
 from helpers.database import Base
 from utilities.utility import Utility
@@ -11,7 +12,7 @@ from helpers.auth.validator import check_office_name
 
 class Office(Base, Utility):
     __tablename__ = 'offices'
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, Sequence('offices_id_seq', start=1, increment=1), primary_key=True) # noqa
     name = Column(String, nullable=True, unique=True)
     location_id = Column(Integer, ForeignKey('locations.id'))
     location = relationship('Location')
