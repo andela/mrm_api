@@ -1,3 +1,4 @@
+import datetime
 from helpers.database import db_session
 
 
@@ -59,6 +60,24 @@ def validate_rating_field(**kwargs):
     rating = [1, 2, 3, 4, 5]
     if kwargs['rate'] not in rating:
         raise AttributeError("Please rate between 1 and 5")
+
+
+def validate_date_time_range(**kwargs):
+    """
+    Function to validate the dates entered
+    for questions for feedback
+    :params kwargs
+    """
+    if ('start_date' and 'end_date' in kwargs) and\
+            kwargs['start_date'] < datetime.datetime.now():
+        raise ValueError('startDate should be today or after')
+    elif ('start_date' and 'end_date' in kwargs) and\
+            kwargs['end_date'] - kwargs['start_date'] < datetime.timedelta(
+                days=1
+            ):
+        raise ValueError(
+            'endDate should be at least a day after startDate'
+        )
 
 
 class Utility(object):
