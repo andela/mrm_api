@@ -30,4 +30,4 @@ class Response(Base, Utility):
         'Resource',
         secondary="missing_items",
         backref=('resources'),
-        lazy="dynamic")
+        lazy="joined")

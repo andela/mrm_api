@@ -17,11 +17,11 @@ get_question_query = '''{
 get_question_query_response = {
   "data": {
     "feedbackQuestion": {
-      "totalResponses": 1,
+      "totalResponses": 2,
       "responses": [
         {
           "roomName": "Entebbe",
-          "responseCount": 1,
+          "responseCount": 2,
           "cleanlinessRating": 2
         }
       ]
@@ -50,11 +50,11 @@ get_paginated_question_query_response = {
       "hasNext": false,
       "hasPrevious": false,
       "pages": 1,
-      "totalResponses": 1,
+      "totalResponses": 2,
       "responses": [
         {
           "roomName": "Entebbe",
-          "responseCount": 1,
+          "responseCount": 2,
           "cleanlinessRating": 2
         }
       ]

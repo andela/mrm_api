@@ -127,6 +127,14 @@ class BaseTestCase(TestCase):
                 created_date=datetime.now()
             )
             response_1.save()
+            response_2 = Response(
+                question_id=question_2.id,
+                room_id=room.id,
+                check=True,
+                created_date=datetime.now()
+            )
+            response_2.save()
+            response_2.missing_resources.append(resource)
             db_session.commit()
 
     def tearDown(self):
