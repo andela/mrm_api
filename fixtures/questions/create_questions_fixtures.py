@@ -20,7 +20,7 @@ create_question_response = {
       "question": {
         "id": "4",
         "question": "How will you rate the brightness of the room",
-        "questionType": "Rate",
+        "questionType": "rate",
         "startDate": "20 Nov 2018",
         "endDate": "28 Nov 2018"
       }
