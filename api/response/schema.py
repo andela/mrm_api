@@ -1,4 +1,5 @@
 import graphene
+from helpers.auth.authentication import Auth
 from graphene_sqlalchemy import SQLAlchemyObjectType
 from api.response.models import Response as ResponseModel
 from utilities.utility import validate_empty_fields, validate_rating_field
@@ -19,6 +20,7 @@ class CreateResponse(graphene.Mutation):
         rate = graphene.Int()
         check = graphene.Boolean()
         text_area = graphene.String()
+
     response = graphene.Field(Response)
 
     def mutate(self, info, **kwargs):
@@ -59,6 +61,18 @@ class CreateResponse(graphene.Mutation):
                 question_id=kwargs['question_id'])
             suggestion.save()
             return CreateResponse(response=suggestion)
+
+
+class Query(graphene.ObjectType):
+    get_room_response = graphene.List(Response, room_id=graphene.Int())
+
+    @Auth.user_roles('Admin')
+    def resolve_get_room_response(self, info, **kwargs):
+        query = Response.get_query(info)
+        room_feedback = query.filter_by(room_id=kwargs['room_id'])
+        if room_feedback.count() < 1:
+            raise GraphQLError("No Feedback Found")
+        return room_feedback
 
 
 class Mutation(graphene.ObjectType):

@@ -82,3 +82,54 @@ mutation{
   }
 }
 '''
+
+filter_question_by_room = '''
+{
+  getRoomResponse(roomId: 1) {
+    room {
+      capacity
+      name
+      roomType
+    }
+  }
+}
+'''
+
+filter_question_by_room_response = {
+    "data": {
+        "getRoomResponse": [{
+            "room": {
+                "capacity": 6,
+                "name": "Entebbe",
+                "roomType": "meeting"
+            }
+        }]
+    }
+}
+
+filter_question_by_invalid_room = '''
+{
+  getRoomResponse(roomId: 100) {
+    room {
+      id
+      name
+      roomType
+    }
+  }
+}
+
+'''
+
+filter_question_by_invalid_room_response = {
+    "errors": [{
+        "message": "No Feedback Found",
+        "locations": [{
+            "line": 3,
+            "column": 3
+        }],
+        "path": ["getRoomResponse"]
+    }],
+    "data": {
+        "getRoomResponse": null
+    }
+}
