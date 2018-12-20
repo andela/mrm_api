@@ -2,7 +2,7 @@ null = None
 
 check_non_existing_question = '''
 mutation{
-  createResponse(questionId:5, roomId:1, check:true) {
+  createResponse(questionId:5, roomId:1, missingItems:[1]) {
     response{
       id
       questionId
@@ -35,7 +35,7 @@ check_non_existing_question_response = {
 
 check_with_non_existent_room = '''
 mutation{
-  createResponse(questionId:2, roomId:9, check:true) {
+  createResponse(questionId:2, roomId:9, missingItems:[1]) {
     response{
       id
       questionId
@@ -48,7 +48,7 @@ mutation{
 
 create_check_query = '''
 mutation{
-  createResponse(questionId:2, roomId:1, check:true) {
+  createResponse(questionId:2, roomId:1, missingItems:[1]) {
     response{
       id
       questionId
@@ -62,7 +62,7 @@ create_check_response = {
   "data": {
     "createResponse": {
       "response": {
-        "id": "10",
+        "id": "2",
         "questionId": 2,
         "roomId": 1
       }
@@ -70,14 +70,37 @@ create_check_response = {
   }
 }
 
-select_check_question = '''
+create_check_query_no_missing_item = '''
 mutation{
-  createResponse(questionId:1, roomId:1, check:true) {
+  createResponse(questionId:2, roomId:1) {
     response{
       id
       questionId
       roomId
-      check
+      }
+  }
+}
+'''
+
+create_check_query_empty_missing_item = '''
+mutation{
+  createResponse(questionId:2, roomId:1, missingItems:[]) {
+    response{
+      id
+      questionId
+      roomId
+      }
+  }
+}
+'''
+
+create_check_query_non_existence_item = '''
+mutation{
+  createResponse(questionId:2, roomId:1, missingItems:[10]) {
+    response{
+      id
+      questionId
+      roomId
       }
   }
 }

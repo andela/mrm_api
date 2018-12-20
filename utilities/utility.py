@@ -81,6 +81,16 @@ def validate_date_time_range(**kwargs):
         )
 
 
+def validate_missing_items_field(**kwargs):
+    """
+    Function to validate the missing item field
+    when saving a check question response
+    :params kwargs
+    """
+    if 'missing_items' not in kwargs:
+        raise AttributeError("Provide the missing items")
+
+
 class Utility(object):
 
     def save(self):

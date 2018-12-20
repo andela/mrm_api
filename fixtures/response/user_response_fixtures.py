@@ -67,7 +67,6 @@ mutation{
       questionId
       roomId
       rate
-      userId
       }
   }
 }

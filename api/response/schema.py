@@ -2,10 +2,11 @@ import graphene
 from helpers.auth.authentication import Auth
 from graphene_sqlalchemy import SQLAlchemyObjectType
 from api.response.models import Response as ResponseModel
-from utilities.utility import validate_empty_fields, validate_rating_field
+from utilities.utility import validate_empty_fields
 from graphql import GraphQLError
 from api.room.schema import Room
 from api.question.models import Question
+from helpers.response.create_response import create_response
 
 
 class Response(SQLAlchemyObjectType):
@@ -18,40 +19,10 @@ class CreateResponse(graphene.Mutation):
         question_id = graphene.Int(required=True)
         room_id = graphene.Int(required=True)
         rate = graphene.Int()
-        check = graphene.Boolean()
         text_area = graphene.String()
+        missing_items = graphene.List(graphene.Int)
 
     response = graphene.Field(Response)
-
-    def create_response(question_type, **kwargs):
-        if question_type.lower() == 'rate':
-            if 'rate' not in kwargs:
-                raise GraphQLError("Provide a rating response")
-            else:
-                validate_rating_field(**kwargs)
-                rating = ResponseModel(rate=kwargs['rate'],
-                                       room_id=kwargs['room_id'],
-                                       question_id=kwargs['question_id'])
-                rating.save()
-                return rating
-        if question_type.lower() == 'check':
-            if 'check' not in kwargs:
-                raise GraphQLError("Provide a check response")
-            checking = ResponseModel(
-                check=kwargs['check'],
-                room_id=kwargs['room_id'],
-                question_id=kwargs['question_id'])
-            checking.save()
-            return checking
-        if question_type.lower() == 'input':
-            if 'text_area' not in kwargs:
-                raise GraphQLError("Provide a text response")
-            suggestion = ResponseModel(
-                text_area=kwargs['text_area'],
-                room_id=kwargs['room_id'],
-                question_id=kwargs['question_id'])
-            suggestion.save()
-            return suggestion
 
     def mutate(self, info, **kwargs):
         validate_empty_fields(**kwargs)
@@ -63,7 +34,7 @@ class CreateResponse(graphene.Mutation):
         if not get_question:
             raise GraphQLError("Question does not exist")
         question_type = get_question.question_type
-        resource = CreateResponse.create_response(question_type, **kwargs)
+        resource = create_response(question_type, **kwargs)
         return CreateResponse(response=resource)
 
 

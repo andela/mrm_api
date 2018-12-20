@@ -6,6 +6,7 @@ from api.office.models import Office
 from api.location.models import Location
 from api.wing.models import Wing
 from api.room.models import Room
+from api.response.models import Response  # noqa
 
 
 def resource_join_location(query):
