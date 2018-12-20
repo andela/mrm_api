@@ -63,4 +63,3 @@ class CreateResponse(graphene.Mutation):
 
 class Mutation(graphene.ObjectType):
     create_response = CreateResponse.Field()
-    
