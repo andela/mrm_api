@@ -52,6 +52,7 @@ class UpdateQuestion(graphene.Mutation):
         question = graphene.String()
         start_date = graphene.String()
         end_date = graphene.String()
+        is_active = graphene.Boolean()
 
     question = graphene.Field(Question)
 
