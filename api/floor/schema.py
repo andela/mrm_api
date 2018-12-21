@@ -6,6 +6,7 @@ from helpers.auth.authentication import Auth
 from helpers.auth.admin_roles import admin_roles
 from utilities.utility import validate_empty_fields, update_entity_fields
 from helpers.auth.validator import ErrorHandler
+from helpers.pagination.paginate import Paginate, validate_page
 from api.block.models import Block
 from api.floor.models import Floor as FloorModel
 from api.room.models import Room as RoomModel
@@ -93,17 +94,43 @@ class DeleteFloor(graphene.Mutation):
         return DeleteFloor(floor=exact_floor)
 
 
+class PaginatedFloors(Paginate):
+    floors = graphene.List(Floor)
+
+    def resolve_floors(self, info, **kwargs):
+        ''' This function paginates the returned response
+        if page parameter is passed,
+        otherwise it returns all floors
+        '''
+        page = self.page
+        per_page = self.per_page
+        query = Floor.get_query(info)
+        if not page:
+            return query.all()
+        page = validate_page(page)
+        self.query_total = query.count()
+        result = query.limit(per_page).offset(page*per_page)
+        if result.count() == 0:
+            return GraphQLError("No more resources")
+        return result
+
+
 class Query(graphene.ObjectType):
-    all_floors = graphene.List(Floor)
+    all_floors = graphene.Field(
+        PaginatedFloors,
+        page=graphene.Int(),
+        per_page=graphene.Int(),
+        name=graphene.String()
+    )
     get_rooms_in_a_floor = graphene.List(
         lambda: Room,
         floor_id=graphene.Int()
     )
     filter_by_block = graphene.List(Floor, blockId=graphene.Int())
 
-    def resolve_all_floors(self, info):
-        query = Floor.get_query(info)
-        return query.all()
+    def resolve_all_floors(self, info, **kwargs):
+        response = PaginatedFloors(**kwargs)
+        return response
 
     def resolve_get_rooms_in_a_floor(self, info, floor_id):
         query = Room.get_query(info)
