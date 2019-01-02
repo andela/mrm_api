@@ -1,4 +1,4 @@
-from sqlalchemy import (Column, String, Integer)
+from sqlalchemy import (Column, String, Integer, Boolean)
 from sqlalchemy.orm import relationship, validates
 from helpers.database import Base
 from utilities.utility import Utility
@@ -13,6 +13,7 @@ class Question(Base, Utility):
     end_date = Column(String, nullable=False)
     total_views = Column(Integer, default=0)
     response = relationship('Response', cascade="all, delete-orphan")
+    is_active = Column(Boolean, default=False)
 
     @validates('question_type')
     def convert_capitalize(self, key, value):
