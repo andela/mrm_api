@@ -33,7 +33,7 @@ class CreateFloor(graphene.Mutation):
         query = Floor.get_query(info)
         query_block = query.join(Block.floors)
 
-        admin_roles.create_floor(kwargs['block_id'])
+        admin_roles.create_floor_update_delete_block(kwargs['block_id'])
         result = query_block.filter(
             Block.id == kwargs['block_id'],
             FloorModel.name == kwargs.get('name').capitalize()

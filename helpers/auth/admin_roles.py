@@ -26,7 +26,7 @@ class Admin_roles():
         if admin_details.location != room_location.name:
             raise GraphQLError("You are not authorized to make changes in " + room_location.name)  # noqa: E501
 
-    def create_floor(self, block_id):
+    def create_floor_update_delete_block(self, block_id):
         admin_details = get_user_from_db()
         location_query = location_join_block()
         block_location = location_query.filter_by(id=block_id).first()
@@ -86,14 +86,6 @@ class Admin_roles():
         admin_details = get_user_from_db()
         location = Location.query.filter_by(name=admin_details.location).first()
         return location.id
-
-    def update_delete_block(self, block_id):
-        admin_details = get_user_from_db()
-        location_query = location_join_block()
-        block_location = location_query.filter_by(id=block_id).first()
-        if admin_details.location != block_location.name:
-            raise GraphQLError(
-                "You are not authorized to make changes in " + block_location.name)  # noqa: E501
 
 
 admin_roles = Admin_roles()
