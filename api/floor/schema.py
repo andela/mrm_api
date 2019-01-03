@@ -99,6 +99,7 @@ class Query(graphene.ObjectType):
         lambda: Room,
         floor_id=graphene.Int()
     )
+    filter_by_block = graphene.List(Floor, blockId=graphene.Int())
 
     def resolve_all_floors(self, info):
         query = Floor.get_query(info)
@@ -108,6 +109,14 @@ class Query(graphene.ObjectType):
         query = Room.get_query(info)
         rooms = query.filter(RoomModel.floor_id == floor_id)
         return rooms
+
+    @Auth.user_roles('Admin')
+    def resolve_filter_by_block(self, info, blockId):
+        query = Floor.get_query(info)
+        floors = query.filter_by(block_id=blockId)
+        if floors.count() < 1:
+            raise GraphQLError('Floors not found in this block')
+        return floors
 
 
 class Mutation(graphene.ObjectType):
