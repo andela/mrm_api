@@ -24,7 +24,7 @@ class CreateBlock(graphene.Mutation):
     @Auth.user_roles('Admin')
     def mutate(self, info, **kwargs):
         validate_empty_fields(**kwargs)
-        block_name = BlockModel.query.filter_by(name=kwargs['name'].title()).all() # noqa
+        block_name = BlockModel.query.filter_by(name=kwargs['name'].title()).all()  # noqa
         if block_name:
             raise GraphQLError("Block aleady exists")
         get_office = Office.query.filter_by(id=kwargs['office_id']).first()
