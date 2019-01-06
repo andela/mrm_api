@@ -13,6 +13,7 @@ from schema import schema
 from healthcheck_schema import healthcheck_schema
 from helpers.auth.authentication import Auth
 from helpers.socket.socketio import Namespaceio
+from helpers.socket.background_thread import req_thread
 from api.analytics.analytics_request import AnalyticsRequest
 
 async_mode = None
@@ -32,29 +33,7 @@ def create_app(config_name):  # noqa: C901
     socketio.init_app(app)
     executor.init_app(app)
 
-    def background_thread(status=False):
-        """
-        Send server generated events to the client
-        """
-        count = 4
-
-        while status and count > 0:
-            count -= 1
-            if count == 3:
-                socketio.emit(
-                    'my_response', {'data': 'processing request'},
-                    namespace='/io')
-                socketio.sleep(10)
-            elif count == 2:
-                socketio.emit(
-                    'my_response', {'data': 'data analysis'}, namespace='/io')
-                socketio.sleep(8)
-            elif count == 1:
-                socketio.emit(
-                    'my_response', {'data': 'almost done'}, namespace='/io')
-                socketio.sleep(6)
-            elif count == 0:
-                socketio.emit('my_response', {'data': 'done'}, namespace='/io')
+    background_thread = lambda status=False: req_thread(socketio, status)  # noqa : E731
 
     @app.route('/')
     def index():
