@@ -1,7 +1,9 @@
 from sqlalchemy import (Column, String, Integer, Boolean)
 from sqlalchemy.orm import relationship, validates
+
 from helpers.database import Base
 from utilities.utility import Utility
+import api.response.models
 
 
 class Question(Base, Utility):
@@ -18,3 +20,8 @@ class Question(Base, Utility):
     @validates('question_type')
     def convert_capitalize(self, key, value):
         return value.lower()
+
+    @property
+    def question_response_count(self):
+        ResponseModel = api.response.models.Response
+        return ResponseModel.query.filter_by(question_id=self.id).count()

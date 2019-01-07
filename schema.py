@@ -37,7 +37,8 @@ class Query(
     api.notification.schema.Query,
     api.question.schema_query.Query,
     api.response.schema.Query,
-    api.response.schema_query.Query
+    api.response.schema_query.Query,
+    api.question.schema.Query,
 ):
     pass
 
