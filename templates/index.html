@@ -1,68 +1,13 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta
-      name="google-site-verification"
-      content="VBSIFp1OyI1gpnRTREBEjNBj_Wat50wzwzVTrG1YuHY"
-    />
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Flask-socketio</title>
-    <script
-      type="text/javascript"
-      src="//code.jquery.com/jquery-1.4.2.min.js"
-    ></script>
-    <script
-      type="text/javascript"
-      src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"
-    ></script>
-    <script type="text/javascript" charset="utf-8">
-      $(document).ready(function() {
-        namespace = '/io';
-
-        var socket = io.connect(
-          location.protocol +
-            '//' +
-            document.domain +
-            ':' +
-            location.port +
-            namespace,
-        );
-
-        socket.on('connect', function() {
-          socket.emit('my_event', { data: "I'm connected!" });
-        });
-
-        socket.on('my_response', function(msg) {
-          console.log('Hello');
-
-          $('#log').append(
-            '<br>' +
-              $('<div/>')
-                .text('Received #' + ': ' + msg.data)
-                .html(),
-          );
-        });
-
-        $('form#disconnect').submit(function(event) {
-          socket.emit('disconnect_request');
-          return false;
-        });
-      });
-    </script>
-  </head>
-
-  <body>
-    <h1>Flask-SocketIO</h1>
-    <p>
-      Async mode is: <b>{{ async_mode }}</b>
-    </p>
-
-    <form id="disconnect" method="POST" action="#">
-      <input type="submit" value="Disconnect" />
-    </form>
-    <h2>Receive:</h2>
-    <div id="log"></div>
-  </body>
+<html lang="en">
+<head>
+    <meta name="google-site-verification" content="VBSIFp1OyI1gpnRTREBEjNBj_Wat50wzwzVTrG1YuHY" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
 </html>
