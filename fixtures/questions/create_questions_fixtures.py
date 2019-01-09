@@ -1,18 +1,42 @@
+import datetime
+
+start_date = (
+  datetime.datetime.now().replace(microsecond=0) + datetime.timedelta(days=1)
+).isoformat()
+end_date = (
+  datetime.datetime.now().replace(microsecond=0) + datetime.timedelta(days=2)
+).isoformat()
+wrong_start_date = (
+  datetime.datetime.now().replace(microsecond=0) + datetime.timedelta(days=-1)
+).isoformat()
+wrong_end_date = (
+  datetime.datetime.now().replace(microsecond=0) + datetime.timedelta(days=1)
+).isoformat()
+
+
 create_question_query = '''
- mutation{
+ mutation{{
   createQuestion(questionType:"Rate",
   question:"How will you rate the brightness of the room",
-  startDate:"20 Nov 2018", endDate:"28 Nov 2018") {
-    question{
+  startDate:"{}", endDate:"{}") {{
+    question{{
       id
       question
       questionType
       startDate
       endDate
-      }
-  }
-}
-'''
+      }}
+  }}
+}}
+'''.format(start_date, end_date)
+
+create_question_query_with_early_startDate = create_question_query.replace(
+  start_date, wrong_start_date
+)
+
+create_question_query_with_early_endDate = create_question_query.replace(
+  end_date, wrong_end_date
+)
 
 create_question_response = {
   "data": {
@@ -21,49 +45,49 @@ create_question_response = {
         "id": "4",
         "question": "How will you rate the brightness of the room",
         "questionType": "rate",
-        "startDate": "20 Nov 2018",
-        "endDate": "28 Nov 2018"
+        "startDate": start_date.replace('T', ' '),
+        "endDate": end_date.replace('T', ' ')
       }
     }
   }
 }
 
 question_mutation_query_without_name = '''
-     mutation{
+     mutation{{
   createQuestion(questionType:"",
   question:"How will you rate the brightness of the room",
-  startDate:"20 Nov 2018", endDate:"28 Nov 2018") {
-    question{
+  startDate:"{}", endDate:"{}") {{
+    question{{
       id
       question
       questionType
       startDate
       endDate
-      }
-  }
-}
-'''
+      }}
+  }}
+}}
+'''.format(start_date, end_date)
 
 update_question_mutation = '''
-  mutation {
+  mutation {{
       updateQuestion(questionId:1,
-      startDate:"12th Dec, 2018", endDate:"18th Dec, 2018") {
-        question {
+      startDate:"{}", endDate:"{}") {{
+        question {{
           id,
           startDate,
           endDate,
-        }
-      }
-  }
-'''
+        }}
+      }}
+  }}
+'''.format(start_date, end_date)
 
 update_question_response = {
   "data": {
     "updateQuestion": {
       "question": {
         "id": "1",
-        "startDate": "12th Dec, 2018",
-        "endDate": "18th Dec, 2018",
+        "startDate": start_date.replace('T', ' '),
+        "endDate": end_date.replace('T', ' '),
       }
     }
   }

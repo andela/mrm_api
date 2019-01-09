@@ -4,7 +4,9 @@ from tests.base import BaseTestCase, CommonTestCases
 from fixtures.questions.create_questions_fixtures import (
    create_question_query,
    create_question_response,
-   question_mutation_query_without_name
+   question_mutation_query_without_name,
+   create_question_query_with_early_startDate,
+   create_question_query_with_early_endDate
 )
 
 
@@ -32,4 +34,28 @@ class TestCreateBlock(BaseTestCase):
             self,
             question_mutation_query_without_name,
             "question_type is required field"
+        )
+
+    def test_question_creation_with_wrong_startDate(self):
+        """
+        Testing for question creation when startDate is
+        before current date
+
+        """
+        CommonTestCases.admin_token_assert_in(
+            self,
+            create_question_query_with_early_startDate,
+            'startDate should be today or after'
+        )
+
+    def test_question_creation_with_wrong_endDate(self):
+        """
+        Testing for question creation when startDate is
+        before current date
+
+        """
+        CommonTestCases.admin_token_assert_in(
+            self,
+            create_question_query_with_early_endDate,
+            'endDate should be at least a day after startDate'
         )
