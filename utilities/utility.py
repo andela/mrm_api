@@ -9,7 +9,8 @@ def validate_empty_fields(**kwargs):
     :params kwargs
     """
     for field in kwargs:
-        if not kwargs.get(field):
+        value = kwargs.get(field)
+        if not type(value) is bool and not value:
             raise AttributeError(field + " is required field")
 
 
