@@ -1,4 +1,5 @@
 import graphene
+from sqlalchemy import func
 from graphql import GraphQLError
 from graphene_sqlalchemy import SQLAlchemyObjectType
 from api.location.models import Location as LocationModel
@@ -6,8 +7,15 @@ from api.location.models import Location as LocationModel
 from api.devices.models import Devices as DevicesModel  # noqa: F401
 from api.room_resource.models import Resource as ResourceModel  # noqa: F401
 from api.room.schema import Room
-from utilities.utility import validate_country_field, validate_timezone_field, update_entity_fields, validate_empty_fields, validate_url  # noqa: E501
+from utilities.utility import (
+    validate_country_field,
+    validate_timezone_field,
+    update_entity_fields,
+    validate_empty_fields,
+    validate_url)
 from helpers.room_filter.room_filter import room_join_location
+from helpers.auth.validator import ErrorHandler
+from helpers.auth.authentication import Auth
 
 
 class Location(SQLAlchemyObjectType):
@@ -24,11 +32,16 @@ class CreateLocation(graphene.Mutation):
         time_zone = graphene.String(required=True)
     location = graphene.Field(Location)
 
+    @Auth.user_roles('Admin')
     def mutate(self, info, **kwargs):
         # Validate if the country given is a valid country
         validate_country_field(**kwargs)
         validate_timezone_field(**kwargs)
-        validate_url(**kwargs)
+        query = Location.get_query(info)
+        result = query.filter(
+            func.lower(LocationModel.name) == func.lower(kwargs.get('name')))
+        if result.count() > 0:
+            ErrorHandler.check_conflict(self, kwargs['name'], 'Location')
         location = LocationModel(**kwargs)
         location.save()
         return CreateLocation(location=location)
@@ -44,6 +57,7 @@ class UpdateLocation(graphene.Mutation):
         time_zone = graphene.String()
     location = graphene.Field(Location)
 
+    @Auth.user_roles('Admin')
     def mutate(self, info, location_id, **kwargs):
         location = Location.get_query(info)
         location_object = location.filter(

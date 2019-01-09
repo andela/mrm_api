@@ -1,4 +1,4 @@
-from tests.base import BaseTestCase
+from tests.base import BaseTestCase, CommonTestCases
 from fixtures.location.create_location_fixtures import (
     create_location_query,
     create_location_response)
@@ -14,6 +14,5 @@ class TestCreateLocation(BaseTestCase):
         """
         Testing for location creation
         """
-        query = self.client.execute(create_location_query)
-        expected_response = create_location_response
-        self.assertEqual(query, expected_response)
+        CommonTestCases.admin_token_assert_equal(
+            self, create_location_query, create_location_response)
