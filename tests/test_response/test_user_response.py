@@ -11,7 +11,12 @@ from fixtures.response.user_response_fixtures import (
 from fixtures.response.user_response_check import (
     check_non_existing_question,
     check_with_non_existent_room,
-    select_check_question
+    select_check_question,
+    filter_question_by_room,
+    filter_question_by_room_response,
+    filter_question_by_invalid_room,
+    filter_question_by_invalid_room_response
+
 )
 from fixtures.response.user_response_suggestions import (
     create_suggestion_question,
@@ -157,4 +162,26 @@ class TestCreateResponse(BaseTestCase):
             self,
             choose_non_existent_question,
             "Question does not exist"
+        )
+
+    def test_filter_response_by_valid_room_id(self):
+            """
+            Testing for creating rates
+
+            """
+            CommonTestCases.admin_token_assert_equal(
+                self,
+                filter_question_by_room,
+                filter_question_by_room_response
+            )
+
+    def test_filter_response_by_invalid_room_id(self):
+        """
+        Testing for creating rates
+
+        """
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            filter_question_by_invalid_room,
+            filter_question_by_invalid_room_response
         )

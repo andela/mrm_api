@@ -34,7 +34,8 @@ class Query(
     api.wing.schema.Query,
     utilities.calendar_ids_cleanup.Query,
     api.notification.schema.Query,
-    api.question.schema_query.Query
+    api.question.schema_query.Query,
+    api.response.schema.Query
 ):
     pass
 
