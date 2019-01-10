@@ -29,7 +29,12 @@ class AllResponses(graphene.ObjectType):
 class Query(graphene.ObjectType):
     room_response = graphene.Field(
         RoomResponse, room_id=graphene.Int())
-    all_room_responses = graphene.Field(AllResponses)
+    all_room_responses = graphene.Field(
+        AllResponses,
+        filter_by=graphene.String(),
+        upper_limit=graphene.Int(),
+        lower_limit=graphene.Int()
+    )
 
     def get_room_response(self, test_response):
         response = []
@@ -78,8 +83,7 @@ class Query(graphene.ObjectType):
                 total_responses=total_response,
                 response=responses)
 
-    @Auth.user_roles('Admin')
-    def resolve_all_room_responses(self, info):
+    def get_all_reponses(self, info):
         response = []
         rooms = RoomModel.query.all()
         for room in rooms:
@@ -93,4 +97,29 @@ class Query(graphene.ObjectType):
                 total_responses=total_response,
                 response=all_responses)
             response.append(responses)
-        return AllResponses(responses=response, room_name=room_name)
+        return (response, room_name)
+
+    def filter_rooms_by_responses(self, info, upper_limit, lower_limit):
+        all_responses, room_name = Query.get_all_reponses(self, info)
+        filtered_responses = []
+        for response in all_responses:
+            reponse_count = response.total_responses
+            if lower_limit <= reponse_count <= upper_limit:
+                filtered_responses.append(response)
+        return (filtered_responses, room_name)
+
+    @Auth.user_roles('Admin')
+    def resolve_all_room_responses(
+            self, info, filter_by=None,
+            lower_limit=None, upper_limit=None):
+        responses, room_name = Query.get_all_reponses(self, info)
+        if filter_by == 'Responses':
+            if isinstance(lower_limit, int) and isinstance(upper_limit, int):
+                responses, room_name = Query.filter_rooms_by_responses(
+                    self, info, upper_limit, lower_limit
+                )
+            else:
+                raise GraphQLError("lower_limit and upper_limit are \
+                required to filter by responses")
+
+        return AllResponses(responses=responses, room_name=room_name)
