@@ -23,6 +23,36 @@ class CreateResponse(graphene.Mutation):
 
     response = graphene.Field(Response)
 
+    def create_response(question_type, **kwargs):
+        if question_type.lower() == 'rate':
+            if 'rate' not in kwargs:
+                raise GraphQLError("Provide a rating response")
+            else:
+                validate_rating_field(**kwargs)
+                rating = ResponseModel(rate=kwargs['rate'],
+                                       room_id=kwargs['room_id'],
+                                       question_id=kwargs['question_id'])
+                rating.save()
+                return rating
+        if question_type.lower() == 'check':
+            if 'check' not in kwargs:
+                raise GraphQLError("Provide a check response")
+            checking = ResponseModel(
+                check=kwargs['check'],
+                room_id=kwargs['room_id'],
+                question_id=kwargs['question_id'])
+            checking.save()
+            return checking
+        if question_type.lower() == 'input':
+            if 'text_area' not in kwargs:
+                raise GraphQLError("Provide a text response")
+            suggestion = ResponseModel(
+                text_area=kwargs['text_area'],
+                room_id=kwargs['room_id'],
+                question_id=kwargs['question_id'])
+            suggestion.save()
+            return suggestion
+
     def mutate(self, info, **kwargs):
         validate_empty_fields(**kwargs)
         query = Room.get_query(info)
@@ -33,34 +63,8 @@ class CreateResponse(graphene.Mutation):
         if not get_question:
             raise GraphQLError("Question does not exist")
         question_type = get_question.question_type
-        if question_type.lower() == 'rate':
-            if 'rate' not in kwargs:
-                raise GraphQLError("Provide a rating response")
-            else:
-                validate_rating_field(**kwargs)
-                rating = ResponseModel(rate=kwargs['rate'],
-                                       room_id=kwargs['room_id'],
-                                       question_id=kwargs['question_id'])
-                rating.save()
-                return CreateResponse(response=rating)
-        if question_type.lower() == 'check':
-            if 'check' not in kwargs:
-                raise GraphQLError("Provide a check response")
-            checking = ResponseModel(
-                check=kwargs['check'],
-                room_id=kwargs['room_id'],
-                question_id=kwargs['question_id'])
-            checking.save()
-            return CreateResponse(response=checking)
-        if question_type.lower() == 'input':
-            if 'text_area' not in kwargs:
-                raise GraphQLError("Provide a text response")
-            suggestion = ResponseModel(
-                text_area=kwargs['text_area'],
-                room_id=kwargs['room_id'],
-                question_id=kwargs['question_id'])
-            suggestion.save()
-            return CreateResponse(response=suggestion)
+        resource = CreateResponse.create_response(question_type, **kwargs)
+        return CreateResponse(response=resource)
 
 
 class Query(graphene.ObjectType):

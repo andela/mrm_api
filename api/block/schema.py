@@ -54,7 +54,7 @@ class UpdateBlock(graphene.Mutation):
         if not exact_block:
             raise GraphQLError("Block not found")
 
-        admin_roles.update_delete_block(block_id)
+        admin_roles.create_floor_update_delete_block(block_id)
 
         update_entity_fields(exact_block, **kwargs)
         exact_block.save()
@@ -74,7 +74,7 @@ class DeleteBlock(graphene.Mutation):
         if not exact_block:
             raise GraphQLError("Block not found")
 
-        admin_roles.update_delete_block(block_id)
+        admin_roles.create_floor_update_delete_block(block_id)
         exact_block.delete()
         return DeleteBlock(block=exact_block)
 

@@ -105,6 +105,15 @@ class Query(graphene.ObjectType):
         if not check_calendar_id:
             raise GraphQLError("CalendarId given not assigned to any room on converge")  # noqa: E501
 
+    def room_occupants_room_schedule(self, info, calender_id, days):
+        query = Room.get_query(info)
+        Query.check_valid_calendar_id(self, query, calender_id)
+        resource = RoomSchedules.get_room_schedules(
+            self,
+            calender_id,
+            days)
+        return resource
+
     def resolve_all_rooms(self, info, **kwargs):
         response = PaginatedRooms(**kwargs)
         return response
@@ -126,25 +135,15 @@ class Query(graphene.ObjectType):
         return check_room_name
 
     def resolve_room_occupants(self, info, calendar_id, days):
-        query = Room.get_query(info)
-        Query.check_valid_calendar_id(self, query, calendar_id)
-        room_occupants = RoomSchedules.get_room_schedules(
-            self,
-            calendar_id,
-            days)
+        resource = Query.room_occupants_room_schedule(self, info, calendar_id, days)  # noqa: E501
         return Calendar(
-            occupants=room_occupants[0]
+            occupants=resource[0]
         )
 
     def resolve_room_schedule(self, info, calendar_id, days):
-        query = Room.get_query(info)
-        Query.check_valid_calendar_id(self, query, calendar_id)
-        room_schedule = RoomSchedules.get_room_schedules(
-            self,
-            calendar_id,
-            days)
+        resource = Query.room_occupants_room_schedule(self, info, calendar_id, days)  # noqa: E501
         return Calendar(
-            events=room_schedule[1]
+            events=resource[1]
         )
 
     @Auth.user_roles('Admin')
