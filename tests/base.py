@@ -4,6 +4,7 @@ import json
 
 from flask_testing import TestCase
 from graphene.test import Client
+from datetime import datetime
 
 from app import create_app
 from schema import schema
@@ -122,7 +123,8 @@ class BaseTestCase(TestCase):
             response_1 = Response(
                 question_id=1,
                 room_id=1,
-                rate=2
+                rate=2,
+                created_date=datetime.now()
             )
             response_1.save()
             db_session.commit()
