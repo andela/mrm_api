@@ -21,6 +21,7 @@ class Responses(graphene.ObjectType):
 
 
 class Query(graphene.ObjectType):
+    all_questions = graphene.List(Question)
     feedback_question = graphene.Field(Responses,
                                        page=graphene.Int(),
                                        per_page=graphene.Int())
@@ -60,3 +61,7 @@ class Query(graphene.ObjectType):
                              pages=pages,
                              total_responses=total_responses)
         return Responses(responses=responses, total_responses=total_responses)  # noqa: E501
+
+    def resolve_all_questions(self, info):
+        query = Question.get_query(info)
+        return query.all()
