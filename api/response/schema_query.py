@@ -1,8 +1,9 @@
 import graphene
 from graphql import GraphQLError
-
 from api.response.schema import Response
+from api.response.models import Response as ResponseModel
 from api.room.schema import Room
+from api.room.models import Room as RoomModel
 from helpers.auth.authentication import Auth
 
 
@@ -20,9 +21,15 @@ class RoomResponse(graphene.ObjectType):
     response = graphene.List(ResponseDetails)
 
 
+class AllResponses(graphene.ObjectType):
+    room_name = graphene.String()
+    responses = graphene.List(RoomResponse)
+
+
 class Query(graphene.ObjectType):
     room_response = graphene.Field(
         RoomResponse, room_id=graphene.Int())
+    all_room_responses = graphene.Field(AllResponses)
 
     def get_room_response(self, test_response):
         response = []
@@ -70,3 +77,20 @@ class Query(graphene.ObjectType):
                 room_name=room_name,
                 total_responses=total_response,
                 response=responses)
+
+    @Auth.user_roles('Admin')
+    def resolve_all_room_responses(self, info):
+        response = []
+        rooms = RoomModel.query.all()
+        for room in rooms:
+            room_name = room.name
+            total_response = ResponseModel.query.filter_by(
+                room_id=room.id).count()
+            room_response = Response.get_query(info).filter_by(room_id=room.id)
+            all_responses = Query.get_room_response(self, room_response)
+            responses = RoomResponse(
+                room_name=room_name,
+                total_responses=total_response,
+                response=all_responses)
+            response.append(responses)
+        return AllResponses(responses=response, room_name=room_name)

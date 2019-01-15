@@ -4,7 +4,9 @@ from tests.base import BaseTestCase, CommonTestCases
 from fixtures.response.room_response_fixture import (
    get_room_response_query,
    get_room_response_query_response,
-   get_room_response_non_existence_room_id
+   get_room_response_non_existence_room_id,
+   summary_room_response_query,
+   summary_room_response_data
 )
 
 
@@ -34,4 +36,15 @@ class TestRoomResponse(BaseTestCase):
             self,
             get_room_response_non_existence_room_id,
             "Non-existent room id"
+        )
+
+    def test_summary_room_responses(self):
+        """
+        Testing for all responses in all rooms
+
+        """
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            summary_room_response_query,
+            summary_room_response_data
         )
