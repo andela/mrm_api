@@ -134,3 +134,33 @@ delete_question_invalidId = '''
   }
 }
 '''
+all_questions_query = '''
+query {
+    allQuestions{
+        question
+        id
+        questionType
+    }
+}
+'''
+all_questions_response = {
+    "data": {
+        "allQuestions": [
+            {
+                "question": "How will you rate the brightness of the room",
+                "id": "1",
+                "questionType": "rate"
+            },
+            {
+                'question': 'Is there anything missing in the room',
+                'id': '2',
+                'questionType': 'check'
+            },
+            {
+                'question': 'Any other suggestion',
+                'id': '3',
+                'questionType': 'input'
+            }
+        ]
+    }
+}

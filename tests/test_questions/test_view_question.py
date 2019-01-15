@@ -8,6 +8,10 @@ from fixtures.questions.get_question_fixtures import (
     get_paginated_question_query_response,
     get_paginated_question_invalid_page,
 )
+from fixtures.questions.create_questions_fixtures import (
+    all_questions_query,
+    all_questions_response
+)
 
 
 sys.path.append(os.getcwd())
@@ -46,4 +50,15 @@ class TestQueryQuestion(BaseTestCase):
             self,
             get_paginated_question_invalid_page,
             "Page does not exist"
+        )
+
+    def test_all_questions_query(self):
+        """
+        Testing for viewing feedback question
+
+        """
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            all_questions_query,
+            all_questions_response
         )
