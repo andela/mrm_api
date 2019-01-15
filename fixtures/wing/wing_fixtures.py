@@ -221,3 +221,71 @@ delete_wing_id_not_found = '''
     }
 }
 '''
+
+get_all_wings_query = '''query {
+    allWings {
+        wings {
+            id
+            name
+            floorId
+        }
+    }
+}
+'''
+
+get_all_wings_query_response = {
+    "data": {
+        "allWings": {
+            "wings": [
+                {
+                    "id": "1",
+                    "name": "Naija",
+                    "floorId": 5
+                },
+                {
+                    "id": "2",
+                    "name": "Big Apple",
+                    "floorId": 5
+                }
+            ]
+        }
+    }
+}
+
+paginated_wings_query = '''query {
+    allWings(page: 1, perPage: 2) {
+        wings {
+            id
+            name
+            floorId
+        }
+        queryTotal
+        pages
+        hasNext
+        hasPrevious
+    }
+}
+'''
+
+paginated_wings_query_response = {
+    "data": {
+        "allWings": {
+            "wings": [
+                {
+                    "id": "1",
+                    "name": "Naija",
+                    "floorId": 5
+                },
+                {
+                    "id": "2",
+                    "name": "Big Apple",
+                    "floorId": 5
+                }
+            ],
+            "queryTotal": 2,
+            "pages": 1,
+            "hasNext": False,
+            "hasPrevious": False
+        }
+    }
+}

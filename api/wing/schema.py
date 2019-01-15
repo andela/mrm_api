@@ -8,6 +8,7 @@ from utilities.utility import update_entity_fields, validate_empty_fields
 from helpers.auth.authentication import Auth
 from helpers.auth.error_handler import SaveContextManager
 from helpers.auth.admin_roles import admin_roles
+from helpers.pagination.paginate import Paginate, validate_page
 
 
 class Wing(SQLAlchemyObjectType):
@@ -73,12 +74,37 @@ class UpdateWing(graphene.Mutation):
             return UpdateWing(wing=exact_wing)
 
 
-class Query(graphene.ObjectType):
-    all_wings = graphene.List(Wing)
+class PaginatedWings(Paginate):
+    wings = graphene.List(Wing)
 
-    def resolve_all_wings(self, info):
+    def resolve_wings(self, info, **kwargs):
+        ''' This function paginates the returned response
+        if page parameter is passed,
+        otherwise it returns all floors
+        '''
+        page = self.page
+        per_page = self.per_page
         query = Wing.get_query(info)
-        return query.all()
+        if not page:
+            return query.all()
+        page = validate_page(page)
+        self.query_total = query.count()
+        result = query.limit(per_page).offset(page*per_page)
+        if result.count() == 0:
+            raise GraphQLError("No more wings")
+        return result
+
+
+class Query(graphene.ObjectType):
+    all_wings = graphene.Field(
+        PaginatedWings,
+        page=graphene.Int(),
+        per_page=graphene.Int(),
+    )
+
+    def resolve_all_wings(self, info, **kwargs):
+        response = PaginatedWings(**kwargs)
+        return response
 
 
 class Mutation(graphene.ObjectType):
