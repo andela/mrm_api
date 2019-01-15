@@ -62,7 +62,7 @@ create_check_response = {
   "data": {
     "createResponse": {
       "response": {
-        "id": "2",
+        "id": "3",
         "questionId": 2,
         "roomId": 1
       }
@@ -120,13 +120,22 @@ filter_question_by_room = '''
 
 filter_question_by_room_response = {
     "data": {
-        "getRoomResponse": [{
+        "getRoomResponse": [
+          {
             "room": {
-                "capacity": 6,
-                "name": "Entebbe",
-                "roomType": "meeting"
+              "capacity": 6,
+              "name": "Entebbe",
+              "roomType": "meeting"
             }
-        }]
+          },
+          {
+            "room": {
+              "capacity": 6,
+              "name": "Entebbe",
+              "roomType": "meeting"
+            }
+          }
+        ]
     }
 }
 
