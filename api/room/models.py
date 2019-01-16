@@ -8,7 +8,6 @@ from utilities.utility import Utility
 from api.floor.models import Floor  # noqa: F401
 from api.wing.models import Wing  # noqa: F401
 from api.events.models import Events  # noqa: F401
-from api.feedback.models import Feedback  # noqa: F401
 from api.response.models import Response  # noqa: F401
 from helpers.auth.validator import verify_calendar_id
 
@@ -27,7 +26,6 @@ class Room(Base, Utility):
     floor = relationship('Floor')
     resources = relationship('Resource', cascade="all, delete-orphan")
     events = relationship('Events', cascade="all, delete-orphan")
-    feedback = relationship('Feedback', cascade="all, delete-orphan")
     response = relationship('Response', cascade="all, delete-orphan")
 
 

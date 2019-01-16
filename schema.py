@@ -14,7 +14,6 @@ import api.wing.schema
 import api.events.schema
 import utilities.calendar_ids_cleanup
 import api.notification.schema
-import api.feedback.schema
 import api.question.schema
 import api.question.schema_query
 import api.response.schema
@@ -54,7 +53,6 @@ class Mutation(
     api.office.schema.Mutation,
     api.events.schema.Mutation,
     api.notification.schema.Mutation,
-    api.feedback.schema.Mutation,
     api.block.schema.Mutation,
     api.wing.schema.Mutation,
     api.floor.schema.Mutation,
