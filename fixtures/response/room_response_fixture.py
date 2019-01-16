@@ -45,3 +45,46 @@ get_room_response_non_existence_room_id = '''{
     }
 }
 '''
+
+summary_room_response_query = '''{
+    allRoomResponses {
+        responses {
+        roomName,
+        totalResponses,
+        response {
+          responseId,
+          rating,
+          suggestion,
+          missingItems
+        }
+      }
+    }
+}
+'''
+
+summary_room_response_data = {
+  "data": {
+    "allRoomResponses": {
+      "responses": [
+        {
+          "roomName": "Entebbe",
+          "totalResponses": 2,
+          "response": [
+            {
+              "responseId": 2,
+              "rating": None,
+              "suggestion": None,
+              "missingItems": ['Markers']
+            },
+            {
+              "responseId": 1,
+              "rating": 2,
+              "suggestion": None,
+              "missingItems": []
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
