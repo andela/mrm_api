@@ -81,6 +81,7 @@ celerybeat-schedule
 
 # dotenv
 .env
+.env.tests
 
 # virtualenv
 .venv
@@ -122,3 +123,12 @@ credentials.json
 # redis
 /redis-stable
 dump.rdb
+
+# logs
+celery.err.log
+celery.out.log
+mrm.err.log
+mrm.out.log
+
+# database
+converge_db/

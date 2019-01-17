@@ -5,6 +5,171 @@
  The MRM-api is the backbone of a tool to facilitate room management. It enables  capturing of feedback based on room usage and analyse usage statistics.The MRM-api provides capability to register rooms and give feedback.
 
 ## Development set up
+
+#### Set up with docker
+- Install docker
+	```
+    brew cask install docker
+    ```
+    OR
+    
+    [install via dmg file](https://docs.docker.com/docker-for-mac/install/)
+    
+- Create Application environment variables and save them in .env file
+    ```
+    APP_SETTINGS="testing" # set app Enviroment.
+    SECRET_KEY="some-very-long-string-of-random-characters"
+    DEV_DATABASE_URL="" # Db for Development.
+    TEST_DATABASE_URL="" # Db for Testing
+    DATABASE_URL="" # Db for Production
+    MAIL_SERVER=""# SMTP server
+    MAIL_PORT="" # server port
+    MAIL_USE_TLS="" # Using TLS?
+    MAIL_USERNAME="" # converge username
+    MAIL_PASSWORD="" # password
+    CELERY_BROKER_URL="" # redis url
+    CELERY_RESULT_BACKEND="" # redis url
+    C_FORCE_ROOT=true
+    ```
+- Run application.
+    ```
+    make build
+    ```
+    This will create 3 services
+    	
+     - database
+     - app
+     - redis
+
+    Start the gunicorn server
+    ```
+    make run-app
+    ```
+- Running migrations
+
+    - Initial migration commands
+        ```
+        make migrate-initial message="Migration message"
+        ```
+    - If you have one migration file in the alembic/version folder. Run the commands below:
+        ```
+        make migrate
+        ```
+    - If you have more than 2 migration files in the alembic/versions folder. Rum the commands bellow
+        ```
+        make migrate message="Migration message"
+        ```
+- Show services
+	```
+    make services
+    ```
+- Check the status
+	```
+    make status
+    ```
+- Start services individually
+	```
+    make start service=<service name>
+    ```
+- Create services individually
+	```
+    make create service=<service name>
+    ```
+- Stop all services
+	```
+    make down
+    ```
+- Stop services individually
+	```
+    make stop service=<service name>
+    ```
+- Remove services individually
+	```
+    make remove service=<service name>
+    ```
+- Restarting a service
+	```
+    make restart service=<service name>
+    ```
+- Kill services
+	```
+    make kill
+    ```
+- Remove a container
+	```
+    make remove
+    ```
+- SSH into a container
+	```
+    make ssh service=<service name>
+    ```
+- Running Tests
+
+  - Create Application environment variables and save them in .env.tests file. Do not include comments
+    ```
+    APP_SETTINGS="testing" # set app Enviroment.
+    SECRET_KEY="some-very-long-string-of-random-characters"
+    DEV_DATABASE_URL="" # Db for Development.
+    TEST_DATABASE_URL="" # Db for Testing
+    DATABASE_URL="" # Db for Production
+    MAIL_SERVER=""# SMTP server
+    MAIL_PORT="" # server port
+    MAIL_USE_TLS="" # Using TLS?
+    MAIL_USERNAME="" # converge username
+    MAIL_PASSWORD="" # password
+    CELERY_BROKER_URL="" # redis url
+    CELERY_RESULT_BACKEND="" # redis url
+    C_FORCE_ROOT=true
+    ADMIN_TOKEN=""
+    USER_TOKEN=""
+    INVALID_TOKEN=""
+    ```
+  - create database for tests
+ 	```
+    make create-test-database
+    ```
+  - stop the redis service
+    ```
+    make stop service=redis
+    ```
+  - To run tests and observe test coverage for various versions of python . Run the command below.
+	```
+ 	make test test=tox
+ 	```
+  - To run  and check for test coverage. Run the command below:
+ 	```
+ 	make test test="coverage run -m pytest"
+ 	```
+  - To obtain coverage report. Run the command below:
+
+ 	```
+ 	make test test="coverage report"
+ 	```
+  - To obtain html browser report. Run command below:
+ 	```
+	make test test="coverage html"
+ 	```
+ 	```
+ 	A folder titled html_coverage_report will be generated. Open it and copy the path  of index.html and paste it in your browser.
+ 	```
+  - To run lint tests with `flake8`:
+
+ 	```
+ 	make test test="flake8"
+ 	```
+
+##### Importing a database dump to the docker database container
+  - Create a dump from a database, preferrably `--no-owner` flag
+	```
+	pg_dump -d <dbname> -U <postgres-user> -h <localhost/ipaddress> --no-owner -F p --column-inserts > converge.sql
+	```
+  - Import the database
+  	```
+    make import dump="<path to dump file>"
+  	```
+
+#### Set up without docker
+
 - Check that python 3, pip, virtualenv and postgress are installed
 
 - Check that python 3, pip, virtualenv and postgress are installed
@@ -96,9 +261,6 @@
  A folder titled html_coverage_report will be generated. Open it and copy the path  of index.html and paste it in your browser.
  ```
 
-
-
-
 ## Built with
 - Python version  3
 - Flask
@@ -114,7 +276,3 @@ When contributing to this repository, please first discuss the change you wish t
 - The Contributor shall then create a branch off  the ` develop` branch where they are expected to undertake the task they have chosen.
 - After  undertaking the task, a fully detailed pull request shall be submitted to the owners of this repository for review.
 - If there any changes requested ,it is expected that these changes shall be effected and the pull request resubmitted for review.Once all the changes are accepted, the pull request shall be closed and the changes merged into `develop` by the owners of this repository.
-
-
-
-
