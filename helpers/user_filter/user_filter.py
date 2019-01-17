@@ -1,7 +1,7 @@
 from graphql import GraphQLError
 
-from api.user_role.models import UsersRole
 from api.location.models import Location as LocationModel
+from api.user.models import users_roles
 
 
 def user_filter(query, filter_data):
@@ -36,5 +36,5 @@ def filter_by_location(query, location):
 
 
 def filter_by_role(query, role):
-    query = query.join(UsersRole)
+    query = query.join(users_roles)
     return query.filter_by(role_id=role)

@@ -1,10 +1,12 @@
 null = None
 user_role_mutation_query = '''
 mutation{
-  createUsersRole(userId: 3, roleId: 1){
+  createUserRole(userId: 3, roleId: 1){
     userRole{
-      roleId
-      userId
+      id
+      roles{
+        id
+      }
     }
   }
 }
@@ -12,57 +14,85 @@ mutation{
 
 user_role_mutation_response = {
     "data": {
-        "createUsersRole": {
+        "createUserRole": {
             "userRole": {
-                "roleId": 1,
-                "userId": 3
+                "id": "3",
+                "roles": [
+                    {
+                        "id": "1"
+                    }
+                ]
             }
         }
     }
 }
 
 user_role_query = '''
-query {
-  usersRole {
-    roleId
-    userId
+query{
+  users{
+    users{
+      id
+      roles{
+        role
+      }
+    }
   }
 }
 '''
 
 user_role_query_response = {
     "data": {
-        "usersRole": [
-            {
-                "userId": 1,
-                "roleId": 1
-            },
-            {
-                "userId": 2,
-                "roleId": 1
-            },
-            {
-                "userId": 3,
-                "roleId": 1
-            }
-        ]
+        "users": {
+            "users": [
+                {
+                    "id": "3",
+                    "roles": [
+                        {
+                            "role": "Default"
+                        }
+                    ]
+                },
+                {
+                    "id": "2",
+                    "roles": [
+                        {
+                            "role": "Admin"
+                        }
+                    ]
+                },
+                {
+                    "id": "1",
+                    "roles": [
+                        {
+                            "role": "Admin"
+                        }
+                    ]
+                },
+
+            ]
+        }
     }
 }
 
-query_user_by_user_id = '''
+query_user_by_user_email = '''
 query {
-  userRole(userId: 1){
-    userId
-    roleId
+  user(email:"mrm@andela.com"){
+    roles
+    {
+      role
+    }
   }
 }
 '''
 
-query_user_by_user_id_response = {
+query_user_by_user_email_response = {
     "data": {
-        "userRole": {
-            "userId": 1,
-            "roleId": 1
+        "user": {
+            "roles": [
+                {
+                    "role": "Admin"
+                }
+            ]
         }
     }
 }
@@ -112,6 +142,63 @@ change_unavailable_user_role_mutation_response = {
     "errors": [
         {
             "message": "User not found",
+            "locations": [
+                {
+                    "line": 3,
+                    "column": 3
+                }
+            ],
+            "path": [
+                "changeUserRole"
+            ]
+        }
+    ],
+    "data": {
+        "changeUserRole": null
+    }
+}
+
+query_user_by_user_email = '''
+query {
+  user(email:"mrm@andela.com"){
+    name
+    roles{
+      role
+    }
+  }
+}
+'''
+
+query_user_by_user_email_response = {
+    "data": {
+        "user": {
+            "name": "test test",
+            "roles": [
+                {
+                    "role": "Admin"
+                }
+            ]
+        }
+    }
+}
+
+assign_invalid_user_role_mutation = '''
+mutation{
+  changeUserRole(email:"mrm@andela.com", roleId:10){
+    user{
+      email
+      roles{
+        id
+      }
+    }
+  }
+}
+'''
+
+assign_invalid_user_role_response = {
+    "errors": [
+        {
+            "message": "invalid role id",
             "locations": [
                 {
                     "line": 3,

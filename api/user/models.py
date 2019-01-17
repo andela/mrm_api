@@ -1,12 +1,18 @@
-from sqlalchemy import (Column, String, Integer, Enum)
+from sqlalchemy import (Column, String, Integer, ForeignKey, Table, Enum)
 from sqlalchemy.orm import relationship
 from sqlalchemy.schema import Sequence
 
 from helpers.database import Base
 from utilities.utility import Utility, StateType
 from utilities.validations import validate_empty_fields
-from api.user_role.models import UsersRole  # noqa: F401
 from api.notification.models import Notification  # noqa: F401
+
+users_roles = Table(
+    'users_roles',
+    Base.metadata,
+    Column('user_id', Integer, ForeignKey('users.id')),
+    Column('role_id', Integer, ForeignKey('roles.id'))
+)
 
 
 class User(Base, Utility):
@@ -16,10 +22,14 @@ class User(Base, Utility):
     location = Column(String, nullable=True)
     name = Column(String, nullable=False)
     picture = Column(String, nullable=True)
-    roles = relationship('Role', secondary='users_roles')
     state = Column(Enum(StateType), default="active")
     notification_settings = relationship(
         'Notification', cascade="all, delete-orphan")
+    roles = relationship(
+        'Role',
+        secondary="users_roles",
+        backref=('users_association'),
+        lazy="joined")
 
     def __init__(self, **kwargs):
         validate_empty_fields(**kwargs)

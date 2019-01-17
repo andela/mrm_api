@@ -2,11 +2,11 @@ import sys
 import os
 from tests.base import BaseTestCase, CommonTestCases
 from fixtures.response.user_response_fixtures import (
-   create_rate_query,
-   create_rate_response,
-   rate_wrong_question,
-   invalid_rating_number,
-   rate_with_non_existent_room
+    create_rate_query,
+    create_rate_response,
+    rate_wrong_question,
+    invalid_rating_number,
+    rate_with_non_existent_room
 )
 from fixtures.response.user_response_check import (
     check_non_existing_question,

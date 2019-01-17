@@ -10,7 +10,6 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from api.user.models import User
 from api.role.models import Role
-from api.user_role.models import UsersRole
 from api.notification.models import Notification as NotificationModel
 from helpers.connection.connection_error_handler import handle_http_error
 
@@ -81,10 +80,8 @@ class Authentication:
             if not user:
                 try:
                     user_data = User(email=email, name=name, picture=picture)
+                    user_data.roles.append(role)
                     user_data.save()
-                    user_role = UsersRole(
-                        user_id=user_data.id, role_id=role.id)
-                    user_role.save()
                     notification_settings = NotificationModel(
                         user_id=user_data.id)
                     notification_settings.save()
@@ -128,17 +125,15 @@ class Authentication:
                     else:
                         user.location = "Nairobi"
                         user.save()
-                    user_role = UsersRole.query.filter_by(
-                        user_id=user.id).first()
-                    role = Role.query.filter_by(id=user_role.role_id).first()
 
-                    if role.role in expected_args:
+                    if user.roles and user.roles[0].role in expected_args:
                         return func(*args, **kwargs)
                     else:
                         message = (
                             'You are not authorized to perform this action')
                         status = 401
                         handle_http_error(message, status, expected_args)
+
                 else:
                     raise GraphQLError(user_data[0].data)
 

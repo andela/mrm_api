@@ -4,7 +4,6 @@ from sqlalchemy import func
 from graphql import GraphQLError
 
 from api.user.models import User as UserModel
-from api.user_role.models import UsersRole
 from api.notification.models import Notification as NotificationModel
 from helpers.auth.user_details import get_user_from_db
 from helpers.auth.authentication import Auth
@@ -14,6 +13,8 @@ from helpers.auth.error_handler import SaveContextManager
 from helpers.email.email import email_invite
 from helpers.user_filter.user_filter import user_filter
 from utilities.validations import update_entity_fields
+from api.role.schema import Role
+from api.role.models import Role as RoleModel
 
 
 class User(SQLAlchemyObjectType):
@@ -65,7 +66,7 @@ class Query(graphene.ObjectType):
         per_page=graphene.Int(),
         location_id=graphene.Int(),
         role_id=graphene.Int(),
-        )
+    )
     user = graphene.Field(
         lambda: User,
         email=graphene.String())
@@ -118,11 +119,46 @@ class ChangeUserRole(graphene.Mutation):
         exact_user = active_user.filter(UserModel.email == email).first()
         if not exact_user:
             raise GraphQLError("User not found")
-        user_role = UsersRole.query.filter_by(user_id=exact_user.id).first()
-        new_role = kwargs.pop('role_id')
-        user_role.role_id = new_role
-        with SaveContextManager(user_role, 'Role id', new_role):
-            return ChangeUserRole(user=exact_user)
+
+        if not exact_user.roles:
+            raise GraphQLError('user has no role')
+
+        new_role = RoleModel.query.filter_by(id=kwargs['role_id']).first()
+        if not new_role:
+            raise GraphQLError('invalid role id')
+
+        exact_user.roles[0] = new_role
+        exact_user.save()
+        return ChangeUserRole(user=exact_user)
+
+
+class CreateUserRole(graphene.Mutation):
+
+    class Arguments:
+        user_id = graphene.Int(required=True)
+        role_id = graphene.Int(required=True)
+    user_role = graphene.Field(User)
+
+    def mutate(self, info, **kwargs):
+        user = User.get_query(info)
+        exact_user = user.filter_by(id=kwargs['user_id']).first()
+
+        if not exact_user:
+            raise GraphQLError('User not found')
+
+        role = Role.get_query(info)
+        exact_role = role.filter_by(id=kwargs['role_id']).first()
+
+        if not exact_role:
+            raise GraphQLError('Role id does not exist')
+
+        if exact_user.roles:
+            raise GraphQLError('user already has a role')
+
+        exact_user.roles.append(exact_role)
+        exact_user.save()
+
+        return CreateUserRole(user_role=exact_user)
 
 
 class InviteToConverge(graphene.Mutation):
@@ -148,3 +184,4 @@ class Mutation(graphene.ObjectType):
     delete_user = DeleteUser.Field()
     change_user_role = ChangeUserRole.Field()
     invite_to_converge = InviteToConverge.Field()
+    create_user_role = CreateUserRole.Field()

@@ -17,7 +17,6 @@ from api.room.models import Room
 from api.room_resource.models import Resource
 from api.user.models import User
 from api.role.models import Role
-from api.user_role.models import UsersRole
 from api.devices.models import Devices
 from api.office.models import Office
 from api.question.models import Question
@@ -52,12 +51,12 @@ class BaseTestCase(TestCase):
                                location="Lagos", name="Peter Adeoye",
                                picture="https://www.andela.com/adeoye")
             lagos_admin.save()
+            global role
             role = Role(role="Admin")
             role.save()
-            user_role = UsersRole(user_id=admin_user.id, role_id=role.id)
-            user_role.save()
-            lagos_role = UsersRole(user_id=lagos_admin.id, role_id=role.id)
-            lagos_role.save()
+            admin_user.roles.append(role)
+            lagos_admin.roles.append(role)
+
             location = Location(name='Kampala', abbreviation='KLA')
             location.save()
             location_two = Location(name='Nairobi', abbreviation='NBO')
@@ -237,8 +236,7 @@ def change_user_role_helper(func):
         user = User(email='mrm@andela.com', name='this user',
                     location="Nairobi", picture='www.andela.com/user')
         user.save()
-        user_role = UsersRole(user_id=user.id, role_id=1)
-        user_role.save()
+        user.roles.append(role)
         db_session().commit()
         return headers
     return func_wrapper

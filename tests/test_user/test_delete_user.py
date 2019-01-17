@@ -4,10 +4,11 @@ import os
 from tests.base import BaseTestCase, CommonTestCases
 from fixtures.user.delete_user import (
     delete_user, expected_query_after_delete, delete_self, user_not_found,
-    delete_user_2)
+    delete_user_2, user_invalid_email)
 from api.user.models import User
 from api.role.models import Role
-from api.user_role.models import UsersRole
+import tests.base as base
+
 
 sys.path.append(os.getcwd())
 
@@ -27,9 +28,7 @@ class TestDeleteUser(BaseTestCase):
         user.save()
         role = Role(role="Default User")
         role.save()
-        user_role = UsersRole(user_id=user.id,
-                              role_id=role.id)
-        user_role.save()
+        user.roles.append(role)
 
         CommonTestCases.admin_token_assert_equal(
             self,
@@ -42,8 +41,8 @@ class TestDeleteUser(BaseTestCase):
                           location="Kampala", name="test test",
                           picture="www.andela.com/test")
         admin_user.save()
-        user_role = UsersRole(user_id=admin_user.id, role_id=1)
-        user_role.save()
+        role = base.role
+        admin_user.roles.append(role)
 
         CommonTestCases.user_token_assert_in(
             self,
@@ -63,4 +62,11 @@ class TestDeleteUser(BaseTestCase):
             self,
             user_not_found,
             "User not found"
+        )
+
+    def test_deleteuser_invalid_email(self):
+        CommonTestCases.admin_token_assert_in(
+            self,
+            user_invalid_email,
+            "Invalid email format"
         )

@@ -138,15 +138,18 @@ change_user_role_mutation_response = {
 
 change_user_role_to_non_existence_role_mutation = '''
 mutation{
-    changeUserRole(email:"peter.walugembe@andela.com", roleId: 10){
-        user{
-            name
-        }
+  createUserRole(userId: 1, roleId: 10){
+    userRole{
+      id
+      roles{
+        id
+      }
     }
+  }
 }
 '''
 
-change_user_role_to_non_existing_role_mutation_response = "Role id 10 does not exist"  # noqa: E501
+change_user_role_to_non_existing_role_mutation_response = "Role id does not exist"  # noqa: E501
 
 send_invitation_to_existent_user_query = '''
 mutation{
@@ -215,3 +218,26 @@ get_user_by_role_reponse = {
         }
     }
 }
+
+change_role_of_non_existing_user_mutation = '''
+mutation{
+  changeUserRole(email:"someuser@andela.com", roleId:1){
+    user{
+      email
+      roles{
+        id
+      }
+    }
+  }
+}
+'''
+
+assign_role_to_non_existing_user_mutation = '''
+mutation{
+  createUserRole(userId: 100, roleId: 1){
+    userRole{
+      email
+    }
+  }
+}
+'''
