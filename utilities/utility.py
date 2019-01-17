@@ -1,5 +1,16 @@
 import datetime
+import validators
 from helpers.database import db_session
+
+
+def validate_url(**kwargs):
+    """
+    Function to validate url when
+    saving an object
+    :params kwargs
+    """
+    if not validators.url(kwargs.get('image_url')):
+        raise AttributeError("Please enter a valid image url")
 
 
 def validate_empty_fields(**kwargs):

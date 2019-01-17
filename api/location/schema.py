@@ -6,7 +6,7 @@ from api.location.models import Location as LocationModel
 from api.devices.models import Devices as DevicesModel  # noqa: F401
 from api.room_resource.models import Resource as ResourceModel  # noqa: F401
 from api.room.schema import Room
-from utilities.utility import validate_country_field, validate_timezone_field, update_entity_fields, validate_empty_fields  # noqa: E501
+from utilities.utility import validate_country_field, validate_timezone_field, update_entity_fields, validate_empty_fields, validate_url  # noqa: E501
 from helpers.room_filter.room_filter import room_join_location
 
 
@@ -28,6 +28,7 @@ class CreateLocation(graphene.Mutation):
         # Validate if the country given is a valid country
         validate_country_field(**kwargs)
         validate_timezone_field(**kwargs)
+        validate_url(**kwargs)
         location = LocationModel(**kwargs)
         location.save()
         return CreateLocation(location=location)
@@ -53,8 +54,15 @@ class UpdateLocation(graphene.Mutation):
             validate_timezone_field(**kwargs)
         if "country" in kwargs:
             validate_country_field(**kwargs)
-        if "name" in kwargs or "abbreviation" in kwargs or "imageUrl" in kwargs:  # noqa
+        if "image_url" in kwargs:
+            validate_url(**kwargs)
+        if "abbreviation" in kwargs:  # noqa
             validate_empty_fields(**kwargs)
+        result = location.filter(LocationModel.name == kwargs.get('name'))
+        if result.count() > 0:
+            pass
+        else:
+            raise AttributeError("Not a valid location")
         update_entity_fields(location_object, **kwargs)
         location_object.save()
         return UpdateLocation(location=location_object)
