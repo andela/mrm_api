@@ -4,7 +4,10 @@ from sqlalchemy import (
 from sqlalchemy.orm import relationship
 from helpers.database import Base
 from utilities.utility import Utility
-from api.question.models import Question  # noqa: F401
+import api.question.models
+
+# not importing it directly prevents a circular-import error
+Question = api.question.models.Question  # noqa: F401
 
 
 missing_items = Table(

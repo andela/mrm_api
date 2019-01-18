@@ -9,11 +9,17 @@ from utilities.utility import (
     validate_date_time_range
     )
 from helpers.auth.authentication import Auth
+from helpers.pagination.paginate import Paginate, validate_page
 
 
 class Question(SQLAlchemyObjectType):
     class Meta:
         model = QuestionModel
+
+    question_response_count = graphene.Int()
+
+    def resolve_question_response_count(self, info):
+        return self.question_response_count
 
 
 class CreateQuestion(graphene.Mutation):
@@ -33,21 +39,41 @@ class CreateQuestion(graphene.Mutation):
         return CreateQuestion(question=question)
 
 
-class DeleteQuestion(graphene.Mutation):
-    class Arguments:
-        question_id = graphene.Int(required=True)
-    question = graphene.Field(Question)
+class PaginatedQuestions(Paginate):
+    questions = graphene.List(Question)
 
-    @Auth.user_roles('Admin')
-    def mutate(self, info, question_id, **kwargs):
-        query_question = Question.get_query(info)
-        exact_question = query_question.filter(
-            QuestionModel.id == question_id
-        ).first()
-        if not exact_question:
-            raise GraphQLError("Question not found")
-        exact_question.delete()
-        return DeleteQuestion(question=exact_question)
+    def resolve_questions(self, info):
+        page = self.page
+        per_page = self.per_page
+        query = Question.get_query(info)
+        if not page:
+            return query.all()
+        page = validate_page(page)
+        self.query_total = query.count()
+        result = query.limit(per_page).offset(page * per_page)
+        if result.count() == 0:
+            return GraphQLError("No questions found")
+        return result
+
+
+class Query(graphene.ObjectType):
+    questions = graphene.Field(
+        PaginatedQuestions,
+        page=graphene.Int(),
+        per_page=graphene.Int(),
+    )
+    question = graphene.Field(lambda: Question, id=graphene.Int())
+
+    def resolve_questions(self, info, **kwargs):
+        response = PaginatedQuestions(**kwargs)
+        return response
+
+    def resolve_question(self, info, id):
+        query = Question.get_query(info)
+        response = query.filter(QuestionModel.id == id).first()
+        if not response:
+            raise GraphQLError('Question does not exist')
+        return response
 
 
 class UpdateQuestion(graphene.Mutation):
@@ -73,6 +99,23 @@ class UpdateQuestion(graphene.Mutation):
         update_entity_fields(exact_question, **kwargs)
         exact_question.save()
         return UpdateQuestion(question=exact_question)
+
+
+class DeleteQuestion(graphene.Mutation):
+    class Arguments:
+        question_id = graphene.Int(required=True)
+
+    question = graphene.Field(Question)
+
+    @Auth.user_roles('Admin')
+    def mutate(self, info, question_id):
+        query_question = Question.get_query(info)
+        exact_question = query_question.filter(
+            QuestionModel.id == question_id).first()
+        if not exact_question:
+            raise GraphQLError("Question not found")
+        exact_question.delete()
+        return DeleteQuestion(question=exact_question)
 
 
 class Mutation(graphene.ObjectType):
