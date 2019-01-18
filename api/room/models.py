@@ -29,6 +29,7 @@ class Room(Base, Utility):
         order_by="func.lower(Resource.name)")
     events = relationship('Events', cascade="all, delete-orphan")
     response = relationship('Response', cascade="all, delete-orphan")
+    devices = relationship('Devices', cascade="all, delete-orphan")
 
 
 @event.listens_for(Room, 'before_insert')

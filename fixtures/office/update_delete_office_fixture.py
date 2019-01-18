@@ -69,9 +69,9 @@ mutation{
                         resources{
                             name
                             quantity
-                            devices{
-                                name
                             }
+                        devices{
+                            name
                         }
                     }
                 }
@@ -101,13 +101,9 @@ delete_office_mutation_response = {
                                             {
                                                 "name": "Markers",
                                                 "quantity": 3,
-                                                "devices": [
-                                                    {
-                                                        "name": "Samsung"
-                                                    }
-                                                ]
                                             }
-                                        ]
+                                            ],
+                                        "devices": []
                                     }
                                 ]
                             }

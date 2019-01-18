@@ -1,8 +1,9 @@
 from tests.base import BaseTestCase
 from fixtures.devices.devices_fixtures import (
-    create_devices_query,
-    expected_create_devices_response
+    devices_query,
+    devices_query_response
 )
+from fixtures.token.token_fixture import ADMIN_TOKEN
 
 import sys
 import os
@@ -15,5 +16,6 @@ class TestCreateRoom(BaseTestCase):
         """
         Testing for device creation
         """
-        query = self.client.execute(create_devices_query)
-        self.assertEqual(query, expected_create_devices_response)
+        headers = {"Authorization": "Bearer" + " " + ADMIN_TOKEN}
+        query = self.app_test.post(devices_query, headers=headers)
+        self.assertEqual(query.data, devices_query_response)
