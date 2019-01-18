@@ -108,7 +108,7 @@ class Query(graphene.ObjectType):
 
     def resolve_all_locations(self, info):
         query = Location.get_query(info)
-        return query.all()
+        return query.order_by(func.lower(LocationModel.name)).all()
 
     def resolve_get_rooms_in_a_location(self, info, location_id):
         query = Room.get_query(info)

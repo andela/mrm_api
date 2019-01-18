@@ -1,6 +1,7 @@
 import graphene
 from graphql import GraphQLError
 from graphene_sqlalchemy import SQLAlchemyObjectType
+from sqlalchemy import func
 from api.block.models import Block as BlockModel
 from api.room.schema import Room
 from api.office.models import Office
@@ -88,7 +89,7 @@ class Query(graphene.ObjectType):
 
     def resolve_all_blocks(self, info):
         query = Block.get_query(info)
-        return query.all()
+        return query.order_by(func.lower(BlockModel.name)).all()
 
     def resolve_get_rooms_in_a_block(self, info, block_id):
         query = Room.get_query(info)
