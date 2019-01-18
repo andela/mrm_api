@@ -3,7 +3,7 @@ import os
 
 from tests.base import BaseTestCase, CommonTestCases
 from fixtures.office.office_fixtures import (
-    office_mutation_query, office_mutation_response,
+    office_mutation_query,
     office_mutation_query_Different_Location,
     office_mutation_query_non_existant_ID,
     office_mutation_query_duplicate_name,
@@ -18,10 +18,10 @@ class TestCreateOffice(BaseTestCase):
         """
         Testing for office creation
         """
-        CommonTestCases.admin_token_assert_equal(
+        CommonTestCases.admin_token_assert_in(
             self,
             office_mutation_query,
-            office_mutation_response
+            "Office created but Emails not Sent"
         )
 
     def test_create_office_different_location(self):
