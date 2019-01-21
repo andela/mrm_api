@@ -15,8 +15,8 @@ expected_query_update_all_fields = {
         "updateLocation": {
             "location": {
                 "name": "Nairobi",
-                "country": "Kenya",
-                "abbreviation": "KE"
+                "abbreviation": "KE",
+                "country": "CountryType.Kenya"
             }
         }
     }
@@ -41,7 +41,7 @@ expected_location_id_non_existant_query = {
       "message": "Location not found",
       "locations": [
         {
-          "line": 3,
+          "line": 2,
           "column": 3
         }
       ],
