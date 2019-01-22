@@ -3,7 +3,7 @@ from graphene_sqlalchemy import SQLAlchemyObjectType
 from graphql import GraphQLError
 
 from api.question.models import Question as QuestionModel
-from utilities.utility import (
+from utilities.validations import (
     validate_empty_fields,
     update_entity_fields,
     validate_date_time_range

@@ -4,7 +4,7 @@ from datetime import datetime
 from graphene_sqlalchemy import SQLAlchemyObjectType
 
 from api.devices.models import Devices as DevicesModel
-from utilities.utility import validate_empty_fields, update_entity_fields
+from utilities.validations import validate_empty_fields, update_entity_fields
 
 
 class Devices(SQLAlchemyObjectType):

@@ -3,7 +3,8 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.schema import Sequence
 
 from helpers.database import Base
-from utilities.utility import Utility, validate_empty_fields
+from utilities.utility import Utility
+from utilities.validations import validate_empty_fields
 from api.user_role.models import UsersRole  # noqa: F401
 from api.notification.models import Notification  # noqa: F401
 
