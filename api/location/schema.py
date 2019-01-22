@@ -82,6 +82,23 @@ class UpdateLocation(graphene.Mutation):
         return UpdateLocation(location=location_object)
 
 
+class DeleteLocation(graphene.Mutation):
+    class Arguments:
+        location_id = graphene.Int(required=True)
+
+    location = graphene.Field(Location)
+
+    @Auth.user_roles('Admin')
+    def mutate(self, info, location_id, **kwargs):
+        query = Location.get_query(info)
+        location = query.filter(
+            LocationModel.id == location_id).first()  # noqa: E501
+        if not location:
+            raise GraphQLError("location not found")
+        location.delete()
+        return DeleteLocation(location=location)
+
+
 class Query(graphene.ObjectType):
     all_locations = graphene.List(Location)
     get_rooms_in_a_location = graphene.List(
@@ -103,3 +120,4 @@ class Query(graphene.ObjectType):
 class Mutation(graphene.ObjectType):
     create_location = CreateLocation.Field()
     update_location = UpdateLocation.Field()
+    delete_location = DeleteLocation.Field()
