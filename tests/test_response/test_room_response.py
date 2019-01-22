@@ -6,7 +6,9 @@ from fixtures.response.room_response_fixture import (
    get_room_response_query_response,
    get_room_response_non_existence_room_id,
    summary_room_response_query,
-   summary_room_response_data
+   summary_room_response_data,
+   filter_by_response_query,
+   filter_by_response_data,
 )
 
 
@@ -47,4 +49,15 @@ class TestRoomResponse(BaseTestCase):
             self,
             summary_room_response_query,
             summary_room_response_data
+        )
+
+    def test_filter_by_number_of_responses(self):
+        """
+        Testing for filtering the room responses
+        by the number of responses the room has
+        """
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            filter_by_response_query,
+            filter_by_response_data
         )
