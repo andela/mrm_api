@@ -6,13 +6,13 @@ from functools import wraps
 
 import requests
 from graphql import GraphQLError
-from flask_json import JsonError
 from sqlalchemy.exc import SQLAlchemyError
 
 from api.user.models import User
 from api.role.models import Role
 from api.user_role.models import UsersRole
 from api.notification.models import Notification as NotificationModel
+from helpers.connection.connection_error_handler import handle_http_error
 
 from helpers.database import db_session
 
@@ -106,17 +106,20 @@ class Authentication:
                     email = user_data['email']
                     user = User.query.filter_by(email=email).first()
                     headers = {"Authorization": 'Bearer ' + self.get_token()}
-                    data = requests.get(
-                        api_url + "users?email=%s" % user.email,
-                        headers=headers)
-                    response = json.loads(data.content.decode("utf-8"))
+                    try:
+                        data = requests.get(
+                            api_url + "users?email=%s"
+                            % user.email, headers=headers)
+                        response = json.loads(data.content.decode("utf-8"))
+                    except requests.exceptions.ConnectionError:
+                        message = "Failed internet connection"
+                        status = 408
+                        handle_http_error(message, status, expected_args)
 
                     if 'error' in response:
-                        if 'REST' in expected_args:
-                            raise JsonError(
-                                message=response['error'],
-                                status=401)
-                        raise GraphQLError(response['error'])
+                        message = response['error']
+                        status = 401
+                        handle_http_error(message, status, expected_args)
 
                     if response['values'][0]['location']:
                         user.location = \
@@ -132,10 +135,10 @@ class Authentication:
                     if role.role in expected_args:
                         return func(*args, **kwargs)
                     else:
-                        res = 'You are not authorized to perform this action'
-                        if 'REST' in expected_args:
-                            raise JsonError(message=res, status=401)
-                        raise GraphQLError(res)
+                        message = (
+                            'You are not authorized to perform this action')
+                        status = 401
+                        handle_http_error(message, status, expected_args)
                 else:
                     raise GraphQLError(user_data[0].data)
 
