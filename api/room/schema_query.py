@@ -11,6 +11,8 @@ from api.room.schema import (RatioOfCheckinsAndCancellations,
                              BookingsAnalyticsCount)
 from helpers.pagination.paginate import ListPaginate
 from helpers.calendar.analytics_helper import CommonAnalytics
+from helpers.calendar.push_notifications import (PushNotification,
+                                                 NotificationChannelPerRoom)
 
 
 class Analytics(graphene.ObjectType):
@@ -19,6 +21,10 @@ class Analytics(graphene.ObjectType):
     has_previous = graphene.Boolean()
     has_next = graphene.Boolean()
     pages = graphene.Int()
+
+
+class NotificationChannels(graphene.ObjectType):
+    channels = graphene.List(NotificationChannelPerRoom)
 
 
 class RatiosPerRoom(graphene.ObjectType):
@@ -118,6 +124,10 @@ class Query(graphene.ObjectType):
         BookingsAnalyticsCount,
         start_date=graphene.String(required=True),
         end_date=graphene.String(required=True),
+    )
+
+    notification_channels = graphene.Field(
+        NotificationChannels
     )
 
     def check_valid_calendar_id(self, query, calendar_id):
@@ -264,3 +274,9 @@ class Query(graphene.ObjectType):
             )
 
         return all_days_events
+
+    @Auth.user_roles('Admin')
+    def resolve_notification_channels(self, info):
+        all_rooms = RoomModel.query.filter_by(state="active")
+        channels = PushNotification.create_channels(self, all_rooms)
+        return NotificationChannels(channels=channels)

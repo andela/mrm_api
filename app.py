@@ -11,6 +11,7 @@ from schema import schema
 from healthcheck_schema import healthcheck_schema
 from helpers.auth.authentication import Auth
 from api.analytics.analytics_request import AnalyticsRequest
+from helpers.calendar.push_notifications import PushNotification
 
 mail = Mail()
 
@@ -48,6 +49,10 @@ def create_app(config_name):
     @Auth.user_roles('Admin', 'REST')
     def analytics_report():
         return AnalyticsRequest.validate_request(AnalyticsRequest)
+
+    @app.route("/notifications", methods=['POST', 'GET'])
+    def calendar_notifications():
+        return PushNotification.send_notifications(PushNotification)
 
     @app.teardown_appcontext
     def shutdown_session(exception=None):
