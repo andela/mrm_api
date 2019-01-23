@@ -2,7 +2,7 @@ import graphene
 from helpers.auth.authentication import Auth
 from graphene_sqlalchemy import SQLAlchemyObjectType
 from api.response.models import Response as ResponseModel
-from utilities.utility import validate_empty_fields
+from utilities.validations import validate_empty_fields
 from graphql import GraphQLError
 from api.room.schema import Room
 from api.question.models import Question

@@ -4,7 +4,7 @@ from graphene_sqlalchemy import SQLAlchemyObjectType
 from graphql import GraphQLError
 from helpers.auth.authentication import Auth
 from helpers.auth.admin_roles import admin_roles
-from utilities.utility import validate_empty_fields, update_entity_fields
+from utilities.validations import validate_empty_fields, update_entity_fields
 from helpers.auth.validator import ErrorHandler
 from helpers.pagination.paginate import Paginate, validate_page
 from api.block.models import Block

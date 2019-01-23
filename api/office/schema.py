@@ -5,7 +5,7 @@ from sqlalchemy import exc
 
 from api.office.models import Office as OfficeModel
 from api.location.models import Location
-from utilities.utility import update_entity_fields, validate_empty_fields
+from utilities.validations import update_entity_fields, validate_empty_fields
 from helpers.auth.authentication import Auth
 from helpers.room_filter.room_filter import room_join_location, lagos_office_join_location  # noqa: E501
 from helpers.auth.admin_roles import admin_roles

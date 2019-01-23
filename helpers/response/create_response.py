@@ -2,7 +2,7 @@ from datetime import datetime
 from graphql import GraphQLError
 from api.response.models import Response
 from api.room_resource.models import Resource
-from utilities.utility import (
+from utilities.validations import (
     validate_rating_field,
     validate_missing_items_field)
 

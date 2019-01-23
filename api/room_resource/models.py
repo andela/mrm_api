@@ -3,7 +3,8 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.schema import Sequence
 
 from helpers.database import Base
-from utilities.utility import Utility, validate_empty_fields
+from utilities.utility import Utility
+from utilities.validations import validate_empty_fields
 from api.room.models import Room  # noqa: F401
 
 
