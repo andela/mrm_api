@@ -13,7 +13,9 @@ class Block(Base, Utility):
     name = Column(String, nullable=False)
     office_id = Column(Integer, ForeignKey('offices.id'))
     offices = relationship('Office')
-    floors = relationship('Floor', cascade="all, delete-orphan")
+    floors = relationship(
+        'Floor', cascade="all, delete-orphan",
+        order_by="func.lower(Floor.name)")
 
     @validates('name')
     def convert_upper(self, key, value):

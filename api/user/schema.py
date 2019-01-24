@@ -1,5 +1,6 @@
 import graphene
 from graphene_sqlalchemy import (SQLAlchemyObjectType)
+from sqlalchemy import func
 from graphql import GraphQLError
 
 from api.user.models import User as UserModel
@@ -45,10 +46,11 @@ class PaginatedUsers(Paginate):
         query = User.get_query(info)
         exact_query = user_filter(query, self.filter_data)
         if not page:
-            return exact_query.all()
+            return exact_query.order_by(func.lower(UserModel.email)).all()
         page = validate_page(page)
         self.query_total = exact_query.count()
-        result = exact_query.limit(per_page).offset(page * per_page)
+        result = exact_query.order_by(
+            func.lower(UserModel.name)).limit(per_page).offset(page * per_page)
         if result.count() == 0:
             return GraphQLError("No users found")
         return result

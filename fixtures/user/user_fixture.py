@@ -55,13 +55,13 @@ user_query_response = {
         "users": {
             "users": [
                 {
-                    "email": "peter.walugembe@andela.com",
-                },
-                {
-                    "email": "peter.adeoye@andela.com"
-                },
-                {
                     "email": "mrm@andela.com",
+                },
+                {
+                    "email": "peter.adeoye@andela.com",
+                },
+                {
+                    "email": "peter.walugembe@andela.com",
                 },
             ]
         }
@@ -85,7 +85,7 @@ paginated_users_response = {
     "data": {
         "users": {
             "users": [{
-                "email": "peter.walugembe@andela.com"
+                "email": "peter.adeoye@andela.com"
             }],
             "hasNext": True,
             "hasPrevious": False,
@@ -208,7 +208,7 @@ get_user_by_role_reponse = {
         'users': {
             'users': [
                 {
-                    'name': 'Peter Walugembe',
+                    'name': 'Peter Adeoye',
                     'location': None
                 }
             ]

@@ -58,10 +58,10 @@ get_paginated_room_resources_response = {
     "allResources": {
       "resources": [
         {
-          "name": "Speaker"
+          "name": "Chair"
         },
         {
-          "name": "Chair"
+          "name": "Speaker"
         }
       ],
       "hasNext": 'true',

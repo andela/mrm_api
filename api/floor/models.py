@@ -14,8 +14,12 @@ class Floor(Base, Utility):
     name = Column(String, nullable=False)
     block_id = Column(Integer, ForeignKey('blocks.id'))
     block = relationship('Block')
-    rooms = relationship('Room', cascade="all, delete-orphan")
-    wings = relationship('Wing', cascade="all, delete-orphan")
+    rooms = relationship(
+        'Room', cascade="all, delete-orphan",
+        order_by="func.lower(Room.name)")
+    wings = relationship(
+        'Wing', cascade="all, delete-orphan",
+        order_by="func.lower(Wing.name)")
 
     @validates('name')
     def convert_capitalize(self, key, value):

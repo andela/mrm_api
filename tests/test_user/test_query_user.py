@@ -29,8 +29,8 @@ class TestQueryUser(BaseTestCase):
             user_query,
             context_value={'session': db_session})
 
-        expected_responese = user_query_response
-        self.assertEqual(execute_query, expected_responese)
+        expected_response = user_query_response
+        self.assertEqual(execute_query, expected_response)
 
     def test_paginate__users_query(self):
         user = User(email='mrm@andela.com',

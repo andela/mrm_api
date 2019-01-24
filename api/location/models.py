@@ -28,4 +28,6 @@ class Location(Base, Utility):
     country = Column(Enum(CountryType))
     time_zone = Column(Enum(TimeZoneType))
     image_url = Column(String)
-    offices = relationship('Office', cascade="all, delete-orphan")
+    offices = relationship(
+        'Office', cascade="all, delete-orphan",
+        order_by="func.lower(Office.name)")

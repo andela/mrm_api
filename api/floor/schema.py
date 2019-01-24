@@ -106,10 +106,11 @@ class PaginatedFloors(Paginate):
         per_page = self.per_page
         query = Floor.get_query(info)
         if not page:
-            return query.all()
+            return query.order_by(FloorModel.name).all()
         page = validate_page(page)
         self.query_total = query.count()
-        result = query.limit(per_page).offset(page*per_page)
+        result = query.order_by(
+            FloorModel.name).limit(per_page).offset(page*per_page)
         if result.count() == 0:
             return GraphQLError("No more resources")
         return result

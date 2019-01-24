@@ -1,7 +1,7 @@
 import graphene
 from graphene_sqlalchemy import SQLAlchemyObjectType
 from graphql import GraphQLError
-from sqlalchemy import exc
+from sqlalchemy import exc, func
 
 from api.office.models import Office as OfficeModel
 from api.location.models import Location
@@ -91,10 +91,12 @@ class PaginateOffices(Paginate):
         per_page = self.per_page
         query = Office.get_query(info)
         if not page:
-            return query.all()
+            return query.order_by(func.lower(OfficeModel.name)).all()
         page = validate_page(page)
         self.query_total = query.count()
-        result = query.limit(per_page).offset(page * per_page)
+        result = query.order_by(
+            func.lower(OfficeModel.name)).limit(
+            per_page).offset(page * per_page)
         if result.count() == 0:
             return GraphQLError("No more offices")
         return result

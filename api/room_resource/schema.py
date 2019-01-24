@@ -1,5 +1,6 @@
 import graphene
 from graphene_sqlalchemy import SQLAlchemyObjectType
+from sqlalchemy import func
 from graphql import GraphQLError
 
 from api.room_resource.models import Resource as ResourceModel
@@ -28,10 +29,11 @@ class PaginatedResource(Paginate):
         if not page:
             if unique:
                 return query.distinct(ResourceModel.name).all()
-            return query.all()
+            return query.order_by(func.lower(ResourceModel.name)).all()
         page = validate_page(page)
         self.query_total = query.count()
-        result = query.limit(per_page).offset(page*per_page)
+        result = query.order_by(func.lower(
+            ResourceModel.name)).limit(per_page).offset(page*per_page)
         if result.count() == 0:
             return GraphQLError("No more resources")
         return result
