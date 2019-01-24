@@ -7,11 +7,14 @@ from api.office.models import Office as OfficeModel
 from api.location.models import Location
 from utilities.validations import update_entity_fields, validate_empty_fields
 from helpers.auth.authentication import Auth
-from helpers.room_filter.room_filter import room_join_location, lagos_office_join_location  # noqa: E501
+from helpers.room_filter.room_filter import (
+    room_join_location,
+    lagos_office_join_location)
 from helpers.auth.admin_roles import admin_roles
 from helpers.auth.error_handler import SaveContextManager
 from helpers.pagination.paginate import Paginate, validate_page
-from helpers.email.email import office_created
+from helpers.email.email import send_email_notification
+from helpers.auth.user_details import get_user_from_db
 
 
 class Office(SQLAlchemyObjectType):
@@ -33,9 +36,11 @@ class CreateOffice(graphene.Mutation):
             raise GraphQLError("Location not found")
         admin_roles.create_office(location_id=kwargs['location_id'])
         office = OfficeModel(**kwargs)
+        admin = get_user_from_db()
+        email = admin.email
         with SaveContextManager(office, kwargs['name'], 'Office'):
             new_office = kwargs['name']
-            if not office_created(new_office):
+            if not send_email_notification(email, new_office):
                 raise GraphQLError("Office created but Emails not Sent")
             return CreateOffice(office=office)
 
