@@ -22,6 +22,7 @@ from api.devices.models import Devices
 from api.office.models import Office
 from api.question.models import Question
 from api.response.models import Response
+from api.tag.models import Tag
 from fixtures.token.token_fixture import (
     ADMIN_TOKEN, USER_TOKEN, ADMIN_NIGERIA_TOKEN)
 
@@ -79,6 +80,10 @@ class BaseTestCase(TestCase):
             wing.save()
             wing_two = Wing(name="Big Apple", floor_id=floor_two.id)
             wing_two.save()
+            tag = Tag(name='Block-A',
+                      color='green',
+                      description='The description')
+            tag.save()
             room = Room(name='Entebbe',
                         room_type='meeting',
                         capacity=6,
