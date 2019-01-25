@@ -1,9 +1,9 @@
-from sqlalchemy import (Column, String, Integer, ForeignKey)
+from sqlalchemy import (Column, String, Integer, ForeignKey, Enum)
 from sqlalchemy.orm import relationship, validates
 from sqlalchemy.schema import Sequence
 
 from helpers.database import Base
-from utilities.utility import Utility
+from utilities.utility import Utility, StateType
 from api.block.models import Block   # noqa: F401
 
 
@@ -14,6 +14,7 @@ class Floor(Base, Utility):
     name = Column(String, nullable=False)
     block_id = Column(Integer, ForeignKey('blocks.id'))
     block = relationship('Block')
+    state = Column(Enum(StateType), default="active")
     rooms = relationship(
         'Room', cascade="all, delete-orphan",
         order_by="func.lower(Room.name)")

@@ -26,13 +26,15 @@ class PaginatedResource(Paginate):
         per_page = self.per_page
         unique = self.unique
         query = Resource.get_query(info)
+        active_resources = query.filter(ResourceModel.state == "active")
         if not page:
             if unique:
-                return query.distinct(ResourceModel.name).all()
-            return query.order_by(func.lower(ResourceModel.name)).all()
+                return active_resources.distinct(ResourceModel.name).all()
+            return active_resources.order_by(
+                func.lower(ResourceModel.name)).all()
         page = validate_page(page)
-        self.query_total = query.count()
-        result = query.order_by(func.lower(
+        self.query_total = active_resources.count()
+        result = active_resources.order_by(func.lower(
             ResourceModel.name)).limit(per_page).offset(page*per_page)
         if result.count() == 0:
             return GraphQLError("No more resources")
@@ -73,7 +75,9 @@ class UpdateRoomResource(graphene.Mutation):
     def mutate(self, info, resource_id, **kwargs):
         validate_empty_fields(**kwargs)
         query = Resource.get_query(info)
-        exact_resource = query.filter(ResourceModel.id == resource_id).first()
+        active_resources = query.filter(ResourceModel.state == "active")
+        exact_resource = active_resources.filter(
+            ResourceModel.id == resource_id).first()
         if not exact_resource:
             raise GraphQLError("Resource not found")
 
@@ -88,18 +92,22 @@ class DeleteResource(graphene.Mutation):
 
     class Arguments:
         resource_id = graphene.Int(required=True)
+        state = graphene.String()
     resource = graphene.Field(Resource)
 
     @Auth.user_roles('Admin')
     def mutate(self, info, resource_id, **kwargs):
         query_room_resource = Resource.get_query(info)
-        exact_room_resource = query_room_resource.filter(
+        active_resources = query_room_resource.filter(
+            ResourceModel.state == "active")
+        exact_room_resource = active_resources.filter(
             ResourceModel.id == resource_id).first()
         if not exact_room_resource:
             raise GraphQLError("Resource not found")
 
         admin_roles.delete_resource(resource_id)
-        exact_room_resource.delete()
+        update_entity_fields(exact_room_resource, state="archived", **kwargs)
+        exact_room_resource.save()
         return DeleteResource(resource=exact_room_resource)
 
 
@@ -119,11 +127,13 @@ class Query(graphene.ObjectType):
 
     def resolve_get_resources_by_room_id(self, info, room_id):
         query = Resource.get_query(info)
-        check_room = query.filter(ResourceModel.room_id == room_id).first()
+        active_resources = query.filter(ResourceModel.state == "active")
+        check_room = active_resources.filter(
+            ResourceModel.room_id == room_id).first()
         if not check_room:
             raise GraphQLError("Room has no resource yet")
 
-        return query.filter(ResourceModel.room_id == room_id)
+        return active_resources.filter(ResourceModel.room_id == room_id)
 
 
 class Mutation(graphene.ObjectType):

@@ -1,9 +1,9 @@
-from sqlalchemy import (Column, String, Integer)
+from sqlalchemy import (Column, String, Integer, Enum)
 from sqlalchemy.orm import relationship
 from sqlalchemy.schema import Sequence
 
 from helpers.database import Base
-from utilities.utility import Utility
+from utilities.utility import Utility, StateType
 from utilities.validations import validate_empty_fields
 from api.user_role.models import UsersRole  # noqa: F401
 from api.notification.models import Notification  # noqa: F401
@@ -17,6 +17,7 @@ class User(Base, Utility):
     name = Column(String, nullable=False)
     picture = Column(String, nullable=True)
     roles = relationship('Role', secondary='users_roles')
+    state = Column(Enum(StateType), default="active")
     notification_settings = relationship(
         'Notification', cascade="all, delete-orphan")
 

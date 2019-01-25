@@ -1,9 +1,9 @@
-from sqlalchemy import (Column, String, Integer, ForeignKey, event)
+from sqlalchemy import (Column, String, Integer, ForeignKey, event, Enum)
 from sqlalchemy.orm import relationship
 from sqlalchemy.schema import Sequence
 
 from helpers.database import Base
-from utilities.utility import Utility
+from utilities.utility import Utility, StateType
 from api.location.models import Location  # noqa: F401
 from api.block import models
 from helpers.database import db_session
@@ -16,6 +16,7 @@ class Office(Base, Utility):
     name = Column(String, nullable=True, unique=True)
     location_id = Column(Integer, ForeignKey('locations.id'))
     location = relationship('Location')
+    state = Column(Enum(StateType), default="active")
     blocks = relationship(
         'Block', cascade="all, delete-orphan",
         order_by="func.lower(Block.name)")

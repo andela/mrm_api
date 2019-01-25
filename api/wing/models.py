@@ -1,9 +1,9 @@
-from sqlalchemy import (Column, String, Integer, ForeignKey)
+from sqlalchemy import (Column, String, Integer, ForeignKey, Enum)
 from sqlalchemy.orm import relationship, validates
 from sqlalchemy.schema import Sequence
 
 from helpers.database import Base
-from utilities.utility import Utility
+from utilities.utility import Utility, StateType
 from api.floor.models import Floor  # noqa: F401
 
 
@@ -14,6 +14,7 @@ class Wing(Base, Utility):
     floor_id = Column(Integer, ForeignKey('floors.id'))
     floor = relationship('Floor')
     rooms = relationship('Room')
+    state = Column(Enum(StateType), default="active")
 
     @validates('name')
     def convert_upper(self, key, value):

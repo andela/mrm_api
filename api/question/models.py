@@ -1,8 +1,8 @@
-from sqlalchemy import (Column, String, Integer, Boolean)
+from sqlalchemy import (Column, String, Integer, Boolean, Enum)
 from sqlalchemy.orm import relationship, validates
 
 from helpers.database import Base
-from utilities.utility import Utility
+from utilities.utility import Utility, StateType
 import api.response.models
 
 
@@ -16,6 +16,7 @@ class Question(Base, Utility):
     total_views = Column(Integer, default=0)
     response = relationship('Response', cascade="all, delete-orphan")
     is_active = Column(Boolean, default=False)
+    state = Column(Enum(StateType), default="active")
 
     @validates('question_type')
     def convert_capitalize(self, key, value):

@@ -1,6 +1,7 @@
 import graphene
 from api.response.models import Response as ResponseModel
 from api.room.models import Room
+from api.question.models import Question as QuestionModel
 from api.question.schema import Question
 from helpers.auth.authentication import Auth
 from helpers.pagination.paginate import ListPaginate
@@ -43,7 +44,8 @@ class Query(graphene.ObjectType):
     @Auth.user_roles('Admin')
     def resolve_feedback_question(self, info, per_page=None, page=None):
         query = Question.get_query(info)
-        rate_question = query.filter_by(question_type="rate").all()
+        active_questions = query.filter(QuestionModel.state == "active")
+        rate_question = active_questions.filter_by(question_type="rate").all()
 
         unique_responses = ResponseModel.query.filter_by(question_id=rate_question[0].id).distinct(ResponseModel.room_id).all()  # noqa: E501
         responses = Query.get_room_response(self, unique_responses, rate_question[0].id, rate_question[0].question_type)  # noqa: E501
@@ -64,4 +66,5 @@ class Query(graphene.ObjectType):
 
     def resolve_all_questions(self, info):
         query = Question.get_query(info)
-        return query.all()
+        active_questions = query.filter(QuestionModel.state == "active")
+        return active_questions.all()

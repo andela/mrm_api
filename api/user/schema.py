@@ -13,6 +13,7 @@ from helpers.pagination.paginate import Paginate, validate_page
 from helpers.auth.error_handler import SaveContextManager
 from helpers.email.email import email_invite
 from helpers.user_filter.user_filter import user_filter
+from utilities.validations import update_entity_fields
 
 
 class User(SQLAlchemyObjectType):
@@ -44,7 +45,8 @@ class PaginatedUsers(Paginate):
         page = self.page
         per_page = self.per_page
         query = User.get_query(info)
-        exact_query = user_filter(query, self.filter_data)
+        active_user = query.filter(UserModel.state == "active")
+        exact_query = user_filter(active_user, self.filter_data)
         if not page:
             return exact_query.order_by(func.lower(UserModel.email)).all()
         page = validate_page(page)
@@ -80,13 +82,15 @@ class Query(graphene.ObjectType):
 class DeleteUser(graphene.Mutation):
     class Arguments:
         email = graphene.String(required=True)
+        state = graphene.String()
 
     user = graphene.Field(User)
 
     @Auth.user_roles('Admin')
     def mutate(self, info, email, **kwargs):
         query_user = User.get_query(info)
-        exact_query_user = query_user.filter(UserModel.email == email).first()
+        active_user = query_user.filter(UserModel.state == "active")
+        exact_query_user = active_user.filter(UserModel.email == email).first()
         user_from_db = get_user_from_db()
         if not verify_email(email):
             raise GraphQLError("Invalid email format")
@@ -94,7 +98,8 @@ class DeleteUser(graphene.Mutation):
             raise GraphQLError("User not found")
         if user_from_db.email == email:
             raise GraphQLError("You cannot delete yourself")
-        exact_query_user.delete()
+        update_entity_fields(exact_query_user, state="archived", **kwargs)
+        exact_query_user.save()
         return DeleteUser(user=exact_query_user)
 
 
@@ -109,7 +114,8 @@ class ChangeUserRole(graphene.Mutation):
     @Auth.user_roles('Admin')
     def mutate(self, info, email, **kwargs):
         query_user = User.get_query(info)
-        exact_user = query_user.filter(UserModel.email == email).first()
+        active_user = query_user.filter(UserModel.state == "active")
+        exact_user = active_user.filter(UserModel.email == email).first()
         if not exact_user:
             raise GraphQLError("User not found")
         user_role = UsersRole.query.filter_by(user_id=exact_user.id).first()
@@ -128,7 +134,8 @@ class InviteToConverge(graphene.Mutation):
     @Auth.user_roles('Admin')
     def mutate(self, info, email):
         query_user = User.get_query(info)
-        user = query_user.filter(UserModel.email == email).first()
+        active_user = query_user.filter(UserModel.state == "active")
+        user = active_user.filter(UserModel.email == email).first()
         if user:
             raise GraphQLError("User already joined Converge")
         admin = get_user_from_db()

@@ -5,6 +5,7 @@ from graphene_sqlalchemy import SQLAlchemyObjectType
 from api.location.models import Location as LocationModel
 
 from api.devices.models import Devices as DevicesModel  # noqa: F401
+from api.room.models import Room as RoomModel
 from api.room_resource.models import Resource as ResourceModel  # noqa: F401
 from api.room.schema import Room
 from utilities.validations import (
@@ -30,6 +31,7 @@ class CreateLocation(graphene.Mutation):
         country = graphene.String(required=True)
         image_url = graphene.String()
         time_zone = graphene.String(required=True)
+        state = graphene.String()
     location = graphene.Field(Location)
 
     @Auth.user_roles('Admin')
@@ -60,7 +62,8 @@ class UpdateLocation(graphene.Mutation):
     @Auth.user_roles('Admin')
     def mutate(self, info, location_id, **kwargs):
         location = Location.get_query(info)
-        location_object = location.filter(
+        result = location.filter(LocationModel.state == "active")
+        location_object = result.filter(
             LocationModel.id == location_id).first()
         if not location_object:
             raise GraphQLError("Location not found")
@@ -72,8 +75,9 @@ class UpdateLocation(graphene.Mutation):
             validate_url(**kwargs)
         if "abbreviation" in kwargs:  # noqa
             validate_empty_fields(**kwargs)
-        result = location.filter(LocationModel.name == kwargs.get('name'))
-        if result.count() > 0:
+        active_locations = result.filter(
+            LocationModel.name == kwargs.get('name'))
+        if active_locations:
             pass
         else:
             raise AttributeError("Not a valid location")
@@ -85,17 +89,20 @@ class UpdateLocation(graphene.Mutation):
 class DeleteLocation(graphene.Mutation):
     class Arguments:
         location_id = graphene.Int(required=True)
+        state = graphene.String()
 
     location = graphene.Field(Location)
 
     @Auth.user_roles('Admin')
     def mutate(self, info, location_id, **kwargs):
         query = Location.get_query(info)
-        location = query.filter(
+        result = query.filter(LocationModel.state == "active")
+        location = result.filter(
             LocationModel.id == location_id).first()  # noqa: E501
         if not location:
             raise GraphQLError("location not found")
-        location.delete()
+        update_entity_fields(location, state="archived", **kwargs)
+        location.save()
         return DeleteLocation(location=location)
 
 
@@ -108,11 +115,13 @@ class Query(graphene.ObjectType):
 
     def resolve_all_locations(self, info):
         query = Location.get_query(info)
-        return query.order_by(func.lower(LocationModel.name)).all()
+        result = query.filter(LocationModel.state == "active")
+        return result.order_by(func.lower(LocationModel.name)).all()
 
     def resolve_get_rooms_in_a_location(self, info, location_id):
         query = Room.get_query(info)
-        exact_query = room_join_location(query)
+        active_rooms = query.filter(RoomModel.state == "active")
+        exact_query = room_join_location(active_rooms)
         result = exact_query.filter(LocationModel.id == location_id)
         return result.all()
 

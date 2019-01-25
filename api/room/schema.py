@@ -93,11 +93,12 @@ class PaginatedRooms(Paginate):
         filter_data = self.filter_data
         query = Room.get_query(info)
         exact_query = room_filter(query, filter_data)
+        active_rooms = exact_query.filter(RoomModel.state == "active")
         if not page:
-            return exact_query.order_by(func.lower(RoomModel.name)).all()
+            return active_rooms.order_by(func.lower(RoomModel.name)).all()
         page = validate_page(page)
-        self.query_total = exact_query.count()
-        result = exact_query.order_by(func.lower(
+        self.query_total = active_rooms.count()
+        result = active_rooms.order_by(func.lower(
             RoomModel.name)).limit(per_page).offset(page*per_page)
         if result.count() == 0:
             return GraphQLError("No more resources")
@@ -119,7 +120,8 @@ class UpdateRoom(graphene.Mutation):
     def mutate(self, info, room_id, **kwargs):
         validate_empty_fields(**kwargs)
         query_room = Room.get_query(info)
-        exact_room = query_room.filter(RoomModel.id == room_id).first()
+        active_rooms = query_room.filter(RoomModel.state == "active")
+        exact_room = active_rooms.filter(RoomModel.id == room_id).first()
         if not exact_room:
             raise GraphQLError("Room not found")
 
@@ -134,18 +136,21 @@ class DeleteRoom(graphene.Mutation):
 
     class Arguments:
         room_id = graphene.Int(required=True)
+        state = graphene.String()
     room = graphene.Field(Room)
 
     @Auth.user_roles('Admin')
     def mutate(self, info, room_id, **kwargs):
         query_room = Room.get_query(info)
-        exact_room = query_room.filter(
+        active_rooms = query_room.filter(RoomModel.state == "active")
+        exact_room = active_rooms.filter(
             RoomModel.id == room_id).first()
         if not exact_room:
             raise GraphQLError("Room not found")
 
         admin_roles.update_delete_rooms_create_resource(room_id)
-        exact_room.delete()
+        update_entity_fields(exact_room, state="archived", **kwargs)
+        exact_room.save()
         return DeleteRoom(room=exact_room)
 
 

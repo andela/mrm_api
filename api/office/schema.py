@@ -24,6 +24,7 @@ class Office(SQLAlchemyObjectType):
 
 class CreateOffice(graphene.Mutation):
     class Arguments:
+        state = graphene.String()
         name = graphene.String(required=True)
         location_id = graphene.Int(required=True)
 
@@ -48,19 +49,22 @@ class CreateOffice(graphene.Mutation):
 class DeleteOffice(graphene.Mutation):
     class Arguments:
         office_id = graphene.Int(required=True)
+        state = graphene.String()
 
     office = graphene.Field(Office)
 
     @Auth.user_roles('Admin')
     def mutate(self, info, office_id, **kwargs):
         query_office = Office.get_query(info)
-        exact_office = query_office.filter(
+        result = query_office.filter(OfficeModel.state == "active")
+        exact_office = result.filter(
             OfficeModel.id == office_id).first()  # noqa: E501
         if not exact_office:
             raise GraphQLError("Office not found")
 
         admin_roles.create_rooms_update_delete_office(office_id)
-        exact_office.delete()
+        update_entity_fields(exact_office, state="archived", **kwargs)
+        exact_office.save()
         return DeleteOffice(office=exact_office)
 
 
@@ -75,7 +79,8 @@ class UpdateOffice(graphene.Mutation):
     def mutate(self, info, office_id, **kwargs):
         validate_empty_fields(**kwargs)
         get_office = Office.get_query(info)
-        exact_office = get_office.filter(OfficeModel.id == office_id).first()
+        result = get_office.filter(OfficeModel.state == "active")
+        exact_office = result.filter(OfficeModel.id == office_id).first()
         if not exact_office:
             raise GraphQLError("Office not found")
         admin_roles.create_rooms_update_delete_office(office_id)
@@ -95,11 +100,12 @@ class PaginateOffices(Paginate):
         page = self.page
         per_page = self.per_page
         query = Office.get_query(info)
+        active_offices = query.filter(OfficeModel.state == "active")
         if not page:
-            return query.order_by(func.lower(OfficeModel.name)).all()
+            return active_offices.order_by(func.lower(OfficeModel.name)).all()
         page = validate_page(page)
-        self.query_total = query.count()
-        result = query.order_by(
+        self.query_total = active_offices.count()
+        result = active_offices.order_by(
             func.lower(OfficeModel.name)).limit(
             per_page).offset(page * per_page)
         if result.count() == 0:
@@ -118,17 +124,16 @@ class Query(graphene.ObjectType):
 
     def resolve_get_office_by_name(self, info, name):
         query = Office.get_query(info)
-        check_office = query.filter(OfficeModel.name == name).first()
+        active_offices = query.filter(OfficeModel.state == "active")
+        check_office = active_offices.filter(OfficeModel.name == name).first()
         if not check_office:
             raise GraphQLError("Office Not found")
-
         if name == "Epic tower":
-            exact_query = lagos_office_join_location(query)
+            exact_query = lagos_office_join_location(active_offices)
             result = exact_query.filter(OfficeModel.name == name)
             return result.all()
-
         else:
-            exact_query = room_join_location(query)
+            exact_query = room_join_location(active_offices)
             result = exact_query.filter(OfficeModel.name == name)
             return result.all()
 
