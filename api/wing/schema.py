@@ -1,7 +1,6 @@
 import graphene
 
 from graphene_sqlalchemy import (SQLAlchemyObjectType)
-from sqlalchemy import func
 from graphql import GraphQLError
 from api.floor.models import Floor
 from api.wing.models import Wing as WingModel
@@ -79,8 +78,7 @@ class Query(graphene.ObjectType):
 
     def resolve_all_wings(self, info):
         query = Wing.get_query(info)
-        return query.order_by(
-            func.lower(WingModel.name)).all()
+        return query.all()
 
 
 class Mutation(graphene.ObjectType):

@@ -14,14 +14,14 @@ get_floors_query_response = {
         "allFloors": {
             "floors": [
                 {
-                    "id": "5",
-                    "name": "2nd",
-                    "blockId": 2
-                },
-                {
                     "id": "4",
                     "name": "3rd",
                     "blockId": 1
+                },
+                {
+                    "id": "5",
+                    "name": "2nd",
+                    "blockId": 2
                 }
             ]
         }
@@ -48,14 +48,14 @@ paginated_floors_response = {
         "allFloors": {
             "floors": [
                 {
-                    "id": "5",
-                    "name": "2nd",
-                    "blockId": 2
-                },
-                {
                     "id": "4",
                     "name": "3rd",
                     "blockId": 1
+                },
+                {
+                    "id": "5",
+                    "name": "2nd",
+                    "blockId": 2
                 }
             ],
             "hasNext": False,

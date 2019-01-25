@@ -12,7 +12,7 @@ update_office_with_wrong_ID_query = '''
 
 update_office_with_same_Name_query = '''
     mutation {
-        updateOffice(name: "Dojo", officeId:1 ) {
+        updateOffice(name: "dojo", officeId:1 ) {
             office {
                 name
                 locationId
@@ -85,7 +85,7 @@ delete_office_mutation_response = {
     "data": {
         "deleteOffice": {
             "office": {
-                "name": "St. catherines",
+                "name": "St. Catherines",
                 "blocks": [
                     {
                         "name": "Ec",

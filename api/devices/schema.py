@@ -2,7 +2,6 @@ import graphene
 from graphql import GraphQLError
 from datetime import datetime
 from graphene_sqlalchemy import SQLAlchemyObjectType
-from sqlalchemy import func
 
 from api.devices.models import Devices as DevicesModel
 from utilities.validations import validate_empty_fields, update_entity_fields
@@ -63,7 +62,7 @@ class Query(graphene.ObjectType):
 
     def resolve_all_devices(self, info):
         query = Devices.get_query(info)
-        return query.order_by(func.lower(DevicesModel.name)).all()
+        return query.all()
 
 
 class Mutation(graphene.ObjectType):

@@ -16,7 +16,7 @@ office_mutation_query = '''
 
 get_office_by_name = '''
 query{
-    getOfficeByName(name:"St. catherines"){
+    getOfficeByName(name:"St. Catherines"){
         name
         id
         blocks{
@@ -37,7 +37,7 @@ query{
 get_office_by_name_response = {
     'data': {
         'getOfficeByName': [{
-            'name': 'St. catherines',
+            'name': 'St. Catherines',
             'id': '1',
             'blocks': [{
                 'name': 'Ec',
@@ -84,7 +84,7 @@ office_mutation_query_non_existant_ID = '''
 
 office_mutation_query_duplicate_name = '''
     mutation {
-        createOffice (name: "St. catherines", locationId: 1) {
+        createOffice (name: "St. Catherines", locationId: 1) {
             office {
                 name
             }
@@ -95,7 +95,7 @@ office_mutation_query_duplicate_name = '''
 office_mutation_query_duplicate_name_responce = {
     "errors": [
         {
-            "message": "St. catherines Office already exists",
+            "message": "St. Catherines Office already exists",
             "locations": [
                 {
                     "line": 3,
@@ -131,16 +131,16 @@ offices_query_response = {
         "allOffices": {
             "offices": [
                 {
-                    "name": "Dojo",
+                    "name": "St. Catherines",
+                    "id": "1"
+                },
+                {
+                    "name": "dojo",
                     "id": "2"
                 },
                 {
                     "name": "Epic tower",
                     "id": "3"
-                },
-                {
-                    "name": "St. catherines",
-                    "id": "1"
                 }
             ],
             "hasNext": False,
@@ -165,17 +165,17 @@ all_offices_query_response = {
         "allOffices": {
             "offices": [
                 {
-                    "name": "Dojo",
+                    "name": "St. Catherines",
+                    "id": "1"
+                },
+                {
+                    "name": "dojo",
                     "id": "2"
                 },
                 {
                     "name": "Epic tower",
                     "id": "3"
-                },
-                {
-                    "name": "St. catherines",
-                    "id": "1"
-                },
+                }
             ]
         }
     }

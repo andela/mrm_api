@@ -29,7 +29,7 @@ expected_query_all_locations = {
             "abbreviation": "KLA",
             "offices": [
                 {
-                    "name": "St. catherines",
+                    "name": "St. Catherines",
                     "blocks": [{
                         "name": "Ec",
                         "floors": [{
@@ -41,6 +41,16 @@ expected_query_all_locations = {
                             }]
                         }]
                     }]
+                }
+            ]
+        },
+        {
+            "name": "Nairobi",
+            "abbreviation": "NBO",
+            "offices": [
+                {
+                    "name": "dojo",
+                    "blocks": []
                 }
             ]
         },
@@ -59,18 +69,7 @@ expected_query_all_locations = {
                     }]
                 }
             ]
-        },
-        {
-            "name": "Nairobi",
-            "abbreviation": "NBO",
-            "offices": [
-                {
-                    "name": "Dojo",
-                    "blocks": []
-                }
-                 ]
-        },
-        ]
+        }]
     }
 }
 

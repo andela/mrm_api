@@ -24,9 +24,7 @@ class Room(Base, Utility):
     wing_id = Column(Integer, ForeignKey('wings.id'))
     cancellation_duration = Column(Integer, default=10)
     floor = relationship('Floor')
-    resources = relationship(
-        'Resource', cascade="all, delete-orphan",
-        order_by="func.lower(Resource.name)")
+    resources = relationship('Resource', cascade="all, delete-orphan")
     events = relationship('Events', cascade="all, delete-orphan")
     response = relationship('Response', cascade="all, delete-orphan")
 

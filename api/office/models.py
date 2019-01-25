@@ -16,9 +16,7 @@ class Office(Base, Utility):
     name = Column(String, nullable=True, unique=True)
     location_id = Column(Integer, ForeignKey('locations.id'))
     location = relationship('Location')
-    blocks = relationship(
-        'Block', cascade="all, delete-orphan",
-        order_by="func.lower(Block.name)")
+    blocks = relationship('Block', cascade="all, delete-orphan")
 
 
 @event.listens_for(Office, 'after_insert')
