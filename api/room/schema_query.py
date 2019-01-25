@@ -10,6 +10,7 @@ from api.room.models import Room as RoomModel
 from api.room.schema import (RatioOfCheckinsAndCancellations,
                              BookingsAnalyticsCount)
 from helpers.pagination.paginate import ListPaginate
+from helpers.calendar.analytics_helper import CommonAnalytics
 
 
 class Analytics(graphene.ObjectType):
@@ -22,6 +23,19 @@ class Analytics(graphene.ObjectType):
 
 class RatiosPerRoom(graphene.ObjectType):
     ratios = graphene.List(RatioOfCheckinsAndCancellations)
+
+
+class CalendarEvent(graphene.ObjectType):
+    no_of_participants = graphene.Int()
+    event_summary = graphene.String()
+    start_time = graphene.String()
+    end_time = graphene.String()
+    room_name = graphene.String()
+
+
+class DailyEvents(graphene.ObjectType):
+    day = graphene.String()
+    events = graphene.List(CalendarEvent)
 
 
 class Query(graphene.ObjectType):
@@ -54,6 +68,13 @@ class Query(graphene.ObjectType):
         Calendar,
         calendar_id=graphene.String(),
         days=graphene.Int(),
+    )
+
+    analytics_for_daily_room_events = graphene.Field(
+        graphene.List(DailyEvents),
+        start_date=graphene.String(required=True),
+        end_date=graphene.String(required=True)
+
     )
 
     analytics_for_meetings_durations = graphene.Field(
@@ -211,3 +232,35 @@ class Query(graphene.ObjectType):
         analytics = RoomAnalyticsRatios.get_bookings_analytics_count(
             self, query, start_date, end_date)
         return analytics
+
+    def resolve_analytics_for_daily_room_events(self, info,
+                                                start_date, end_date
+                                                ):
+        start_date, end_date = CommonAnalytics().convert_dates(
+            start_date, end_date
+        )
+        query = Room.get_query(info)
+        all_events, all_dates = RoomSchedules().get_all_room_schedules(
+            query, start_date, end_date
+        )
+        all_days_events = []
+        for date in set(all_dates):
+            daily_events = []
+            for event in all_events:
+                if date == event["date_of_event"]:
+                    current_event = CalendarEvent(
+                        no_of_participants=event["no_of_participants"],
+                        event_summary=event["event_summary"],
+                        start_time=event["start_time"],
+                        end_time=event["end_time"],
+                        room_name=event["room_name"],
+                    )
+                    daily_events.append(current_event)
+            all_days_events.append(
+                DailyEvents(
+                    day=date,
+                    events=daily_events
+                )
+            )
+
+        return all_days_events
