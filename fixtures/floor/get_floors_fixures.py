@@ -1,3 +1,4 @@
+null = None
 get_all_floors_query = '''{
     allFloors {
         floors {
@@ -39,6 +40,7 @@ paginated_floors_query = '''
    hasNext
    hasPrevious
    pages
+   currentPage
 }
 }
 '''
@@ -60,7 +62,22 @@ paginated_floors_response = {
             ],
             "hasNext": False,
             "hasPrevious": False,
-            "pages": 1
+            "pages": 1,
+            "currentPage": 1
         }
     }
 }
+
+non_existent_page_query = '''
+ query {
+  allFloors(page:100, perPage:4){
+   floors{
+      id
+      name
+      blockId
+   }
+   pages
+   currentPage
+}
+}
+'''
