@@ -26,22 +26,24 @@ class RoomAnalyticsRatios(Credentials):
             self, query)
 
         checkins = 0
-        events_list = []
         cancellations = 0
+        calendar_events_list = []
+        app_events_list = []
 
         for room in rooms:
-            checkins, cancellations, events_list = RoomAnalyticsRatios.retrieve_cancellations_and_checkins_for_room(self,  # noqa
-                                                        room['calendar_id'],
+            checkins, cancellations, calendar_events_list, app_events_list = RoomAnalyticsRatios().retrieve_cancellations_and_checkins_for_room(room['calendar_id'], # noqa 
                                                         start_date,
                                                         day_after_end_date,
                                                         checkins,
                                                         cancellations,
-                                                        events_list)
+                                                        calendar_events_list,
+                                                        app_events_list)
 
-        ratio_object = RoomAnalyticsRatios.map_results_to_ratio_class(self,  # noqa
+        ratio_object = RoomAnalyticsRatios().map_results_to_ratio_class(
                             checkins,
                             cancellations,
-                            events_list)
+                            calendar_events_list,
+                            app_events_list)
 
         return ratio_object
 
@@ -57,41 +59,53 @@ class RoomAnalyticsRatios(Credentials):
 
         response = []
         for room in rooms:
-            events_list = []
             checkins = 0
             cancellations = 0
+            calendar_events_list = []
+            app_events_list = []
 
-            checkins, cancellations, events_list = RoomAnalyticsRatios.retrieve_cancellations_and_checkins_for_room(self,  # noqa
-                                                        room['calendar_id'],
+            checkins, cancellations, calendar_events_list, app_events_list = RoomAnalyticsRatios().retrieve_cancellations_and_checkins_for_room(room['calendar_id'], # noqa
                                                         start_date,
                                                         day_after_end_date,
                                                         checkins,
                                                         cancellations,
-                                                        events_list)
+                                                        calendar_events_list,
+                                                        app_events_list)
 
-            ratio_object = RoomAnalyticsRatios.map_results_to_ratio_class(self,  # noqa
+            ratio_object = RoomAnalyticsRatios().map_results_to_ratio_class(
                                 checkins,
                                 cancellations,
-                                events_list,
+                                calendar_events_list,
+                                app_events_list,
                                 room['name'])
 
             response.append(ratio_object)
         return response
 
-    def retrieve_cancellations_and_checkins_for_room(self, calendar_id, start_date, day_after_end_date, checkins,cancellations, events_list):  # noqa
+    def retrieve_cancellations_and_checkins_for_room(self,
+                                                     calendar_id,
+                                                     start_date,
+                                                     day_after_end_date,
+                                                     checkins,
+                                                     cancellations,
+                                                     calendar_events_list,
+                                                     app_events_list):
         """ Retrieve cancellations and checkins for a room
         :params
             - calendar_id, start_date, day_after_end_date,
                 checkins,cancellations, output
         """
-        calendar_events = CommonAnalytics.get_all_events_in_a_room(
+        all_events = CommonAnalytics.get_all_events_in_a_room(
                 self, calendar_id, start_date, day_after_end_date)
-        if calendar_events:
-            for event in calendar_events:
-                if event.get('attendees'):
-                    event_details = CommonAnalytics.get_event_details(
+        if all_events:
+            for event in all_events:
+                event_details = CommonAnalytics.get_event_details(
                         self, event, calendar_id)
-                    events_list.append(event_details)
+                if event.get('attendees'):
+                    calendar_events_list.append(event_details)
+                if event.get('organizer') and event.get(
+                        'organizer').get('email') == calendar_id:
+                    app_events_list.append(event_details)
 
         room_id = RoomModel.query.filter_by(calendar_id=calendar_id,).first().id  # noqa
 
@@ -99,14 +113,24 @@ class RoomAnalyticsRatios(Credentials):
 
         cancellations += (Events.query.filter(Events.room_id==room_id, Events.cancelled==True, Events.start_time>=start_date, Events.end_time<day_after_end_date)).count()  # noqa
 
-        return checkins, cancellations, events_list
+        return checkins, cancellations, calendar_events_list, app_events_list
 
-    def map_results_to_ratio_class(self, checkins, cancellations, events_list, room_name=None):  # noqa
+    def map_results_to_ratio_class(self,
+                                   checkins,
+                                   cancellations,
+                                   calendar_events_list,
+                                   app_events_list,
+                                   room_name=None):
         """ Maps the checkins and cancellations to the ratio object
         :params
             - checkins, cancellations, output, room_name
         """
-        bookings = len(events_list) + cancellations
+        bookings = len(calendar_events_list) + len(
+            app_events_list) + cancellations
+        app_bookings = len(app_events_list) + cancellations
+        app_bookings_percentage = RoomAnalyticsRatios.percentage_formater(
+            app_bookings,
+            bookings)
         cancellations_percentage = RoomAnalyticsRatios.percentage_formater(
             cancellations,
             bookings)
@@ -119,7 +143,9 @@ class RoomAnalyticsRatios(Credentials):
                 cancellations=cancellations,
                 bookings=bookings,
                 checkins_percentage=checkins_percentage,
-                cancellations_percentage=cancellations_percentage
+                cancellations_percentage=cancellations_percentage,
+                app_bookings=app_bookings,
+                app_bookings_percentage=app_bookings_percentage,
             )
         return result
 

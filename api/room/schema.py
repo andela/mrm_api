@@ -27,6 +27,8 @@ class RatioOfCheckinsAndCancellations(graphene.ObjectType):
     bookings = graphene.Int()
     checkins_percentage = graphene.Float()
     cancellations_percentage = graphene.Float()
+    app_bookings = graphene.Int()
+    app_bookings_percentage = graphene.Float()
 
 
 class Calendar(graphene.ObjectType):

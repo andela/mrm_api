@@ -5,6 +5,8 @@ event_ratio_query = '''query {
         cancellations
         cancellationsPercentage
         checkinsPercentage
+        appBookings
+        appBookingsPercentage
 }
 }
 '''
@@ -16,7 +18,9 @@ event_ratio_response = {
             "checkins": 0,
             "cancellations": 0,
             "cancellationsPercentage": 0,
-            "checkinsPercentage": 0
+            "checkinsPercentage": 0,
+            'appBookings': 0.0,
+            'appBookingsPercentage': 0.0
         }
     }
 }
@@ -28,6 +32,8 @@ event_ratio_for_one_day_query = '''query {
         cancellations
         cancellationsPercentage
         checkinsPercentage
+        appBookings
+        appBookingsPercentage
     }
 }'''
 
@@ -40,6 +46,8 @@ event_ratio_per_room_query = '''query{
             checkinsPercentage
             cancellations
             cancellationsPercentage
+            appBookings
+            appBookingsPercentage
         }
     }
 }'''
@@ -54,7 +62,9 @@ event_ratio_per_room_response = {
                     'checkins': 0,
                     'checkinsPercentage': 0.0,
                     'cancellations': 0,
-                    'cancellationsPercentage': 0.0
+                    'cancellationsPercentage': 0.0,
+                    'appBookings': 0.0,
+                    'appBookingsPercentage': 0.0
                 }
             ]
         }
