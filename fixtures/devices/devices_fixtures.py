@@ -4,7 +4,6 @@ query_devices = '''
         {
         allDevices{
             id
-            resourceId
             lastSeen
             dateAdded
             name
@@ -18,7 +17,6 @@ expected_response_devices = {
                                     "allDevices": [
                                         {
                                             "id": "1",
-                                            "resourceId": 1,
                                             "lastSeen": "2018-06-08T11:17:58.785136",  # noqa: E501
                                             "dateAdded": "2018-06-08T11:17:58.785136",  # noqa: E501
                                             "name": "Samsung",
@@ -34,8 +32,8 @@ create_devices_query = '''
             createDevice(
                 name:"Apple tablet",
                 deviceType:"External Display",
+                roomId:1,
                 location:"Kenya",
-                resourceId:1
             ){
                 device{
                 name
@@ -64,6 +62,7 @@ update_device_query = '''
             updateDevice(
                 deviceId:1
                 name:"Apple tablet",
+                roomId:1,
                 deviceType:"External Display",
                 location:"Kenya",
             ){
@@ -95,6 +94,7 @@ query_with_non_existant_id = '''
             updateDevice(
                 deviceId:5
                 name:"Apple tablet",
+                roomId:1,
                 deviceType:"External Display",
                 location:"Kenya",
             ){
@@ -108,3 +108,5 @@ query_with_non_existant_id = '''
 '''
 
 non_existant_id_response = "DeviceId not found"
+devices_query = '/mrm?query='+create_devices_query
+devices_query_response = b'{"data":{"createDevice":{"device":{"name":"Apple tablet","location":"Kenya","deviceType":"External Display"}}}}'# noqaE501

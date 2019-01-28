@@ -32,7 +32,8 @@ class Query(graphene.ObjectType):
         capacity=graphene.Int(),
         resources=graphene.String(),
         location=graphene.String(),
-        office=graphene.String()
+        office=graphene.String(),
+        devices=graphene.String()
     )
     get_room_by_id = graphene.Field(
         Room,

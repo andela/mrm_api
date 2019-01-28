@@ -5,7 +5,11 @@ from graphene_sqlalchemy import SQLAlchemyObjectType
 from sqlalchemy import func
 
 from api.devices.models import Devices as DevicesModel
+from helpers.auth.authentication import Auth
+from api.room.models import Room as RoomModel
 from utilities.validations import validate_empty_fields, update_entity_fields
+from helpers.room_filter.room_filter import location_join_room
+from helpers.auth.admin_roles import admin_roles
 
 
 class Devices(SQLAlchemyObjectType):
@@ -16,12 +20,21 @@ class Devices(SQLAlchemyObjectType):
 class CreateDevice(graphene.Mutation):
     class Arguments:
         name = graphene.String(required=True)
+        room_id = graphene.Int(required=True)
         device_type = graphene.String(required=True)
         location = graphene.String()
-        resource_id = graphene.Int(required=True)
     device = graphene.Field(Devices)
 
+    @Auth.user_roles('Admin')
     def mutate(self, info, **kwargs):
+        room_location = location_join_room().filter(
+            RoomModel.id == kwargs['room_id']
+            ).first()
+        if not room_location:
+            raise GraphQLError("Room not found")
+        admin_roles.update_delete_rooms_create_resource(
+            room_id=kwargs['room_id']
+            )
         device = DevicesModel(
             **kwargs,
             date_added=datetime.now(),
@@ -38,9 +51,10 @@ class UpdateDevice(graphene.Mutation):
         name = graphene.String()
         device_type = graphene.String()
         location = graphene.String()
-        resource_id = graphene.Int()
+        room_id = graphene.Int(required=True)
     device = graphene.Field(Devices)
 
+    @Auth.user_roles('Admin')
     def mutate(self, info, device_id, **kwargs):
         validate_empty_fields(**kwargs)
 

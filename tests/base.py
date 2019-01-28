@@ -96,7 +96,6 @@ class BaseTestCase(TestCase):
                                 room_id=room.id)
             resource.save()
             device = Devices(
-                resource_id=resource.id,
                 last_seen="2018-06-08T11:17:58.785136",
                 date_added="2018-06-08T11:17:58.785136",
                 name="Samsung",
