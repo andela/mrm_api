@@ -1,7 +1,7 @@
 """decouple device and resource entity
 
 Revision ID: c8a866f85fd7
-Revises: 87582873ea02
+Revises: c53edf85cda4
 Create Date: 2019-01-24 13:21:00.368195
 
 """
@@ -11,7 +11,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = 'c8a866f85fd7'
-down_revision = '87582873ea02'
+down_revision = 'c53edf85cda4'
 branch_labels = None
 depends_on = None
 
