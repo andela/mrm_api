@@ -1,18 +1,12 @@
 from .email_setup import SendEmail
-from api.user.models import User
 from config import Config
 from flask import render_template
 
 
-def office_created(new_office):
+def send_email_notification(admin_email, new_office):
     # send the email
-    users = User.query.all()
-    recipients = [
-        user.email for user in users if [
-            user_role.role for user_role in user.roles
-            if user_role.role == 'Admin'
-        ]
-    ]
+    recipients = [admin_email]
+
     email = SendEmail(
         'A new office has been added', recipients,
         render_template('office_success.html', office_name=new_office))
