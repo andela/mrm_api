@@ -1,4 +1,4 @@
-from sqlalchemy import (Column, String, Integer, ForeignKey, event)
+from sqlalchemy import (Column, String, Integer, ForeignKey, event, Table)
 from sqlalchemy.orm import relationship
 from graphql import GraphQLError
 from sqlalchemy.schema import Sequence
@@ -9,7 +9,16 @@ from api.floor.models import Floor  # noqa: F401
 from api.wing.models import Wing  # noqa: F401
 from api.events.models import Events  # noqa: F401
 from api.response.models import Response  # noqa: F401
+from api.tag.models import Tag  # noqa: F401
 from helpers.auth.validator import verify_calendar_id
+
+
+tags = Table(
+    'room_tags',
+    Base.metadata,
+    Column('tag_id', Integer, ForeignKey('tags.id')),
+    Column('room_id', Integer, ForeignKey('rooms.id'))
+    )
 
 
 class Room(Base, Utility):
@@ -30,6 +39,11 @@ class Room(Base, Utility):
     events = relationship('Events', cascade="all, delete-orphan")
     response = relationship('Response', cascade="all, delete-orphan")
     devices = relationship('Devices', cascade="all, delete-orphan")
+    room_tags = relationship(
+        'Tag',
+        secondary="room_tags",
+        backref=('tags'),
+        lazy="joined")
 
 
 @event.listens_for(Room, 'before_insert')
