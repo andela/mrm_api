@@ -10,6 +10,7 @@ class Paginate(graphene.ObjectType):
     query_total = graphene.Int()
     has_next = graphene.Boolean()
     has_previous = graphene.Boolean()
+    current_page = graphene.Int()
 
     def __init__(self, **kwargs):
         self.page = kwargs.pop('page', None)
@@ -47,6 +48,12 @@ class Paginate(graphene.ObjectType):
                 has_previous = False
 
         return has_previous
+
+    def resolve_current_page(self, pages):
+        pages = self.resolve_pages(pages)
+        if self.page > pages:
+            raise GraphQLError("Page does not exist")
+        return self.page
 
 
 def validate_page(page):
