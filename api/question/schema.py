@@ -118,7 +118,28 @@ class DeleteQuestion(graphene.Mutation):
         return DeleteQuestion(question=exact_question)
 
 
+class UpdateQuestionViews(graphene.Mutation):
+    class Arguments:
+        increment_total_views = graphene.Boolean(required=True)
+
+    questions = graphene.List(Question)
+
+    def mutate(self, info, **kwargs):
+        query = Question.get_query(info)
+        questions = query.all()
+        new_total_views = 0
+        for question in questions:
+            if kwargs['increment_total_views'] and not question.total_views:
+                new_total_views = 1
+            if kwargs['increment_total_views'] and question.total_views:
+                new_total_views = question.total_views + 1
+            update_entity_fields(question, total_views=new_total_views)
+            question.save()
+        return UpdateQuestionViews(questions=questions)
+
+
 class Mutation(graphene.ObjectType):
     create_question = CreateQuestion.Field()
     delete_question = DeleteQuestion.Field()
     update_question = UpdateQuestion.Field()
+    update_question_views = UpdateQuestionViews.Field()

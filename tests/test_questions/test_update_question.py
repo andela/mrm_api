@@ -4,7 +4,8 @@ from tests.base import BaseTestCase, CommonTestCases
 from fixtures.questions.create_questions_fixtures import (
    update_question_mutation,
    update_question_response,
-   update_question_invalidId
+   update_question_invalidId,
+   query_update_total_views_of_questions
 )
 
 
@@ -32,4 +33,21 @@ class TestUpdateQuestion(BaseTestCase):
             self,
             update_question_invalidId,
             "Question not found"
+        )
+
+    def test_increment_total_views_of_questions(self):
+        """
+        Testing for incrementing the number of views
+        for a room's feedback qustion
+
+        """
+        CommonTestCases.user_token_assert_in(
+            self,
+            query_update_total_views_of_questions,
+            '1'
+        )
+        CommonTestCases.user_token_assert_in(
+            self,
+            query_update_total_views_of_questions,
+            '2'
         )

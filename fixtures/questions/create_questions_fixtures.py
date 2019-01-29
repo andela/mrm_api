@@ -164,3 +164,15 @@ all_questions_response = {
         ]
     }
 }
+
+query_update_total_views_of_questions = '''
+mutation{
+  updateQuestionViews(incrementTotalViews:true) {
+    questions{
+      question
+      questionType
+      totalViews
+      }
+  }
+}
+'''
