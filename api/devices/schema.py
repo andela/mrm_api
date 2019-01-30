@@ -7,7 +7,8 @@ from sqlalchemy import func
 from api.devices.models import Devices as DevicesModel
 from helpers.auth.authentication import Auth
 from api.room.models import Room as RoomModel
-from utilities.validations import validate_empty_fields, update_entity_fields
+from utilities.validations import validate_empty_fields
+from utilities.utility import update_entity_fields
 from helpers.room_filter.room_filter import location_join_room
 from helpers.auth.admin_roles import admin_roles
 

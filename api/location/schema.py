@@ -8,11 +8,11 @@ from api.devices.models import Devices as DevicesModel  # noqa: F401
 from api.room_resource.models import Resource as ResourceModel  # noqa: F401
 from api.room.schema import Room
 from utilities.validations import (
-    update_entity_fields,
     validate_empty_fields,
     validate_url,
     validate_country_field,
     validate_timezone_field)
+from utilities.utility import update_entity_fields
 from helpers.room_filter.room_filter import room_join_location
 from helpers.auth.validator import ErrorHandler
 from helpers.auth.authentication import Auth

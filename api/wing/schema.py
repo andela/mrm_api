@@ -5,7 +5,8 @@ from sqlalchemy import func
 from graphql import GraphQLError
 from api.floor.models import Floor
 from api.wing.models import Wing as WingModel
-from utilities.validations import update_entity_fields, validate_empty_fields
+from utilities.validations import validate_empty_fields
+from utilities.utility import update_entity_fields
 from helpers.auth.authentication import Auth
 from helpers.auth.error_handler import SaveContextManager
 from helpers.auth.admin_roles import admin_roles
