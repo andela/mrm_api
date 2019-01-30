@@ -85,9 +85,12 @@ class CommonAnalytics(Credentials):
             - min_limit, max_limit(Time range)
         """
         service = Credentials.set_api_credentials(self)
-        events_result = service.events().list(
-            calendarId=calendar_id, timeMin=min_limit, timeMax=max_limit,
-            singleEvents=True, orderBy='startTime').execute()
+        try:
+            events_result = service.events().list(
+                calendarId=calendar_id, timeMin=min_limit, timeMax=max_limit,
+                singleEvents=True, orderBy='startTime').execute()
+        except Exception:
+            raise GraphQLError("Resource not found")
         calendar_events = events_result.get('items', [])
         return calendar_events
 
