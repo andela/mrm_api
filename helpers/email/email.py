@@ -3,13 +3,17 @@ from config import Config
 from flask import render_template
 
 
-def send_email_notification(admin_email, new_office):
+def send_email_notification(admin_email, new_office, location_name):
     # send the email
     recipients = [admin_email]
 
     email = SendEmail(
         'A new office has been added', recipients,
-        render_template('office_success.html', office_name=new_office))
+        render_template(
+            'office_success.html',
+            office_name=new_office,
+            location_name=location_name
+        ))
 
     return email.send()
 

@@ -40,7 +40,7 @@ class CreateOffice(graphene.Mutation):
         email = admin.email
         with SaveContextManager(office, kwargs['name'], 'Office'):
             new_office = kwargs['name']
-            if not send_email_notification(email, new_office):
+            if not send_email_notification(email, new_office, location.name):
                 raise GraphQLError("Office created but Emails not Sent")
             return CreateOffice(office=office)
 
