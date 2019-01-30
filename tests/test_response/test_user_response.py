@@ -187,15 +187,15 @@ class TestCreateResponse(BaseTestCase):
         )
 
     def test_filter_response_by_valid_room_id(self):
-            """
-            Testing for creating rates
+        """
+        Testing for creating rates
 
-            """
-            CommonTestCases.admin_token_assert_equal(
-                self,
-                filter_question_by_room,
-                filter_question_by_room_response
-            )
+        """
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            filter_question_by_room,
+            filter_question_by_room_response
+        )
 
     def test_filter_response_by_invalid_room_id(self):
         """
