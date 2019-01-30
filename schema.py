@@ -18,6 +18,7 @@ import api.question.schema
 import api.question.schema_query
 import api.response.schema
 import api.response.schema_query
+import api.tag.schema
 
 
 class Query(
@@ -57,7 +58,8 @@ class Mutation(
     api.wing.schema.Mutation,
     api.floor.schema.Mutation,
     api.question.schema.Mutation,
-    api.response.schema.Mutation
+    api.response.schema.Mutation,
+    api.tag.schema.Mutation,
 ):
     pass
 

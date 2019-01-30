@@ -80,7 +80,7 @@ class BaseTestCase(TestCase):
             wing.save()
             wing_two = Wing(name="Big Apple", floor_id=floor_two.id)
             wing_two.save()
-            tag = Tag(name='Block-A',
+            tag = Tag(name='Block-B',
                       color='green',
                       description='The description')
             tag.save()
