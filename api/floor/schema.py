@@ -21,6 +21,7 @@ class Floor(SQLAlchemyObjectType):
 class CreateFloor(graphene.Mutation):
 
     class Arguments:
+        state = graphene.String()
         name = graphene.String(required=True)
         block_id = graphene.Int(required=True)
     floor = graphene.Field(Floor)
@@ -58,7 +59,8 @@ class UpdateFloor(graphene.Mutation):
     def mutate(self, info, floor_id, **kwargs):
         validate_empty_fields(**kwargs)
         query_floor = Floor.get_query(info)
-        exact_floor = query_floor.filter(FloorModel.id == floor_id).first()
+        active_rooms = query_floor.filter(FloorModel.state == "active")
+        exact_floor = active_rooms.filter(FloorModel.id == floor_id).first()
         if not exact_floor:
             raise GraphQLError("Floor not found")
 
@@ -78,19 +80,22 @@ class UpdateFloor(graphene.Mutation):
 class DeleteFloor(graphene.Mutation):
 
     class Arguments:
+        state = graphene.String()
         floor_id = graphene.Int(required=True)
     floor = graphene.Field(Floor)
 
     @Auth.user_roles('Admin')
     def mutate(self, info, floor_id, **kwargs):
         query_floor = Floor.get_query(info)
-        exact_floor = query_floor.filter(
+        active_rooms = query_floor.filter(FloorModel.state == "active")
+        exact_floor = active_rooms.filter(
             FloorModel.id == floor_id).first()
         if not exact_floor:
             raise GraphQLError("Floor not found")
 
         admin_roles.update_delete_floor(floor_id)
-        exact_floor.delete()
+        update_entity_fields(exact_floor, state="archived", **kwargs)
+        exact_floor.save()
         return DeleteFloor(floor=exact_floor)
 
 
@@ -105,11 +110,12 @@ class PaginatedFloors(Paginate):
         page = self.page
         per_page = self.per_page
         query = Floor.get_query(info)
+        active_rooms = query.filter(FloorModel.state == "active")
         if not page:
-            return query.order_by(FloorModel.name).all()
+            return active_rooms.order_by(FloorModel.name).all()
         page = validate_page(page)
-        self.query_total = query.count()
-        result = query.order_by(
+        self.query_total = active_rooms.count()
+        result = active_rooms.order_by(
             FloorModel.name).limit(per_page).offset(page*per_page)
         if result.count() == 0:
             return GraphQLError("No more resources")
@@ -135,7 +141,8 @@ class Query(graphene.ObjectType):
 
     def resolve_get_rooms_in_a_floor(self, info, floor_id):
         query = Room.get_query(info)
-        rooms = query.filter(RoomModel.floor_id == floor_id)
+        active_rooms = query.filter(RoomModel.state == "active")
+        rooms = active_rooms.filter(RoomModel.floor_id == floor_id)
         return rooms
 
     @Auth.user_roles('Admin')

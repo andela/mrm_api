@@ -1,10 +1,10 @@
-from sqlalchemy import (Column, String, Integer, ForeignKey, event, Table)
+from sqlalchemy import (Column, String, Integer, ForeignKey, event, Table, Enum)
 from sqlalchemy.orm import relationship
 from graphql import GraphQLError
 from sqlalchemy.schema import Sequence
 
 from helpers.database import Base, db_session
-from utilities.utility import Utility
+from utilities.utility import Utility, StateType
 from api.floor.models import Floor  # noqa: F401
 from api.wing.models import Wing  # noqa: F401
 from api.events.models import Events  # noqa: F401
@@ -33,6 +33,7 @@ class Room(Base, Utility):
     wing_id = Column(Integer, ForeignKey('wings.id'))
     cancellation_duration = Column(Integer, default=10)
     floor = relationship('Floor')
+    state = Column(Enum(StateType), default="active")
     resources = relationship(
         'Resource', cascade="all, delete-orphan",
         order_by="func.lower(Resource.name)")

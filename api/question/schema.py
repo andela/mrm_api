@@ -46,11 +46,12 @@ class PaginatedQuestions(Paginate):
         page = self.page
         per_page = self.per_page
         query = Question.get_query(info)
+        active_questions = query.filter(QuestionModel.state == "active")
         if not page:
-            return query.all()
+            return active_questions.all()
         page = validate_page(page)
-        self.query_total = query.count()
-        result = query.limit(per_page).offset(page * per_page)
+        self.query_total = active_questions.count()
+        result = active_questions.limit(per_page).offset(page * per_page)
         if result.count() == 0:
             return GraphQLError("No questions found")
         return result
@@ -70,7 +71,8 @@ class Query(graphene.ObjectType):
 
     def resolve_question(self, info, id):
         query = Question.get_query(info)
-        response = query.filter(QuestionModel.id == id).first()
+        active_questions = query.filter(QuestionModel.state == "active")
+        response = active_questions.filter(QuestionModel.id == id).first()
         if not response:
             raise GraphQLError('Question does not exist')
         return response
@@ -91,7 +93,9 @@ class UpdateQuestion(graphene.Mutation):
     def mutate(self, info, question_id, **kwargs):
         validate_empty_fields(**kwargs)
         query_question = Question.get_query(info)
-        exact_question = query_question.filter(
+        active_questions = query_question.filter(
+            QuestionModel.state == "active")
+        exact_question = active_questions.filter(
             QuestionModel.id == question_id).first()
         if not exact_question:
             raise GraphQLError("Question not found")
@@ -104,17 +108,21 @@ class UpdateQuestion(graphene.Mutation):
 class DeleteQuestion(graphene.Mutation):
     class Arguments:
         question_id = graphene.Int(required=True)
+        state = graphene.String()
 
     question = graphene.Field(Question)
 
     @Auth.user_roles('Admin')
     def mutate(self, info, question_id):
         query_question = Question.get_query(info)
-        exact_question = query_question.filter(
+        active_questions = query_question.filter(
+            QuestionModel.state == "active")
+        exact_question = active_questions.filter(
             QuestionModel.id == question_id).first()
         if not exact_question:
             raise GraphQLError("Question not found")
-        exact_question.delete()
+        update_entity_fields(exact_question, state="archived")
+        exact_question.save()
         return DeleteQuestion(question=exact_question)
 
 

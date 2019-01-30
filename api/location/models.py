@@ -5,7 +5,7 @@ from sqlalchemy.schema import Sequence
 from helpers.database import Base
 
 
-from utilities.utility import Utility
+from utilities.utility import Utility, StateType
 import enum
 
 
@@ -28,6 +28,7 @@ class Location(Base, Utility):
     country = Column(Enum(CountryType))
     time_zone = Column(Enum(TimeZoneType))
     image_url = Column(String)
+    state = Column(Enum(StateType), default="active")
     offices = relationship(
         'Office', cascade="all, delete-orphan",
         order_by="func.lower(Office.name)")

@@ -39,18 +39,21 @@ class CreateWing(graphene.Mutation):
 class DeleteWing(graphene.Mutation):
     class Arguments:
         wing_id = graphene.Int(required=True)
+        state = graphene.String()
 
     wing = graphene.Field(Wing)
 
     @Auth.user_roles('Admin')
     def mutate(self, info, wing_id, **kwargs):
         query_wing = Wing.get_query(info)
-        exact_wing = query_wing.filter(
+        result = query_wing.filter(WingModel.state == "active")
+        exact_wing = result.filter(
             WingModel.id == wing_id).first()
         if not exact_wing:
             raise GraphQLError("Wing not found")
         admin_roles.create_update_delete_wing()
-        exact_wing.delete()
+        update_entity_fields(exact_wing, state="archived", **kwargs)
+        exact_wing.save()
         return DeleteWing(wing=exact_wing)
 
 
@@ -65,7 +68,8 @@ class UpdateWing(graphene.Mutation):
     def mutate(self, info, wing_id, **kwargs):
         validate_empty_fields(**kwargs)
         get_wing = Wing.get_query(info)
-        exact_wing = get_wing.filter(WingModel.id == wing_id).first()
+        result = get_wing.filter(WingModel.state == "active")
+        exact_wing = result.filter(WingModel.id == wing_id).first()
         if not exact_wing:
             raise GraphQLError("Wing not found")
         admin_roles.create_update_delete_wing()
@@ -79,7 +83,8 @@ class Query(graphene.ObjectType):
 
     def resolve_all_wings(self, info):
         query = Wing.get_query(info)
-        return query.order_by(
+        result = query.filter(WingModel.state == "active")
+        return result.order_by(
             func.lower(WingModel.name)).all()
 
 
