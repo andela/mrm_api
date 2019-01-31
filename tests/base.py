@@ -83,6 +83,10 @@ class BaseTestCase(TestCase):
                       color='green',
                       description='The description')
             tag.save()
+            tag_two = Tag(name='Block-C',
+                          color='blue',
+                          description='The description')
+            tag_two.save()
             room = Room(name='Entebbe',
                         room_type='meeting',
                         capacity=6,
@@ -90,6 +94,7 @@ class BaseTestCase(TestCase):
                         calendar_id='andela.com_3630363835303531343031@resource.calendar.google.com',  # noqa: E501
                         image_url="https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg")  # noqa: E501
             room.save()
+            room.room_tags.append(tag)
             resource = Resource(name='Markers',
                                 quantity=3,
                                 room_id=room.id)

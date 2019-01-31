@@ -361,8 +361,8 @@ room_search_by_empty_name = '''
         name
         }
 }
-
 '''
+
 room_search_by_empty_name_response = "Please input Room Name"
 
 room_search_by_invalid_name = '''
