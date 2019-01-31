@@ -10,9 +10,9 @@ import os
 sys.path.append(os.getcwd())
 
 
-class TestCreateRoom(BaseTestCase):
+class TestCreateDevice(BaseTestCase):
 
-    def test_room_creation(self):
+    def test_device_creation(self):
         """
         Testing for device creation
         """
