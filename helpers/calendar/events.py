@@ -90,3 +90,31 @@ class RoomSchedules(Credentials):
                 all_events.append(current_event)
 
         return all_events, all_dates
+
+    def get_all_recurring_events(self, query, start_date, end_date):
+        """ get all recurring events"""
+        rooms = query.filter_by(state="active")
+        credentials = Credentials()
+        service = credentials.set_api_credentials()
+        recurring_events = []
+        for room in rooms:
+            events = service.events().list(
+                calendarId=room.calendar_id, timeMax=end_date,
+                timeMin=start_date, singleEvents=True,
+                orderBy='startTime').execute()
+            for event in events['items']:
+                check_recurring_event = event.get("recurringEventId")
+                if type(check_recurring_event) is str:
+                    recurring_event = {
+                        "start_date": event["start"]["dateTime"],
+                        "end_date": event["end"]["dateTime"],
+                        "room_name": room.name,
+                        "event_summary": event.get("summary"),
+                        "date_of_event": start_date,
+                        "event_id": event.get("id"),
+                        "recurring_event_id": check_recurring_event
+                        }
+                    recurring_events.append(recurring_event)
+                else:
+                    raise GraphQLError("There are no recurring events")
+        return recurring_events

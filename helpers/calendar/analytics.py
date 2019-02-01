@@ -26,14 +26,14 @@ class RoomAnalytics(Credentials):
             self, query)
         result, number_of_meetings = [], []
         for room in rooms_available:
-            calendar_events = CommonAnalytics.get_all_events_in_a_room(
+            all_events = CommonAnalytics.get_all_events_in_a_room(
                 self, room['calendar_id'], start_date, end_date)
             output = []
-            if not calendar_events:
+            if not all_events:
                 output.append({'RoomName': room['name'], 'has_events': False})
                 number_of_meetings.append(0)
             else:
-                for event in calendar_events:
+                for event in all_events:
                     if event.get('attendees'):
                         event_details = CommonAnalytics.get_event_details(self, event, room['calendar_id'])  # noqa: E501
                         output.append(event_details)
@@ -77,9 +77,9 @@ class RoomAnalytics(Credentials):
             self, query)
         res = []
         for room in rooms_available:
-            calendar_events = CommonAnalytics.get_all_events_in_a_room(
+            all_events = CommonAnalytics.get_all_events_in_a_room(
                 self, room['calendar_id'], start_date, end_date)
-            room_details = RoomStatistics(room_name=room["name"], count=len(calendar_events))  # noqa: E501
+            room_details = RoomStatistics(room_name=room["name"], count=len(all_events))  # noqa: E501
             res.append(room_details)
         return res
 

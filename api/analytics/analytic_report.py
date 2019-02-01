@@ -23,16 +23,16 @@ class AnalyticsReport():
         """
         all_rooms_data_df = []
         for room in rooms_available:
-            calendar_events = CommonAnalytics.get_all_events_in_a_room(
+            all_events = CommonAnalytics.get_all_events_in_a_room(
                 self, room['calendar_id'], start_date, end_date)
-            if not calendar_events:
+            if not all_events:
                 all_rooms_data_df.append({
                     'roomName': room['name'],
                     'minutes': 0,
                     'summary': None,
                     'attendees': 0
                 })
-            for event in calendar_events:
+            for event in all_events:
                 if event.get('attendees'):
                     event_details = CommonAnalytics.get_event_details(
                         self, event, room['calendar_id'])

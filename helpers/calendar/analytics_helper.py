@@ -91,8 +91,8 @@ class CommonAnalytics(Credentials):
                 singleEvents=True, orderBy='startTime').execute()
         except Exception:
             raise GraphQLError("Resource not found")
-        calendar_events = events_result.get('items', [])
-        return calendar_events
+        all_events = events_result.get('items', [])
+        return all_events
 
     def get_event_details(self, event, calendar_id):
         """ Filter details of an event
@@ -111,6 +111,11 @@ class CommonAnalytics(Credentials):
                     event_details["roomName"] = resource.get(
                         'displayName') or None
                     event_details["summary"] = event.get("summary")
+        elif event.get('organizer') and event.get(
+                'organizer').get('email') == calendar_id:
+            event_details["roomName"] = event.get(
+                'organizer').get('displayName') or None
+            event_details["summary"] = event.get("summary")
         return event_details
 
     def get_room_statistics(self, number_of_events_in_room, all_details):
@@ -151,10 +156,10 @@ class CommonAnalytics(Credentials):
         bookings = 0
         rooms = CommonAnalytics.get_calendar_id_name(self, query)
         for room in rooms:
-            calendar_events = CommonAnalytics.get_all_events_in_a_room(
+            all_events = CommonAnalytics.get_all_events_in_a_room(
                 self, room["calendar_id"], start_date, end_date)
-            if calendar_events:
-                bookings += len(calendar_events)
+            if all_events:
+                bookings += len(all_events)
         return bookings
 
     @staticmethod

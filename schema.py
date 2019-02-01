@@ -37,6 +37,7 @@ class Query(
     api.response.schema.Query,
     api.response.schema_query.Query,
     api.question.schema.Query,
+    api.events.schema.Query,
 ):
     pass
 
