@@ -3,6 +3,10 @@ from fixtures.user.user_fixture import (
     user_mutation_query, user_mutation_response,
     user_duplication_mutation_response
 )
+from fixtures.user.add_user_fixture import (
+    non_Andela_email_mutation,
+    non_Andela_email_mutation_response
+)
 from helpers.database import db_session
 
 import sys
@@ -36,3 +40,12 @@ class TestCreateUser(BaseTestCase):
 
         expected_response = user_duplication_mutation_response
         self.assertEqual(query_response, expected_response)
+
+    def test_user_creation_with_non_andela_email(self):
+        """
+        Testing for adding a user with non Andela Email
+        """
+        query_response = self.client.execute(
+            non_Andela_email_mutation,
+            context_value={'session': db_session})
+        self.assertEqual(query_response, non_Andela_email_mutation_response)
