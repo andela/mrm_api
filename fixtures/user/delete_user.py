@@ -95,3 +95,19 @@ expected_query_after_delete_for_admin = {
         }
     }
 }
+
+user_invalid_email = '''
+mutation {
+    deleteUser(email: "userandelacom") {
+        user{
+            id
+            email
+            location
+            roles {
+                id
+                role
+            }
+        }
+    }
+}
+'''
