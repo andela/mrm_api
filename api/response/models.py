@@ -5,6 +5,7 @@ from sqlalchemy.orm import relationship
 from helpers.database import Base
 from utilities.utility import Utility
 import api.question.models
+from api.room_resource.models import Resource  # noqa: F401
 
 # not importing it directly prevents a circular-import error
 Question = api.question.models.Question  # noqa: F401
