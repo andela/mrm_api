@@ -1,7 +1,6 @@
 import graphene
 from graphql import GraphQLError
 from api.response.schema import Response
-from api.response.models import Response as ResponseModel
 from api.room_resource.models import Resource
 from api.room.schema import Room
 from api.room.models import Room as RoomModel
@@ -24,7 +23,6 @@ class RoomResponse(graphene.ObjectType):
 
 
 class AllResponses(graphene.ObjectType):
-    room_name = graphene.String()
     responses = graphene.List(RoomResponse)
 
 
@@ -93,9 +91,8 @@ class Query(graphene.ObjectType):
         rooms = RoomModel.query.all()
         for room in rooms:
             room_name = room.name
-            total_response = ResponseModel.query.filter_by(
-                room_id=room.id).count()
             room_response = Response.get_query(info).filter_by(room_id=room.id)
+            total_response = room_response.count()
             all_responses, total_room_resources = Query.get_room_response(
                 self, room_response, room.id)
             responses = RoomResponse(
@@ -104,29 +101,29 @@ class Query(graphene.ObjectType):
                 total_room_resources=total_room_resources,
                 response=all_responses)
             response.append(responses)
-        return (response, room_name)
+        return response
 
     def filter_rooms_by_responses(self, info, upper_limit, lower_limit):
-        all_responses, room_name = Query.get_all_reponses(self, info)
+        all_responses = Query.get_all_reponses(self, info)
         filtered_responses = []
         for response in all_responses:
             reponse_count = response.total_responses
             if lower_limit <= reponse_count <= upper_limit:
                 filtered_responses.append(response)
-        return (filtered_responses, room_name)
+        return filtered_responses
 
     @Auth.user_roles('Admin')
     def resolve_all_room_responses(
             self, info, filter_by=None,
             lower_limit=None, upper_limit=None):
-        responses, room_name = Query.get_all_reponses(self, info)
+        responses = Query.get_all_reponses(self, info)
         if filter_by == 'Responses':
             if isinstance(lower_limit, int) and isinstance(upper_limit, int):
-                responses, room_name = Query.filter_rooms_by_responses(
+                responses = Query.filter_rooms_by_responses(
                     self, info, upper_limit, lower_limit
                 )
             else:
                 raise GraphQLError("lower_limit and upper_limit are \
                 required to filter by responses")
 
-        return AllResponses(responses=responses, room_name=room_name)
+        return AllResponses(responses=responses)
