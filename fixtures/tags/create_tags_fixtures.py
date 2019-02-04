@@ -89,3 +89,58 @@ create_tag_missing_args_response = {
     "createTag": null
   }
 }
+
+
+update_tag_mutation = '''
+mutation {
+        updateTag (tagId: 1,color: "black") {
+    tag {
+      name,
+      color,
+      description
+    }
+  }
+}'''
+
+update_tag_response = {
+  "data": {
+    "updateTag": {
+      "tag": {
+        "name": "Block-B",
+        "color": "black",
+        "description": "The description"
+      }
+    }
+  }
+}
+
+update_non_existent_tag_mutation = '''
+mutation {
+        updateTag (tagId: 20,color: "black") {
+    tag {
+      name,
+      color,
+      description
+    }
+  }
+}'''
+
+update_non_existent_tag_response = {
+  "errors": [
+    {
+      "message": "Tag not found",
+      "locations": [
+        {
+          "line": 3,
+          "column": 9
+        }
+      ],
+      "path": [
+        "updateTag"
+      ]
+    }
+  ],
+  "data": {
+    "updateTag": null
+  }
+}

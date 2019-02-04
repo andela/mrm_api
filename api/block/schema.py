@@ -8,7 +8,8 @@ from api.office.models import Office
 from api.room.models import Room as RoomModel
 from helpers.room_filter.room_filter import room_join_location
 from helpers.auth.admin_roles import admin_roles
-from utilities.validations import validate_empty_fields, update_entity_fields
+from utilities.validations import validate_empty_fields
+from utilities.utility import update_entity_fields
 from helpers.auth.authentication import Auth
 
 

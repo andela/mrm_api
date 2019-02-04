@@ -5,7 +5,8 @@ from sqlalchemy import exc, func
 
 from api.office.models import Office as OfficeModel
 from api.location.models import Location
-from utilities.validations import update_entity_fields, validate_empty_fields
+from utilities.validations import validate_empty_fields
+from utilities.utility import update_entity_fields
 from helpers.auth.authentication import Auth
 from helpers.room_filter.room_filter import (
     room_join_location,
