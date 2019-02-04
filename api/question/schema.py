@@ -57,27 +57,6 @@ class PaginatedQuestions(Paginate):
         return result
 
 
-class Query(graphene.ObjectType):
-    questions = graphene.Field(
-        PaginatedQuestions,
-        page=graphene.Int(),
-        per_page=graphene.Int(),
-    )
-    question = graphene.Field(lambda: Question, id=graphene.Int())
-
-    def resolve_questions(self, info, **kwargs):
-        response = PaginatedQuestions(**kwargs)
-        return response
-
-    def resolve_question(self, info, id):
-        query = Question.get_query(info)
-        active_questions = query.filter(QuestionModel.state == "active")
-        response = active_questions.filter(QuestionModel.id == id).first()
-        if not response:
-            raise GraphQLError('Question does not exist')
-        return response
-
-
 class UpdateQuestion(graphene.Mutation):
     class Arguments:
         question_id = graphene.Int(required=True)
@@ -144,6 +123,32 @@ class UpdateQuestionViews(graphene.Mutation):
             update_entity_fields(question, total_views=new_total_views)
             question.save()
         return UpdateQuestionViews(questions=questions)
+
+
+class Query(graphene.ObjectType):
+    questions = graphene.Field(
+        PaginatedQuestions,
+        page=graphene.Int(),
+        per_page=graphene.Int(),
+    )
+    question = graphene.Field(lambda: Question, id=graphene.Int())
+    all_questions = graphene.List(Question)
+
+    def resolve_all_questions(self, info):
+        query = Question.get_query(info)
+        return query.all()
+
+    def resolve_questions(self, info, **kwargs):
+        response = PaginatedQuestions(**kwargs)
+        return response
+
+    def resolve_question(self, info, id):
+        query = Question.get_query(info)
+        active_questions = query.filter(QuestionModel.state == "active")
+        response = active_questions.filter(QuestionModel.id == id).first()
+        if not response:
+            raise GraphQLError('Question does not exist')
+        return response
 
 
 class Mutation(graphene.ObjectType):

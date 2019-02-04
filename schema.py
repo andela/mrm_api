@@ -14,7 +14,6 @@ import api.events.schema
 import utilities.calendar_ids_cleanup
 import api.notification.schema
 import api.question.schema
-import api.question.schema_query
 import api.response.schema
 import api.response.schema_query
 import api.tag.schema
@@ -33,7 +32,6 @@ class Query(
     api.wing.schema.Query,
     utilities.calendar_ids_cleanup.Query,
     api.notification.schema.Query,
-    api.question.schema_query.Query,
     api.response.schema.Query,
     api.response.schema_query.Query,
     api.question.schema.Query,
