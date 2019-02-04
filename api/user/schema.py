@@ -12,7 +12,7 @@ from helpers.pagination.paginate import Paginate, validate_page
 from helpers.auth.error_handler import SaveContextManager
 from helpers.email.email import email_invite
 from helpers.user_filter.user_filter import user_filter
-from utilities.validations import update_entity_fields
+from utilities.utility import update_entity_fields
 from api.role.schema import Role
 from api.role.models import Role as RoleModel
 
