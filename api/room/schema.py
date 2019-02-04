@@ -138,6 +138,7 @@ class UpdateRoom(graphene.Mutation):
         capacity = graphene.Int()
         image_url = graphene.String()
         calendar_id = graphene.String()
+        firebase_token = graphene.String()
         cancellation_duration = graphene.Int()
         room_tags = graphene.List(graphene.Int)
     room = graphene.Field(Room)

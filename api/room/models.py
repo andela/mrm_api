@@ -30,6 +30,7 @@ class Room(Base, Utility):
     image_url = Column(String)
     calendar_id = Column(String)
     location_id = Column(Integer, ForeignKey('locations.id'), nullable=True)
+    firebase_token = Column(String, nullable=True)
     floor_id = Column(Integer, ForeignKey('floors.id'))
     wing_id = Column(Integer, ForeignKey('wings.id'))
     cancellation_duration = Column(Integer, default=10)
