@@ -6,7 +6,7 @@ from api.tag.models import Tag as TagModel
 from utilities.validations import validate_empty_fields
 from utilities.utility import update_entity_fields
 from helpers.auth.authentication import Auth
-from helpers.auth.validator import ErrorHandler
+from utilities.validator import ErrorHandler
 
 
 class Tag(SQLAlchemyObjectType):
