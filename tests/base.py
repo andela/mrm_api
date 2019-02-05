@@ -91,6 +91,7 @@ class BaseTestCase(TestCase):
                         room_type='meeting',
                         capacity=6,
                         floor_id=floor.id,
+                        location_id=location.id,
                         calendar_id='andela.com_3630363835303531343031@resource.calendar.google.com',  # noqa: E501
                         image_url="https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg")  # noqa: E501
             room.save()

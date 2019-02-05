@@ -11,7 +11,8 @@ from fixtures.room.create_room_with_tags_fixtures import (
     rooms_query,
     query_rooms_response,
     room_query_by_id,
-    room_query_by_id_response
+    room_query_by_id_response,
+    room_invalid_location_id_mutation
 )
 from fixtures.token.token_fixture import ADMIN_TOKEN
 
@@ -66,3 +67,12 @@ class TestCreateRoomWithTags(BaseTestCase):
             self,
             room_query_by_id,
             room_query_by_id_response)
+
+    def test_create_room_with_invalid_location_id(self):
+        """
+        Testing for room creation with invalid location id
+        """
+        CommonTestCases.admin_token_assert_in(
+            self,
+            room_invalid_location_id_mutation,
+            "Location Id does not exist")

@@ -116,23 +116,21 @@ expected_response_pass_an_arg = {
 all_location_no_hierachy = '''{
     allLocations{
         rooms {
-            id
             name
             roomType
             capacity
         }
     }
 }'''
+
 expected_all_location_no_hierachy = {
-    "errors": [
-            {
-                "message": "Cannot query field \"rooms\" on type \"Location\".",  # noqa: E501
-                "locations": [
-                    {
-                        "line": 3,
-                        "column": 9
-                    }
-                ]
-            }
-        ]
+    'data': {'allLocations': [
+        {'rooms': [{'name': 'Entebbe',
+                    'roomType': 'meeting',
+                    'capacity': 6}
+                   ]},
+        {'rooms': []},
+        {'rooms': []}
+    ]
     }
+}
