@@ -27,8 +27,7 @@ def assert_block_id_is_required(office, kwargs):
 
 
 def verify_email(email):
-    return bool(re.match('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$',  # noqa
-                         email))
+    return bool(re.match('^[a-zA-Z0-9_.+-]+@andela+\.com+$', email)) # noqa
 
 
 def verify_calendar_id(calendar_id):

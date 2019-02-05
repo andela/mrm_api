@@ -33,6 +33,8 @@ class CreateUser(graphene.Mutation):
 
     def mutate(self, info, **kwargs):
         user = UserModel(**kwargs)
+        if not verify_email(user.email):
+            raise GraphQLError("This email is not allowed")
         with SaveContextManager(user, kwargs.get('email'), 'User email'):
             notification_settings = NotificationModel(user_id=user.id)
             notification_settings.save()
