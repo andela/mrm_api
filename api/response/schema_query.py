@@ -31,9 +31,9 @@ class Query(graphene.ObjectType):
         RoomResponse, room_id=graphene.Int())
     all_room_responses = graphene.Field(
         AllResponses,
-        filter_by=graphene.String(),
         upper_limit=graphene.Int(),
-        lower_limit=graphene.Int()
+        lower_limit=graphene.Int(),
+        room=graphene.String()
     )
 
     def get_room_response(self, room_response, room_id):
@@ -112,18 +112,69 @@ class Query(graphene.ObjectType):
                 filtered_responses.append(response)
         return filtered_responses
 
+    def search_response_by_room(
+        self, info, upper_limit, lower_limit, room
+    ):
+        search_result = []
+        filtered_search = []
+        if upper_limit and lower_limit:
+            filtered_response = Query.filter_rooms_by_responses(
+                self, info, upper_limit, lower_limit)
+            for response in filtered_response:
+                if response.room_name.lower() == room.lower():
+                    filtered_search.append(response)
+            if filtered_search:
+                return filtered_search
+            else:
+                raise GraphQLError(
+                    "No response for this room at this range")
+        exact_room = RoomModel.query.filter(
+            RoomModel.name.ilike('%' + room + '%')).first()
+        if not exact_room:
+            raise GraphQLError(
+                "No response for this room, enter a valid room name")
+        room_response_query = Response.get_query(info).filter_by(
+            room_id=exact_room.id)
+        room_response = room_response_query.all()
+        if not room_response:
+            raise GraphQLError("No response for this room at the moment")
+        total_response = room_response_query.count()
+        all_responses, total_room_resources = Query.get_room_response(
+            self, room_response, exact_room.id)
+        responses = RoomResponse(
+            room_name=exact_room.name,
+            total_responses=total_response,
+            total_room_resources=total_room_resources,
+            response=all_responses
+        )
+        search_result.append(responses)
+        return search_result
+
     @Auth.user_roles('Admin')
     def resolve_all_room_responses(
-            self, info, filter_by=None,
-            lower_limit=None, upper_limit=None):
+            self, info, lower_limit=None, upper_limit=None, room=None):
         responses = Query.get_all_reponses(self, info)
-        if filter_by == 'Responses':
-            if isinstance(lower_limit, int) and isinstance(upper_limit, int):
-                responses = Query.filter_rooms_by_responses(
-                    self, info, upper_limit, lower_limit
-                )
-            else:
-                raise GraphQLError("lower_limit and upper_limit are \
-                required to filter by responses")
+        if isinstance(lower_limit, int) and isinstance(upper_limit, int):
+            responses = Query.filter_rooms_by_responses(
+                self, info, upper_limit, lower_limit
+            )
+        if (
+            (isinstance(lower_limit, int)
+                and not isinstance(upper_limit, int))
+                or (isinstance(upper_limit, int)
+                    and not isinstance(lower_limit, int))):
+            raise GraphQLError(
+                "Provide upper and lower limits to filter by response number")
+        if (
+            isinstance(lower_limit, int)
+                and isinstance(upper_limit, int)
+                and room):
+            responses = Query.search_response_by_room(
+                self, info, upper_limit, lower_limit, room)
+        if not upper_limit and not lower_limit and room:
+            upper_limit = None
+            lower_limit = None
+            responses = Query.search_response_by_room(
+                self, info, upper_limit, lower_limit, room)
 
         return AllResponses(responses=responses)
