@@ -23,7 +23,7 @@ get_room_response_query = '''{
 }
 '''
 
-get_room_response_query_response = {
+get_room_response_query_data = {
     "data": {
         "roomResponse": {
             "roomName": "Entebbe",
@@ -91,7 +91,112 @@ summary_room_response_data = {
 
 filter_by_response_query = '''
 query{
-    allRoomResponses(filterBy:"Responses",upperLimit: 2, lowerLimit: 0 ){
+    allRoomResponses(upperLimit: 2, lowerLimit: 0 ){
+        responses{
+            totalResponses
+            roomName
+            response{
+                responseId
+                missingItems
+            }
+        }
+    }
+}
+'''
+
+filter_by_response_invalid_query = '''
+query{
+    allRoomResponses(upperLimit: 2){
+        responses{
+            totalResponses
+            roomName
+            response{
+                responseId
+                missingItems
+            }
+        }
+    }
+}
+'''
+
+search_response_by_room_query = '''
+query{
+    allRoomResponses(upperLimit: 2, lowerLimit: 0, room:"Entebbe"){
+        responses{
+            totalResponses
+            roomName
+            response{
+                responseId
+                missingItems
+            }
+        }
+    }
+}
+'''
+
+search_response_by_room_beyond_limits_query = '''
+query{
+    allRoomResponses(upperLimit: 7, lowerLimit: 5, room:"Entebbe"){
+        responses{
+            totalResponses
+            roomName
+            response{
+                responseId
+                missingItems
+            }
+        }
+    }
+}
+'''
+
+search_response_by_room_invalid_room_query = '''
+query{
+    allRoomResponses(upperLimit: 2, lowerLimit: 0, room:"Entebbes"){
+        responses{
+            totalResponses
+            roomName
+            response{
+                responseId
+                missingItems
+            }
+        }
+    }
+}
+'''
+
+search_response_by_room_only = '''
+query{
+    allRoomResponses(room:"Entebbe"){
+        responses{
+            totalResponses
+            roomName
+            response{
+                responseId
+                missingItems
+            }
+        }
+    }
+}
+'''
+
+search_response_by_invalid_room = '''
+query{
+    allRoomResponses(room:"Entebbes"){
+        responses{
+            totalResponses
+            roomName
+            response{
+                responseId
+                missingItems
+            }
+        }
+    }
+}
+'''
+
+search_response_by_room_no_response = '''
+query{
+    allRoomResponses(room:"Kampala"){
         responses{
             totalResponses
             roomId
@@ -110,20 +215,19 @@ filter_by_response_data = {
         'allRoomResponses': {
             'responses': [
                 {
-                    'totalResponses': 2,
-                    'roomId': 1,
-                    'roomName': 'Entebbe',
                     'response': [
                         {
-                            'responseId': 2,
                             'missingItems': ['Markers'],
+                            'responseId': 2,
                         },
                         {
-                            'responseId': 1,
                             'missingItems': [],
+                            'responseId': 1,
                         }
 
-                    ]
+                    ],
+                    'roomName': 'Entebbe',
+                    'totalResponses': 2,
                 }
             ]
         }
