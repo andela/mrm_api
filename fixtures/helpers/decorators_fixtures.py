@@ -49,11 +49,42 @@ room_mutation_query = '''
     }
 '''
 
+room_mutation_with_tags_query = '''
+ mutation {
+        createRoom(
+          name: "Syne",
+          calendarId: "andela.com_3836323338323230343935@resource.calendar.google.com",  # noqa: E501
+          roomType: "Meeting",
+          capacity: 1,
+          officeId: 1
+          floorId: 4,
+          roomTags: [1],
+          imageUrl: "http://url.com") {
+            room {
+                name
+                roomType
+                capacity
+                floorId,
+                calendarId,
+                imageUrl
+                roomTags {
+                  name
+                  color
+                }
+            }
+        }
+    }
+'''
+
 user_role_401_msg = b'{"errors":[{"message":"You are not authorized to perform this action","locations":[{"line":3,"column":9}]}],"data":{"createRoom":null}}'  # noqa: E501
 
 query_string = '/mrm?query='+room_mutation_query
 
+tag_query_string = '/mrm?query='+room_mutation_with_tags_query
+
 query_string_response = b'{"data":{"createRoom":{"room":{"name":"Syne","roomType":"Meeting","capacity":1,"floorId":4,"calendarId":"andela.com_3836323338323230343935@resource.calendar.google.com","imageUrl":"http://url.com"}}}}'  # noqa: E501
+
+tag_query_string_response = b'{"data":{"createRoom":{"room":{"name":"Syne","roomType":"Meeting","capacity":1,"floorId":4,"calendarId":"andela.com_3836323338323230343935@resource.calendar.google.com","imageUrl":"http://url.com","roomTags":[{"name":"Block-B","color":"green"}]}}}}'  # noqa: E501
 
 expired_token = jwt.encode(expired, SECRET_KEY)
 

@@ -3,6 +3,7 @@ from sqlalchemy import func
 from graphene_sqlalchemy import (SQLAlchemyObjectType)
 from graphql import GraphQLError
 from api.room.models import Room as RoomModel
+from api.tag.models import Tag as TagModel
 from api.office.models import Office
 from utilities.validations import validate_empty_fields
 from utilities.utility import update_entity_fields
@@ -19,6 +20,18 @@ from helpers.pagination.paginate import Paginate, validate_page
 class Room(SQLAlchemyObjectType):
     class Meta:
         model = RoomModel
+
+
+def save_room_tags(room, room_tags):
+    missing_tags = ""
+    for tag in room_tags:
+        room_tag = TagModel.query.filter_by(id=tag).first()
+        if not room_tag:
+            missing_tags += str(tag)+" "
+        room.room_tags.append(room_tag)
+    if missing_tags:
+        raise GraphQLError("Tag id {}not found".format(missing_tags))
+    room.save()
 
 
 class RatioOfCheckinsAndCancellations(graphene.ObjectType):
@@ -58,6 +71,7 @@ class CreateRoom(graphene.Mutation):
         wing_id = graphene.Int()
         block_id = graphene.Int()
         cancellation_duration = graphene.Int()
+        room_tags = graphene.List(graphene.Int)
     room = graphene.Field(Room)
 
     @Auth.user_roles('Admin')
@@ -82,8 +96,11 @@ class CreateRoom(graphene.Mutation):
         # remove block ID from kwargs, can't be saved in rooms model
         if kwargs.get('block_id'):
             kwargs.pop('block_id')
+        room_tags = []
+        if kwargs.get('room_tags'):
+            room_tags = kwargs.pop('room_tags')
         room = RoomModel(**kwargs)
-        room.save()
+        save_room_tags(room, room_tags)
         return CreateRoom(room=room)
 
 
@@ -117,6 +134,7 @@ class UpdateRoom(graphene.Mutation):
         image_url = graphene.String()
         calendar_id = graphene.String()
         cancellation_duration = graphene.Int()
+        room_tags = graphene.List(graphene.Int)
     room = graphene.Field(Room)
 
     @Auth.user_roles('Admin')
@@ -124,15 +142,19 @@ class UpdateRoom(graphene.Mutation):
         validate_empty_fields(**kwargs)
         query_room = Room.get_query(info)
         active_rooms = query_room.filter(RoomModel.state == "active")
-        exact_room = active_rooms.filter(RoomModel.id == room_id).first()
-        if not exact_room:
+        room = active_rooms.filter(RoomModel.id == room_id).first()
+        if not room:
             raise GraphQLError("Room not found")
 
         admin_roles.update_delete_rooms_create_resource(room_id)
-        update_entity_fields(exact_room, **kwargs)
-
-        exact_room.save()
-        return UpdateRoom(room=exact_room)
+        room_tags = []
+        if kwargs.get('room_tags'):
+            room_tags = kwargs.pop('room_tags')
+        update_entity_fields(room, **kwargs)
+        previous_tags = room.room_tags
+        previous_tags.clear()
+        save_room_tags(room, room_tags)
+        return UpdateRoom(room=room)
 
 
 class DeleteRoom(graphene.Mutation):
@@ -150,7 +172,7 @@ class DeleteRoom(graphene.Mutation):
             RoomModel.id == room_id).first()
         if not exact_room:
             raise GraphQLError("Room not found")
-
+        exact_room.room_tags.clear()
         admin_roles.update_delete_rooms_create_resource(room_id)
         update_entity_fields(exact_room, state="archived", **kwargs)
         exact_room.save()
