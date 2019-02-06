@@ -31,6 +31,10 @@ class User(Base, Utility):
         backref=('users_association'),
         lazy="joined")
 
+    # TODO Refactor this section after
+    # reorganising the User <> Location
+    # relationship.
+
     def __init__(self, **kwargs):
         validate_empty_fields(**kwargs)
 

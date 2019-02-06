@@ -36,7 +36,7 @@ class CreateOffice(graphene.Mutation):
         location = Location.query.filter_by(id=kwargs['location_id']).first()
         if not location:
             raise GraphQLError("Location not found")
-        admin_roles.create_office(location_id=kwargs['location_id'])
+        admin_roles.verify_admin_location(location_id=kwargs['location_id'])
         office = OfficeModel(**kwargs)
         admin = get_user_from_db()
         email = admin.email

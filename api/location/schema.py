@@ -17,6 +17,7 @@ from utilities.utility import update_entity_fields
 from helpers.room_filter.room_filter import room_join_location
 from helpers.auth.validator import ErrorHandler
 from helpers.auth.authentication import Auth
+from helpers.auth.admin_roles import admin_roles
 
 
 class Location(SQLAlchemyObjectType):
@@ -67,6 +68,7 @@ class UpdateLocation(graphene.Mutation):
             LocationModel.id == location_id).first()
         if not location_object:
             raise GraphQLError("Location not found")
+        admin_roles.verify_admin_location(location_id)
         if "time_zone" in kwargs:
             validate_timezone_field(**kwargs)
         if "country" in kwargs:
@@ -101,6 +103,7 @@ class DeleteLocation(graphene.Mutation):
             LocationModel.id == location_id).first()  # noqa: E501
         if not location:
             raise GraphQLError("location not found")
+        admin_roles.verify_admin_location(location_id)
         update_entity_fields(location, state="archived", **kwargs)
         location.save()
         return DeleteLocation(location=location)
