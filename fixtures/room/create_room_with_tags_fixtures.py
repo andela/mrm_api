@@ -5,7 +5,7 @@ room_mutation_query = '''
         createRoom(
             name: "Mbarara", roomType: "Meeting", capacity: 4, floorId: 2, officeId: 1,
             calendarId:"andela.com_3836323338323230343935@resource.calendar.google.com",
-            roomTags: [1],
+            roomTags: [1], locationId: 1,
             imageUrl: "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg") {  # noqa: E501
             room {
                 id
@@ -13,11 +13,31 @@ room_mutation_query = '''
                 roomType
                 capacity
                 floorId
+                locationId
                 imageUrl
                 roomTags {
                   name
                   description
                 }
+            }
+        }
+    }
+'''
+
+room_invalid_location_id_mutation = '''
+    mutation {
+        createRoom(
+            name: "aso", roomType: "Meeting", capacity: 4, floorId: 4,
+            officeId: 1,
+            locationId: 9,
+            calendarId:"andela.com_3836323338323230343935@resource.calendar.google.com",
+            imageUrl: "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg") {  # noqa: E501
+            room {
+                name
+                roomType
+                capacity
+                floorId
+                imageUrl
             }
         }
     }
@@ -47,10 +67,10 @@ update_fields_response = {
                 "capacity": 8,
                 "roomType": "board room",
                 "roomTags": [
-                  {
-                    "name": "Block-C",
-                    "color": "blue"
-                  }
+                    {
+                        "name": "Block-C",
+                        "color": "blue"
+                    }
                 ]
             }
         }

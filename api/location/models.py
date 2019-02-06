@@ -32,3 +32,6 @@ class Location(Base, Utility):
     offices = relationship(
         'Office', cascade="all, delete-orphan",
         order_by="func.lower(Office.name)")
+    rooms = relationship(
+        'Room', cascade="all, delete-orphan",
+        order_by="func.lower(Room.name)")

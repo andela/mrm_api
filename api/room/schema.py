@@ -10,10 +10,14 @@ from utilities.utility import update_entity_fields
 from helpers.auth.authentication import Auth
 from helpers.auth.admin_roles import admin_roles
 from helpers.auth.verify_ids_for_room import verify_ids, validate_block
-from helpers.auth.validator import assert_wing_is_required, assert_block_id_is_required  # noqa: E501
+from helpers.auth.validator import (
+    assert_wing_is_required,
+    assert_block_id_is_required)
 from helpers.auth.validator import ErrorHandler
 from helpers.auth.add_office import verify_attributes
-from helpers.room_filter.room_filter import room_filter, room_join_office  # noqa: E501
+from helpers.room_filter.room_filter import (
+    room_filter,
+    room_join_office)
 from helpers.pagination.paginate import Paginate, validate_page
 
 
@@ -65,6 +69,7 @@ class CreateRoom(graphene.Mutation):
         room_type = graphene.String()
         capacity = graphene.Int(required=True)
         image_url = graphene.String()
+        location_id = graphene.Int()
         floor_id = graphene.Int(required=True)
         calendar_id = graphene.String()
         office_id = graphene.Int(required=True)
@@ -145,7 +150,6 @@ class UpdateRoom(graphene.Mutation):
         room = active_rooms.filter(RoomModel.id == room_id).first()
         if not room:
             raise GraphQLError("Room not found")
-
         admin_roles.update_delete_rooms_create_resource(room_id)
         room_tags = []
         if kwargs.get('room_tags'):
