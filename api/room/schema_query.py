@@ -168,7 +168,7 @@ class Query(graphene.ObjectType):
             events=resource[1]
         )
 
-    @Auth.user_roles('Admin')
+    @Auth.user_roles('Admin', 'Default User')
     def resolve_analytics_for_least_used_rooms(self, info, start_date, end_date=None):  # noqa: E501
         query = Room.get_query(info)
         room_analytics = RoomAnalytics.get_least_used_rooms_analytics(
@@ -178,7 +178,7 @@ class Query(graphene.ObjectType):
             analytics=room_analytics
         )
 
-    @Auth.user_roles('Admin')
+    @Auth.user_roles('Admin', 'Default User')
     def resolve_analytics_for_most_used_rooms(self, info, start_date, end_date=None):  # noqa: E501
         query = Room.get_query(info)
         room_analytics = RoomAnalytics.get_most_used_rooms_analytics(
@@ -189,7 +189,7 @@ class Query(graphene.ObjectType):
         )
         return room_most_used_per_week
 
-    @Auth.user_roles('Admin')
+    @Auth.user_roles('Admin', 'Default User')
     def resolve_analytics_for_meetings_per_room(self, info, start_date, end_date=None):  # noqa: E501
         query = Room.get_query(info)
         meeting_summary = RoomAnalytics.get_meetings_per_room_analytics(
@@ -199,7 +199,7 @@ class Query(graphene.ObjectType):
             analytics=meeting_summary
         )
 
-    @Auth.user_roles('Admin')
+    @Auth.user_roles('Admin', 'Default User')
     def resolve_analytics_for_meetings_durations(self, info, start_date, end_date=None, per_page=None, page=None):  # noqa: E501
         query = Room.get_query(info)
         results = RoomAnalytics.get_meetings_duration_analytics(self, query, start_date, end_date)  # noqa: E501
@@ -212,21 +212,21 @@ class Query(graphene.ObjectType):
             return Analytics(MeetingsDurationaAnalytics=current_page, has_previous=has_previous, has_next=has_next, pages=pages)  # noqa: E501
         return Analytics(MeetingsDurationaAnalytics=results)
 
-    @Auth.user_roles('Admin')
+    @Auth.user_roles('Admin', 'Default User')
     def resolve_analytics_ratios(self, info, start_date, end_date=None):  # noqa: E501
         query = Room.get_query(info)
         ratio = RoomAnalyticsRatios.get_analytics_ratios(
             self, query, start_date, end_date)
         return ratio
 
-    @Auth.user_roles('Admin')
+    @Auth.user_roles('Admin', 'Default User')
     def resolve_analytics_ratios_per_room(self, info, start_date, end_date=None):  # noqa: E501
         query = Room.get_query(info)
         ratio = RoomAnalyticsRatios.get_analytics_ratios_per_room(
             self, query, start_date, end_date)
         return RatiosPerRoom(ratio)
 
-    @Auth.user_roles('Admin')
+    @Auth.user_roles('Admin', 'Default User')
     def resolve_bookings_analytics_count(self, info, start_date, end_date):  # noqa: E501
         query = Room.get_query(info)
         analytics = RoomAnalyticsRatios.get_bookings_analytics_count(
