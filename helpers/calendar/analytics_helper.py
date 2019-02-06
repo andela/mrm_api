@@ -38,6 +38,20 @@ class CommonAnalytics(Credentials):
         end_date = (datetime.strptime(end_date, "%b %d %Y") + relativedelta(days=1)).isoformat() + 'Z'  # noqa: E501
         return(start_date, end_date)
 
+    def validate_current_date(self, start_date, end_date):
+        start_date, end_date = CommonAnalytics.convert_dates(
+            self, start_date, end_date)
+
+        now = datetime.now().strftime('%b %d %Y')
+        date_now = (datetime.strptime(now, "%b %d %Y") + relativedelta(days=1)).isoformat() + 'Z'  # noqa: E501
+        start_dt = dateutil.parser.parse(start_date)
+        end_dt = dateutil.parser.parse(end_date)
+        today = dateutil.parser.parse(date_now)
+        if start_dt > today or end_dt > today:
+            raise GraphQLError(
+                "Invalid date. You can not retrieve data beyond today")
+        return(start_date, end_date)
+
     def format_date(date):
         '''
         Convert ISO 8601 date to simple DD/MM/YYYY

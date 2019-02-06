@@ -20,7 +20,7 @@ class RoomAnalyticsRatios(Credentials):
          :params
             - start_date, end_date
         """
-        start_date, day_after_end_date = CommonAnalytics.convert_dates(
+        start_date, day_after_end_date = CommonAnalytics.validate_current_date(
                 self, start, end)
         rooms = CommonAnalytics.get_calendar_id_name(
             self, query)
@@ -52,7 +52,7 @@ class RoomAnalyticsRatios(Credentials):
          :params
             - start_date, end_date
         """
-        start_date, day_after_end_date = CommonAnalytics.convert_dates(
+        start_date, day_after_end_date = CommonAnalytics.validate_current_date(
                 self, start, end)
         rooms = CommonAnalytics.get_calendar_id_name(
             self, query)

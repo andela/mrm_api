@@ -89,12 +89,15 @@ class RoomAnalytics(Credentials):
             - query
             - start_date, end_date(Time range)
         """
-        start_date, end_date = CommonAnalytics.convert_dates(self, start_date, end_date)  # noqa: E501
+        start_date, end_date = CommonAnalytics.validate_current_date(
+            self, start_date, end_date)
+
         rooms = CommonAnalytics.get_calendar_id_name(
             self, query)
         result = []
         for room in rooms:
-            events = CommonAnalytics.get_all_events_in_a_room(self, room['calendar_id'], start_date, end_date)  # noqa: E501
+            events = CommonAnalytics.get_all_events_in_a_room(
+                self, room['calendar_id'], start_date, end_date)
             events_duration = []
             for event in events:
                 start = event['start'].get('dateTime', event['start'].get('date'))  # noqa: E501
