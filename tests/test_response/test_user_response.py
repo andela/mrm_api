@@ -87,7 +87,7 @@ class TestCreateResponse(BaseTestCase):
         CommonTestCases.user_token_assert_in(
             self,
             check_non_existing_question,
-            "Question does not exist"
+            "Responses for question ids"
         )
 
     def test_check_non_existent_room(self):
@@ -183,7 +183,7 @@ class TestCreateResponse(BaseTestCase):
         CommonTestCases.user_token_assert_in(
             self,
             choose_non_existent_question,
-            "Question does not exist"
+            "Responses for question ids"
         )
 
     def test_filter_response_by_valid_room_id(self):

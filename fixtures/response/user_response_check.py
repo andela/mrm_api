@@ -16,7 +16,7 @@ mutation{
 check_non_existing_question_response = {
   "errors": [
     {
-      "message": "Question does not exist",
+      "message": "Responses for question ids",
       "locations": [
         {
           "line": 2,
@@ -61,11 +61,13 @@ mutation{
 create_check_response = {
   "data": {
     "createResponse": {
-      "response": {
-        "id": "3",
-        "questionId": 2,
-        "roomId": 1
-      }
+      "response": [
+        {
+          "id": "3",
+          "questionId": 2,
+          "roomId": 1
+        }
+      ]
     }
   }
 }
