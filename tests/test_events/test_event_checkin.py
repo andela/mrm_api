@@ -8,6 +8,9 @@ from fixtures.events.event_checkin_fixtures import (
     cancel_event_mutation,
     cancel_event_respone
 )
+from fixtures.events.events_ratios_fixtures import (
+    event_ratio_percentage_cancellation_query,
+    event_ratio_percentage_cancellation_response)
 
 sys.path.append(os.getcwd())
 
@@ -72,4 +75,10 @@ class TestEventCheckin(BaseTestCase):
             self,
             cancel_event_mutation,
             "You cannot perform this action"
+        )
+        # Test for successful try in percentage_formater function
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            event_ratio_percentage_cancellation_query,
+            event_ratio_percentage_cancellation_response
         )
