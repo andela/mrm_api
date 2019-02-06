@@ -1,4 +1,5 @@
 from collections import Counter
+from graphql import GraphQLError
 from .credentials import Credentials
 from helpers.calendar.analytics_helper import (
     CommonAnalytics, EventsDuration, RoomStatistics
@@ -118,4 +119,33 @@ class RoomAnalytics(Credentials):
                 events=events_in_minutes
             )
             result.append(output)
+        return result
+
+    def get_booked_rooms(self, query, start_date, end_date):  # noqa: E501
+        """ Get booked room per given period of time and their percentages
+         :params
+            - query
+            - start_date, end_date(Time range)
+        """
+        start_date, end_date = CommonAnalytics.convert_dates(
+            self, start_date, end_date)
+        rooms_available = CommonAnalytics.get_calendar_id_name(
+            self, query)
+        result = []
+        bookings = 0
+        for room in rooms_available:
+            all_events_in_all_rooms = CommonAnalytics.get_all_events_in_a_room(
+                self, room['calendar_id'], start_date, end_date)
+            if all_events_in_all_rooms:
+                bookings += len(all_events_in_all_rooms)
+
+        for room in rooms_available:
+            all_events = CommonAnalytics.get_all_events_in_a_room(
+                self, room['calendar_id'], start_date, end_date)
+            try:
+                room_details = RoomStatistics(room_name=room["name"], meetings=len(all_events), percentage=(len(all_events))/bookings*100)  # noqa: E501
+            except ZeroDivisionError:
+                raise GraphQLError("There are no meetings")
+            result.append(room_details)
+            result.sort(key=lambda x: x.meetings, reverse=True)
         return result
