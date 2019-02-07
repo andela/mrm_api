@@ -160,6 +160,15 @@ mutation{
 }
 '''
 
+send_invitation_to_nonexistent_user_query = '''
+mutation{
+    inviteToConverge(email: "beverly.kololi@andela.com"){
+        email
+
+    }
+}
+'''
+
 send_invitation_to_existent_user_response = {
     "errors": [{
         "message": "User already joined Converge",
@@ -239,5 +248,16 @@ mutation{
       email
     }
   }
+}
+'''
+
+filter_user_by_location = '''
+query {
+    users (locationId:5) {
+      users {
+        email
+        name
+        location }
+    }
 }
 '''

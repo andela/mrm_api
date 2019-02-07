@@ -6,19 +6,14 @@ from graphql import GraphQLError
 from config import Config
 from api.room.models import Room as RoomModel
 from api.tag.models import Tag as TagModel
-from api.office.models import Office
 from utilities.validations import validate_empty_fields
 from utilities.utility import update_entity_fields
 from helpers.auth.authentication import Auth
 from helpers.auth.admin_roles import admin_roles
-from utilities.verify_ids_for_room import verify_ids, validate_block
 from utilities.validator import (
-    ErrorHandler,
-    assert_wing_is_required,
-    assert_block_id_is_required)
-from helpers.room_filter.room_filter import (
-    room_filter,
-    room_join_office)
+    verify_location_id,
+    ErrorHandler)
+from helpers.room_filter.room_filter import room_filter
 from helpers.pagination.paginate import Paginate, validate_page
 
 
@@ -70,38 +65,23 @@ class CreateRoom(graphene.Mutation):
         room_type = graphene.String()
         capacity = graphene.Int(required=True)
         image_url = graphene.String()
-        location_id = graphene.Int()
-        floor_id = graphene.Int(required=True)
+        location_id = graphene.Int(required=True)
         calendar_id = graphene.String()
-        office_id = graphene.Int(required=True)
-        wing_id = graphene.Int()
-        block_id = graphene.Int()
         cancellation_duration = graphene.Int()
         room_tags = graphene.List(graphene.Int)
     room = graphene.Field(Room)
 
     @Auth.user_roles('Admin')
-    def mutate(self, info, office_id, **kwargs):
+    def mutate(self, info, **kwargs):
         validate_empty_fields(**kwargs)
-        verify_ids(office_id, kwargs)
-        get_office = Office.query.filter_by(id=office_id).first()
-        if not get_office:
-            raise GraphQLError("No Office Found")
-
-        admin_roles.create_rooms_update_delete_office(office_id)
+        verify_location_id(kwargs)
+        admin_roles.create_rooms_update_delete_location(kwargs)
         query = Room.get_query(info)
-        exact_query = room_join_office(query)
-        result = exact_query.filter(
-            Office.id == office_id,
-            RoomModel.name == kwargs.get('name'))
-        if result.count() > 0:
+        room = query.filter(
+            func.lower(RoomModel.name) == func.lower(kwargs.get('name')),
+            RoomModel.state == "active")
+        if room.count():
             ErrorHandler.check_conflict(self, kwargs['name'], 'Room')
-        assert_block_id_is_required(get_office.name, kwargs)
-        validate_block(office_id, kwargs)
-        assert_wing_is_required(get_office.name, kwargs)
-        # remove block ID from kwargs, can't be saved in rooms model
-        if kwargs.get('block_id'):
-            kwargs.pop('block_id')
         room_tags = []
         if kwargs.get('room_tags'):
             room_tags = kwargs.pop('room_tags')

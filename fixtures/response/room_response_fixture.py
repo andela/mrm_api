@@ -63,30 +63,30 @@ summary_room_response_query = '''{
 '''
 
 summary_room_response_data = {
-  "data": {
-    "allRoomResponses": {
-      "responses": [
-        {
-          "roomName": "Entebbe",
-          "totalResponses": 2,
-          "response": [
-            {
-              "responseId": 2,
-              "rating": None,
-              "suggestion": None,
-              "missingItems": ['Markers']
-            },
-            {
-              "responseId": 1,
-              "rating": 2,
-              "suggestion": None,
-              "missingItems": []
-            }
-          ]
+    "data": {
+        "allRoomResponses": {
+            "responses": [
+                {
+                    "roomName": "Entebbe",
+                    "totalResponses": 2,
+                    "response": [
+                        {
+                            "responseId": 2,
+                            "rating": None,
+                            "suggestion": None,
+                            "missingItems": ['Markers']
+                        },
+                        {
+                            "responseId": 1,
+                            "rating": 2,
+                            "suggestion": None,
+                            "missingItems": []
+                        }
+                    ]
+                }
+            ]
         }
-      ]
     }
-  }
 }
 
 filter_by_response_query = '''

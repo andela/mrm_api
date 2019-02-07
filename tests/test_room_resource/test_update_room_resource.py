@@ -11,7 +11,7 @@ sys.path.append(os.getcwd())
 
 class TestUpdateRoomResorce(BaseTestCase):
 
-    def test_deleteresource_mutation_when_not_admin(self):
+    def test_updateresource_mutation_when_not_admin(self):
         CommonTestCases.user_token_assert_in(
             self,
             update_room_resource_query,
@@ -30,4 +30,11 @@ class TestUpdateRoomResorce(BaseTestCase):
             self,
             non_existant_resource_id_query,
             "Resource not found"
+        )
+
+    def test_updateresource_mutation_admin_different_location(self):
+        CommonTestCases.lagos_admin_token_assert_in(
+            self,
+            update_room_resource_query,
+            "You are not authorized to make changes in Kampala"
         )

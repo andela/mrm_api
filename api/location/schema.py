@@ -2,8 +2,8 @@ import graphene
 from sqlalchemy import func
 from graphql import GraphQLError
 from graphene_sqlalchemy import SQLAlchemyObjectType
-from api.location.models import Location as LocationModel
 
+from api.location.models import Location as LocationModel
 from api.devices.models import Devices as DevicesModel  # noqa: F401
 from api.room.models import Room as RoomModel
 from api.room_resource.models import Resource as ResourceModel  # noqa: F401
@@ -14,6 +14,9 @@ from utilities.validations import (
     validate_country_field,
     validate_timezone_field)
 from utilities.utility import update_entity_fields
+from helpers.email.email import send_email_notification
+from helpers.auth.error_handler import SaveContextManager
+from helpers.auth.user_details import get_user_from_db
 from helpers.room_filter.room_filter import room_join_location
 from utilities.validator import ErrorHandler
 from helpers.auth.authentication import Auth
@@ -40,14 +43,19 @@ class CreateLocation(graphene.Mutation):
         # Validate if the country given is a valid country
         validate_country_field(**kwargs)
         validate_timezone_field(**kwargs)
+        validate_url(**kwargs)
         query = Location.get_query(info)
         result = query.filter(
             func.lower(LocationModel.name) == func.lower(kwargs.get('name')))
         if result.count() > 0:
             ErrorHandler.check_conflict(self, kwargs['name'], 'Location')
+        admin = get_user_from_db()
+        email = admin.email
         location = LocationModel(**kwargs)
-        location.save()
-        return CreateLocation(location=location)
+        with SaveContextManager(location, kwargs['name'], 'Location'):
+            if not send_email_notification(email, location.name):
+                raise GraphQLError("Location created but email not sent")
+            return CreateLocation(location=location)
 
 
 class UpdateLocation(graphene.Mutation):

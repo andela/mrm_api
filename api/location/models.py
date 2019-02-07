@@ -22,16 +22,14 @@ class TimeZoneType(enum.Enum):
 
 class Location(Base, Utility):
     __tablename__ = 'locations'
-    id = Column(Integer, Sequence('floors_id_seq', start=1, increment=1), primary_key=True) # noqa
+    id = Column(Integer, Sequence('locations_id_seq',
+                                  start=1, increment=1), primary_key=True)
     name = Column(String, nullable=False)
     abbreviation = Column(String, nullable=False)
     country = Column(Enum(CountryType))
     time_zone = Column(Enum(TimeZoneType))
     image_url = Column(String)
     state = Column(Enum(StateType), default="active")
-    offices = relationship(
-        'Office', cascade="all, delete-orphan",
-        order_by="func.lower(Office.name)")
     rooms = relationship(
         'Room', cascade="all, delete-orphan",
         order_by="func.lower(Room.name)")

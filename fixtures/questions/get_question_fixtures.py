@@ -45,29 +45,29 @@ all_questions_query_response = {
                     'roomId': 1
                 }]
             },
-                          {
-                              'id': '2',
-                              'questionType': 'check',
-                              'question':
-                              'Is there anything missing in the room',
-                              'startDate': '20 Nov 2018',
-                              'endDate': '28 Nov 2018',
-                              'questionResponseCount': 1,
-                              'response': [{
-                                  'id': '2',
-                                  'questionId': 2,
-                                  'roomId': 1
-                              }]
-                          },
-                          {
-                              'id': '3',
-                              'questionType': 'input',
-                              'question': 'Any other suggestion',
-                              'startDate': '20 Nov 2018',
-                              'endDate': '28 Nov 2018',
-                              'questionResponseCount': 0,
-                              'response': []
-                          }]
+                {
+                'id': '2',
+                'questionType': 'check',
+                'question':
+                'Is there anything missing in the room',
+                'startDate': '20 Nov 2018',
+                'endDate': '28 Nov 2018',
+                'questionResponseCount': 1,
+                'response': [{
+                    'id': '2',
+                    'questionId': 2,
+                    'roomId': 1
+                }]
+            },
+                {
+                'id': '3',
+                'questionType': 'input',
+                'question': 'Any other suggestion',
+                'startDate': '20 Nov 2018',
+                'endDate': '28 Nov 2018',
+                'questionResponseCount': 0,
+                'response': []
+            }]
         }
     }
 }
@@ -114,20 +114,20 @@ paginated_all_questions_query_response = {
                     'roomId': 1
                 }]
             },
-                          {
-                              'id': '2',
-                              'questionType': 'check',
-                              'question':
-                              'Is there anything missing in the room',
-                              'startDate': '20 Nov 2018',
-                              'endDate': '28 Nov 2018',
-                              'questionResponseCount': 1,
-                              'response': [{
-                                  'id': '2',
-                                  'questionId': 2,
-                                  'roomId': 1
-                              }]
-                          }]
+                {
+                'id': '2',
+                'questionType': 'check',
+                'question':
+                'Is there anything missing in the room',
+                'startDate': '20 Nov 2018',
+                'endDate': '28 Nov 2018',
+                'questionResponseCount': 1,
+                'response': [{
+                    'id': '2',
+                    'questionId': 2,
+                    'roomId': 1
+                }]
+            }]
         }
     }
 }
@@ -185,3 +185,27 @@ query {
   }
 }
 '''
+
+get_all_questions_query = '''
+query {
+  allQuestions {
+      questionType
+  }
+}
+'''
+
+get_all_questions_query_response = {
+    "data": {
+        "allQuestions": [
+            {
+                "questionType": "rate"
+            },
+            {
+                "questionType": "check"
+            },
+            {
+                "questionType": "input"
+            }
+        ]
+    }
+}

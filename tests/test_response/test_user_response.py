@@ -6,7 +6,9 @@ from fixtures.response.user_response_fixtures import (
     create_rate_response,
     rate_wrong_question,
     invalid_rating_number,
-    rate_with_non_existent_room
+    rate_with_non_existent_room,
+    create_rate_query_without_rate_args,
+    create_text_query_without_text_args
 )
 from fixtures.response.user_response_check import (
     check_non_existing_question,
@@ -206,4 +208,26 @@ class TestCreateResponse(BaseTestCase):
             self,
             filter_question_by_invalid_room,
             filter_question_by_invalid_room_response
+        )
+
+    def test_rate_mutation_without_rate_args(self):
+        """
+        Testing for when user rates without "rate" args
+
+        """
+        CommonTestCases.user_token_assert_in(
+            self,
+            create_rate_query_without_rate_args,
+            "Provide a rating response"
+        )
+
+    def test_text_mutation_without_text_args(self):
+        """
+        Testing for when user rates without "text" args
+
+        """
+        CommonTestCases.user_token_assert_in(
+            self,
+            create_text_query_without_text_args,
+            "Provide a text response"
         )

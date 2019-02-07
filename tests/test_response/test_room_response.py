@@ -2,19 +2,19 @@ import sys
 import os
 from tests.base import BaseTestCase, CommonTestCases
 from fixtures.response.room_response_fixture import (
-   get_room_response_query,
-   get_room_response_query_data,
-   get_room_response_non_existence_room_id,
-   search_response_by_room_invalid_room_query,
-   search_response_by_room_query,
-   search_response_by_room_only,
-   search_response_by_room_beyond_limits_query,
-   search_response_by_invalid_room,
-   summary_room_response_query,
-   summary_room_response_data,
-   filter_by_response_query,
-   filter_by_response_invalid_query,
-   filter_by_response_data,
+    get_room_response_query,
+    get_room_response_query_data,
+    get_room_response_non_existence_room_id,
+    search_response_by_room_invalid_room_query,
+    search_response_by_room_query,
+    search_response_by_room_only,
+    search_response_by_room_beyond_limits_query,
+    search_response_by_invalid_room,
+    summary_room_response_query,
+    summary_room_response_data,
+    filter_by_response_query,
+    filter_by_response_invalid_query,
+    filter_by_response_data
 )
 
 

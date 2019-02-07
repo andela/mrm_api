@@ -29,13 +29,13 @@ class CreateDevice(graphene.Mutation):
     @Auth.user_roles('Admin')
     def mutate(self, info, **kwargs):
         room_location = location_join_room().filter(
-            RoomModel.id == kwargs['room_id']
-            ).first()
+            RoomModel.id == kwargs['room_id'],
+            RoomModel.state == "active").first()
         if not room_location:
             raise GraphQLError("Room not found")
         admin_roles.update_delete_rooms_create_resource(
             room_id=kwargs['room_id']
-            )
+        )
         device = DevicesModel(
             **kwargs,
             date_added=datetime.now(),
@@ -62,7 +62,7 @@ class UpdateDevice(graphene.Mutation):
         query_device = Devices.get_query(info)
         exact_device = query_device.filter(
             DevicesModel.id == device_id
-            ).first()
+        ).first()
         if not exact_device:
             raise GraphQLError("DeviceId not found")
         exact_device.date_added = datetime.now()

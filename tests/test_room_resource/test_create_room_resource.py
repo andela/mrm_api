@@ -39,3 +39,13 @@ class TestCreateRoomResource(BaseTestCase):
             resource_mutation_0_room_id,
             "Room not found"
         )
+
+    def test_create_resource_in_other_location(self):
+        """
+        Test for creation of resource in s different location
+        """
+        CommonTestCases.lagos_admin_token_assert_in(
+            self,
+            resource_mutation_query,
+            "You are not authorized to make changes in Kampala"
+        )

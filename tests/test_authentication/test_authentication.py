@@ -2,8 +2,8 @@ import os
 import sys
 
 from tests.base import BaseTestCase
-from fixtures.office.office_fixtures import (
-    office_mutation_query)
+from fixtures.room.create_room_fixtures import (
+    room_mutation_query)
 from fixtures.token.token_fixture import INVALID_TOKEN
 
 sys.path.append(os.getcwd())
@@ -17,6 +17,6 @@ class TestAuthentication(BaseTestCase):
         """
         headers = {"Authorization": "Bearer" + " " + INVALID_TOKEN}  # noqa E501
         response = self.app_test.post(
-            '/mrm?query=' + office_mutation_query,
+            '/mrm?query=' + room_mutation_query,
             headers=headers)
         self.assertIn("invalid token", str(response.data))

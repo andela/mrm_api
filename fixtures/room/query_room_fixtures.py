@@ -81,7 +81,7 @@ room_occupants_query = '''
 room_schedule_query = '''
                         {
                         roomSchedule(
-                            calendarId:"andela.com_3836323338323230343935@resource.calendar.google.com",
+                            calendarId:"andela.com_3630363835303531343031@resource.calendar.google.com",
                             days:7){
                         events
                         }
