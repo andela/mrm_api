@@ -16,6 +16,7 @@ class ResponseDetails(graphene.ObjectType):
 
 
 class RoomResponse(graphene.ObjectType):
+    room_id = graphene.Int()
     room_name = graphene.String()
     total_responses = graphene.Int()
     total_room_resources = graphene.Int()
@@ -81,10 +82,10 @@ class Query(graphene.ObjectType):
         total_response = room_response.count()
         room_name = room.name
         return RoomResponse(
-                room_name=room_name,
-                total_responses=total_response,
-                total_room_resources=total_room_resources,
-                response=responses)
+            room_name=room_name,
+            total_responses=total_response,
+            total_room_resources=total_room_resources,
+            response=responses)
 
     def get_all_reponses(self, info):
         response = []
@@ -96,6 +97,7 @@ class Query(graphene.ObjectType):
             all_responses, total_room_resources = Query.get_room_response(
                 self, room_response, room.id)
             responses = RoomResponse(
+                room_id=room.id,
                 room_name=room_name,
                 total_responses=total_response,
                 total_room_resources=total_room_resources,
