@@ -143,6 +143,23 @@ query_with_non_existant_id = '''
             }
 '''
 
+create_device_query_invalid_room = '''
+            mutation{
+            createDevice(
+                name:"Apple tablet",
+                deviceType:"External Display",
+                roomId:6,
+                location:"Kenya",
+            ){
+                device{
+                name
+                location
+                deviceType
+                }
+            }
+            }
+'''
+
 non_existant_id_response = "DeviceId not found"
 devices_query = '/mrm?query='+create_devices_query
 devices_query_response = b'{"data":{"createDevice":{"device":{"name":"Apple tablet","location":"Kenya","deviceType":"External Display"}}}}'# noqaE501

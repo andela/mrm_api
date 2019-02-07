@@ -4,7 +4,8 @@ from fixtures.user.user_fixture import (
     query_user_by_email, query_user_email_response,
     paginated_users_query, paginated_users_response,
     get_users_by_location, get_users_by_location_and_role,
-    get_user_by_role_reponse, get_users_by_role
+    get_user_by_role_reponse, get_users_by_role,
+    filter_user_by_location
 )
 from helpers.database import db_session
 from api.user.models import User
@@ -75,7 +76,7 @@ class TestQueryUser(BaseTestCase):
         """
         CommonTestCases.admin_token_assert_equal(
             self, get_users_by_role, get_user_by_role_reponse
-            )
+        )
 
     def test_get_users_by_location_and_role(self):
         """
@@ -83,4 +84,14 @@ class TestQueryUser(BaseTestCase):
         """
         CommonTestCases.user_token_assert_in(
             self, get_users_by_location_and_role, "No users found"
-            )
+        )
+
+    def test_query_users_by_location(self):
+        """
+        Test for query users with invalid location id
+        """
+        CommonTestCases.user_token_assert_in(
+            self,
+            filter_user_by_location,
+            "Location id does not exist"
+        )

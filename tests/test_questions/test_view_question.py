@@ -9,6 +9,8 @@ from fixtures.questions.get_question_fixtures import (
     get_question_by_id_query,
     get_question_by_id_query_response,
     get_question_invalid_id_query,
+    get_all_questions_query,
+    get_all_questions_query_response
 )
 
 sys.path.append(os.getcwd())
@@ -52,4 +54,14 @@ class TestQueryQuestion(BaseTestCase):
             self,
             get_question_invalid_id_query,
             "Question does not exist"
+        )
+
+    def test_get_all_questions_query(self):
+        """
+        Test getting all questions
+        """
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            get_all_questions_query,
+            get_all_questions_query_response
         )

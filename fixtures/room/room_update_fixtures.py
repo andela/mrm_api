@@ -1,6 +1,7 @@
 
 query_update_all_fields = '''mutation{
-    updateRoom(roomId: 1, name: "Jinja", capacity: 8, roomType: "board room"){ # noqa: E501
+    updateRoom(roomId: 1, name: "Jinja", capacity: 8,
+    roomType: "board room", roomTags: [1]){
         room{
             name
             capacity
@@ -16,15 +17,21 @@ expected_query_update_all_fields = {
             "room": {
                 "name": "Jinja",
                 "capacity": 8,
-                "roomType": "board room"
+                "roomType": "board room",
+                "roomTags": [
+                    {
+                        "name": "Block-C",
+                        "color": "blue"
+                    }
+                ]
             }
         }
     }
 }
 
-query_update_only_required_field = '''mutation{
-    updateRoom(roomId:1,name:"Jinja"){
-        room {
+query_update_only_required_fields = '''mutation{
+    updateRoom(roomId: 1, name: "Jinja", roomTags: [1]){
+        room{
             name
             capacity
             roomType
@@ -38,8 +45,12 @@ expected_query_update_only_required_field = {
         "updateRoom": {
             "room": {
                 "name": "Jinja",
-                "capacity": 6,
-                "roomType": "meeting"
+                "roomTags": [
+                    {
+                        "name": "Block-C",
+                        "color": "blue"
+                    }
+                ]
             }
         }
     }

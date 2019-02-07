@@ -182,3 +182,27 @@ query {
   }
 }
 '''
+
+get_all_questions_query = '''
+query {
+  allQuestions {
+      questionType
+  }
+}
+'''
+
+get_all_questions_query_response = {
+    "data": {
+        "allQuestions": [
+            {
+                "questionType": "rate"
+            },
+            {
+                "questionType": "check"
+            },
+            {
+                "questionType": "input"
+            }
+        ]
+    }
+}
