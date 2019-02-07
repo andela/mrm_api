@@ -46,7 +46,8 @@ class UpdateTag(graphene.Mutation):
         validate_empty_fields(**kwargs)
         query_tag = Tag.get_query(info)
         tag = query_tag.filter(
-            TagModel.id == tag_id).first()
+            TagModel.id == tag_id,
+            TagModel.state == "active").first()
         if not tag:
             raise GraphQLError("Tag not found")
         update_entity_fields(tag, **kwargs)

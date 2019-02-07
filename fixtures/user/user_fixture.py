@@ -164,23 +164,10 @@ send_invitation_to_nonexistent_user_query = '''
 mutation{
     inviteToConverge(email: "beverly.kololi@andela.com"){
         email
+
     }
 }
 '''
-
-send_invitation_to_existent_user_response = {
-    "errors": [{
-        "message": "User already joined Converge",
-        "locations": [{
-            "line": 3,
-            "column": 5
-        }],
-        "path": ["inviteToConverge"]
-    }],
-    "data": {
-        "inviteToConverge": null
-    }
-}
 
 send_invitation_to_existent_user_response = {
     "errors": [{

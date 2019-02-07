@@ -7,8 +7,6 @@ from sqlalchemy.schema import Sequence
 
 from helpers.database import Base, db_session
 from utilities.utility import Utility, StateType, cascade_soft_delete
-from api.floor.models import Floor  # noqa: F401
-from api.wing.models import Wing  # noqa: F401
 from api.events.models import Events  # noqa: F401
 from api.response.models import Response  # noqa: F401
 from api.tag.models import Tag  # noqa: F401
@@ -21,12 +19,13 @@ tags = Table(
     Base.metadata,
     Column('tag_id', Integer, ForeignKey('tags.id')),
     Column('room_id', Integer, ForeignKey('rooms.id'))
-    )
+)
 
 
 class Room(Base, Utility):
     __tablename__ = 'rooms'
-    id = Column(Integer, Sequence('rooms_id_seq', start=1, increment=1), primary_key=True) # noqa
+    id = Column(Integer, Sequence('rooms_id_seq',
+                                  start=1, increment=1), primary_key=True)
     name = Column(String, nullable=False)
     room_type = Column(String)
     capacity = Column(Integer, nullable=False)
@@ -38,10 +37,7 @@ class Room(Base, Utility):
         nullable=True
     )
     firebase_token = Column(String, nullable=True)
-    floor_id = Column(Integer, ForeignKey('floors.id', ondelete="CASCADE"))
-    wing_id = Column(Integer, ForeignKey('wings.id', ondelete="CASCADE"))
     cancellation_duration = Column(Integer, default=10)
-    floor = relationship('Floor')
     state = Column(Enum(StateType), default="active")
     resources = relationship(
         'Resource', cascade="all, delete-orphan",

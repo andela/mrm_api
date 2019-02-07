@@ -23,7 +23,7 @@ class TestCreateDevice(BaseTestCase):
         query = self.app_test.post(devices_query, headers=headers)
         self.assertEqual(query.data, devices_query_response)
 
-    def test_create_device_in_room_that_is_not_in_admin_location(self):
+    def test_create_device_in_other_location(self):
         """
         Test for creation of device in a different location
         """
@@ -33,7 +33,7 @@ class TestCreateDevice(BaseTestCase):
             "You are not authorized to make changes in Kampala"
         )
 
-    def test_create_device_in_nonexistent_room_throws_errors(self):
+    def test_create_device_in_invalid_room(self):
         """
         Test for creation of device in invalid room id
         """

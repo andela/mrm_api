@@ -25,16 +25,12 @@ config.set_main_option('sqlalchemy.url', os.getenv('DEV_DATABASE_URL'))
 
 from helpers.database import Base
 from api.location.models import Location
-from api.block.models import Block
-from api.floor.models import Floor
 from api.room.models import Room
 from api.room_resource.models import Resource
 from api.user.models import User
 from api.notification.models import Notification
 from api.role.models import Role
 from api.devices.models import Devices
-from api.wing.models import Wing
-from api.office.models import Office
 from api.events.models import Events
 from api.question.models import Question
 from api.response.models import Response

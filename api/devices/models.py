@@ -3,8 +3,8 @@ from sqlalchemy.schema import Sequence
 from sqlalchemy.orm import relationship
 
 from helpers.database import Base
-from utilities.utility import Utility
 from utilities.validations import validate_empty_fields
+from utilities.utility import Utility
 
 
 class Devices(Base, Utility):

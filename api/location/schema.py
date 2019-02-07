@@ -2,8 +2,8 @@ import graphene
 from sqlalchemy import func
 from graphql import GraphQLError
 from graphene_sqlalchemy import SQLAlchemyObjectType
-from api.location.models import Location as LocationModel
 
+from api.location.models import Location as LocationModel
 from api.devices.models import Devices as DevicesModel  # noqa: F401
 from api.room.models import Room as RoomModel
 from api.room_resource.models import Resource as ResourceModel  # noqa: F401
@@ -14,9 +14,11 @@ from utilities.validations import (
     validate_country_field,
     validate_timezone_field)
 from utilities.utility import update_entity_fields
+from helpers.email.email import send_email_notification
+from helpers.auth.error_handler import SaveContextManager
+from helpers.auth.user_details import get_user_from_db
 from helpers.room_filter.room_filter import room_join_location
 from helpers.auth.authentication import Auth
-from helpers.auth.error_handler import SaveContextManager
 from helpers.auth.admin_roles import admin_roles
 
 
@@ -42,12 +44,14 @@ class CreateLocation(graphene.Mutation):
         validate_timezone_field(**kwargs)
         validate_url(**kwargs)
         location = LocationModel(**kwargs)
+        admin = get_user_from_db()
+        email = admin.email
         payload = {
             'model': LocationModel, 'field': 'name', 'value':  kwargs['name']
             }
-        with SaveContextManager(
-          location, 'Location', payload
-        ):
+        with SaveContextManager(location, 'Location', payload):
+            if not send_email_notification(email, location.name):
+                raise GraphQLError("Location created but email not sent")
             return CreateLocation(location=location)
 
 

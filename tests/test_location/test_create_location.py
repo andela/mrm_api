@@ -1,7 +1,6 @@
 from tests.base import BaseTestCase, CommonTestCases
 from fixtures.location.create_location_fixtures import (
     create_location_query,
-    create_location_response,
     create_location_with_invalid_url,
     create_duplicate_location_query,
     create_location_with_invalid_timezone)
@@ -17,12 +16,14 @@ class TestCreateLocation(BaseTestCase):
         """
         Testing for location creation
         """
-        CommonTestCases.admin_token_assert_equal(
-            self, create_location_query, create_location_response)
+        CommonTestCases.admin_token_assert_in(
+            self,
+            create_location_query,
+            'Location created but email not sent')
 
     def test_location_creation_with_invalid_image_url(self):
         """
-        Testing for location creation with invalid image url
+        Testing for location creation with invalid url
         """
         CommonTestCases.admin_token_assert_in(
             self,

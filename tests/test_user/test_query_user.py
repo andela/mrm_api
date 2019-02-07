@@ -76,7 +76,7 @@ class TestQueryUser(BaseTestCase):
         """
         CommonTestCases.admin_token_assert_equal(
             self, get_users_by_role, get_user_by_role_reponse
-            )
+        )
 
     def test_get_users_by_location_and_role(self):
         """
@@ -84,15 +84,14 @@ class TestQueryUser(BaseTestCase):
         """
         CommonTestCases.user_token_assert_in(
             self, get_users_by_location_and_role, "No users found"
-            )
+        )
 
-    def test_filter_users_in_location_that_does_not_have_users(self):
+    def test_query_users_by_location(self):
         """
-        Test for error returned when filtering in location that has
-        no users
+        Test for query users with invalid location id
         """
         CommonTestCases.user_token_assert_in(
             self,
             filter_user_by_location,
-            "No users found"
-            )
+            "Location id does not exist"
+        )
