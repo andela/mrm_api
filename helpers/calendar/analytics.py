@@ -90,7 +90,8 @@ class RoomAnalytics(Credentials):
             - query
             - start_date, end_date(Time range)
         """
-        start_date, end_date = CommonAnalytics.convert_dates(self, start_date, end_date)  # noqa: E501
+        start_date, end_date = CommonAnalytics.validate_current_date(
+            self, start_date, end_date)
         rooms = CommonAnalytics.get_calendar_id_name(
             self, query)
         result = []
