@@ -3,17 +3,15 @@ from config import Config
 from flask import render_template
 
 
-def send_email_notification(admin_email, new_office, location_name, user_name):
+def send_email_notification(admin_email, location_name):
     # send the email
     recipients = [admin_email]
 
     email = SendEmail(
-        'A new office has been added', recipients,
+        'A new location has been added', recipients,
         render_template(
-            'office_success.html',
-            office_name=new_office,
-            location_name=location_name,
-            user_name=user_name
+            'location_success.html',
+            location_name=location_name
         ))
 
     return email.send()
@@ -21,7 +19,7 @@ def send_email_notification(admin_email, new_office, location_name, user_name):
 
 def email_invite(email, admin):
     email = SendEmail(
-        "Invitaion to join Converge", [email],
+        "Invitation to join Converge", [email],
         render_template('invite.html', name=admin, domain=Config.DOMAIN_NAME))
 
     return email.send()

@@ -86,13 +86,12 @@ class TestQueryUser(BaseTestCase):
             self, get_users_by_location_and_role, "No users found"
             )
 
-    def test_filter_users_in_location_that_does_not_have_users(self):
+    def test_query_users_by_location(self):
         """
-        Test for error returned when filtering in location that has
-        no users
+        Test for query users with invalid location id
         """
         CommonTestCases.user_token_assert_in(
             self,
             filter_user_by_location,
-            "No users found"
-            )
+            "Location id does not exist"
+        )
