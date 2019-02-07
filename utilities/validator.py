@@ -2,28 +2,7 @@ import re
 from graphql import GraphQLError
 from helpers.calendar.credentials import Credentials
 
-
-def check_office_name(office_name):
-    return bool(re.match('^(epic\s?towers?||the\s?crest)$',  # noqa
-                         office_name, re.IGNORECASE))
-
-
-def assert_wing_is_required(office, kwargs):
-    if re.match('^(epic\s?towers?)$', office, re.IGNORECASE):  # noqa
-        if not kwargs.get('wing_id'):
-            raise AttributeError("wing_id is required for this office")
-    else:
-        if kwargs.get('wing_id'):
-            raise AttributeError("wing_id is not required for this office")
-
-
-def assert_block_id_is_required(office, kwargs):
-    if re.match('^(st\s?catherines?)$', office, re.IGNORECASE):  # noqa
-        if not kwargs.get('block_id'):
-            raise AttributeError("block_id is required for this office")
-    else:
-        if kwargs.get('block_id'):
-            raise AttributeError("Block ID is not required for this office")
+from api.location.models import Location
 
 
 def verify_email(email):
@@ -37,6 +16,13 @@ def verify_calendar_id(calendar_id):
         return True
     except Exception:
         return False
+
+
+def verify_location_id(kwargs):
+    location_id = kwargs.get('location_id')
+    if location_id and not Location.query.filter_by(id=location_id,
+                                                    state="active").first():
+        raise AttributeError("Location Id does not exist")
 
 
 class ErrorHandler():

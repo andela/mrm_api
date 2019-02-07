@@ -20,6 +20,7 @@ sys.path.append(os.getcwd())
 
 
 class TestGetRoomResource(BaseTestCase):
+    maxDiff = None
 
     def test_get_room_resource_list(self):
 
