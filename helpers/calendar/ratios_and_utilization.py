@@ -1,5 +1,4 @@
 import dateutil.parser
-from graphql.error import GraphQLError
 
 from .credentials import Credentials
 from helpers.calendar.analytics_helper import (CommonAnalytics)
@@ -167,7 +166,7 @@ class RoomAnalyticsRatios(Credentials):
         end_dt = dateutil.parser.parse(day_after_end_date)
         number_of_days = (end_dt - start_dt).days
 
-        if number_of_days <= 15:
+        if number_of_days <= 30:
             dates = CommonAnalytics.get_list_of_dates(start, number_of_days)  # noqa E501
             for date in dates:
                 bookings = CommonAnalytics.get_total_bookings(self, query, date[0], date[1])  # noqa E501
@@ -175,15 +174,12 @@ class RoomAnalyticsRatios(Credentials):
                 output = BookingsAnalyticsCount(period=string_date, bookings=bookings) # noqa E501
                 results.append(output)
 
-        elif number_of_days >= 90:
+        else:
             dates = CommonAnalytics.get_list_of_month_dates(start_date, start_dt, day_after_end_date, end_dt)  # noqa E501
             for date in dates:
                 bookings = CommonAnalytics.get_total_bookings(self, query, date[0], date[1])  # noqa E501
                 string_month = dateutil.parser.parse(date[0]).strftime("%B")
                 output = BookingsAnalyticsCount(period=string_month, bookings=bookings) # noqa E501
                 results.append(output)
-
-        else:
-            raise GraphQLError("Kindly enter a valid date range(less than 15 days or greater than 90 days")  # noqa E501
 
         return results
