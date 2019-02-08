@@ -9,12 +9,11 @@ from utilities.validations import validate_empty_fields
 from utilities.utility import update_entity_fields
 from helpers.auth.authentication import Auth
 from helpers.auth.admin_roles import admin_roles
-from helpers.auth.verify_ids_for_room import verify_ids, validate_block
-from helpers.auth.validator import (
+from utilities.verify_ids_for_room import verify_ids, validate_block
+from utilities.validator import (
+    ErrorHandler,
     assert_wing_is_required,
     assert_block_id_is_required)
-from helpers.auth.validator import ErrorHandler
-from helpers.auth.add_office import verify_attributes
 from helpers.room_filter.room_filter import (
     room_filter,
     room_join_office)
@@ -81,7 +80,7 @@ class CreateRoom(graphene.Mutation):
 
     @Auth.user_roles('Admin')
     def mutate(self, info, office_id, **kwargs):
-        verify_attributes(kwargs)
+        validate_empty_fields(**kwargs)
         verify_ids(office_id, kwargs)
         get_office = Office.query.filter_by(id=office_id).first()
         if not get_office:

@@ -10,7 +10,7 @@ from api.wing.models import Wing  # noqa: F401
 from api.events.models import Events  # noqa: F401
 from api.response.models import Response  # noqa: F401
 from api.tag.models import Tag  # noqa: F401
-from helpers.auth.validator import verify_calendar_id
+from utilities.validator import verify_calendar_id
 
 
 tags = Table(

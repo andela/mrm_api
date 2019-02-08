@@ -7,7 +7,7 @@ from api.user.models import User as UserModel
 from api.notification.models import Notification as NotificationModel
 from helpers.auth.user_details import get_user_from_db
 from helpers.auth.authentication import Auth
-from helpers.auth.validator import verify_email
+from utilities.validator import verify_email
 from helpers.pagination.paginate import Paginate, validate_page
 from helpers.auth.error_handler import SaveContextManager
 from helpers.email.email import email_invite

@@ -1,5 +1,5 @@
 from sqlalchemy import exc
-from helpers.auth.validator import ErrorHandler
+from utilities.validator import ErrorHandler
 
 
 class SaveContextManager():

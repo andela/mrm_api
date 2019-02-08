@@ -15,7 +15,7 @@ from utilities.validations import (
     validate_timezone_field)
 from utilities.utility import update_entity_fields
 from helpers.room_filter.room_filter import room_join_location
-from helpers.auth.validator import ErrorHandler
+from utilities.validator import ErrorHandler
 from helpers.auth.authentication import Auth
 
 
