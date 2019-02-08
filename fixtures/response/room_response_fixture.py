@@ -94,6 +94,7 @@ query{
     allRoomResponses(filterBy:"Responses",upperLimit: 2, lowerLimit: 0 ){
         responses{
             totalResponses
+            roomId
             roomName
             response{
                 responseId
@@ -110,6 +111,7 @@ filter_by_response_data = {
             'responses': [
                 {
                     'totalResponses': 2,
+                    'roomId': 1,
                     'roomName': 'Entebbe',
                     'response': [
                         {
