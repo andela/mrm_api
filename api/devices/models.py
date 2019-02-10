@@ -5,7 +5,6 @@ from sqlalchemy.orm import relationship
 from helpers.database import Base
 from utilities.utility import Utility
 from utilities.validations import validate_empty_fields
-from api.room_resource.models import Resource  # noqa: F401
 
 
 class Devices(Base, Utility):
