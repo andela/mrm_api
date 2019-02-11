@@ -1,9 +1,9 @@
-from sqlalchemy import (Column, String, Integer, Boolean, ForeignKey, Enum)
+from sqlalchemy import (Column, String, Integer, Boolean, ForeignKey)
 from sqlalchemy.orm import relationship
 from sqlalchemy.schema import Sequence
 
 from helpers.database import Base
-from utilities.utility import Utility, StateType
+from utilities.utility import Utility
 
 
 class Events(Base, Utility):
@@ -16,5 +16,4 @@ class Events(Base, Utility):
     end_time = Column(String, nullable=False)
     checked_in = Column(Boolean, nullable=True)
     cancelled = Column(Boolean, nullable=True)
-    state = Column(Enum(StateType), default="active")
     room = relationship('Room')

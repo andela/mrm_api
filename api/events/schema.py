@@ -3,7 +3,7 @@ from graphene_sqlalchemy import SQLAlchemyObjectType
 from graphql import GraphQLError
 
 from api.events.models import Events as EventsModel
-from api.room.models import Room as RoomModel
+from api.room.models import Room
 
 
 class Events(SQLAlchemyObjectType):
@@ -12,12 +12,11 @@ class Events(SQLAlchemyObjectType):
 
     def check_status(self, info, **kwargs):
         try:
-            room_id = RoomModel.query.filter_by(
-                calendar_id=kwargs['calendar_id']).first().id
+            room_id = Room.query.filter_by(calendar_id=kwargs['calendar_id']).first().id  # noqa: E501
             if EventsModel.query.filter_by(
                     event_id=kwargs['event_id'],
                     room_id=room_id).count() > 0:
-                raise GraphQLError("You cannot perform this action")
+                raise GraphQLError("This event already exists.")
             return room_id
 
         except AttributeError:

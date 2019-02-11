@@ -11,7 +11,6 @@ from api.events.models import Events  # noqa: F401
 from api.response.models import Response  # noqa: F401
 from api.tag.models import Tag  # noqa: F401
 from utilities.validator import verify_calendar_id
-from api.devices.models import Devices # noqa F4
 
 
 tags = Table(
@@ -42,14 +41,12 @@ class Room(Base, Utility):
         order_by="func.lower(Resource.name)")
     events = relationship('Events', cascade="all, delete-orphan")
     response = relationship('Response', cascade="all, delete-orphan")
+    devices = relationship('Devices', cascade="all, delete-orphan")
     room_tags = relationship(
         'Tag',
         secondary="room_tags",
         backref=('tags'),
         lazy="joined")
-    devices = relationship(
-        'Devices', cascade="all, delete-orphan",
-        order_by="func.lower(Devices.name)")
 
 
 @event.listens_for(Room, 'before_insert')

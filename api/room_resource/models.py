@@ -5,6 +5,7 @@ from sqlalchemy.schema import Sequence
 from helpers.database import Base
 from utilities.utility import Utility, StateType
 from utilities.validations import validate_empty_fields
+from api.room.models import Room  # noqa: F401
 
 
 class Resource(Base, Utility):
