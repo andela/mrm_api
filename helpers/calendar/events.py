@@ -4,6 +4,8 @@ import pytz
 from dateutil import parser
 from graphql import GraphQLError
 
+from api.room.models import Room as RoomModel
+from api.events.models import Events as EventsModel
 from .analytics_helper import CommonAnalytics
 from .credentials import Credentials
 
@@ -90,3 +92,27 @@ class RoomSchedules(Credentials):
                 all_events.append(current_event)
 
         return all_events, all_dates
+
+    def check_event_status(self, info, **kwargs):
+        try:
+            room_id = RoomModel.query.filter_by(
+                calendar_id=kwargs['calendar_id']).first().id
+            checked_in_events = EventsModel.query.filter_by(
+                    event_id=kwargs['event_id'],
+                    room_id=room_id,
+                    start_time=kwargs['start_time'],
+                    checked_in=True).count()
+            cancelled_events = EventsModel.query.filter_by(
+                    event_id=kwargs['event_id'],
+                    room_id=room_id,
+                    start_time=kwargs['start_time'],
+                    cancelled=True).count()
+            if checked_in_events > 0:
+                raise GraphQLError("Event already checked in")
+
+            elif cancelled_events > 0:
+                raise GraphQLError("Event already cancelled")
+            return room_id
+        except AttributeError:
+            raise GraphQLError(
+                "This Calendar ID is invalid")

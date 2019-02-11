@@ -17,6 +17,7 @@ from api.room.models import Room
 from api.room_resource.models import Resource
 from api.user.models import User
 from api.role.models import Role
+from api.events.models import Events
 from api.devices.models import Devices
 from api.office.models import Office
 from api.question.models import Question
@@ -123,6 +124,15 @@ class BaseTestCase(TestCase):
                 start_date="20 Nov 2018",
                 end_date="28 Nov 2018"
             )
+            event = Events(
+                event_id="test_id5",
+                room_id=1,
+                event_title="Onboarding",
+                start_time="2018-07-11T09:00:00Z",
+                end_time="2018-07-11T09:45:00Z",
+                checked_in=False,
+                cancelled=False)
+            event.save()
             question_2.save()
             question_3 = Question(
                 question_type="input",
