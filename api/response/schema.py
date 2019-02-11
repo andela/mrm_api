@@ -13,6 +13,8 @@ class Response(SQLAlchemyObjectType):
     class Meta:
         model = ResponseModel
 
+    question_response_count_in_room = graphene.Int()
+
 
 class CreateResponse(graphene.Mutation):
     class Arguments:

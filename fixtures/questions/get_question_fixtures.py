@@ -142,6 +142,7 @@ query {
     endDate
     questionResponseCount
     response {
+      questionResponseCountInRoom
       id
       questionId
       roomId
@@ -160,6 +161,7 @@ get_question_by_id_query_response = {
             'endDate': '28 Nov 2018',
             'questionResponseCount': 1,
             'response': [{
+                'questionResponseCountInRoom': 1,
                 'id': '1',
                 'questionId': 1,
                 'roomId': 1

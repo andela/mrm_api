@@ -34,3 +34,9 @@ class Response(Base, Utility):
         secondary="missing_items",
         backref=('resources'),
         lazy="joined")
+
+    @property
+    def question_response_count_in_room(self):
+        return Response.query.filter_by(
+            question_id=self.id, room_id=self.room_id
+        ).count()
