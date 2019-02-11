@@ -85,17 +85,22 @@ class CreateRoom(graphene.Mutation):
         validate_empty_fields(**kwargs)
         verify_ids(office_id, kwargs)
         get_office = Office.query.filter_by(id=office_id).first()
-        if not get_office:
-            raise GraphQLError("No Office Found")
 
         admin_roles.create_rooms_update_delete_office(office_id)
         query = Room.get_query(info)
-        exact_query = room_join_office(query)
+        active_rooms = query.filter(RoomModel.state == "active")
+        query_result = [room for room in active_rooms
+                        if room.calendar_id == kwargs.get('calendar_id')]
+        if query_result:
+            ErrorHandler.check_conflict(
+                self, kwargs['calendar_id'], 'CalenderId')
+
+        exact_query = room_join_office(active_rooms)
         result = exact_query.filter(
             Office.id == office_id,
             RoomModel.name == kwargs.get('name'),
             RoomModel.state == "active")
-        if result.count() > 0:
+        if result.count():
             ErrorHandler.check_conflict(self, kwargs['name'], 'Room')
         assert_block_id_is_required(get_office.name, kwargs)
         validate_block(office_id, kwargs)

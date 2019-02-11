@@ -10,10 +10,12 @@ from fixtures.room.create_room_fixtures import (
     room_mutation_query_duplicate_name,
     room_mutation_query_duplicate_name_response,
     room_invalid_calendar_id_mutation_query,
-    room_invalid_calendar_id_mutation_response)
+    room_invalid_calendar_id_mutation_response,
+    room_duplicate_calender_id_mutation_query,
+    room_duplicate_calendar_id_mutation_response)
 from fixtures.room.create_room_in_block_fixtures import (
     room_blockId_not_required_mutation
-    )
+)
 from fixtures.token.token_fixture import ADMIN_TOKEN
 
 sys.path.append(os.getcwd())
@@ -100,4 +102,14 @@ class TestCreateRoom(BaseTestCase):
             self,
             room_invalid_calendar_id_mutation_query,
             room_invalid_calendar_id_mutation_response
+        )
+
+    def test_room_creation_with_invalid_duplicate_calendar_id(self):
+        """
+        Test room creation with a duplicate callender Id
+        """
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            room_duplicate_calender_id_mutation_query,
+            room_duplicate_calendar_id_mutation_response
         )
