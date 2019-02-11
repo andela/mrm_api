@@ -11,6 +11,7 @@ from api.room.schema import (RatioOfCheckinsAndCancellations,
                              BookingsAnalyticsCount)
 from helpers.pagination.paginate import ListPaginate
 from helpers.calendar.analytics_helper import CommonAnalytics
+from helpers.calendar.credentials import Credentials
 
 
 class Analytics(graphene.ObjectType):
@@ -23,6 +24,15 @@ class Analytics(graphene.ObjectType):
 
 class RatiosPerRoom(graphene.ObjectType):
     ratios = graphene.List(RatioOfCheckinsAndCancellations)
+
+
+class RemoteRoom(graphene.ObjectType):
+    calendar_id = graphene.String()
+    name = graphene.String()
+
+
+class AllRemoteRooms(graphene.ObjectType):
+    rooms = graphene.List(RemoteRoom)
 
 
 class CalendarEvent(graphene.ObjectType):
@@ -53,6 +63,8 @@ class Query(graphene.ObjectType):
         Room,
         room_id=graphene.Int()
     )
+
+    all_remote_rooms = graphene.Field(AllRemoteRooms)
 
     get_room_by_name = graphene.List(
         Room,
@@ -151,6 +163,28 @@ class Query(graphene.ObjectType):
     def resolve_all_rooms(self, info, **kwargs):
         response = PaginatedRooms(**kwargs)
         return response
+
+    @Auth.user_roles('Admin')
+    def resolve_all_remote_rooms(self, info):
+        service = Credentials().set_api_credentials()
+        page_token = None
+        remote_rooms = []
+        while True:
+            calendar_list = service.calendarList().list(
+                pageToken=page_token).execute()
+            for room_object in calendar_list['items']:
+                if 'andela.com' in room_object['id'] and room_object['id'].endswith( # noqa
+                        'resource.calendar.google.com'):
+                    calendar_id = room_object['id']
+                    room_name = room_object['summary']
+                    remote_room = RemoteRoom(
+                        calendar_id=calendar_id,
+                        name=room_name)
+                    remote_rooms.append(remote_room)
+            page_token = calendar_list.get('nextPageToken')
+            if not page_token:
+                break
+        return AllRemoteRooms(rooms=remote_rooms)
 
     def resolve_get_room_by_id(self, info, room_id):
         query = Room.get_query(info)
