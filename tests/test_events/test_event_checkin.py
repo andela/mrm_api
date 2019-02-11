@@ -36,7 +36,7 @@ class TestEventCheckin(BaseTestCase):
         CommonTestCases.user_token_assert_in(
             self,
             event_checkin_mutation,
-            "You cannot perform this action"
+            "This event already exists."
         )
 
     def test_checkin_with_invalid_calendar_id(self):
@@ -57,19 +57,4 @@ class TestEventCheckin(BaseTestCase):
             self,
             cancel_event_mutation,
             cancel_event_respone
-        )
-
-    def test_cancel_event_twice(self):
-        '''
-        test that you cannot cancel an event twice
-        '''
-        CommonTestCases.user_token_assert_equal(
-            self,
-            cancel_event_mutation,
-            cancel_event_respone
-        )
-        CommonTestCases.user_token_assert_in(
-            self,
-            cancel_event_mutation,
-            "You cannot perform this action"
         )
