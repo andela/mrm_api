@@ -16,3 +16,12 @@ class TestCreateLocation(BaseTestCase):
         """
         CommonTestCases.admin_token_assert_equal(
             self, create_location_query, create_location_response)
+
+    def test_location_already_exists(self):
+        """
+        Testing location already exists
+        """
+        CommonTestCases.admin_token_assert_equal(
+            self, create_location_query, create_location_response)
+        CommonTestCases.admin_token_assert_in(
+            self, create_location_query, 'New Location already exists')

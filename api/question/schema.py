@@ -9,6 +9,7 @@ from utilities.validations import (
     )
 from utilities.utility import update_entity_fields
 from helpers.auth.authentication import Auth
+from helpers.auth.error_handler import SaveContextManager
 from helpers.pagination.paginate import Paginate, validate_page
 
 
@@ -36,8 +37,12 @@ class CreateQuestion(graphene.Mutation):
         validate_empty_fields(**kwargs)
         validate_date_time_range(**kwargs)
         question = QuestionModel(**kwargs)
-        question.save()
-        return CreateQuestion(question=question)
+        payload = {
+            'model': QuestionModel, 'field': 'question',
+            'value':  kwargs['question']
+            }
+        with SaveContextManager(question, 'Question', payload):
+            return CreateQuestion(question=question)
 
 
 class PaginatedQuestions(Paginate):

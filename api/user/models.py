@@ -1,4 +1,4 @@
-from sqlalchemy import (Column, String, Integer, ForeignKey, Table, Enum)
+from sqlalchemy import (Column, String, Integer, ForeignKey, Table, Enum, Index)
 from sqlalchemy.orm import relationship
 from sqlalchemy.schema import Sequence
 
@@ -18,7 +18,7 @@ users_roles = Table(
 class User(Base, Utility):
     __tablename__ = 'users'
     id = Column(Integer, Sequence('users_id_seq'), primary_key=True)
-    email = Column(String, nullable=False, unique=True)
+    email = Column(String, nullable=False)
     location = Column(String, nullable=True)
     name = Column(String, nullable=False)
     picture = Column(String, nullable=True)
@@ -30,6 +30,14 @@ class User(Base, Utility):
         secondary="users_roles",
         backref=('users_association'),
         lazy="joined")
+
+    __table_args__ = (
+            Index(
+                'ix_unique_user_content',
+                'name',
+                unique=True,
+                postgresql_where=(state == 'active')),
+        )
 
     # TODO Refactor this section after
     # reorganising the User <> Location

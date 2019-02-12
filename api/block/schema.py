@@ -11,6 +11,7 @@ from helpers.auth.admin_roles import admin_roles
 from utilities.validations import validate_empty_fields
 from utilities.utility import update_entity_fields
 from helpers.auth.authentication import Auth
+from helpers.auth.error_handler import SaveContextManager
 
 
 class Block(SQLAlchemyObjectType):
@@ -28,19 +29,21 @@ class CreateBlock(graphene.Mutation):
     @Auth.user_roles('Admin')
     def mutate(self, info, **kwargs):
         validate_empty_fields(**kwargs)
-        block_name = BlockModel.query.filter_by(name=kwargs['name'].title()).all()  # noqa
-        if block_name:
-            raise GraphQLError("Block aleady exists")
         get_office = Office.query.filter_by(id=kwargs['office_id']).first()
         if not get_office:
             raise GraphQLError("Office not found")
         location = get_office.location.name
         if location.lower() == 'nairobi':
             block = BlockModel(**kwargs)
-            block.save()
+            payload = {
+                'model': BlockModel, 'field': 'name', 'value':  kwargs['name']
+            }
+            with SaveContextManager(
+                block, 'Block', payload
+            ):
+                return CreateBlock(block=block)
         else:
             raise GraphQLError("You can only create block in Nairobi")
-        return CreateBlock(block=block)
 
 
 class UpdateBlock(graphene.Mutation):

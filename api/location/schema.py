@@ -15,8 +15,8 @@ from utilities.validations import (
     validate_timezone_field)
 from utilities.utility import update_entity_fields
 from helpers.room_filter.room_filter import room_join_location
-from utilities.validator import ErrorHandler
 from helpers.auth.authentication import Auth
+from helpers.auth.error_handler import SaveContextManager
 from helpers.auth.admin_roles import admin_roles
 
 
@@ -40,14 +40,14 @@ class CreateLocation(graphene.Mutation):
         # Validate if the country given is a valid country
         validate_country_field(**kwargs)
         validate_timezone_field(**kwargs)
-        query = Location.get_query(info)
-        result = query.filter(
-            func.lower(LocationModel.name) == func.lower(kwargs.get('name')))
-        if result.count() > 0:
-            ErrorHandler.check_conflict(self, kwargs['name'], 'Location')
         location = LocationModel(**kwargs)
-        location.save()
-        return CreateLocation(location=location)
+        payload = {
+            'model': LocationModel, 'field': 'name', 'value':  kwargs['name']
+            }
+        with SaveContextManager(
+          location, 'Location', payload
+        ):
+            return CreateLocation(location=location)
 
 
 class UpdateLocation(graphene.Mutation):

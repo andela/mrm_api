@@ -1,4 +1,4 @@
-from sqlalchemy import (Column, String, Integer, ForeignKey, event, Enum)
+from sqlalchemy import (Column, String, Integer, ForeignKey, event, Enum, Index)
 from sqlalchemy.orm import relationship
 from sqlalchemy.schema import Sequence
 
@@ -13,7 +13,7 @@ from utilities.validator import check_office_name
 class Office(Base, Utility):
     __tablename__ = 'offices'
     id = Column(Integer, Sequence('offices_id_seq', start=1, increment=1), primary_key=True) # noqa
-    name = Column(String, nullable=True, unique=True)
+    name = Column(String, nullable=True)
     location_id = Column(
         Integer,
         ForeignKey('locations.id', ondelete="CASCADE")
@@ -23,6 +23,14 @@ class Office(Base, Utility):
     blocks = relationship(
         'Block', cascade="all, delete-orphan",
         order_by="func.lower(Block.name)")
+
+    __table_args__ = (
+            Index(
+                'ix_unique_office_content',
+                'name',
+                unique=True,
+                postgresql_where=(state == 'active')),
+        )
 
 
 @event.listens_for(Office, 'after_insert')

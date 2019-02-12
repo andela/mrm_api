@@ -35,7 +35,7 @@ block_mutation_query_without_name = '''
 
 block_creation_with_duplicate_name = '''
 mutation{
-  createBlock(officeId:1 name:"Ec" ) {
+  createBlock(officeId:2 name:"Ec" ) {
     block{
       officeId
         name
@@ -47,7 +47,7 @@ mutation{
 block_creation_with_duplicate_name_response = {
   "errors": [
     {
-      "message": "Block aleady exists",
+      "message": "Ec Block already exists",
       "locations": [
         {
           "line": 3,
@@ -203,3 +203,14 @@ update_non_existent_block_response = {
         "updateBlock": null
     }
 }
+
+create_block_query_with_non_nairobi_id = '''
+  mutation{
+  createBlock(officeId:1, name:"blask" ) {
+    block{
+      officeId
+        name
+      }
+  }
+}
+'''

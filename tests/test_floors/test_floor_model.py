@@ -10,7 +10,7 @@ class TestFloorModel(BaseTestCase):
         """
         object_count = Floor.query.count()
 
-        floor = Floor(name='2nd', block_id=1)
+        floor = Floor(name='4th', block_id=1)
         floor.save()
 
         new_count = Floor.query.count()

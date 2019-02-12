@@ -1,4 +1,4 @@
-from sqlalchemy import (Column, String, Integer, ForeignKey, Enum)
+from sqlalchemy import (Column, String, Integer, ForeignKey, Enum, Index)
 from sqlalchemy.orm import relationship, validates
 from sqlalchemy.schema import Sequence
 
@@ -17,6 +17,14 @@ class Block(Base, Utility):
     floors = relationship(
         'Floor', cascade="all, delete-orphan",
         order_by="func.lower(Floor.name)")
+
+    __table_args__ = (
+            Index(
+                'ix_unique_block_content',
+                'name',
+                unique=True,
+                postgresql_where=(state == 'active')),
+        )
 
     @validates('name')
     def convert_upper(self, key, value):

@@ -33,7 +33,12 @@ class CreateWing(graphene.Mutation):
         admin_roles.check_office_location_create_wing(floor_id=kwargs['floor_id'])  # noqa: E501
         admin_roles.create_update_delete_wing()
         wing = WingModel(**kwargs)
-        with SaveContextManager(wing, kwargs['name'], 'Wing'):
+        payload = {
+            'model': WingModel, 'field': 'name', 'value':  kwargs['name']
+        }
+        with SaveContextManager(
+          wing, 'Wing', payload
+        ):
             return CreateWing(wing=wing)
 
 
@@ -75,7 +80,12 @@ class UpdateWing(graphene.Mutation):
             raise GraphQLError("Wing not found")
         admin_roles.create_update_delete_wing()
         update_entity_fields(exact_wing, **kwargs)
-        with SaveContextManager(exact_wing, kwargs['name'], 'Wing'):
+        payload = {
+            'model': WingModel, 'field': 'name', 'value':  kwargs['name']
+        }
+        with SaveContextManager(
+           exact_wing, 'Wing', payload
+        ):
             return UpdateWing(wing=exact_wing)
 
 

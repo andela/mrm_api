@@ -19,7 +19,10 @@ class CreateRole(graphene.Mutation):
 
     def mutate(self, info, **kwargs):
         role = RoleModel(**kwargs)
-        with SaveContextManager(role, kwargs.get('role'), 'Role'):
+        payload = {
+            'model': RoleModel, 'field': 'role', 'value':  kwargs['role']
+            }
+        with SaveContextManager(role,  'Role', payload):
             return CreateRole(role=role)
 
 
