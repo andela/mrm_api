@@ -16,12 +16,14 @@ mutation{
 create_rate_response = {
   "data": {
     "createResponse": {
-      "response": {
-        "id": "3",
-        "questionId": 1,
-        "roomId": 1,
-        "rate": 2
-      }
+      "response": [
+        {
+          "id": "3",
+          "questionId": 1,
+          "roomId": 1,
+          "rate": 2
+        }
+      ]
     }
   }
 }
