@@ -12,7 +12,7 @@ class Floor(Base, Utility):
     type(id)
     id = Column(Integer, Sequence('floors_id_seq', start=1, increment=1), primary_key=True) # noqa
     name = Column(String, nullable=False)
-    block_id = Column(Integer, ForeignKey('blocks.id'))
+    block_id = Column(Integer, ForeignKey('blocks.id', ondelete="CASCADE"))
     block = relationship('Block')
     state = Column(Enum(StateType), default="active")
     rooms = relationship(

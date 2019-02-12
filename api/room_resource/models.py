@@ -12,7 +12,7 @@ class Resource(Base, Utility):
     id = Column(Integer, Sequence('resources_id_seq', start=1, increment=1), primary_key=True) # noqa
     name = Column(String, nullable=False)
     quantity = Column(Integer, nullable=False)
-    room_id = Column(Integer, ForeignKey('rooms.id'))
+    room_id = Column(Integer, ForeignKey('rooms.id', ondelete="CASCADE"))
     state = Column(Enum(StateType), default="active")
     room = relationship('Room')
 

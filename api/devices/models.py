@@ -15,7 +15,7 @@ class Devices(Base, Utility):
     date_added = Column(DateTime, nullable=False)
     last_seen = Column(DateTime, nullable=False)
     location = Column(String, nullable=False)
-    room_id = Column(Integer, ForeignKey('rooms.id'))
+    room_id = Column(Integer, ForeignKey('rooms.id', ondelete="CASCADE"))
     room = relationship('Room')
 
     def __init__(self, **kwargs):
