@@ -96,18 +96,6 @@ class Query(graphene.ObjectType):
         end_date=graphene.String(),
     )
 
-    analytics_for_most_booked_rooms = graphene.Field(
-        Analytics,
-        start_date=graphene.String(required=True),
-        end_date=graphene.String(),
-    )
-
-    analytics_for_least_booked_rooms = graphene.Field(
-        Analytics,
-        start_date=graphene.String(required=True),
-        end_date=graphene.String(),
-    )
-
     analytics_for_meetings_per_room = graphene.Field(
         Analytics,
         start_date=graphene.String(required=True),
@@ -225,24 +213,21 @@ class Query(graphene.ObjectType):
         return Analytics(MeetingsDurationaAnalytics=results)
 
     @Auth.user_roles('Admin', 'Default User')
-    def resolve_analytics_ratios(
-            self, info, start_date, end_date=None):
+    def resolve_analytics_ratios(self, info, start_date, end_date=None):  # noqa: E501
         query = Room.get_query(info)
         ratio = RoomAnalyticsRatios.get_analytics_ratios(
             self, query, start_date, end_date)
         return ratio
 
     @Auth.user_roles('Admin', 'Default User')
-    def resolve_analytics_ratios_per_room(
-            self, info, start_date, end_date=None):
+    def resolve_analytics_ratios_per_room(self, info, start_date, end_date=None):  # noqa: E501
         query = Room.get_query(info)
         ratio = RoomAnalyticsRatios.get_analytics_ratios_per_room(
             self, query, start_date, end_date)
         return RatiosPerRoom(ratio)
 
     @Auth.user_roles('Admin', 'Default User')
-    def resolve_bookings_analytics_count(
-            self, info, start_date, end_date):
+    def resolve_bookings_analytics_count(self, info, start_date, end_date):  # noqa: E501
         query = Room.get_query(info)
         analytics = RoomAnalyticsRatios.get_bookings_analytics_count(
             self, query, start_date, end_date)
@@ -279,29 +264,3 @@ class Query(graphene.ObjectType):
             )
 
         return all_days_events
-
-    @Auth.user_roles('Admin', 'Default User')
-    def resolve_analytics_for_most_booked_rooms(
-            self, info, start_date, end_date=None):
-        query = Room.get_query(info)
-        active_rooms = query.filter(RoomModel.state == "active")
-        most_booked = RoomAnalytics.get_booked_rooms(
-            self, active_rooms, start_date, end_date
-        )[:10]
-        room_most_booked_per_week = Analytics(
-            analytics=most_booked
-        )
-        return room_most_booked_per_week
-
-    @Auth.user_roles('Admin', 'Default User')
-    def resolve_analytics_for_least_booked_rooms(
-            self, info, start_date, end_date=None):
-        query = Room.get_query(info)
-        active_rooms = query.filter(RoomModel.state == "active")
-        least_booked = RoomAnalytics.get_booked_rooms(
-            self, active_rooms, start_date, end_date
-        )[-10:]
-        room_least_booked_per_week = Analytics(
-            analytics=least_booked
-        )
-        return room_least_booked_per_week
