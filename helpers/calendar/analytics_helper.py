@@ -20,9 +20,11 @@ class EventsDuration(graphene.ObjectType):
 class RoomStatistics(graphene.ObjectType):
     room_name = graphene.String()
     count = graphene.Int()
+    meetings = graphene.Int()
     events = graphene.List(EventsDuration)
     has_events = graphene.Boolean()
     total_duration = graphene.Int()
+    percentage = graphene.Int()
 
 
 class CommonAnalytics(Credentials):
