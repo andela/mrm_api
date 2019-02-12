@@ -191,11 +191,6 @@ db_rooms_query_response = {
                 "capacity": 6,
                 "roomType": "meeting",
                 "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg"  # noqa: E501
-            }, {
-                "name": "Empire State",
-                "capacity": 4,
-                "roomType": "meeting",
-                "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg"  # noqa: E501
             }]
     }
 }
@@ -209,12 +204,6 @@ query_rooms_response = {
                     "capacity": 6,
                     "roomType": "meeting",
                     "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg"  # noqa: E501
-                },
-                {
-                    "name": "Empire State",
-                    "capacity": 4,
-                    "roomType": "meeting",
-                    "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg"  # noqa: E501
                 }
             ]
         }
@@ -223,7 +212,7 @@ query_rooms_response = {
 
 paginated_rooms_query = '''
  query {
-  allRooms(page:1, perPage:3){
+  allRooms(page:1, perPage:1){
    rooms{
       name
    }
@@ -240,9 +229,6 @@ paginated_rooms_response = {
             "rooms": [
                 {
                     "name": "Entebbe"
-                },
-                {
-                    "name": "Empire State"
                 }
             ],
             "hasNext": False,
