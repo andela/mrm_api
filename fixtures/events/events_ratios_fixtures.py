@@ -70,3 +70,18 @@ event_ratio_per_room_response = {
         }
     }
 }
+
+event_ratio_percentage_cancellation_query = '''query {
+    analyticsRatios(startDate:"Jul 10 2018", endDate:"Jul 29 2018"){
+        cancellationsPercentage
+}
+}
+'''
+
+event_ratio_percentage_cancellation_response = {
+    "data": {
+        "analyticsRatios": {
+            "cancellationsPercentage": 100.0
+        }
+    }
+}

@@ -128,13 +128,13 @@ class RoomAnalyticsRatios(Credentials):
         bookings = len(calendar_events_list) + len(
             app_events_list) + cancellations
         app_bookings = len(app_events_list) + cancellations
-        app_bookings_percentage = RoomAnalyticsRatios.percentage_formater(
+        app_bookings_percentage = RoomAnalyticsRatios().percentage_formater(
             app_bookings,
             bookings)
-        cancellations_percentage = RoomAnalyticsRatios.percentage_formater(
+        cancellations_percentage = RoomAnalyticsRatios().percentage_formater(
             cancellations,
             bookings)
-        checkins_percentage = RoomAnalyticsRatios.percentage_formater(
+        checkins_percentage = RoomAnalyticsRatios().percentage_formater(
             checkins,
             bookings)
         result = RatioOfCheckinsAndCancellations(
@@ -149,14 +149,14 @@ class RoomAnalyticsRatios(Credentials):
             )
         return result
 
-    def percentage_formater(portion, total):
+    def percentage_formater(self, portion, total):
         """ Calculates the percentage of the entered portion to the total and returns it
          :params
             - portion, total
         """
         try:
             percentage = (portion/total) * 100
-            return round(percentage, 1)
+            return percentage
         except ZeroDivisionError:
             return 0
 
