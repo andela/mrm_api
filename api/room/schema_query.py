@@ -41,6 +41,7 @@ class CalendarEvent(graphene.ObjectType):
     start_time = graphene.String()
     end_time = graphene.String()
     room_name = graphene.String()
+    event_id = graphene.String()
 
 
 class DailyEvents(graphene.ObjectType):
@@ -303,6 +304,7 @@ class Query(graphene.ObjectType):
                         start_time=event["start_time"],
                         end_time=event["end_time"],
                         room_name=event["room_name"],
+                        event_id=event["event_id"]
                     )
                     daily_events.append(current_event)
             all_days_events.append(
