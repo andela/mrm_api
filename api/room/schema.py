@@ -1,7 +1,9 @@
+import requests
 import graphene
 from sqlalchemy import func
 from graphene_sqlalchemy import (SQLAlchemyObjectType)
 from graphql import GraphQLError
+from config import Config
 from api.room.models import Room as RoomModel
 from api.tag.models import Tag as TagModel
 from api.office.models import Office
@@ -183,7 +185,28 @@ class DeleteRoom(graphene.Mutation):
         return DeleteRoom(room=exact_room)
 
 
+class UpdateFirebaseToken(graphene.Mutation):
+
+    class Arguments:
+        room_id = graphene.Int(required=True)
+        firebase_token = graphene.String(required=True)
+    room = graphene.Field(Room)
+
+    def mutate(self, info, room_id, **kwargs):
+        validate_empty_fields(**kwargs)
+        query_room = Room.get_query(info)
+        active_rooms = query_room.filter(RoomModel.state == "active")
+        room = active_rooms.filter(RoomModel.id == room_id).first()
+        if not room:
+            raise GraphQLError("Room not found")
+        update_entity_fields(room, **kwargs)
+        room.save()
+        requests.get(url=Config.MRM_PUSH_URL, params="hello")
+        return UpdateFirebaseToken(room=room)
+
+
 class Mutation(graphene.ObjectType):
     create_room = CreateRoom.Field()
     update_room = UpdateRoom.Field()
     delete_room = DeleteRoom.Field()
+    update_firebase_token = UpdateFirebaseToken.Field()

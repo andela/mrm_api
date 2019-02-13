@@ -12,6 +12,8 @@ class Config:
     MAIL_USERNAME = os.getenv('MAIL_USERNAME')
     MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')
     DOMAIN_NAME = os.getenv('DOMAIN_NAME')
+    # mrm_push url
+    MRM_PUSH_URL = os.getenv("MRM_PUSH_URL")
 
     # Celery configuration
     CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
