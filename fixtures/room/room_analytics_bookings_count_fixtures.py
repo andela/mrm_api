@@ -57,30 +57,6 @@ get_bookings_count_monthly_response = {
     }
 }
 
-get_bookings_count_invalid_date_range = '''
-query {
-  bookingsAnalyticsCount(startDate:"Aug 1 2018", endDate:"Aug 30 2018"){
-   period
-   bookings
-  }
-}
-'''
-
-get_bookings_count_invalid_date_range_response = {
-    "errors": [{
-        "message":
-        "Kindly enter a valid date range(less than 15 days or greater than 90 days",  # noqa E501
-        "locations": [{
-            "line": 3,
-            "column": 3
-        }],
-        "path": ["bookingsAnalyticsCount"]
-    }],
-    "data": {
-        "bookingsAnalyticsCount": null
-    }
-}
-
 get_bookings_count_monthly_diff_years = '''
 query {
   bookingsAnalyticsCount(startDate:"Nov 1 2017", endDate:"May 1 2018"){
