@@ -1,6 +1,6 @@
 import graphene
-from helpers.auth.authentication import Auth
 from graphene_sqlalchemy import SQLAlchemyObjectType
+from helpers.auth.authentication import Auth
 from api.response.models import Response as ResponseModel
 from utilities.validations import validate_empty_fields
 from graphql import GraphQLError
@@ -49,7 +49,7 @@ class CreateResponse(graphene.Mutation):
                 ('Responses for question ids {} were not saved because '
                     'the questions do not exist').format(
                     str(invalid_question_ids).strip('{}'))
-                )
+            )
         return CreateResponse(response=responses)
 
 

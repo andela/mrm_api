@@ -27,11 +27,48 @@ class AllResponses(graphene.ObjectType):
     responses = graphene.List(RoomResponse)
 
 
+class PaginatedResponses(graphene.ObjectType):
+    pages = graphene.Int()
+    query_total = graphene.Int()
+    has_next = graphene.Boolean()
+    has_previous = graphene.Boolean()
+    responses = graphene.List(RoomResponse)
+
+    def __init__(self, **kwargs):
+        self.page = kwargs.pop('page', None)
+        self.per_page = kwargs.pop('per_page', None)
+
+    def resolve_responses(self, info, **kwargs):
+        page = self.page
+        per_page = self.per_page
+        all_responses = Query.get_all_reponses(self, info)
+        query_total = len(all_responses)
+        if not page:
+            return all_responses
+        result = all_responses[per_page*(page-1):per_page*page]
+        pages = round(query_total / per_page)
+        if page < pages:
+            has_next = True
+        else:
+            has_next = False       # noqa: F841
+        if page > 1:
+            has_previous = True
+        else:
+            has_previous = False
+        for res in result:
+            res.has_previous = has_previous
+        if len(result) == 0:
+            return GraphQLError("No more responses")
+        return result
+
+
 class Query(graphene.ObjectType):
     room_response = graphene.Field(
         RoomResponse, room_id=graphene.Int())
     all_room_responses = graphene.Field(
-        AllResponses,
+        PaginatedResponses,
+        page=graphene.Int(),
+        per_page=graphene.Int(),
         filter_by=graphene.String(),
         upper_limit=graphene.Int(),
         lower_limit=graphene.Int()
@@ -117,15 +154,15 @@ class Query(graphene.ObjectType):
     @Auth.user_roles('Admin')
     def resolve_all_room_responses(
             self, info, filter_by=None,
-            lower_limit=None, upper_limit=None):
+            lower_limit=None, upper_limit=None, **kwargs):
         responses = Query.get_all_reponses(self, info)
         if filter_by == 'Responses':
             if isinstance(lower_limit, int) and isinstance(upper_limit, int):
-                responses = Query.filter_rooms_by_responses(
+                responses = Query.filter_rooms_by_responses(       # noqa: F841
                     self, info, upper_limit, lower_limit
                 )
             else:
                 raise GraphQLError("lower_limit and upper_limit are \
                 required to filter by responses")
 
-        return AllResponses(responses=responses)
+        return PaginatedResponses(**kwargs)
