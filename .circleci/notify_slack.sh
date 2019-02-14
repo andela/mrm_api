@@ -6,16 +6,30 @@
 STATUS=$1 #job status
 
 get_build_report() {
-  if [ "$CIRCLE_JOB" == 'test' -a  "$STATUS" == 'success' ]; then
+  if [[ "$CIRCLE_JOB" == *"test"* ]] && [[  "$STATUS" == 'success' ]]; then
 
-    MESSAGE_TEXT="Test Phase Passed! :smiley:"
+    MESSAGE_TEXT="${CIRCLE_JOB} Phase Passed! :smiley:"
     COLOR="good"
 
-  elif [ "$CIRCLE_JOB" == 'test' -a  "$STATUS" == 'fail' ]; then
+  elif [[ "$CIRCLE_JOB" == *"test"* ]] && [[  "$STATUS" == 'fail' ]]; then
 
-    MESSAGE_TEXT="Test Phase Failed :scream:"
+    MESSAGE_TEXT="${CIRCLE_JOB} Phase Failed :scream:"
     COLOR="danger"
-    REBUILD_URL="https://circleci.com/actions/retry/github/andela/mrm_front/${CIRCLE_BUILD_NUM}"
+    REBUILD_URL="https://circleci.com/actions/retry/github/andela/mrm_api/${CIRCLE_BUILD_NUM}"
+    ACTION_BUTTON="$(echo \
+          "{\"type\": \"button\", \"text\": \"Rebuild\", \"url\": \"${REBUILD_URL}\"}", \
+      )"
+
+  elif [ "$CIRCLE_JOB" == 'code-climate' -a  "$STATUS" == 'success' ]; then
+
+    MESSAGE_TEXT="Code climate Phase Passed! :smiley:"
+    COLOR="good"
+
+  elif [ "$CIRCLE_JOB" == 'code-climate' -a  "$STATUS" == 'fail' ]; then
+
+    MESSAGE_TEXT="Code climate Phase Failed :scream:"
+    COLOR="danger"
+    REBUILD_URL="https://circleci.com/actions/retry/github/andela/mrm_api/${CIRCLE_BUILD_NUM}"
     ACTION_BUTTON="$(echo \
           "{\"type\": \"button\", \"text\": \"Rebuild\", \"url\": \"${REBUILD_URL}\"}", \
       )"
