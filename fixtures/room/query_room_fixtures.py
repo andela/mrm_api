@@ -1,5 +1,16 @@
 null = None
 
+all_remote_rooms_query = '''
+ query {
+  allRemoteRooms {
+    rooms {
+      calendarId
+      name
+    }
+  }
+}
+'''
+
 paginated_rooms_query = '''
  query {
   allRooms(page:1, perPage:1){

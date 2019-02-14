@@ -1,6 +1,6 @@
 import json
 
-from tests.base import BaseTestCase
+from tests.base import BaseTestCase, CommonTestCases
 from fixtures.room.create_room_fixtures import (
     rooms_query,
     query_rooms_response)
@@ -10,8 +10,8 @@ from fixtures.room.query_room_fixtures import (
     room_query_by_id,
     room_query_by_id_response,
     room_with_non_existant_id,
-    room_query_with_non_existant_id_response
-
+    room_query_with_non_existant_id_response,
+    all_remote_rooms_query
 )
 
 
@@ -27,6 +27,13 @@ class QueryRooms(BaseTestCase):
         paginate_query = json.loads(response.data)
         expected_response = paginated_rooms_response
         self.assertEqual(paginate_query, expected_response)
+
+    def test_query_remote_rooms(self):
+        CommonTestCases.admin_token_assert_in(
+            self,
+            all_remote_rooms_query,
+            "calendar.google.com"
+        )
 
     def test_query_room_with_id(self):
         query = self.client.execute(room_query_by_id)
