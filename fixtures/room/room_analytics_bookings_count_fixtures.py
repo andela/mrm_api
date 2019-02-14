@@ -49,7 +49,7 @@ get_bookings_count_monthly_response = {
             'bookings': 38
         }, {
             'period': 'October',
-            'bookings': 65
+            'bookings': 64
         }, {
             'period': 'November',
             'bookings': 3

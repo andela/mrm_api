@@ -6,7 +6,7 @@ from graphql import GraphQLError
 from sqlalchemy.schema import Sequence
 
 from helpers.database import Base, db_session
-from utilities.utility import Utility, StateType
+from utilities.utility import Utility, StateType, cascade_soft_delete
 from api.floor.models import Floor  # noqa: F401
 from api.wing.models import Wing  # noqa: F401
 from api.events.models import Events  # noqa: F401
@@ -73,3 +73,11 @@ def receive_before_insert(mapper, connection, target):
         if not verify_calendar_id(target.calendar_id):
             raise GraphQLError("Room calendar Id is invalid")
         pass
+
+
+cascade_soft_delete(
+    Room, 'room_resource', 'room_id'
+)
+cascade_soft_delete(
+    Room, 'events', 'room_id'
+)
