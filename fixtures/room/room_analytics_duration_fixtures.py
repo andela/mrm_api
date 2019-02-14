@@ -33,6 +33,22 @@ get_daily_meetings_total_duration_response = {
     }
 }
 
+meetings_total_duration_query_for_a_future_date = '''
+query {
+    analyticsForMeetingsDurations(startDate:"sep 10 6080"){
+        MeetingsDurationaAnalytics{
+            roomName
+            count
+            totalDuration
+            events{
+                durationInMinutes
+                numberOfMeetings
+            }
+        }
+    }
+}
+'''
+
 get_weekly_meetings_total_duration_query = '''
 query {
     analyticsForMeetingsDurations(startDate:"Jan 3 2018", endDate:"Jan 9 2018"){  # noqa: E501
