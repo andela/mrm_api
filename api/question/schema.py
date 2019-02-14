@@ -24,6 +24,7 @@ class Question(SQLAlchemyObjectType):
 
 class CreateQuestion(graphene.Mutation):
     class Arguments:
+        question_title = graphene.String(required=True)
         question_type = graphene.String(required=True)
         question = graphene.String(required=True)
         start_date = graphene.DateTime(required=True)
@@ -60,6 +61,7 @@ class PaginatedQuestions(Paginate):
 class UpdateQuestion(graphene.Mutation):
     class Arguments:
         question_id = graphene.Int(required=True)
+        question_title = graphene.String()
         question_type = graphene.String()
         question = graphene.String()
         start_date = graphene.DateTime()
