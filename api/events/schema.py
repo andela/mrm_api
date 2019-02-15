@@ -1,28 +1,13 @@
 import graphene
 from graphene_sqlalchemy import SQLAlchemyObjectType
-from graphql import GraphQLError
 
 from api.events.models import Events as EventsModel
-from api.room.models import Room as RoomModel
+from helpers.calendar.events import RoomSchedules
 
 
 class Events(SQLAlchemyObjectType):
     class Meta:
         model = EventsModel
-
-    def check_status(self, info, **kwargs):
-        try:
-            room_id = RoomModel.query.filter_by(
-                calendar_id=kwargs['calendar_id']).first().id
-            if EventsModel.query.filter_by(
-                    event_id=kwargs['event_id'],
-                    room_id=room_id).count() > 0:
-                raise GraphQLError("You cannot perform this action")
-            return room_id
-
-        except AttributeError:
-            raise GraphQLError(
-                "This Calendar ID is not registered on Converge.")
 
 
 class EventCheckin(graphene.Mutation):
@@ -35,18 +20,24 @@ class EventCheckin(graphene.Mutation):
     event = graphene.Field(Events)
 
     def mutate(self, info, **kwargs):
-        room_id = Events.check_status(self, info, **kwargs)
-        new_event = EventsModel(
-            event_id=kwargs['event_id'],
-            room_id=room_id,
-            event_title=kwargs['event_title'],
+        room_id = RoomSchedules().check_event_status(info, **kwargs)
+        event = EventsModel.query.filter_by(
             start_time=kwargs['start_time'],
-            end_time=kwargs['end_time'],
-            checked_in=True,
-            cancelled=False)
-        new_event.save()
-
-        return EventCheckin(event=new_event)
+            event_id=kwargs['event_id']).scalar()
+        if event is not None:
+            event.checked_in = True
+            event.save()
+        else:
+            event = EventsModel(
+                event_id=kwargs['event_id'],
+                room_id=room_id,
+                event_title=kwargs['event_title'],
+                start_time=kwargs['start_time'],
+                end_time=kwargs['end_time'],
+                checked_in=True,
+                cancelled=False)
+            event.save()
+        return EventCheckin(event=event)
 
 
 class CancelEvent(graphene.Mutation):
@@ -59,7 +50,7 @@ class CancelEvent(graphene.Mutation):
     event = graphene.Field(Events)
 
     def mutate(self, info, **kwargs):
-        room_id = Events.check_status(self, info, **kwargs)
+        room_id = RoomSchedules().check_event_status(info, **kwargs)
         cancelled_event = EventsModel(
             event_id=kwargs['event_id'],
             room_id=room_id,

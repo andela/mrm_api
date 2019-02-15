@@ -98,3 +98,42 @@ cancel_event_respone = {
         }
     }
 }
+
+checkin_mutation_for_event_existing_in_db = '''mutation {
+    eventCheckin(
+        calendarId:"andela.com_3630363835303531343031@resource.calendar.google.com",
+        eventId:"test_id5", eventTitle:"Onboarding",
+        startTime:"2018-07-11T09:00:00Z",
+        endTime:"2018-07-11T09:45:00Z"){
+            event{
+                eventId
+                roomId
+                checkedIn
+                cancelled
+                room{
+                    id
+                    name
+                    calendarId
+                }
+            }
+        }
+    }
+'''
+
+response_for_event_existing_in_db_checkin = {
+    "data": {
+        "eventCheckin": {
+            "event": {
+                "eventId": "test_id5",
+                "roomId": 1,
+                "checkedIn": True,
+                "cancelled": False,
+                "room": {
+                    "id": "1",
+                    "name": "Entebbe",
+                    "calendarId": "andela.com_3630363835303531343031@resource.calendar.google.com"  # noqa
+                }
+            }
+        }
+    }
+}
