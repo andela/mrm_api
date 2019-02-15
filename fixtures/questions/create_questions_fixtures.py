@@ -17,6 +17,7 @@ wrong_end_date = (
 create_question_query = '''
  mutation{{
   createQuestion(questionType:"Rate",
+  questionTitle:"Rating Feedback",
   question:"How will you rate the brightness of the room",
   startDate:"{}", endDate:"{}") {{
     question{{
@@ -55,6 +56,7 @@ create_question_response = {
 question_mutation_query_without_name = '''
      mutation{{
   createQuestion(questionType:"",
+  questionTitle:"Rating"
   question:"How will you rate the brightness of the room",
   startDate:"{}", endDate:"{}") {{
     question{{
@@ -71,6 +73,7 @@ question_mutation_query_without_name = '''
 update_question_mutation = '''
   mutation {{
       updateQuestion(questionId:1,
+      questionTitle:"Rating Feedback"
       startDate:"{}", endDate:"{}") {{
         question {{
           id,
@@ -96,6 +99,7 @@ update_question_response = {
 update_question_invalidId = '''
  mutation{
   updateQuestion(questionId:100,
+  questionTitle:"Rating Feedback"
   question:"How will you rate the brightness of the room") {
     question{
       id

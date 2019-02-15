@@ -9,6 +9,7 @@ import api.response.models
 class Question(Base, Utility):
     __tablename__ = 'questions'
     id = Column(Integer, primary_key=True)
+    question_title = Column(String, nullable=False)
     question_type = Column(String, nullable=False)
     question = Column(String, nullable=False)
     start_date = Column(String, nullable=False)
