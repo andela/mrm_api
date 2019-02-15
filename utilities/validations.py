@@ -26,17 +26,6 @@ def validate_empty_fields(**kwargs):
             raise AttributeError(field + " is required field")
 
 
-def validate_rating_field(**kwargs):
-    """
-    Function to validate rating fields when
-    saving an object
-    :params kwargs
-    """
-    rating = [1, 2, 3, 4, 5]
-    if kwargs['rate'] not in rating:
-        raise AttributeError("Please rate between 1 and 5")
-
-
 def validate_date_time_range(**kwargs):
     """
     Function to validate the dates entered
@@ -53,16 +42,6 @@ def validate_date_time_range(**kwargs):
         raise ValueError(
             'endDate should be at least a day after startDate'
         )
-
-
-def validate_missing_items_field(**kwargs):
-    """
-    Function to validate the missing item field
-    when saving a check question response
-    :params kwargs
-    """
-    if 'missing_items' not in kwargs:
-        raise AttributeError("Provide the missing items")
 
 
 def validate_country_field(**kwargs):

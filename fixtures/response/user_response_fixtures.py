@@ -2,7 +2,7 @@ null = None
 
 create_rate_query = '''
 mutation{
-  createResponse(questionId:1, roomId:1, rate:2) {
+  createResponse(responses: [{questionId:1, rate:2}], roomId:1) {
     response{
       id
       questionId
@@ -25,39 +25,6 @@ create_rate_response = {
         }
       ]
     }
-  }
-}
-
-rate_wrong_question = '''
-mutation{
-  createResponse(questionId:2, roomId:1, rate:2) {
-    response{
-      id
-      questionId
-      roomId
-      rate
-      }
-  }
-}
-'''
-
-rate_wrong_question_response = {
-  "errors": [
-    {
-      "message": "Provide a rating response",
-      "locations": [
-        {
-          "line": 2,
-          "column": 3
-        }
-      ],
-      "path": [
-        "createResponse"
-      ]
-    }
-  ],
-  "data": {
-    "createResponse": null
   }
 }
 
@@ -96,7 +63,7 @@ rate_non_existing_question_response = {
 
 invalid_rating_number = '''
 mutation{
-  createResponse(questionId:1, roomId:1, rate:6) {
+  createResponse(responses: [{questionId:1, rate:6}], roomId:1) {
     response{
       id
       questionId
@@ -129,7 +96,7 @@ invalid_rating_number_response = {
 
 rate_with_non_existent_room = '''
 mutation{
-  createResponse(questionId:1, roomId:9, rate:2) {
+  createResponse(responses: [{questionId:1, rate:2}], roomId:9) {
     response{
       id
       questionId
