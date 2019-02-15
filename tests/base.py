@@ -89,6 +89,7 @@ class BaseTestCase(TestCase):
             device.save()
             question_1 = Question(
                 question_type="rate",
+                question_title="Rating Feedback",
                 question="How will you rate the brightness of the room",
                 start_date="20 Nov 2018",
                 end_date="28 Nov 2018"
@@ -96,6 +97,7 @@ class BaseTestCase(TestCase):
             question_1.save()
             question_2 = Question(
                 question_type="check",
+                question_title="check Feedback",
                 question="Is there anything missing in the room",
                 start_date="20 Nov 2018",
                 end_date="28 Nov 2018"
@@ -103,6 +105,7 @@ class BaseTestCase(TestCase):
             question_2.save()
             question_3 = Question(
                 question_type="input",
+                question_title="input Feedback",
                 question="Any other suggestion",
                 start_date="20 Nov 2018",
                 end_date="28 Nov 2018"
