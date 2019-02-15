@@ -5,6 +5,7 @@ from api.room_resource.models import Resource
 from api.room.schema import Room
 from api.room.models import Room as RoomModel
 from helpers.auth.authentication import Auth
+from helpers.pagination.paginate import ListPaginate
 
 
 class ResponseDetails(graphene.ObjectType):
@@ -23,7 +24,11 @@ class RoomResponse(graphene.ObjectType):
     response = graphene.List(ResponseDetails)
 
 
-class AllResponses(graphene.ObjectType):
+class PaginatedResponses(graphene.ObjectType):
+    pages = graphene.Int()
+    query_total = graphene.Int()
+    has_next = graphene.Boolean()
+    has_previous = graphene.Boolean()
     responses = graphene.List(RoomResponse)
 
 
@@ -31,7 +36,9 @@ class Query(graphene.ObjectType):
     room_response = graphene.Field(
         RoomResponse, room_id=graphene.Int())
     all_room_responses = graphene.Field(
-        AllResponses,
+        PaginatedResponses,
+        page=graphene.Int(),
+        per_page=graphene.Int(),
         upper_limit=graphene.Int(),
         lower_limit=graphene.Int(),
         room=graphene.String()
@@ -154,7 +161,8 @@ class Query(graphene.ObjectType):
 
     @Auth.user_roles('Admin')
     def resolve_all_room_responses(
-            self, info, lower_limit=None, upper_limit=None, room=None):
+            self, info, page=None, per_page=None, lower_limit=None,
+            upper_limit=None, room=None, **kwargs):
         responses = Query.get_all_reponses(self, info)
         if isinstance(lower_limit, int) and isinstance(upper_limit, int):
             responses = Query.filter_rooms_by_responses(
@@ -178,5 +186,17 @@ class Query(graphene.ObjectType):
             lower_limit = None
             responses = Query.search_response_by_room(
                 self, info, upper_limit, lower_limit, room)
-
-        return AllResponses(responses=responses)
+        if page and per_page:
+            paginated_response = ListPaginate(
+                iterable=responses, per_page=per_page, page=page)
+            current_page = paginated_response.current_page
+            has_previous = paginated_response.has_previous
+            has_next = paginated_response.has_next
+            pages = paginated_response.pages
+            query_total = paginated_response.query_total
+            return PaginatedResponses(responses=current_page,
+                                      has_previous=has_previous,
+                                      has_next=has_next,
+                                      query_total=query_total,
+                                      pages=pages)
+        return PaginatedResponses(responses=responses)
