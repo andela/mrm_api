@@ -120,6 +120,9 @@ html_coverage_report/
 # credentials
 credentials.json
 
+# test users
+users.json
+
 # redis
 /redis-stable
 dump.rdb
