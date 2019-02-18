@@ -89,6 +89,26 @@ query {
 }
 '''
 
+paginated_questions_empty_page = '''
+query {
+  questions(page:9, perPage:2){
+    questions{
+      id
+      questionType
+      question
+      startDate
+      endDate
+      questionResponseCount
+      response {
+        id
+        questionId
+        roomId
+      }
+    }
+  }
+}
+'''
+
 paginated_all_questions_query_response = {
     'data': {
         'questions': {
@@ -182,3 +202,27 @@ query {
   }
 }
 '''
+
+get_all_questions_query = '''
+query {
+  allQuestions {
+      questionType
+  }
+}
+'''
+
+get_all_questions_query_response = {
+    "data": {
+        "allQuestions": [
+            {
+                "questionType": "rate"
+            },
+            {
+                "questionType": "check"
+            },
+            {
+                "questionType": "input"
+            }
+        ]
+    }
+}

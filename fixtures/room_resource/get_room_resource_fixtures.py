@@ -58,15 +58,12 @@ get_paginated_room_resources_response = {
     "allResources": {
       "resources": [
         {
-          "name": "Chair"
-        },
-        {
-          "name": "Speaker"
+          "name": "Markers"
         }
       ],
-      "hasNext": 'true',
-      "hasPrevious": 'false',
-      "pages": '2'
+      "hasNext": False,
+      "hasPrevious": False,
+      "pages": 1
     }
   }
 }
@@ -102,3 +99,31 @@ filter_unique_resources_response = {
         }
     }
 }
+
+get_paginated_resources_past_page = '''
+query {
+  allResources(page:2, perPage:1){
+   resources {
+    name
+    id
+  }
+   hasNext
+   hasPrevious
+   pages
+}
+}
+'''
+
+get_paginated_resources_inexistent_page = '''
+query {
+  allResources(page:-1, perPage:1){
+   resources {
+    name
+    id
+  }
+   hasNext
+   hasPrevious
+   pages
+}
+}
+'''

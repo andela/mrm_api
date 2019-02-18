@@ -81,7 +81,7 @@ room_occupants_query = '''
 room_schedule_query = '''
                         {
                         roomSchedule(
-                            calendarId:"andela.com_3836323338323230343935@resource.calendar.google.com",
+                            calendarId:"andela.com_3630363835303531343031@resource.calendar.google.com",
                             days:7){
                         events
                         }
@@ -175,3 +175,16 @@ room_search_by_invalid_name = '''
 '''
 
 room_search_by_invalid_name_response = "Room not found"
+
+paginated_rooms_query_blank_page = '''
+ query {
+  allRooms(page:6, perPage:1){
+   rooms{
+      name
+   }
+   hasNext
+   hasPrevious
+   pages
+}
+}
+'''

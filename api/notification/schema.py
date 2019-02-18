@@ -1,6 +1,5 @@
 import graphene
 from graphene_sqlalchemy import SQLAlchemyObjectType
-from graphql import GraphQLError
 
 from helpers.auth.authentication import Auth
 from api.notification.models import Notification as NotificationModel
@@ -17,8 +16,6 @@ class Query(graphene.ObjectType):
 
     def resolve_get_user_notification_settings(self, info):
         user = get_user_from_db()
-        if user is None:
-            raise GraphQLError("User not found")
         query = Notification.get_query(info)
         notification = query.filter(
             NotificationModel.user_id == user.id).first()

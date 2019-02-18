@@ -4,7 +4,8 @@ from fixtures.user.user_fixture import (
     query_user_by_email, query_user_email_response,
     paginated_users_query, paginated_users_response,
     get_users_by_location, get_users_by_location_and_role,
-    get_user_by_role_reponse, get_users_by_role
+    get_user_by_role_reponse, get_users_by_role,
+    filter_user_by_location
 )
 from helpers.database import db_session
 from api.user.models import User
@@ -83,4 +84,15 @@ class TestQueryUser(BaseTestCase):
         """
         CommonTestCases.user_token_assert_in(
             self, get_users_by_location_and_role, "No users found"
+            )
+
+    def test_filter_users_in_location_that_does_not_have_users(self):
+        """
+        Test for error returned when filtering in location that has
+        no users
+        """
+        CommonTestCases.user_token_assert_in(
+            self,
+            filter_user_by_location,
+            "No users found"
             )

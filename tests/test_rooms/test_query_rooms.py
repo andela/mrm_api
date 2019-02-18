@@ -11,7 +11,8 @@ from fixtures.room.query_room_fixtures import (
     room_query_by_id_response,
     room_with_non_existant_id,
     room_query_with_non_existant_id_response,
-    all_remote_rooms_query
+    all_remote_rooms_query,
+    paginated_rooms_query_blank_page
 )
 
 
@@ -46,3 +47,10 @@ class QueryRooms(BaseTestCase):
         expected_response = room_query_with_non_existant_id_response
         self.assertEquals(
             actual_response["errors"][0]['message'], expected_response)
+
+    def test_paginated_empty_page(self):
+        CommonTestCases.admin_token_assert_in(
+            self,
+            paginated_rooms_query_blank_page,
+            "No more resources"
+        )

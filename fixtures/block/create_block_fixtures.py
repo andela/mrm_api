@@ -204,9 +204,9 @@ update_non_existent_block_response = {
     }
 }
 
-create_block_query_with_non_nairobi_id = '''
+create_block_outside_nairobi = '''
   mutation{
-  createBlock(officeId:1, name:"blask" ) {
+  createBlock(officeId:1, name:"Block D" ) {
     block{
       officeId
         name

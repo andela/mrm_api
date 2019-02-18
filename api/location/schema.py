@@ -40,6 +40,7 @@ class CreateLocation(graphene.Mutation):
         # Validate if the country given is a valid country
         validate_country_field(**kwargs)
         validate_timezone_field(**kwargs)
+        validate_url(**kwargs)
         location = LocationModel(**kwargs)
         payload = {
             'model': LocationModel, 'field': 'name', 'value':  kwargs['name']
