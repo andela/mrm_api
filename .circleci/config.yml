@@ -11,86 +11,285 @@ decode_credentials: &decode_credentials
       touch credentials.json
       echo $CREDENTIALS | base64 --decode >> credentials.json 
 
+defaults: &defaults
+  docker:
+    # specify the version you desire here
+    # use `-browsers` prefix for selenium tests, e.g. `3.6.1-browsers`
+    - image: circleci/python:3.6.1
+      environment:
+        APP_SETTING: testing
+        TEST_DATABASE_URL: postgresql://postgres@localhost/mrm_test_db
+    - image: circleci/postgres:9.6.5-alpine-ram
+      environment:
+        CC_TEST_REPORTER_ID: ${CC_TEST_REPORTER_ID}
+        SECRET_KEY: "********"
+        POSTGRES_USER: postgres
+        POSTGRES_DB: mrm_test_db
+        POSTGRES_PASSWORD:
+
+# setup gcloud
+gcloud_setup: &gcloud_setup
+  run:
+    name: setup gcloud
+    command: |
+      # install 
+      sudo curl https://dl.google.com/dl/cloudsdk/release/google-cloud-sdk.tar.gz > /tmp/google-cloud-sdk.tar.gz
+      sudo mkdir -p /usr/local/gcloud 
+      sudo tar -C /usr/local/gcloud -xvf /tmp/google-cloud-sdk.tar.gz
+      sudo /usr/local/gcloud/google-cloud-sdk/install.sh --quiet
+      echo PATH=$PATH:/usr/local/gcloud/google-cloud-sdk/bin >> ~/.bashrc
+      # store Service Account Key into file
+      echo $GCLOUD_SERVICE_KEY > ${HOME}/gcloud-service-key.json
+      # Authenticate on gcloud
+      export PATH=$PATH:/usr/local/gcloud/google-cloud-sdk/bin
+      gcloud auth activate-service-account --key-file ${HOME}/gcloud-service-key.json
+      gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
+      gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
+
+set_workspace: &set_workspace
+  working_directory: ~/repo
+
+restore_the_cache: &restore_the_cache
+  restore_cache:
+    keys:
+    - v1-dependencies-{{ checksum "requirements.txt" }}
+    # fallback to using the latest cache if no exact match is found
+    - v1-dependencies-
+
+# setup codeclimate
+cc_setup: &cc_setup
+  run:
+    name: Setup code climate test-reporter
+    command: |
+      curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+      chmod +x ./cc-test-reporter
+
+#install dependencies
+install_dependencies: &install_dependencies
+  run:
+    name: install dependencies
+    command: |
+      python -m venv venv
+      . venv/bin/activate
+      pip install -r requirements.txt
+
+#save cache
+save_the_cache: &save_the_cache
+  save_cache:
+    paths:
+      - ./venv
+    key: v1-dependencies-{{ checksum "requirements.txt" }}
+
+#storing artifacts
+store_the_artifacts: &store_the_artifacts
+  store_artifacts:
+    path: test-reports
+    destination: test-reports
+
+#notifications to slack
+notify_success: &notify_success
+  run:
+    name: Notifying slack channel (succeeded)
+    when: on_success
+    command: |
+      bash ~/repo/.circleci/notify_slack.sh success
+
+notify_failure: &notify_failure
+  run:
+    name: Notifying slack channel (failed)
+    when: on_fail
+    command: |
+      bash ~/repo/.circleci/notify_slack.sh fail
+
+
 version: 2
 jobs:
-  test:
-    docker:
-      # specify the version you desire here
-      # use `-browsers` prefix for selenium tests, e.g. `3.6.1-browsers`
-      - image: circleci/python:3.6.1
-        environment:
-          APP_SETTING: testing
-          TEST_DATABASE_URL: postgresql://postgres@localhost/mrm_test_db
-      - image: circleci/postgres:9.6.5-alpine-ram
-        environment:
-          CC_TEST_REPORTER_ID: ${CC_TEST_REPORTER_ID}
-          SECRET_KEY: "********"
-          POSTGRES_USER: postgres
-          POSTGRES_DB: mrm_test_db
-          POSTGRES_PASSWORD:
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/postgres:9.4
-
-    working_directory: ~/repo
+  test-2.7:
+    <<: *defaults
+    <<: *set_workspace
 
     steps:
       - checkout
-
       - *decode_credentials
-
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "requirements.txt" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
-
-      - run:
-          name: Setup code climate test-reporter
-          command: |
-            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-            chmod +x ./cc-test-reporter
-
-      - run:
-          name: install dependencies
-          command: |
-            python -m venv venv
-            . venv/bin/activate
-            pip install -r requirements.txt
-      - save_cache:
-          paths:
-            - ./venv
-          key: v1-dependencies-{{ checksum "requirements.txt" }}
-
+      - *gcloud_setup
+      - *restore_the_cache
+      - *install_dependencies
+      - *save_the_cache
       - run:
           name: run tests
           command: |
-            ./cc-test-reporter before-build
             . venv/bin/activate
-            tox
+            tox -e python2.7
             coverage xml
       - run:
-          name: upload test coverage to codeclimate
+          name: upload test coverage to bucket
           command: |
+            export PATH=$PATH:/usr/local/gcloud/google-cloud-sdk/bin
+            gsutil cp .coverage gs://parallel-coverage-reports/backend/python2.7/
+      - *store_the_artifacts
+      - *notify_success
+      - *notify_failure
+
+  test-3.3:
+    <<: *defaults
+    <<: *set_workspace
+
+    steps:
+      - checkout
+      - *decode_credentials
+      - *gcloud_setup
+      - *restore_the_cache
+      - *install_dependencies
+      - *save_the_cache
+      - run:
+          name: run tests
+          command: |
+            . venv/bin/activate
+            tox -e python3.3
+            coverage xml
+      - run:
+          name: upload test coverage to bucket
+          command: |
+            export PATH=$PATH:/usr/local/gcloud/google-cloud-sdk/bin
+            gsutil cp .coverage gs://parallel-coverage-reports/backend/python3.3/
+      - *store_the_artifacts
+      - *notify_success
+      - *notify_failure
+
+  test-3.4:
+    <<: *defaults
+    <<: *set_workspace
+
+    steps:
+      - checkout
+      - *decode_credentials
+      - *gcloud_setup
+      - *restore_the_cache
+      - *install_dependencies
+      - *save_the_cache
+      - run:
+          name: run tests
+          command: |
+            . venv/bin/activate
+            tox -e python3.4
+            coverage xml
+      - run:
+          name: upload test coverage to bucket
+          command: |
+            export PATH=$PATH:/usr/local/gcloud/google-cloud-sdk/bin
+            gsutil cp .coverage gs://parallel-coverage-reports/backend/python3.4/
+      - *store_the_artifacts
+      - *notify_success
+      - *notify_failure
+
+  test-3.5:
+    <<: *defaults
+    <<: *set_workspace
+
+    steps:
+      - checkout
+      - *decode_credentials
+      - *gcloud_setup
+      - *restore_the_cache
+      - *install_dependencies
+      - *save_the_cache
+      - run:
+          name: run tests
+          command: |
+            . venv/bin/activate
+            tox -e python3.5
+            coverage xml
+      - run:
+          name: upload test coverage to bucket
+          command: |
+            export PATH=$PATH:/usr/local/gcloud/google-cloud-sdk/bin
+            gsutil cp .coverage gs://parallel-coverage-reports/backend/python3.5/
+      - *store_the_artifacts
+      - *notify_success
+      - *notify_failure
+
+  test-3.6:
+    <<: *defaults
+    <<: *set_workspace
+
+    steps:
+      - checkout
+      - *decode_credentials
+      - *gcloud_setup
+      - *restore_the_cache
+      - *install_dependencies
+      - *save_the_cache
+      - run:
+          name: run tests
+          command: |
+            . venv/bin/activate
+            tox -e python3.6
+            coverage xml
+      - run:
+          name: upload test coverage to bucket
+          command: |
+            export PATH=$PATH:/usr/local/gcloud/google-cloud-sdk/bin
+            gsutil cp .coverage gs://parallel-coverage-reports/backend/python3.6/
+      - *store_the_artifacts
+      - *notify_success
+      - *notify_failure
+
+  test-flake:
+    <<: *defaults
+    <<: *set_workspace
+
+    steps:
+      - checkout
+      - *decode_credentials
+      - *gcloud_setup
+      - *restore_the_cache
+      - *install_dependencies
+      - *save_the_cache
+      - run:
+          name: run tests
+          command: |
+            . venv/bin/activate
+            tox -e flake8
+      - *notify_success
+      - *notify_failure
+
+  code-climate:
+    <<: *defaults
+    <<: *set_workspace
+
+    steps:
+      - checkout
+      - *decode_credentials
+      - *gcloud_setup
+      - *restore_the_cache
+      - *cc_setup
+      - run:
+          name: retrieve code climate reports
+          command: |
+            mkdir -p parallel-coverage
+            export PATH=$PATH:/usr/local/gcloud/google-cloud-sdk/bin
+            gsutil cp gs://parallel-coverage-reports/backend/python2.7/.coverage \
+              parallel-coverage/.coverage.2.7
+            gsutil cp gs://parallel-coverage-reports/backend/python3.3/.coverage \
+              parallel-coverage/.coverage.3.3
+            gsutil cp gs://parallel-coverage-reports/backend/python3.4/.coverage \
+              parallel-coverage/.coverage.3.4
+            gsutil cp gs://parallel-coverage-reports/backend/python3.5/.coverage \
+              parallel-coverage/.coverage.3.5
+            gsutil cp gs://parallel-coverage-reports/backend/python3.6/.coverage \
+              parallel-coverage/.coverage.3.6
+      - run:
+          name: consolidate results
+          command: |
+            ./cc-test-reporter before-build
+            . venv/bin/activate
+            coverage combine parallel-coverage/ 
+            coverage xml
+            coverage report
             ./cc-test-reporter format-coverage -o ./.coverage -t coverage.py
             ./cc-test-reporter upload-coverage -i .coverage
-      - store_artifacts:
-          path: test-reports
-          destination: test-reports
-
-      - run:
-          name: Notifying slack channel (succeeded)
-          when: on_success
-          command: |
-            bash ~/repo/.circleci/notify_slack.sh success
-      - run:
-          name: Notifying slack channel (failed)
-          when: on_fail
-          command: |
-            bash ~/repo/.circleci/notify_slack.sh fail
+      - *notify_success
+      - *notify_failure
 
   deploy-job:
     docker:
@@ -162,10 +361,23 @@ workflows:
   version: 2
   build-then-deploy:
     jobs:
-      - test
+      - test-2.7
+      - test-3.3
+      - test-3.4
+      - test-3.5
+      - test-3.6
+      - test-flake
+      - code-climate:
+          requires:
+            - test-2.7
+            - test-3.3
+            - test-3.4
+            - test-3.5
+            - test-3.6
+            - test-flake
       - deploy-job:
           requires:
-            - test
+            - code-climate
           filters:
             branches:
               only:
