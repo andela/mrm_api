@@ -4,7 +4,6 @@ from tests.base import BaseTestCase, CommonTestCases
 from fixtures.response.user_response_fixtures import (
     create_rate_query,
     create_rate_response,
-    rate_wrong_question,
     invalid_rating_number,
     rate_with_non_existent_room,
     create_rate_query_without_rate_args,
@@ -19,16 +18,12 @@ from fixtures.response.user_response_check import (
     filter_question_by_invalid_room_response,
     create_check_query,
     create_check_response,
-    create_check_query_empty_missing_item,
-    create_check_query_no_missing_item,
-    create_check_query_non_existence_item,
+    create_check_query_non_existence_item
 )
 from fixtures.response.user_response_suggestions import (
     create_suggestion_question,
     create_suggestion_question_response,
-    make_suggestion_in_non_existent_room,
-    make_suggestion_on_wrong_question,
-    choose_non_existent_question
+    make_suggestion_in_non_existent_room
 )
 
 
@@ -46,17 +41,6 @@ class TestCreateResponse(BaseTestCase):
             self,
             create_rate_query,
             create_rate_response
-        )
-
-    def test_rate_wrong_question(self):
-        """
-        Testing for rating wrong question
-
-        """
-        CommonTestCases.user_token_assert_in(
-            self,
-            rate_wrong_question,
-            "Provide the missing items"
         )
 
     def test_invalid_rating_number(self):
@@ -89,7 +73,7 @@ class TestCreateResponse(BaseTestCase):
         CommonTestCases.user_token_assert_in(
             self,
             check_non_existing_question,
-            "Responses for question ids"
+            "Response to question"
         )
 
     def test_check_non_existent_room(self):
@@ -114,26 +98,6 @@ class TestCreateResponse(BaseTestCase):
             create_check_response
         )
 
-    def test_check_empty_missing_items(self):
-        """
-        Testing for empty missing items list
-        """
-        CommonTestCases.user_token_assert_in(
-            self,
-            create_check_query_empty_missing_item,
-            "missing_items is required field"
-        )
-
-    def test_check_no_missing_items(self):
-        """
-        Testing for no missing items list
-        """
-        CommonTestCases.user_token_assert_in(
-            self,
-            create_check_query_no_missing_item,
-            "Provide the missing items"
-        )
-
     def test_check_non_existence_missing_items(self):
         """
         Testing for no missing items list
@@ -141,7 +105,7 @@ class TestCreateResponse(BaseTestCase):
         CommonTestCases.user_token_assert_in(
             self,
             create_check_query_non_existence_item,
-            "One of the resource provided does not exist in this room"
+            "one of the resource provided does not exist"
         )
 
     def test_create_suggestion(self):
@@ -164,28 +128,6 @@ class TestCreateResponse(BaseTestCase):
             self,
             make_suggestion_in_non_existent_room,
             "Non-existent room id"
-        )
-
-    def test_suggestion_on_wrong_question(self):
-        """
-        Testing for invalid rating number
-
-        """
-        CommonTestCases.user_token_assert_in(
-            self,
-            make_suggestion_on_wrong_question,
-            "Provide the missing items"
-        )
-
-    def test_suggestion_on_non_existent_question(self):
-        """
-        Testing for invalid rating number
-
-        """
-        CommonTestCases.user_token_assert_in(
-            self,
-            choose_non_existent_question,
-            "Responses for question ids"
         )
 
     def test_filter_response_by_valid_room_id(self):

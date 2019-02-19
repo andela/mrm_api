@@ -2,7 +2,8 @@ null = None
 
 create_suggestion_question = '''
 mutation{
-  createResponse(questionId:3, roomId:1, textArea:"Any other suggestion") {
+  createResponse(
+    responses: [{questionId:3, textArea:"Any other suggestion"}], roomId:1) {
     response{
       id
       questionId
@@ -30,7 +31,8 @@ create_suggestion_question_response = {
 
 make_suggestion_in_non_existent_room = '''
 mutation{
-  createResponse(questionId:3, roomId:90, textArea:"Any other suggestion") {
+  createResponse(
+    responses: [{questionId:3, textArea:"Any other suggestion"}], roomId:90) {
     response{
       id
       questionId
@@ -43,33 +45,8 @@ mutation{
 
 choose_wrong_question = '''
 mutation{
-  createResponse(questionId:1, roomId:1, textArea:"Any other suggestion") {
-    response{
-      id
-      questionId
-      roomId
-      textArea
-      }
-  }
-}
-'''
-
-choose_non_existent_question = '''
-mutation{
-  createResponse(questionId:8, roomId:1, textArea:"Any other suggestion") {
-    response{
-      id
-      questionId
-      roomId
-      textArea
-      }
-  }
-}
-'''
-
-make_suggestion_on_wrong_question = '''
-mutation{
-  createResponse(questionId:2, roomId:1, textArea:"Any other suggestion") {
+  createResponse(
+    responses: [{questionId:1, textArea:"Any other suggestion"}], roomId:1) {
     response{
       id
       questionId
