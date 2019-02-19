@@ -11,7 +11,7 @@ class Block(Base, Utility):
     __tablename__ = 'blocks'
     id = Column(Integer, Sequence('blocks_id_seq', start=1, increment=1), primary_key=True) # noqa
     name = Column(String, nullable=False)
-    office_id = Column(Integer, ForeignKey('offices.id'))
+    office_id = Column(Integer, ForeignKey('offices.id', ondelete="CASCADE"))
     offices = relationship('Office')
     state = Column(Enum(StateType), default="active")
     floors = relationship(

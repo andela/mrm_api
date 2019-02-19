@@ -30,10 +30,14 @@ class Room(Base, Utility):
     capacity = Column(Integer, nullable=False)
     image_url = Column(String)
     calendar_id = Column(String)
-    location_id = Column(Integer, ForeignKey('locations.id'), nullable=True)
+    location_id = Column(
+        Integer,
+        ForeignKey('locations.id', ondelete="CASCADE"),
+        nullable=True
+    )
     firebase_token = Column(String, nullable=True)
-    floor_id = Column(Integer, ForeignKey('floors.id'))
-    wing_id = Column(Integer, ForeignKey('wings.id'))
+    floor_id = Column(Integer, ForeignKey('floors.id', ondelete="CASCADE"))
+    wing_id = Column(Integer, ForeignKey('wings.id', ondelete="CASCADE"))
     cancellation_duration = Column(Integer, default=10)
     floor = relationship('Floor')
     state = Column(Enum(StateType), default="active")
