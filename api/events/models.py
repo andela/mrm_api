@@ -10,7 +10,7 @@ class Events(Base, Utility):
     __tablename__ = 'events'
     id = Column(Integer, Sequence('events_id_seq', start=1, increment=1), primary_key=True) # noqa
     event_id = Column(String, nullable=False)
-    room_id = Column(Integer, ForeignKey('rooms.id'))
+    room_id = Column(Integer, ForeignKey('rooms.id', ondelete="CASCADE"))
     event_title = Column(String, nullable=False)
     start_time = Column(String, nullable=False)
     end_time = Column(String, nullable=False)

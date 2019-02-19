@@ -84,6 +84,7 @@ class UpdateRecurringEvent():
         checks for events to cancel and updates the relevant data
         to the events model
         """
+        print("cancelling events...")
         query = RoomModel.query
         now = datetime.utcnow().isoformat()+"Z"
         next_day = (datetime.utcnow() + relativedelta(hours=24)).isoformat()+"Z"

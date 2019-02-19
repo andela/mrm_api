@@ -22,8 +22,11 @@ missing_items = Table(
 class Response(Base, Utility):
     __tablename__ = 'responses'
     id = Column(Integer, primary_key=True)
-    room_id = Column(Integer, ForeignKey('rooms.id'))
-    question_id = Column(Integer, ForeignKey('questions.id'))
+    room_id = Column(Integer, ForeignKey('rooms.id', ondelete="CASCADE"))
+    question_id = Column(
+        Integer,
+        ForeignKey('questions.id', ondelete="CASCADE")
+    )
     rate = Column(Integer, nullable=True)
     check = Column(Boolean, nullable=True)
     text_area = Column(String, nullable=True)
