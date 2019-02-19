@@ -50,7 +50,7 @@ class AnalyticsRequest():
         '''
         Get various analytics
         '''
-        query = RoomModel.query
+        query = RoomModel.query.filter(RoomModel.state == 'active')
         if file_type == 'CSV':
             response = AnalyticsReport.get_csv_analytics_report(
                 self, query, start_date, end_date)

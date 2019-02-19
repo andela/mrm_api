@@ -85,7 +85,7 @@ class CommonAnalytics(Credentials):
         """ Get all room(name, calendar_id) in a location
          :params
         """
-        location_id = admin_roles.admin_location_for_analytics_view()
+        location_id = admin_roles.user_location_for_analytics_view()
         exact_query = room_join_location(query)
         rooms_in_locations = exact_query.filter(
             LocationModel.id == location_id)

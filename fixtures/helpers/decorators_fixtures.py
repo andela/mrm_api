@@ -30,6 +30,7 @@ expired = {
 room_mutation_query = '''
     mutation {
         createRoom(
+          locationId:1,
           name: "Syne",
           calendarId: "andela.com_3836323338323230343935@resource.calendar.google.com",  # noqa: E501
           roomType: "Meeting",
