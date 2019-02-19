@@ -91,9 +91,8 @@ class Authentication:
             pass
         return True
 
-    def user_roles(self, *expected_args):
+    def user_roles(self, *expected_args):  # noqa C901
         """ User roles """
-
         def decorator(func):
             @wraps(func)
             def wrapper(*args, **kwargs):
@@ -101,7 +100,10 @@ class Authentication:
                 if type(user_data) is dict:
                     self.save_user()
                     email = user_data['email']
-                    user = User.query.filter_by(email=email).first()
+                    try:
+                        user = User.query.filter_by(email=email).first()
+                    except Exception:
+                        raise GraphQLError("The database cannot be reached")
                     headers = {"Authorization": 'Bearer ' + self.get_token()}
                     try:
                         data = requests.get(

@@ -28,7 +28,7 @@ user_mutation_response = {
 
 user_duplication_mutation_response = {
     "errors": [{
-        "message": "mrm@andela.com User email already exists",
+        "message": "this user User already exists",
         "locations": [{
             "line": 3,
             "column": 3

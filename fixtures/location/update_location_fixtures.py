@@ -50,3 +50,22 @@ expected_location_id_non_existant_query = {
       "data": {
       "updateLocation": null}
 }
+
+response_for_update_location_with_database_error = {
+    "errors": [
+        {
+            "message": "There seems to be a database connection error, \
+                contact your administrator for assistance",
+            "locations": [
+                {
+
+                    "line": 2,
+                    "column": 5
+                }
+                ],
+            "path": [
+                "updateLocation"
+            ]
+        }
+    ],
+    "data": {"updateLocation": null}}

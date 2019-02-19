@@ -1,4 +1,6 @@
 import graphene
+from sqlalchemy import exc
+from graphql import GraphQLError
 from graphene_sqlalchemy import SQLAlchemyObjectType
 
 from api.events.models import Events as EventsModel
@@ -20,18 +22,28 @@ class EventCheckin(graphene.Mutation):
     event = graphene.Field(Events)
 
     def mutate(self, info, **kwargs):
-        room_id, event = check_event_in_db(self, info, "checked_in", **kwargs)
-        if not event:
-            event = EventsModel(
-                event_id=kwargs['event_id'],
-                room_id=room_id,
-                event_title=kwargs['event_title'],
+        try:
+            room_id = RoomSchedules().check_event_status(info, **kwargs)
+            event = EventsModel.query.filter_by(
                 start_time=kwargs['start_time'],
-                end_time=kwargs['end_time'],
-                checked_in=True,
-                cancelled=False)
-            event.save()
-        return EventCheckin(event=event)
+                event_id=kwargs['event_id']).scalar()
+            if event is not None:
+                event.checked_in = True
+                event.save()
+            else:
+                event = EventsModel(
+                    event_id=kwargs['event_id'],
+                    room_id=room_id,
+                    event_title=kwargs['event_title'],
+                    start_time=kwargs['start_time'],
+                    end_time=kwargs['end_time'],
+                    checked_in=True,
+                    cancelled=False)
+                event.save()
+            return EventCheckin(event=event)
+        except exc.ProgrammingError:
+            raise GraphQLError("There seems to be a database connection error, \
+                contact your administrator for assistance")
 
 
 class CancelEvent(graphene.Mutation):
@@ -44,19 +56,24 @@ class CancelEvent(graphene.Mutation):
     event = graphene.Field(Events)
 
     def mutate(self, info, **kwargs):
-        room_id, event = check_event_in_db(self, info, "cancelled", **kwargs)
-        if not event:
-            event = EventsModel(
-                event_id=kwargs['event_id'],
-                room_id=room_id,
-                event_title=kwargs['event_title'],
-                start_time=kwargs['start_time'],
-                end_time=kwargs['end_time'],
-                checked_in=False,
-                cancelled=True)
-            event.save()
+        try:
+            room_id, event = check_event_in_db(
+                self, info, "cancelled", **kwargs)
+            if not event:
+                event = EventsModel(
+                    event_id=kwargs['event_id'],
+                    room_id=room_id,
+                    event_title=kwargs['event_title'],
+                    start_time=kwargs['start_time'],
+                    end_time=kwargs['end_time'],
+                    checked_in=False,
+                    cancelled=True)
+                event.save()
 
-        return CancelEvent(event=event)
+            return CancelEvent(event=event)
+        except exc.ProgrammingError:
+            raise GraphQLError("There seems to be a database connection error, \
+                contact your administrator for assistance")
 
 
 def check_event_in_db(instance, info, event_check, **kwargs):

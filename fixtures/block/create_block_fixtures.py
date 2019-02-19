@@ -214,3 +214,59 @@ create_block_query_with_non_nairobi_id = '''
   }
 }
 '''
+response_for_create_block_with_database_error = {
+    "errors": [
+        {
+            "message": "There seems to be a database connection error, \
+                contact your administrator for assistance",
+            "locations": [
+                {
+
+                    "line": 3,
+                    "column": 3
+                }
+                ],
+            "path": [
+                "createBlock"
+            ]
+        }
+    ],
+    "data": {"createBlock": null}}
+
+response_for_delete_block_with_database_error = {
+    "errors": [
+        {
+            "message": "There seems to be a database connection error, \
+                contact your administrator for assistance",
+            "locations": [
+                {
+
+                    "line": 3,
+                    "column": 3
+                }
+                ],
+            "path": [
+                "DeleteBlock"
+            ]
+        }
+    ],
+    "data": {"DeleteBlock": null}}
+
+response_for_update_block_with_database_error = {
+    "errors": [
+        {
+            "message": "There seems to be a database connection error, \
+                contact your administrator for assistance",
+            "locations": [
+                {
+
+                    "line": 3,
+                    "column": 3
+                }
+                ],
+            "path": [
+                "updateBlock"
+            ]
+        }
+    ],
+    "data": {"updateBlock": null}}

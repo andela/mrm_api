@@ -1,6 +1,6 @@
 import graphene
 from graphene_sqlalchemy import SQLAlchemyObjectType
-from sqlalchemy import func
+from sqlalchemy import func, exc
 from graphql import GraphQLError
 
 from api.room_resource.models import Resource as ResourceModel
@@ -24,23 +24,27 @@ class PaginatedResource(Paginate):
     resources = graphene.List(Resource)
 
     def resolve_resources(self, info):
-        page = self.page
-        per_page = self.per_page
-        unique = self.unique
-        query = Resource.get_query(info)
-        active_resources = query.filter(ResourceModel.state == "active")
-        if not page:
-            if unique:
-                return active_resources.distinct(ResourceModel.name).all()
-            return active_resources.order_by(
-                func.lower(ResourceModel.name)).all()
-        page = validate_page(page)
-        self.query_total = active_resources.count()
-        result = active_resources.order_by(func.lower(
-            ResourceModel.name)).limit(per_page).offset(page*per_page)
-        if result.count() == 0:
-            return GraphQLError("No more resources")
-        return result
+        try:
+            page = self.page
+            per_page = self.per_page
+            unique = self.unique
+            query = Resource.get_query(info)
+            active_resources = query.filter(ResourceModel.state == "active")
+            if not page:
+                if unique:
+                    return active_resources.distinct(ResourceModel.name).all()
+                return active_resources.order_by(
+                    func.lower(ResourceModel.name)).all()
+            page = validate_page(page)
+            self.query_total = active_resources.count()
+            result = active_resources.order_by(func.lower(
+                ResourceModel.name)).limit(per_page).offset(page*per_page)
+            if result.count() == 0:
+                return GraphQLError("No more resources")
+            return result
+        except exc.ProgrammingError:
+            raise GraphQLError("There seems to be a database connection error, \
+                contact your administrator for assistance")
 
 
 class CreateResource(graphene.Mutation):
@@ -53,23 +57,26 @@ class CreateResource(graphene.Mutation):
 
     @Auth.user_roles('Admin')
     def mutate(self, info, **kwargs):
-        location_query = location_join_room()
-        room_location = location_query.filter(
-            RoomModel.id == kwargs['room_id'], RoomModel.state == 'active'
-        ).first()
-        if not room_location:
-            raise GraphQLError("Room not found")
-        admin_roles.update_delete_rooms_create_resource(
-            room_id=kwargs['room_id']
-        )
-        resource = ResourceModel(**kwargs)
-        payload = {
-            'model': ResourceModel, 'field': 'name', 'value':  kwargs['name']
-            }
-        with SaveContextManager(
-          resource, 'Resource', payload
-        ):
-            return CreateResource(resource=resource)
+        try:
+            location_query = location_join_room()
+            room_location = location_query.filter(
+                RoomModel.id == kwargs['room_id'], RoomModel.state == 'active'
+            ).first()
+            if not room_location:
+                raise GraphQLError("Room not found")
+            admin_roles.update_delete_rooms_create_resource(
+                room_id=kwargs['room_id']
+            )
+            resource = ResourceModel(**kwargs)
+            payload = {
+                'model': ResourceModel, 'field': 'name',
+                'value':  kwargs['name']
+                }
+            with SaveContextManager(resource, 'Resource', payload):
+                return CreateResource(resource=resource)
+        except exc.ProgrammingError:
+            raise GraphQLError("There seems to be a database connection error, \
+                contact your administrator for assistance")
 
 
 class UpdateRoomResource(graphene.Mutation):
@@ -82,19 +89,23 @@ class UpdateRoomResource(graphene.Mutation):
 
     @Auth.user_roles('Admin')
     def mutate(self, info, resource_id, **kwargs):
-        validate_empty_fields(**kwargs)
-        query = Resource.get_query(info)
-        active_resources = query.filter(ResourceModel.state == "active")
-        exact_resource = active_resources.filter(
-            ResourceModel.id == resource_id).first()
-        if not exact_resource:
-            raise GraphQLError("Resource not found")
+        try:
+            validate_empty_fields(**kwargs)
+            query = Resource.get_query(info)
+            active_resources = query.filter(ResourceModel.state == "active")
+            exact_resource = active_resources.filter(
+                ResourceModel.id == resource_id).first()
+            if not exact_resource:
+                raise GraphQLError("Resource not found")
 
-        admin_roles.update_resource(resource_id, room_id=kwargs['room_id'])
+            admin_roles.update_resource(resource_id, room_id=kwargs['room_id'])
 
-        update_entity_fields(exact_resource, **kwargs)
-        exact_resource.save()
-        return UpdateRoomResource(resource=exact_resource)
+            update_entity_fields(exact_resource, **kwargs)
+            exact_resource.save()
+            return UpdateRoomResource(resource=exact_resource)
+        except exc.ProgrammingError:
+            raise GraphQLError("There seems to be a database connection error, \
+                contact your administrator for assistance")
 
 
 class DeleteResource(graphene.Mutation):
@@ -106,18 +117,23 @@ class DeleteResource(graphene.Mutation):
 
     @Auth.user_roles('Admin')
     def mutate(self, info, resource_id, **kwargs):
-        query_room_resource = Resource.get_query(info)
-        active_resources = query_room_resource.filter(
-            ResourceModel.state == "active")
-        exact_room_resource = active_resources.filter(
-            ResourceModel.id == resource_id).first()
-        if not exact_room_resource:
-            raise GraphQLError("Resource not found")
+        try:
+            query_room_resource = Resource.get_query(info)
+            active_resources = query_room_resource.filter(
+                ResourceModel.state == "active")
+            exact_room_resource = active_resources.filter(
+                ResourceModel.id == resource_id).first()
+            if not exact_room_resource:
+                raise GraphQLError("Resource not found")
 
-        admin_roles.delete_resource(resource_id)
-        update_entity_fields(exact_room_resource, state="archived", **kwargs)
-        exact_room_resource.save()
-        return DeleteResource(resource=exact_room_resource)
+            admin_roles.delete_resource(resource_id)
+            update_entity_fields(
+                exact_room_resource, state="archived", **kwargs)
+            exact_room_resource.save()
+            return DeleteResource(resource=exact_room_resource)
+        except exc.ProgrammingError:
+            raise GraphQLError("There seems to be a database connection error, \
+                contact your administrator for assistance")
 
 
 class Query(graphene.ObjectType):

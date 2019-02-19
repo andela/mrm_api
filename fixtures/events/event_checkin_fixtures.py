@@ -1,3 +1,4 @@
+null = None
 event_checkin_mutation = '''mutation {
     eventCheckin(
         calendarId:"andela.com_3630363835303531343031@resource.calendar.google.com",
@@ -137,3 +138,22 @@ response_for_event_existing_in_db_checkin = {
         }
     }
 }
+
+response_for_wrong_migration = {
+    "errors": [
+        {
+            "message": "There seems to be a database connection error, \
+                contact your administrator for assistance",
+            "locations": [
+                {
+
+                    "line": 2,
+                    "column": 5
+                }
+                ],
+            "path": [
+                "eventCheckin"
+            ]
+        }
+    ],
+    "data": {"eventCheckin": null}}

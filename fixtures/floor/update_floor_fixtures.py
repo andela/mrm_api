@@ -74,3 +74,22 @@ update_with_nonexistent_floor_id = '''
         }
     }
     '''
+
+response_for_update_floor_with_database_error = {
+    "errors": [
+        {
+            "message": "There seems to be a database connection error, \
+                contact your administrator for assistance",
+            "locations": [
+                {
+
+                    "line": 3,
+                    "column": 9
+                }
+                ],
+            "path": [
+                "updateFloor"
+            ]
+        }
+    ],
+    "data": {"updateFloor": null}}

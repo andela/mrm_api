@@ -1,6 +1,6 @@
 import graphene
 from graphene_sqlalchemy import (SQLAlchemyObjectType)
-from sqlalchemy import func
+from sqlalchemy import func, exc
 from graphql import GraphQLError
 
 from api.user.models import User as UserModel
@@ -8,6 +8,7 @@ from api.notification.models import Notification as NotificationModel
 from helpers.auth.user_details import get_user_from_db
 from helpers.auth.authentication import Auth
 from utilities.validator import verify_email
+from utilities.validator import ErrorHandler
 from helpers.pagination.paginate import Paginate, validate_page
 from helpers.auth.error_handler import SaveContextManager
 from helpers.email.email import email_invite
@@ -32,36 +33,52 @@ class CreateUser(graphene.Mutation):
     user = graphene.Field(User)
 
     def mutate(self, info, **kwargs):
-        user = UserModel(**kwargs)
-        if not verify_email(user.email):
-            raise GraphQLError("This email is not allowed")
-        payload = {
-            'model': UserModel, 'field': 'email', 'value':  kwargs['email']
-        }
-        with SaveContextManager(user, 'User email', payload):
-            notification_settings = NotificationModel(user_id=user.id)
-            notification_settings.save()
-            return CreateUser(user=user)
+        try:
+            user = UserModel(**kwargs)
+            if not verify_email(user.email):
+                raise GraphQLError("This email is not allowed")
+            payload = {
+                'model': UserModel, 'field': 'email', 'value':  kwargs['email']
+            }
+            query = User.get_query(info)
+            result = query.filter(UserModel.state == "active")
+            user_name = result.filter(
+                func.lower(UserModel.name) ==
+                func.lower(kwargs['name'])).count()
+            if user_name > 0:
+                ErrorHandler.check_conflict(self, kwargs['name'], 'User')
+            with SaveContextManager(user, 'User email', payload):
+                notification_settings = NotificationModel(user_id=user.id)
+                notification_settings.save()
+                return CreateUser(user=user)
+        except exc.ProgrammingError:
+            raise GraphQLError("There seems to be a database connection error, \
+                contact your administrator for assistance")
 
 
 class PaginatedUsers(Paginate):
     users = graphene.List(User)
 
     def resolve_users(self, info):
-        page = self.page
-        per_page = self.per_page
-        query = User.get_query(info)
-        active_user = query.filter(UserModel.state == "active")
-        exact_query = user_filter(active_user, self.filter_data)
-        if not page:
-            return exact_query.order_by(func.lower(UserModel.email)).all()
-        page = validate_page(page)
-        self.query_total = exact_query.count()
-        result = exact_query.order_by(
-            func.lower(UserModel.name)).limit(per_page).offset(page * per_page)
-        if result.count() == 0:
-            return GraphQLError("No users found")
-        return result
+        try:
+            page = self.page
+            per_page = self.per_page
+            query = User.get_query(info)
+            active_user = query.filter(UserModel.state == "active")
+            exact_query = user_filter(active_user, self.filter_data)
+            if not page:
+                return exact_query.order_by(func.lower(UserModel.email)).all()
+            page = validate_page(page)
+            self.query_total = exact_query.count()
+            result = exact_query.order_by(
+                func.lower(UserModel.name)).limit(per_page).offset(
+                    page * per_page)
+            if result.count() == 0:
+                return GraphQLError("No users found")
+            return result
+        except exc.ProgrammingError:
+            raise GraphQLError("There seems to be a database connection error, \
+                contact your administrator for assistance")
 
 
 class Query(graphene.ObjectType):
@@ -94,19 +111,24 @@ class DeleteUser(graphene.Mutation):
 
     @Auth.user_roles('Admin')
     def mutate(self, info, email, **kwargs):
-        query_user = User.get_query(info)
-        active_user = query_user.filter(UserModel.state == "active")
-        exact_query_user = active_user.filter(UserModel.email == email).first()
-        user_from_db = get_user_from_db()
-        if not verify_email(email):
-            raise GraphQLError("Invalid email format")
-        if not exact_query_user:
-            raise GraphQLError("User not found")
-        if user_from_db.email == email:
-            raise GraphQLError("You cannot delete yourself")
-        update_entity_fields(exact_query_user, state="archived", **kwargs)
-        exact_query_user.save()
-        return DeleteUser(user=exact_query_user)
+        try:
+            query_user = User.get_query(info)
+            active_user = query_user.filter(UserModel.state == "active")
+            exact_query_user = active_user.filter(
+                UserModel.email == email).first()
+            user_from_db = get_user_from_db()
+            if not verify_email(email):
+                raise GraphQLError("Invalid email format")
+            if not exact_query_user:
+                raise GraphQLError("User not found")
+            if user_from_db.email == email:
+                raise GraphQLError("You cannot delete yourself")
+            update_entity_fields(exact_query_user, state="archived", **kwargs)
+            exact_query_user.save()
+            return DeleteUser(user=exact_query_user)
+        except exc.ProgrammingError:
+            raise GraphQLError("There seems to be a database connection error, \
+                contact your administrator for assistance")
 
 
 class ChangeUserRole(graphene.Mutation):
@@ -119,22 +141,26 @@ class ChangeUserRole(graphene.Mutation):
 
     @Auth.user_roles('Admin')
     def mutate(self, info, email, **kwargs):
-        query_user = User.get_query(info)
-        active_user = query_user.filter(UserModel.state == "active")
-        exact_user = active_user.filter(UserModel.email == email).first()
-        if not exact_user:
-            raise GraphQLError("User not found")
+        try:
+            query_user = User.get_query(info)
+            active_user = query_user.filter(UserModel.state == "active")
+            exact_user = active_user.filter(UserModel.email == email).first()
+            if not exact_user:
+                raise GraphQLError("User not found")
 
-        if not exact_user.roles:
-            raise GraphQLError('user has no role')
+            if not exact_user.roles:
+                raise GraphQLError('user has no role')
 
-        new_role = RoleModel.query.filter_by(id=kwargs['role_id']).first()
-        if not new_role:
-            raise GraphQLError('invalid role id')
+            new_role = RoleModel.query.filter_by(id=kwargs['role_id']).first()
+            if not new_role:
+                raise GraphQLError('invalid role id')
 
-        exact_user.roles[0] = new_role
-        exact_user.save()
-        return ChangeUserRole(user=exact_user)
+            exact_user.roles[0] = new_role
+            exact_user.save()
+            return ChangeUserRole(user=exact_user)
+        except exc.ProgrammingError:
+            raise GraphQLError("There seems to be a database connection error, \
+                contact your administrator for assistance")
 
 
 class CreateUserRole(graphene.Mutation):
@@ -145,25 +171,29 @@ class CreateUserRole(graphene.Mutation):
     user_role = graphene.Field(User)
 
     def mutate(self, info, **kwargs):
-        user = User.get_query(info)
-        exact_user = user.filter_by(id=kwargs['user_id']).first()
+        try:
+            user = User.get_query(info)
+            exact_user = user.filter_by(id=kwargs['user_id']).first()
 
-        if not exact_user:
-            raise GraphQLError('User not found')
+            if not exact_user:
+                raise GraphQLError('User not found')
 
-        role = Role.get_query(info)
-        exact_role = role.filter_by(id=kwargs['role_id']).first()
+            role = Role.get_query(info)
+            exact_role = role.filter_by(id=kwargs['role_id']).first()
 
-        if not exact_role:
-            raise GraphQLError('Role id does not exist')
+            if not exact_role:
+                raise GraphQLError('Role id does not exist')
 
-        if exact_user.roles:
-            raise GraphQLError('user already has a role')
+            if exact_user.roles:
+                raise GraphQLError('user already has a role')
 
-        exact_user.roles.append(exact_role)
-        exact_user.save()
+            exact_user.roles.append(exact_role)
+            exact_user.save()
 
-        return CreateUserRole(user_role=exact_user)
+            return CreateUserRole(user_role=exact_user)
+        except exc.ProgrammingError:
+            raise GraphQLError("There seems to be a database connection error, \
+                contact your administrator for assistance")
 
 
 class InviteToConverge(graphene.Mutation):
@@ -174,14 +204,18 @@ class InviteToConverge(graphene.Mutation):
 
     @Auth.user_roles('Admin')
     def mutate(self, info, email):
-        query_user = User.get_query(info)
-        active_user = query_user.filter(UserModel.state == "active")
-        user = active_user.filter(UserModel.email == email).first()
-        if user:
-            raise GraphQLError("User already joined Converge")
-        admin = get_user_from_db()
-        email_invite(email, admin.__dict__["name"])
-        return InviteToConverge(email=email)
+        try:
+            query_user = User.get_query(info)
+            active_user = query_user.filter(UserModel.state == "active")
+            user = active_user.filter(UserModel.email == email).first()
+            if user:
+                raise GraphQLError("User already joined Converge")
+            admin = get_user_from_db()
+            email_invite(email, admin.__dict__["name"])
+            return InviteToConverge(email=email)
+        except exc.ProgrammingError:
+            raise GraphQLError("There seems to be a database connection error, \
+                contact your administrator for assistance")
 
 
 class Mutation(graphene.ObjectType):

@@ -2,12 +2,14 @@ import sys
 import os
 
 from tests.base import BaseTestCase, CommonTestCases
+from helpers.database import engine, db_session
 from fixtures.office.update_delete_office_fixture import (
     update_office_in_another_location_query,
     update_office_with_wrong_ID_query,
     update_office_with_same_Name_query,
     update_office_query,
-    office_mutation_response
+    office_mutation_response,
+    response_for_update_office_with_database_error
     )
 sys.path.append(os.getcwd())
 
@@ -41,7 +43,7 @@ class TestUpdateOffice(BaseTestCase):
         CommonTestCases.admin_token_assert_in(
             self,
             update_office_with_same_Name_query,
-            "Action Failed"
+            "Dojo Office already exists"
         )
 
     def test_updating_office_in_another_location(self):
@@ -52,4 +54,26 @@ class TestUpdateOffice(BaseTestCase):
             self,
             update_office_in_another_location_query,
             "You are not authorized to make changes in"
+        )
+
+    def test_database_connection_error(self):
+        """
+        test a user friendly message is returned to a user when database
+        cannot be reached
+        """
+        BaseTestCase().tearDown()
+        CommonTestCases.admin_token_assert_in(
+            self,
+            update_office_query,
+            "The database cannot be reached"
+            )
+
+    def test_update_office_without_office_model(self):
+        db_session.remove()
+        with engine.begin() as conn:
+            conn.execute("DROP TABLE offices CASCADE")
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            update_office_query,
+            response_for_update_office_with_database_error
         )

@@ -16,7 +16,7 @@ from fixtures.block.create_block_fixtures import (
     delete_block_response,
     delete_non_existent_block,
     delete_non_existent_block_response,
-    create_block_query_with_non_nairobi_id
+    create_block_query_with_non_nairobi_id,
 )
 
 
@@ -114,4 +114,26 @@ class TestCreateBlock(BaseTestCase):
             self,
             create_block_query_with_non_nairobi_id,
             "You can only create block in Nairobi"
+        )
+
+    def test_databse_connection_error(self):
+        """
+        test a user friendly message is returned to a user when database
+        cannot be reached
+        """
+        BaseTestCase().tearDown()
+        CommonTestCases.admin_token_assert_in(
+            self,
+            create_block_query,
+            "The database cannot be reached"
+        )
+        CommonTestCases.admin_token_assert_in(
+            self,
+            update_block,
+            "The database cannot be reached"
+        )
+        CommonTestCases.admin_token_assert_in(
+            self,
+            delete_block,
+            "The database cannot be reached"
         )

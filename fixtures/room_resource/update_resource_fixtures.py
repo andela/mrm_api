@@ -75,3 +75,21 @@ expected_response_empty_field = {
     }
 
 }
+
+response_for_update_room_resource_with_database_error = {
+    "errors": [
+        {
+            "message": "There seems to be a database connection error, contact your administrator for assistance",  # noqa
+            "locations": [
+                {
+
+                    "line": 3,
+                    "column": 13
+                }
+                ],
+            "path": [
+                "updateRoomResource"
+            ]
+        }
+    ],
+    "data": {"updateRoomResource": null}}

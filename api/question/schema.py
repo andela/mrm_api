@@ -1,4 +1,5 @@
 import graphene
+from sqlalchemy import exc
 from graphene_sqlalchemy import SQLAlchemyObjectType
 from graphql import GraphQLError
 
@@ -49,18 +50,22 @@ class PaginatedQuestions(Paginate):
     questions = graphene.List(Question)
 
     def resolve_questions(self, info):
-        page = self.page
-        per_page = self.per_page
-        query = Question.get_query(info)
-        active_questions = query.filter(QuestionModel.state == "active")
-        if not page:
-            return active_questions.all()
-        page = validate_page(page)
-        self.query_total = active_questions.count()
-        result = active_questions.limit(per_page).offset(page * per_page)
-        if result.count() == 0:
-            return GraphQLError("No questions found")
-        return result
+        try:
+            page = self.page
+            per_page = self.per_page
+            query = Question.get_query(info)
+            active_questions = query.filter(QuestionModel.state == "active")
+            if not page:
+                return active_questions.all()
+            page = validate_page(page)
+            self.query_total = active_questions.count()
+            result = active_questions.limit(per_page).offset(page * per_page)
+            if result.count() == 0:
+                return GraphQLError("No questions found")
+            return result
+        except exc.ProgrammingError:
+            raise GraphQLError("There seems to be a database connection error, \
+                contact your administrator for assistance")
 
 
 class UpdateQuestion(graphene.Mutation):
@@ -77,18 +82,22 @@ class UpdateQuestion(graphene.Mutation):
 
     @Auth.user_roles('Admin')
     def mutate(self, info, question_id, **kwargs):
-        validate_empty_fields(**kwargs)
-        query_question = Question.get_query(info)
-        active_questions = query_question.filter(
-            QuestionModel.state == "active")
-        exact_question = active_questions.filter(
-            QuestionModel.id == question_id).first()
-        if not exact_question:
-            raise GraphQLError("Question not found")
-        validate_date_time_range(**kwargs)
-        update_entity_fields(exact_question, **kwargs)
-        exact_question.save()
-        return UpdateQuestion(question=exact_question)
+        try:
+            validate_empty_fields(**kwargs)
+            query_question = Question.get_query(info)
+            active_questions = query_question.filter(
+                QuestionModel.state == "active")
+            exact_question = active_questions.filter(
+                QuestionModel.id == question_id).first()
+            if not exact_question:
+                raise GraphQLError("Question not found")
+            validate_date_time_range(**kwargs)
+            update_entity_fields(exact_question, **kwargs)
+            exact_question.save()
+            return UpdateQuestion(question=exact_question)
+        except exc.ProgrammingError:
+            raise GraphQLError("There seems to be a database connection error, \
+                contact your administrator for assistance")
 
 
 class DeleteQuestion(graphene.Mutation):
@@ -100,16 +109,20 @@ class DeleteQuestion(graphene.Mutation):
 
     @Auth.user_roles('Admin')
     def mutate(self, info, question_id):
-        query_question = Question.get_query(info)
-        active_questions = query_question.filter(
-            QuestionModel.state == "active")
-        exact_question = active_questions.filter(
-            QuestionModel.id == question_id).first()
-        if not exact_question:
-            raise GraphQLError("Question not found")
-        update_entity_fields(exact_question, state="archived")
-        exact_question.save()
-        return DeleteQuestion(question=exact_question)
+        try:
+            query_question = Question.get_query(info)
+            active_questions = query_question.filter(
+                QuestionModel.state == "active")
+            exact_question = active_questions.filter(
+                QuestionModel.id == question_id).first()
+            if not exact_question:
+                raise GraphQLError("Question not found")
+            update_entity_fields(exact_question, state="archived")
+            exact_question.save()
+            return DeleteQuestion(question=exact_question)
+        except exc.ProgrammingError:
+            raise GraphQLError("There seems to be a database connection error, \
+                contact your administrator for assistance")
 
 
 class UpdateQuestionViews(graphene.Mutation):

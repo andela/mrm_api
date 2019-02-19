@@ -43,6 +43,7 @@ class BaseTestCase(TestCase):
         app = self.create_app()
         self.app_test = app.test_client()
         with app.app_context():
+            print(Base.metadata.create_all(bind=engine))
             Base.metadata.create_all(bind=engine)
             admin_user = User(email="peter.walugembe@andela.com",
                               location="Kampala", name="Peter Walugembe",

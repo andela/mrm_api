@@ -1,6 +1,7 @@
 import graphene
 
 from graphene_sqlalchemy import SQLAlchemyObjectType
+from sqlalchemy import exc
 from graphql import GraphQLError
 from helpers.auth.authentication import Auth
 from helpers.auth.admin_roles import admin_roles
@@ -29,25 +30,29 @@ class CreateFloor(graphene.Mutation):
 
     @Auth.user_roles('Admin')
     def mutate(self, info, **kwargs):
-        validate_empty_fields(**kwargs)
-        get_block = Block.query.filter_by(id=kwargs['block_id']).first()
-        if not get_block:
-            raise GraphQLError("Block not found")
-        query = Floor.get_query(info)
-        query_block = query.join(Block.floors)
+        try:
+            validate_empty_fields(**kwargs)
+            get_block = Block.query.filter_by(id=kwargs['block_id']).first()
+            if not get_block:
+                raise GraphQLError("Block not found")
+            query = Floor.get_query(info)
+            query_block = query.join(Block.floors)
 
-        admin_roles.create_floor_update_delete_block(kwargs['block_id'])
-        result = query_block.filter(
-            Block.id == kwargs['block_id'],
-            FloorModel.name == kwargs.get('name').capitalize(),
-            FloorModel.state == 'active'
-        )
-        if result.count() > 0:
-            ErrorHandler.check_conflict(self, kwargs['name'], 'Floor')
+            admin_roles.create_floor_update_delete_block(kwargs['block_id'])
+            result = query_block.filter(
+                Block.id == kwargs['block_id'],
+                FloorModel.name == kwargs.get('name').capitalize(),
+                FloorModel.state == 'active'
+            )
+            if result.count() > 0:
+                ErrorHandler.check_conflict(self, kwargs['name'], 'Floor')
 
-        floor = FloorModel(**kwargs)
-        floor.save()
-        return CreateFloor(floor=floor)
+            floor = FloorModel(**kwargs)
+            floor.save()
+            return CreateFloor(floor=floor)
+        except exc.ProgrammingError:
+            raise GraphQLError("There seems to be a database connection error, \
+                contact your administrator for assistance")
 
 
 class UpdateFloor(graphene.Mutation):
@@ -59,25 +64,29 @@ class UpdateFloor(graphene.Mutation):
 
     @Auth.user_roles('Admin')
     def mutate(self, info, floor_id, **kwargs):
-        validate_empty_fields(**kwargs)
-        query_floor = Floor.get_query(info)
-        active_rooms = query_floor.filter(FloorModel.state == "active")
-        exact_floor = active_rooms.filter(FloorModel.id == floor_id).first()
-        if not exact_floor:
-            raise GraphQLError("Floor not found")
+        try:
+            validate_empty_fields(**kwargs)
+            query_floor = Floor.get_query(info)
+            active_rooms = query_floor.filter(FloorModel.state == "active")
+            exact_floor = active_rooms.filter(FloorModel.id == floor_id).first()
+            if not exact_floor:
+                raise GraphQLError("Floor not found")
 
-        admin_roles.update_delete_floor(floor_id)
-        result = query_floor.filter(
-            FloorModel.block_id == exact_floor.block_id,
-            FloorModel.name == kwargs.get('name').capitalize(),
-            FloorModel.state == 'active'
-        )
-        if result.count() > 0:
-            ErrorHandler.check_conflict(self, kwargs['name'], 'Floor')
+            admin_roles.update_delete_floor(floor_id)
+            result = query_floor.filter(
+                FloorModel.block_id == exact_floor.block_id,
+                FloorModel.name == kwargs.get('name').capitalize(),
+                FloorModel.state == 'active'
+            )
+            if result.count() > 0:
+                ErrorHandler.check_conflict(self, kwargs['name'], 'Floor')
 
-        update_entity_fields(exact_floor, **kwargs)
-        exact_floor.save()
-        return UpdateFloor(floor=exact_floor)
+            update_entity_fields(exact_floor, **kwargs)
+            exact_floor.save()
+            return UpdateFloor(floor=exact_floor)
+        except exc.ProgrammingError:
+            raise GraphQLError("There seems to be a database connection error, \
+                contact your administrator for assistance")
 
 
 class DeleteFloor(graphene.Mutation):
@@ -89,17 +98,21 @@ class DeleteFloor(graphene.Mutation):
 
     @Auth.user_roles('Admin')
     def mutate(self, info, floor_id, **kwargs):
-        query_floor = Floor.get_query(info)
-        active_rooms = query_floor.filter(FloorModel.state == "active")
-        exact_floor = active_rooms.filter(
-            FloorModel.id == floor_id).first()
-        if not exact_floor:
-            raise GraphQLError("Floor not found")
+        try:
+            query_floor = Floor.get_query(info)
+            active_rooms = query_floor.filter(FloorModel.state == "active")
+            exact_floor = active_rooms.filter(
+                FloorModel.id == floor_id).first()
+            if not exact_floor:
+                raise GraphQLError("Floor not found")
 
-        admin_roles.update_delete_floor(floor_id)
-        update_entity_fields(exact_floor, state="archived", **kwargs)
-        exact_floor.save()
-        return DeleteFloor(floor=exact_floor)
+            admin_roles.update_delete_floor(floor_id)
+            update_entity_fields(exact_floor, state="archived", **kwargs)
+            exact_floor.save()
+            return DeleteFloor(floor=exact_floor)
+        except exc.ProgrammingError:
+            raise GraphQLError("There seems to be a database connection error, \
+                contact your administrator for assistance")
 
 
 class PaginatedFloors(Paginate):
@@ -110,19 +123,23 @@ class PaginatedFloors(Paginate):
         if page parameter is passed,
         otherwise it returns all floors
         '''
-        page = self.page
-        per_page = self.per_page
-        query = Floor.get_query(info)
-        active_rooms = query.filter(FloorModel.state == "active")
-        if not page:
-            return active_rooms.order_by(FloorModel.name).all()
-        page = validate_page(page)
-        self.query_total = active_rooms.count()
-        result = active_rooms.order_by(
-            FloorModel.name).limit(per_page).offset(page*per_page)
-        if result.count() == 0:
-            return GraphQLError("No more resources")
-        return result
+        try:
+            page = self.page
+            per_page = self.per_page
+            query = Floor.get_query(info)
+            active_rooms = query.filter(FloorModel.state == "active")
+            if not page:
+                return active_rooms.order_by(FloorModel.name).all()
+            page = validate_page(page)
+            self.query_total = active_rooms.count()
+            result = active_rooms.order_by(
+                FloorModel.name).limit(per_page).offset(page*per_page)
+            if result.count() == 0:
+                return GraphQLError("No more resources")
+            return result
+        except exc.ProgrammingError:
+            raise GraphQLError("There seems to be a database connection error, \
+                contact your administrator for assistance")
 
 
 class Query(graphene.ObjectType):
@@ -150,11 +167,15 @@ class Query(graphene.ObjectType):
 
     @Auth.user_roles('Admin')
     def resolve_filter_by_block(self, info, blockId):
-        query = Floor.get_query(info)
-        floors = query.filter_by(block_id=blockId)
-        if floors.count() < 1:
-            raise GraphQLError('Floors not found in this block')
-        return floors
+        try:
+            query = Floor.get_query(info)
+            floors = query.filter_by(block_id=blockId)
+            if floors.count() < 1:
+                raise GraphQLError('Floors not found in this block')
+            return floors
+        except exc.ProgrammingError:
+            raise GraphQLError("There seems to be a database connection error, \
+                contact your administrator for assistance")
 
 
 class Mutation(graphene.ObjectType):

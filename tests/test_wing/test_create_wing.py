@@ -1,6 +1,7 @@
 import sys
 import os
 from tests.base import BaseTestCase, CommonTestCases
+from helpers.database import db_session, engine
 from fixtures.wing.wing_fixtures import (
     create_wing_mutation, create_wing_mutation_response,
     duplicate_wing_mutation,
@@ -85,4 +86,29 @@ class TestCreateWing(BaseTestCase):
             self,
             create_wing_floor_not_found,
             "Floor not found"
+        )
+
+    def test_database_connection_error(self):
+        """
+        test a user friendly message is returned to a user when database
+        cannot be reached
+        """
+        BaseTestCase().tearDown()
+        CommonTestCases.admin_token_assert_in(
+            self,
+            create_wing_mutation,
+            "The database cannot be reached"
+            )
+
+    def test_wing_creation_without_wings_model(self):
+        """
+        Testing for wing creation
+        """
+        db_session.remove()
+        with engine.begin() as conn:
+            conn.execute("DROP TABLE wings CASCADE")
+        CommonTestCases.lagos_admin_token_assert_in(
+            self,
+            create_wing_mutation,
+            "There seems to be a database connection error"
         )

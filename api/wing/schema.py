@@ -1,10 +1,11 @@
 import graphene
 
 from graphene_sqlalchemy import (SQLAlchemyObjectType)
-from sqlalchemy import func
+from sqlalchemy import func, exc
 from graphql import GraphQLError
 from api.floor.models import Floor
 from api.wing.models import Wing as WingModel
+from utilities.validator import ErrorHandler
 from utilities.validations import validate_empty_fields
 from utilities.utility import update_entity_fields
 from helpers.auth.authentication import Auth
@@ -26,20 +27,29 @@ class CreateWing(graphene.Mutation):
 
     @Auth.user_roles('Admin')
     def mutate(self, info, **kwargs):
-        validate_empty_fields(**kwargs)
-        floor = Floor.query.filter_by(id=kwargs['floor_id']).first()
-        if not floor:
-            raise GraphQLError("Floor not found")
-        admin_roles.check_office_location_create_wing(floor_id=kwargs['floor_id'])  # noqa: E501
-        admin_roles.create_update_delete_wing()
-        wing = WingModel(**kwargs)
-        payload = {
-            'model': WingModel, 'field': 'name', 'value':  kwargs['name']
-        }
-        with SaveContextManager(
-          wing, 'Wing', payload
-        ):
-            return CreateWing(wing=wing)
+        try:
+            validate_empty_fields(**kwargs)
+            floor = Floor.query.filter_by(id=kwargs['floor_id']).first()
+            if not floor:
+                raise GraphQLError("Floor not found")
+            admin_roles.check_office_location_create_wing(floor_id=kwargs['floor_id'])  # noqa: E501
+            admin_roles.create_update_delete_wing()
+            wing = WingModel(**kwargs)
+            payload = {
+                'model': WingModel, 'field': 'name', 'value':  kwargs['name']
+            }
+            query = Wing.get_query(info)
+            result = query.filter(WingModel.state == "active")
+            wing_name = result.filter(
+                func.lower(WingModel.name) ==
+                func.lower(kwargs['name'])).count()
+            if wing_name > 0:
+                ErrorHandler.check_conflict(self, kwargs['name'], 'Wing')
+            with SaveContextManager(wing, 'Wing', payload):
+                return CreateWing(wing=wing)
+        except exc.ProgrammingError:
+            raise GraphQLError("There seems to be a database connection error, \
+                contact your administrator for assistance")
 
 
 class DeleteWing(graphene.Mutation):
@@ -51,16 +61,20 @@ class DeleteWing(graphene.Mutation):
 
     @Auth.user_roles('Admin')
     def mutate(self, info, wing_id, **kwargs):
-        query_wing = Wing.get_query(info)
-        result = query_wing.filter(WingModel.state == "active")
-        exact_wing = result.filter(
-            WingModel.id == wing_id).first()
-        if not exact_wing:
-            raise GraphQLError("Wing not found")
-        admin_roles.create_update_delete_wing()
-        update_entity_fields(exact_wing, state="archived", **kwargs)
-        exact_wing.save()
-        return DeleteWing(wing=exact_wing)
+        try:
+            query_wing = Wing.get_query(info)
+            result = query_wing.filter(WingModel.state == "active")
+            exact_wing = result.filter(
+                WingModel.id == wing_id).first()
+            if not exact_wing:
+                raise GraphQLError("Wing not found")
+            admin_roles.create_update_delete_wing()
+            update_entity_fields(exact_wing, state="archived", **kwargs)
+            exact_wing.save()
+            return DeleteWing(wing=exact_wing)
+        except exc.ProgrammingError:
+            raise GraphQLError("There seems to be a database connection error, \
+                contact your administrator for assistance")
 
 
 class UpdateWing(graphene.Mutation):
@@ -72,21 +86,30 @@ class UpdateWing(graphene.Mutation):
 
     @Auth.user_roles('Admin')
     def mutate(self, info, wing_id, **kwargs):
-        validate_empty_fields(**kwargs)
-        get_wing = Wing.get_query(info)
-        result = get_wing.filter(WingModel.state == "active")
-        exact_wing = result.filter(WingModel.id == wing_id).first()
-        if not exact_wing:
-            raise GraphQLError("Wing not found")
-        admin_roles.create_update_delete_wing()
-        update_entity_fields(exact_wing, **kwargs)
-        payload = {
-            'model': WingModel, 'field': 'name', 'value':  kwargs['name']
-        }
-        with SaveContextManager(
-           exact_wing, 'Wing', payload
-        ):
-            return UpdateWing(wing=exact_wing)
+        try:
+            validate_empty_fields(**kwargs)
+            get_wing = Wing.get_query(info)
+            result = get_wing.filter(WingModel.state == "active")
+            exact_wing = result.filter(WingModel.id == wing_id).first()
+            if not exact_wing:
+                raise GraphQLError("Wing not found")
+            admin_roles.create_update_delete_wing()
+            update_entity_fields(exact_wing, **kwargs)
+            payload = {
+                'model': WingModel, 'field': 'name', 'value':  kwargs['name']
+            }
+            query = Wing.get_query(info)
+            result = query.filter(WingModel.state == "active")
+            wing_name = result.filter(
+                func.lower(WingModel.name) ==
+                func.lower(kwargs['name'])).count()
+            if wing_name > 0:
+                ErrorHandler.check_conflict(self, kwargs['name'], 'Wing')
+            with SaveContextManager(exact_wing, 'Wing', payload):
+                return UpdateWing(wing=exact_wing)
+        except exc.ProgrammingError:
+            raise GraphQLError("There seems to be a database connection error, \
+                contact your administrator for assistance")
 
 
 class Query(graphene.ObjectType):

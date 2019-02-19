@@ -182,3 +182,22 @@ query {
   }
 }
 '''
+
+response_for_wrong_migration = {
+    "errors": [
+        {
+            "message": "There seems to be a database connection error, \
+                contact your administrator for assistance",
+            "locations": [
+                {
+
+                    "line": 4,
+                    "column": 5
+                }
+                ],
+            "path": [
+                'questions', 'questions'
+            ]
+        }
+    ],
+    "data": {'questions': {'questions': None}}}

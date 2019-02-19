@@ -13,6 +13,7 @@ wrong_end_date = (
   datetime.datetime.now().replace(microsecond=0) + datetime.timedelta(days=1)
 ).isoformat()
 
+null = None
 
 create_question_query = '''
  mutation{{
@@ -180,3 +181,57 @@ mutation{
   }
 }
 '''
+
+response_for_create_question_with_database_error = {
+    "errors": [
+        {
+            "message": "Cannot return null for non-nullable field Question.id.",
+            "locations": [
+                {
+                    "line": 8,
+                    "column": 7
+                }
+             ],
+            "path": ['createQuestion', 'question', 'id']
+        }
+    ],
+    "data": {'createQuestion': {'question': None}},
+    }
+
+response_for_update_question_with_database_error = {
+    "errors": [
+        {
+            "message": "There seems to be a database connection error, \
+                contact your administrator for assistance",
+            "locations": [
+                {
+
+                    "line": 3,
+                    "column": 7
+                }
+                ],
+            "path": [
+                "updateQuestion"
+            ]
+        }
+    ],
+    "data": {"updateQuestion": null}}
+
+response_for_delete_question_with_database_error = {
+    "errors": [
+        {
+            "message": "There seems to be a database connection error, \
+                contact your administrator for assistance",
+            "locations": [
+                {
+
+                    "line": 3,
+                    "column": 3
+                }
+                ],
+            "path": [
+                "deleteQuestion"
+            ]
+        }
+    ],
+    "data": {"deleteQuestion": null}}

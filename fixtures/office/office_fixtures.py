@@ -34,6 +34,46 @@ query{
         }
 '''
 
+get_office_by_name_epic_tower = '''
+query{
+    getOfficeByName(name:"Epic tower"){
+        name
+        id
+        blocks{
+            name
+            floors{
+                name
+                id
+                rooms{
+                name
+                  id
+                    }
+                    }
+                    }
+                }
+        }
+'''
+
+get_office_by_wrong_name = '''
+query{
+    getOfficeByName(name:"catherines"){
+        name
+        id
+        blocks{
+            name
+            floors{
+                name
+                id
+                rooms{
+                name
+                  id
+                    }
+                    }
+                    }
+                }
+        }
+'''
+
 get_office_by_name_response = {
     'data': {
         'getOfficeByName': [{
@@ -195,3 +235,22 @@ query {
 }
 '''
 office_mutation_query_response = {'data': {'createOffice': {'office': {'name': 'The Crest', 'locationId': 1, 'blocks': [{'id': '3', 'name': 'The Crest'}]}}}} # noqa
+
+response_for_create_office_with_database_error = {
+    "errors": [
+        {
+            "message": "There seems to be a database connection error, \
+                contact your administrator for assistance",
+            "locations": [
+                {
+
+                    "line": 3,
+                    "column": 9
+                }
+                ],
+            "path": [
+                "createOffice"
+            ]
+        }
+    ],
+    "data": {"createOffice": null}}

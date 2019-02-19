@@ -1,11 +1,14 @@
 import sys
 import os
 from tests.base import BaseTestCase, CommonTestCases
+from helpers.database import engine, db_session
 from fixtures.response.user_response_fixtures import (
     create_rate_query,
     create_rate_response,
     invalid_rating_number,
-    rate_with_non_existent_room
+    rate_with_non_existent_room,
+    response_for_database_error,
+    responce_for_creating_response_with_database_error
 )
 from fixtures.response.user_response_check import (
     check_non_existing_question,
@@ -16,7 +19,7 @@ from fixtures.response.user_response_check import (
     filter_question_by_invalid_room_response,
     create_check_query,
     create_check_response,
-    create_check_query_non_existence_item
+    create_check_query_non_existence_item,
 )
 from fixtures.response.user_response_suggestions import (
     create_suggestion_question,
@@ -148,4 +151,31 @@ class TestCreateResponse(BaseTestCase):
             self,
             filter_question_by_invalid_room,
             filter_question_by_invalid_room_response
+        )
+
+    def test_create_response_without_response_model(self):
+        db_session.remove()
+        with engine.begin() as conn:
+            conn.execute("DROP TABLE responses CASCADE")
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            create_check_query,
+            responce_for_creating_response_with_database_error
+        )
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            create_rate_query,
+            responce_for_creating_response_with_database_error
+        )
+
+    def test_database_connection_error(self):
+        """
+        test a user friendly message is returned to a user when database
+        cannot be reached
+        """
+        BaseTestCase().tearDown()
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            create_rate_query,
+            response_for_database_error
         )

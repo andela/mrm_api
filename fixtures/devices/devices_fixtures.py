@@ -143,6 +143,25 @@ query_with_non_existant_id = '''
             }
 '''
 
+response_for_update_device_with_database_error = {
+    "errors": [
+        {
+            "message": "There seems to be a database connection error, \
+                contact your administrator for assistance",
+            "locations": [
+                {
+
+                    "line": 3,
+                    "column": 13
+                }
+                ],
+            "path": [
+                "updateDevice"
+            ]
+        }
+    ],
+    "data": {"updateDevice": null}}
+
 non_existant_id_response = "DeviceId not found"
 devices_query = '/mrm?query='+create_devices_query
 devices_query_response = b'{"data":{"createDevice":{"device":{"name":"Apple tablet","location":"Kenya","deviceType":"External Display"}}}}'# noqaE501

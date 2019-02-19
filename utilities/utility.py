@@ -55,13 +55,19 @@ class Utility(object):
 
     def save(self):
         """Function for saving new objects"""
-        db_session.add(self)
-        db_session.commit()
+        try:
+            db_session.add(self)
+            db_session.commit()
+        except Exception:
+            db_session.rollback()
 
     def delete(self):
         """Function for deleting objects"""
-        db_session.delete(self)
-        db_session.commit()
+        try:
+            db_session.delete(self)
+            db_session.commit()
+        except Exception:
+            db_session.rollback()
 
 
 class StateType(enum.Enum):

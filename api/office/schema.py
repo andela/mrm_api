@@ -4,6 +4,7 @@ from graphql import GraphQLError
 from sqlalchemy import exc, func
 
 from api.office.models import Office as OfficeModel
+from utilities.validator import ErrorHandler
 from api.location.models import Location
 from utilities.validations import validate_empty_fields
 from utilities.utility import update_entity_fields
@@ -33,23 +34,33 @@ class CreateOffice(graphene.Mutation):
 
     @Auth.user_roles('Admin')
     def mutate(self, info, **kwargs):
-        location = Location.query.filter_by(id=kwargs['location_id']).first()
-        if not location:
-            raise GraphQLError("Location not found")
-        admin_roles.verify_admin_location(location_id=kwargs['location_id'])
-        office = OfficeModel(**kwargs)
-        admin = get_user_from_db()
-        email = admin.email
-        payload = {
-            'model': OfficeModel, 'field': 'name', 'value':  kwargs['name']
-            }
-        with SaveContextManager(
-           office, 'Office', payload
-        ):
-            new_office = kwargs['name']
-            if not send_email_notification(email, new_office, location.name):
-                raise GraphQLError("Office created but Emails not Sent")
-            return CreateOffice(office=office)
+        try:
+            location = Location.query.filter_by(
+                id=kwargs['location_id']).first()
+            if not location:
+                raise GraphQLError("Location not found")
+            admin_roles.verify_admin_location(location_id=kwargs['location_id'])
+            office = OfficeModel(**kwargs)
+            admin = get_user_from_db()
+            email = admin.email
+            payload = {
+                'model': OfficeModel, 'field': 'name', 'value':  kwargs['name']
+                }
+            query = Office.get_query(info)
+            result = query.filter(OfficeModel.state == "active")
+            office_name = result.filter(
+                func.lower(OfficeModel.name) ==
+                func.lower(kwargs['name'])).count()
+            if office_name > 0:
+                ErrorHandler.check_conflict(self, kwargs['name'], 'Office')
+            with SaveContextManager(office, 'Office', payload):
+                new_office = kwargs['name']
+                if not send_email_notification(email, new_office, location.name):  # noqa E501
+                    raise GraphQLError("Office created but Emails not Sent")
+                return CreateOffice(office=office)
+        except exc.ProgrammingError:
+            raise GraphQLError("There seems to be a database connection error, \
+                contact your administrator for assistance")
 
 
 class DeleteOffice(graphene.Mutation):
@@ -61,17 +72,21 @@ class DeleteOffice(graphene.Mutation):
 
     @Auth.user_roles('Admin')
     def mutate(self, info, office_id, **kwargs):
-        query_office = Office.get_query(info)
-        result = query_office.filter(OfficeModel.state == "active")
-        exact_office = result.filter(
-            OfficeModel.id == office_id).first()  # noqa: E501
-        if not exact_office:
-            raise GraphQLError("Office not found")
+        try:
+            query_office = Office.get_query(info)
+            result = query_office.filter(OfficeModel.state == "active")
+            exact_office = result.filter(
+                OfficeModel.id == office_id).first()  # noqa: E501
+            if not exact_office:
+                raise GraphQLError("Office not found")
 
-        admin_roles.create_rooms_update_delete_office(office_id)
-        update_entity_fields(exact_office, state="archived", **kwargs)
-        exact_office.save()
-        return DeleteOffice(office=exact_office)
+            admin_roles.create_rooms_update_delete_office(office_id)
+            update_entity_fields(exact_office, state="archived", **kwargs)
+            exact_office.save()
+            return DeleteOffice(office=exact_office)
+        except exc.ProgrammingError:
+            raise GraphQLError("There seems to be a database connection error, \
+                contact your administrator for assistance")
 
 
 class UpdateOffice(graphene.Mutation):
@@ -83,40 +98,50 @@ class UpdateOffice(graphene.Mutation):
 
     @Auth.user_roles('Admin')
     def mutate(self, info, office_id, **kwargs):
-        validate_empty_fields(**kwargs)
-        get_office = Office.get_query(info)
-        result = get_office.filter(OfficeModel.state == "active")
-        exact_office = result.filter(OfficeModel.id == office_id).first()
-        if not exact_office:
-            raise GraphQLError("Office not found")
-        admin_roles.create_rooms_update_delete_office(office_id)
         try:
+            validate_empty_fields(**kwargs)
+            get_office = Office.get_query(info)
+            result = get_office.filter(OfficeModel.state == "active")
+            exact_office = result.filter(OfficeModel.id == office_id).first()
+            if not exact_office:
+                raise GraphQLError("Office not found")
+            admin_roles.create_rooms_update_delete_office(office_id)
+            query = Office.get_query(info)
+            office_name = query.filter(
+                func.lower(OfficeModel.name) == func.lower(kwargs.get('name')))
+            if office_name.count() > 0:
+                ErrorHandler.check_conflict(self, kwargs['name'], 'Office')
             update_entity_fields(exact_office, **kwargs)
             exact_office.save()
-        except exc.SQLAlchemyError:
-            raise GraphQLError("Action Failed")
-
-        return UpdateOffice(office=exact_office)
+            return UpdateOffice(office=exact_office)
+        except exc.ProgrammingError:
+            raise GraphQLError("There seems to be a database connection error, \
+                contact your administrator for assistance")
 
 
 class PaginateOffices(Paginate):
     offices = graphene.List(Office)
 
     def resolve_offices(self, info, **kwargs):
-        page = self.page
-        per_page = self.per_page
-        query = Office.get_query(info)
-        active_offices = query.filter(OfficeModel.state == "active")
-        if not page:
-            return active_offices.order_by(func.lower(OfficeModel.name)).all()
-        page = validate_page(page)
-        self.query_total = active_offices.count()
-        result = active_offices.order_by(
-            func.lower(OfficeModel.name)).limit(
-            per_page).offset(page * per_page)
-        if result.count() == 0:
-            return GraphQLError("No more offices")
-        return result
+        try:
+            page = self.page
+            per_page = self.per_page
+            query = Office.get_query(info)
+            active_offices = query.filter(OfficeModel.state == "active")
+            if not page:
+                return active_offices.order_by(
+                    func.lower(OfficeModel.name)).all()
+            page = validate_page(page)
+            self.query_total = active_offices.count()
+            result = active_offices.order_by(
+                func.lower(OfficeModel.name)).limit(
+                per_page).offset(page * per_page)
+            if result.count() == 0:
+                return GraphQLError("No more offices")
+            return result
+        except exc.ProgrammingError:
+            raise GraphQLError("There seems to be a database connection error, \
+                contact your administrator for assistance")
 
 
 class Query(graphene.ObjectType):

@@ -1,4 +1,5 @@
 from tests.base import BaseTestCase
+from helpers.database import db_session, engine
 from fixtures.user.user_fixture import (
     user_mutation_query, user_mutation_response,
     user_duplication_mutation_response
@@ -7,7 +8,6 @@ from fixtures.user.add_user_fixture import (
     non_Andela_email_mutation,
     non_Andela_email_mutation_response
 )
-from helpers.database import db_session
 
 import sys
 import os
@@ -49,3 +49,13 @@ class TestCreateUser(BaseTestCase):
             non_Andela_email_mutation,
             context_value={'session': db_session})
         self.assertEqual(query_response, non_Andela_email_mutation_response)
+
+    def test_create_user_without_user_model(self):
+        db_session.remove()
+        with engine.begin() as conn:
+            conn.execute("DROP TABLE users CASCADE")
+        execute_query = self.client.execute(
+            user_mutation_query,
+            context_value={'session': db_session})
+        self.assertIn(
+            "There seems to be a database connection error", str(execute_query))

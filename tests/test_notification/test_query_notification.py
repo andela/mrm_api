@@ -1,4 +1,5 @@
 from tests.base import BaseTestCase, CommonTestCases
+from helpers.database import engine, db_session
 from fixtures.notification.notification_fixture import (
     user_notification_query,
     user_notification_response,
@@ -26,4 +27,15 @@ class TestNotification(BaseTestCase):
             self,
             update_user_notification_settings_query,
             update_user_notification_settings_response,
+        )
+
+    def test_get_user_notification_invalid_user(self):
+        db_session.remove()
+        with engine.begin() as conn:
+            conn.execute("DELETE FROM users")
+
+        CommonTestCases.admin_token_assert_in(
+            self,
+            user_notification_query,
+            "User not found",
         )

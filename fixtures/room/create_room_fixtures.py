@@ -317,3 +317,21 @@ room_duplicate_calendar_id_mutation_response = {
     "createRoom": null
   }
 }
+create_room_with_database_error_response = {
+    "errors": [
+        {
+            "message": "There seems to be a database connection error, \
+                contact your administrator for assistance",
+            "locations": [
+                {
+
+                    "line": 3,
+                    "column": 3
+                }
+                ],
+            "path": [
+                "createRoom"
+            ]
+        }
+    ],
+    "data": {"createRoom": null}}

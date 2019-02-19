@@ -8,7 +8,8 @@ from fixtures.events.event_checkin_fixtures import (
     cancel_event_mutation,
     cancel_event_respone,
     checkin_mutation_for_event_existing_in_db,
-    response_for_event_existing_in_db_checkin
+    response_for_event_existing_in_db_checkin,
+    response_for_wrong_migration
 )
 from fixtures.events.events_ratios_fixtures import (
     event_ratio_percentage_cancellation_query,
@@ -123,4 +124,16 @@ class TestEventCheckin(BaseTestCase):
             self,
             checkin_mutation_for_event_existing_in_db,
             response_for_event_existing_in_db_checkin
+        )
+
+    def test_database_connection_error(self):
+        """
+        test a user friendly message is returned to a user when database
+        cannot be reached
+        """
+        BaseTestCase().tearDown()
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            event_checkin_mutation,
+            response_for_wrong_migration
         )

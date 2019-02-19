@@ -1,6 +1,7 @@
 import sys
 import os
 from tests.base import BaseTestCase, CommonTestCases
+from helpers.database import db_session, engine
 from fixtures.helpers.decorators_fixtures import (
     query_string, query_string_response
 )
@@ -10,9 +11,9 @@ from fixtures.room.create_room_fixtures import (
     room_mutation_query_duplicate_name,
     room_mutation_query_duplicate_name_response,
     room_invalid_calendar_id_mutation_query,
-    room_invalid_calendar_id_mutation_response,
     room_duplicate_calender_id_mutation_query,
-    room_duplicate_calendar_id_mutation_response)
+    room_duplicate_calendar_id_mutation_response,
+    room_invalid_calendar_id_mutation_response,)
 from fixtures.room.create_room_in_block_fixtures import (
     room_blockId_not_required_mutation
 )
@@ -113,3 +114,24 @@ class TestCreateRoom(BaseTestCase):
             room_duplicate_calender_id_mutation_query,
             room_duplicate_calendar_id_mutation_response
         )
+
+    def test_databse_connection_error(self):
+        """
+        test a user friendly message is returned to a user when database
+        cannot be reached
+        """
+        BaseTestCase().tearDown()
+        headers = {"Authorization": "Bearer" + " " + ADMIN_TOKEN}
+
+        query = self.app_test.post(query_string, headers=headers)
+        self.assertIn("The database cannot be reached", str(query.data))
+
+    def test_create_room_without_room_model(self):
+        db_session.remove()
+        with engine.begin() as conn:
+            conn.execute("DROP TABLE rooms CASCADE")
+        headers = {"Authorization": "Bearer" + " " + ADMIN_TOKEN}
+
+        query = self.app_test.post(query_string, headers=headers)
+        self.assertIn(
+            "There seems to be a database connection error", str(query.data))

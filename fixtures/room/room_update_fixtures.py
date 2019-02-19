@@ -1,4 +1,4 @@
-
+null = None
 query_update_all_fields = '''mutation{
     updateRoom(roomId: 1, name: "Jinja", capacity: 8, roomType: "board room"){ # noqa: E501
         room{
@@ -77,3 +77,22 @@ update_with_empty_field = '''mutation{
     }
 }
 '''
+
+response_for_update_room_with_database_error = {
+    "errors": [
+        {
+            "message": "There seems to be a database connection error, \
+                contact your administrator for assistance",
+            "locations": [
+                {
+
+                    "line": 2,
+                    "column": 5
+                }
+                ],
+            "path": [
+                "updateRoom"
+            ]
+        }
+    ],
+    "data": {"updateRoom": null}}

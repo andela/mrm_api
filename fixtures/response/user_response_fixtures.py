@@ -126,3 +126,57 @@ rate_with_non_existent_room_response = {
     "createResponse": null
   }
 }
+
+response_for_database_error = {
+    "errors": [
+        {
+            "message": "There seems to be a database connection error, \
+                contact your administrator for assistance",
+            "locations": [
+                {
+
+                    "line": 3,
+                    "column": 3
+                }
+                ],
+            "path": [
+                "createResponse"
+            ]
+        }
+    ],
+    "data": {"createResponse": null}}
+
+response_for_update_response_with_database_error = {
+    "errors": [
+        {
+            "message": "There seems to be a database connection error, \
+                contact your administrator for assistance",
+            "locations": [
+                {
+
+                    "line": 3,
+                    "column": 3
+                }
+                ],
+            "path": [
+                "updateResponse"
+            ]
+        }
+    ],
+    "data": {"updateResponse": null}}
+
+responce_for_creating_response_with_database_error = {
+    "errors": [
+        {
+            "message": "Cannot return null for non-nullable field Response.id.",
+            "locations": [
+                {
+                    "line": 5,
+                    "column": 7
+                }
+             ],
+            "path": ['createResponse', 'response', 0, 'id']
+        }
+    ],
+    "data": {'createResponse': {'response': [None]}},
+    }

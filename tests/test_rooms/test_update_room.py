@@ -1,12 +1,13 @@
 
 
 from tests.base import BaseTestCase, CommonTestCases
-
+from helpers.database import db_session, engine
 from fixtures.room.room_update_fixtures import (
     query_update_all_fields,
     query_without_room_id,
     query_room_id_non_existant,
-    update_with_empty_field
+    update_with_empty_field,
+    response_for_update_room_with_database_error
 )
 
 
@@ -41,3 +42,25 @@ class TestUpdateRoom(BaseTestCase):
             self,
             update_with_empty_field,
             "name is required field")
+
+    def test_database_connection_error(self):
+        """
+        test a user friendly message is returned to a user when database
+        cannot be reached
+        """
+        BaseTestCase().tearDown()
+        CommonTestCases.admin_token_assert_in(
+            self,
+            query_update_all_fields,
+            "The database cannot be reached"
+            )
+
+    def test_update_room_without_rooms_model(self):
+        db_session.remove()
+        with engine.begin() as conn:
+            conn.execute("DROP TABLE rooms CASCADE")
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            query_update_all_fields,
+            response_for_update_room_with_database_error
+        )

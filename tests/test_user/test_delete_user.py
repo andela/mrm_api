@@ -2,6 +2,7 @@ import sys
 import os
 
 from tests.base import BaseTestCase, CommonTestCases
+from helpers.database import db_session, engine
 from fixtures.user.delete_user import (
     delete_user, expected_query_after_delete, delete_self, user_not_found,
     delete_user_2, user_invalid_email)
@@ -69,4 +70,22 @@ class TestDeleteUser(BaseTestCase):
             self,
             user_invalid_email,
             "Invalid email format"
+        )
+
+    def test_delete_user_without_user_model(self):
+        user = User(email="test.test@andela.com",
+                    location="Kampala", name="test test",
+                    picture="www.andela.com/test")
+        user.save()
+        role = Role(role="Default User")
+        role.save()
+        user.roles.append(role)
+
+        db_session.remove()
+        with engine.begin() as conn:
+            conn.execute("DROP TABLE users CASCADE")
+        CommonTestCases.admin_token_assert_in(
+            self,
+            delete_user_2,
+            "The database cannot be reached"
         )

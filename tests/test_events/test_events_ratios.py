@@ -46,3 +46,25 @@ class TestEventRatios(BaseTestCase):
             event_ratio_per_room_query,
             event_ratio_per_room_response
         )
+
+    def test_database_connection_error(self):
+        """
+        test a user friendly message is returned to a user when database
+        cannot be reached
+        """
+        BaseTestCase().tearDown()
+        CommonTestCases.admin_token_assert_in(
+            self,
+            event_ratio_query,
+            "The database cannot be reached"
+        )
+        CommonTestCases.admin_token_assert_in(
+            self,
+            event_ratio_for_one_day_query,
+            "The database cannot be reached"
+        )
+        CommonTestCases.admin_token_assert_in(
+            self,
+            event_ratio_per_room_query,
+            "The database cannot be reached"
+        )

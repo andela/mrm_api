@@ -74,3 +74,22 @@ floor_mutation_duplicate_name_response = {
     "createFloor": null
   }
 }
+
+response_for_create_floor_with_database_error = {
+    "errors": [
+        {
+            "message": "There seems to be a database connection error, \
+                contact your administrator for assistance",
+            "locations": [
+                {
+
+                    "line": 3,
+                    "column": 9
+                }
+                ],
+            "path": [
+                "createFloor"
+            ]
+        }
+    ],
+    "data": {"createFloor": null}}

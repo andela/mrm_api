@@ -76,3 +76,22 @@ query_role_by_role_response = {
         }
     }
 }
+
+create_role_with_database_error_response = {
+    "errors": [
+        {
+            "message": "There seems to be a database connection error, \
+                contact your administrator for assistance",
+            "locations": [
+                {
+
+                    "line": 3,
+                    "column": 3
+                }
+                ],
+            "path": [
+                "createRole"
+            ]
+        }
+    ],
+    "data": {"createRole": null}}
