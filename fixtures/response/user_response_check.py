@@ -2,7 +2,7 @@ null = None
 
 check_non_existing_question = '''
 mutation{
-  createResponse(questionId:5, roomId:1, missingItems:[1]) {
+  createResponse(responses: [{questionId:5, missingItems:[1]}], roomId:1) {
     response{
       id
       questionId
@@ -16,7 +16,7 @@ mutation{
 check_non_existing_question_response = {
   "errors": [
     {
-      "message": "Responses for question ids",
+      "message": "Response to question",
       "locations": [
         {
           "line": 2,
@@ -35,7 +35,7 @@ check_non_existing_question_response = {
 
 check_with_non_existent_room = '''
 mutation{
-  createResponse(questionId:2, roomId:9, missingItems:[1]) {
+  createResponse(responses: [{questionId:2,  missingItems:[1]}], roomId:9) {
     response{
       id
       questionId
@@ -48,7 +48,7 @@ mutation{
 
 create_check_query = '''
 mutation{
-  createResponse(questionId:2, roomId:1, missingItems:[1]) {
+  createResponse(responses: [{questionId:2, missingItems:[1]}], roomId:1) {
     response{
       id
       questionId
@@ -72,33 +72,9 @@ create_check_response = {
   }
 }
 
-create_check_query_no_missing_item = '''
-mutation{
-  createResponse(questionId:2, roomId:1) {
-    response{
-      id
-      questionId
-      roomId
-      }
-  }
-}
-'''
-
-create_check_query_empty_missing_item = '''
-mutation{
-  createResponse(questionId:2, roomId:1, missingItems:[]) {
-    response{
-      id
-      questionId
-      roomId
-      }
-  }
-}
-'''
-
 create_check_query_non_existence_item = '''
 mutation{
-  createResponse(questionId:2, roomId:1, missingItems:[10]) {
+  createResponse(responses: [{questionId:2, missingItems:[10]}], roomId:1) {
     response{
       id
       questionId
