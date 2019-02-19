@@ -1,7 +1,7 @@
 """include cascading deletion
 
 Revision ID: ab83c84a325b
-Revises: eaca44fbeabe
+Revises: 7747e8e2c4ac
 Create Date: 2019-02-12 11:54:49.151206
 
 """
@@ -11,7 +11,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = 'ab83c84a325b'
-down_revision = 'eaca44fbeabe'
+down_revision = '7747e8e2c4ac'
 branch_labels = None
 depends_on = None
 
