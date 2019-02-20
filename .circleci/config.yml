@@ -3,13 +3,15 @@
 # Check https://circleci.com/docs/2.0/language-python/ for more details
 #
 
-# create credentials file
+# create credentials files
 decode_credentials: &decode_credentials
   run:
     name: Decode Credentials
     command: |
       touch credentials.json
+      touch users.json
       echo $CREDENTIALS | base64 --decode >> credentials.json 
+      echo $TEST_CREDENTIALS | base64 --decode >> users.json 
 
 defaults: &defaults
   docker:
