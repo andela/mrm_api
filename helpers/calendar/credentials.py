@@ -2,6 +2,7 @@ import os
 
 from apiclient.discovery import build
 from httplib2 import Http
+from graphql import GraphQLError
 from oauth2client import file, client, tools  # noqa
 from oauth2client.client import OAuth2WebServerFlow  # noqa
 
@@ -56,6 +57,10 @@ def get_all_google_calendar_events(calendarId=None):
 
 def get_google_api_calendar_list(pageToken=None):
     credentials = Credentials()
-    service = credentials.set_api_credentials()
-    calendar_list = service.calendarList().list(pageToken=pageToken).execute()
-    return calendar_list
+    try:
+        service = credentials.set_api_credentials()
+        calendars_list = service.calendarList().list(
+            pageToken=pageToken).execute()
+    except Exception as exception:
+        raise GraphQLError(exception)
+    return calendars_list
