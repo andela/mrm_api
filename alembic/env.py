@@ -20,8 +20,17 @@ fileConfig(config.config_file_name)
 import os
 import sys
 
+
+database_url = ''
+if os.getenv('APP_SETTINGS') == 'testing':
+    database_url = os.getenv('TEST_DATABASE_URL')
+elif os.getenv('APP_SETTINGS') == 'development':
+    database_url = os.getenv('DEV_DATABASE_URL')
+elif os.getenv('APP_SETTINGS') == 'production':
+    database_url = os.getenv('DATABASE_URL')
+
 sys.path.append(os.getcwd())
-config.set_main_option('sqlalchemy.url', os.getenv('DEV_DATABASE_URL'))
+config.set_main_option('sqlalchemy.url', database_url)
 
 from helpers.database import Base
 from api.location.models import Location
