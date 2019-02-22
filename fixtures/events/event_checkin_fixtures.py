@@ -60,7 +60,7 @@ wrong_calendar_id_checkin_mutation = '''mutation {
 
 cancel_event_mutation = '''
     mutation {
-        cancelledEvent(
+        cancelEvent(
         calendarId:"andela.com_3630363835303531343031@resource.calendar.google.com",
         eventId:"test_id5", eventTitle:"Onboarding",
         startTime:"2018-07-10T09:00:00Z",
@@ -83,7 +83,7 @@ cancel_event_mutation = '''
 
 cancel_event_respone = {
     "data": {
-        "cancelledEvent": {
+        "cancelEvent": {
             "event": {
                 "eventId": "test_id5",
                 "roomId": 1,

@@ -87,7 +87,8 @@ class RoomSchedules(Credentials):
                     "no_of_participants": no_of_attendees,
                     "room_name": room.name,
                     "event_summary": event.get("summary"),
-                    "date_of_event": day_of_event
+                    "date_of_event": day_of_event,
+                    "event_id": event.get("id"),
                 }
                 all_events.append(current_event)
 
