@@ -15,6 +15,9 @@ from fixtures.response.room_response_fixture import (
    filter_by_response_query,
    filter_by_response_invalid_query,
    filter_by_response_data,
+   query_paginated_responses,
+   query_paginated_responses_response,
+   query_paginated_responses_empty_page
 )
 
 
@@ -131,4 +134,24 @@ class TestRoomResponse(BaseTestCase):
             self,
             search_response_by_room_beyond_limits_query,
             "No response for this room at this range"
+        )
+
+    def test_get_paginated_responses(self):
+        """
+        Test for paginated responses
+        """
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            query_paginated_responses,
+            query_paginated_responses_response
+        )
+
+    def test_get_paginated_responses_empty_page(self):
+        """
+        Test for paginated responses for empty page
+        """
+        CommonTestCases.admin_token_assert_in(
+            self,
+            query_paginated_responses_empty_page,
+            "Page does not exist"
         )
