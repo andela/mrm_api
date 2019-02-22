@@ -5,6 +5,7 @@ import json
 from flask_testing import TestCase
 from graphene.test import Client
 from datetime import datetime
+from alembic import command, config
 
 from app import create_app
 from schema import schema
@@ -31,6 +32,7 @@ sys.path.append(os.getcwd())
 
 
 class BaseTestCase(TestCase):
+    alembic_configuration = config.Config("./alembic.ini")
 
     def create_app(self):
         app = create_app('testing')
@@ -44,6 +46,11 @@ class BaseTestCase(TestCase):
         self.app_test = app.test_client()
         with app.app_context():
             Base.metadata.create_all(bind=engine)
+
+            command.stamp(self.alembic_configuration, 'head')
+            command.downgrade(self.alembic_configuration, '-1')
+            command.upgrade(self.alembic_configuration, 'head')
+
             admin_user = User(email="peter.walugembe@andela.com",
                               location="Kampala", name="Peter Walugembe",
                               picture="https://www.andela.com/walugembe")
@@ -162,6 +169,7 @@ class BaseTestCase(TestCase):
     def tearDown(self):
         app = self.create_app()
         with app.app_context():
+            command.stamp(self.alembic_configuration, 'base')
             db_session.remove()
             Base.metadata.drop_all(bind=engine)
 

@@ -9,6 +9,7 @@ omit =
 show_missing = True
 omit =
     */python?.?/*
+    */alembic/*
 
 [html]
 directory=html_coverage_report

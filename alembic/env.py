@@ -21,7 +21,11 @@ import os
 import sys
 
 sys.path.append(os.getcwd())
-config.set_main_option('sqlalchemy.url', os.getenv('DEV_DATABASE_URL'))
+config.set_main_option(
+    'sqlalchemy.url',
+    os.getenv('TEST_DATABASE_URL') if os.getenv('APP_SETTINGS') == 'testing'
+    else os.getenv('DEV_DATABASE_URL')
+)
 
 from helpers.database import Base
 from api.location.models import Location
