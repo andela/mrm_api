@@ -2,6 +2,7 @@ import os
 
 from apiclient.discovery import build
 from httplib2 import Http
+from graphql import GraphQLError
 from oauth2client import file, client, tools  # noqa
 from oauth2client.client import OAuth2WebServerFlow  # noqa
 
@@ -34,3 +35,14 @@ class Credentials():
         service = build('calendar', 'v3', developerKey=api_key,
                         http=credentials.authorize(Http()))
         return service
+
+
+class CalendarApi:
+    def calendar_list(self, page_token):
+        try:
+            service = Credentials().set_api_credentials()
+            calendars = service.calendarList().list(
+                pageToken=page_token).execute()
+        except Exception as exception:
+            raise GraphQLError(exception)
+        return calendars

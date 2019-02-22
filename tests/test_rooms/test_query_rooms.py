@@ -1,5 +1,5 @@
 import json
-
+from unittest.mock import patch
 from tests.base import BaseTestCase, CommonTestCases
 from fixtures.room.create_room_fixtures import (
     rooms_query,
@@ -14,6 +14,15 @@ from fixtures.room.query_room_fixtures import (
     all_remote_rooms_query,
     paginated_rooms_query_blank_page
 )
+from api.room.schema_query import CalendarApi
+from helpers.calendar.credentials import (
+    Credentials, CalendarApi as CalendarList
+)
+
+remote_romms = ''
+
+with open('mock_data/remote_rooms.json', 'r') as f:
+    remote_rooms = json.load(f)
 
 
 class QueryRooms(BaseTestCase):
@@ -29,12 +38,26 @@ class QueryRooms(BaseTestCase):
         expected_response = paginated_rooms_response
         self.assertEqual(paginate_query, expected_response)
 
-    def test_query_remote_rooms(self):
+    @patch.object(CalendarApi, "calendar_list", spec=True,
+                  return_value=remote_rooms)
+    def test_query_remote_rooms(self, mocked_method):
+        '''
+            mock the calender API service
+        '''
         CommonTestCases.admin_token_assert_in(
             self,
             all_remote_rooms_query,
             "calendar.google.com"
         )
+
+    @patch.object(Credentials, 'set_api_credentials')
+    def test_calendar_list_function(self, mocked_method):
+        '''
+            mock calender API service and
+            test if it was called atleast once
+        '''
+        CalendarList().calendar_list(None)
+        assert mocked_method.called
 
     def test_query_room_with_id(self):
         query = self.client.execute(room_query_by_id)

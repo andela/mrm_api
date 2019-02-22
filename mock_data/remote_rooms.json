@@ -1,0 +1,38 @@
+
+ {"items": [
+    {
+        "kind": "calendar#calendarListEntry", "etag": "1539596112857000",
+        "id": "andela.com_37343037343034@resource.calendar.google.com",
+        "summary": "Kampala-3-New York-Bryant Park (6)",
+        "timeZone": "America/Los_Angeles", "colorId": "9",
+        "backgroundColor": "#7bd148", "foregroundColor": "#000000",
+        "accessRole": "owner", "defaultReminders": [],
+        "conferenceProperties":
+        {"allowedConferenceSolutionTypes": ["hangoutsMeet"]}
+    },
+    {
+        "kind": "calendar#calendarListEntry", "etag": "1544445005964000",
+        "id":
+        "andela.com_3331303233393133353334@resource.calendar.google.com",
+        "summary": "Nairobi - 1st Floor Block A Porto-Novo (2)",
+        "timeZone": "America/Los_Angeles", "colorId": "3",
+        "backgroundColor": "#f83a22", "foregroundColor": "#000000",
+        "accessRole": "owner", "defaultReminders": [],
+        "conferenceProperties": {
+            "allowedConferenceSolutionTypes": ["hangoutsMeet"]
+        }
+    },
+    {
+        "kind": "calendar#calendarListEntry", "etag": "1549043939574000",
+        "id":
+        "andela.com_2d3330393833383239323732@resource.calendar.google.com",
+        "summary": "(Meeting Room)-ET-4-Safari-Olumo (4)",
+        "timeZone": "America/Los_Angeles", "colorId": "11",
+        "backgroundColor": "#fbe983", "foregroundColor": "#000000",
+        "accessRole": "owner", "defaultReminders": [],
+        "conferenceProperties": {
+            "allowedConferenceSolutionTypes": ["hangoutsMeet"]
+        }
+    }
+ ]
+}
