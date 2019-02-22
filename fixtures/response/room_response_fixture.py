@@ -233,3 +233,73 @@ filter_by_response_data = {
         }
     }
 }
+
+query_paginated_responses = '''
+    query{
+  allRoomResponses(page:1, perPage:2){
+   responses {
+        roomName,
+        totalResponses,
+        response {
+          responseId,
+          rating,
+          suggestion,
+          missingItems
+        }
+      }
+   hasNext
+   hasPrevious
+   pages
+}
+}
+'''
+
+query_paginated_responses_response = {
+    "data": {
+        "allRoomResponses": {
+            "responses": [
+                {
+                    "roomName": "Entebbe",
+                    "totalResponses": 2,
+                    "response": [
+                        {
+                            "responseId": 2,
+                            "rating": None,
+                            "suggestion": None,
+                            "missingItems": ['Markers']
+                        },
+                        {
+                            "responseId": 1,
+                            "rating": 2,
+                            "suggestion": None,
+                            "missingItems": []
+                        }
+                    ]
+                }
+            ],
+            "hasNext": False,
+            "hasPrevious": False,
+            "pages": 1
+        }
+    }
+}
+
+query_paginated_responses_empty_page = '''
+    query{
+  allRoomResponses(page:5, perPage:2){
+   responses {
+        roomName,
+        totalResponses,
+        response {
+          responseId,
+          rating,
+          suggestion,
+          missingItems
+        }
+      }
+   hasNext
+   hasPrevious
+   pages
+}
+}
+'''
