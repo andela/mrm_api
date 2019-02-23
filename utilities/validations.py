@@ -79,3 +79,17 @@ def validate_question_type(**kwargs):
         type = kwargs['question_type']
         if type.lower() not in question_types:
             raise AttributeError("Not a valid question type")
+
+
+def validate_date_range(**kwargs):
+    """
+    Function to validate the date range
+    :params kwargs
+    """
+    if (('end_date' and 'start_date' in kwargs) and
+        kwargs['end_date'] > datetime.datetime.now() or
+            kwargs['start_date'] > datetime.datetime.now()):
+        raise ValueError('Dates should be before today')
+    elif (('end_date' and 'start_date' in kwargs) and
+            kwargs['end_date'] < kwargs['start_date']):
+        raise ValueError('Earlier date should be lower than later date')
