@@ -4,8 +4,7 @@ from sqlalchemy.schema import Sequence
 
 from helpers.database import Base
 
-
-from utilities.utility import Utility, StateType
+from utilities.utility import Utility, StateType, cascade_soft_delete
 import enum
 
 
@@ -43,3 +42,11 @@ class Location(Base, Utility):
                 unique=True,
                 postgresql_where=(state == 'active')),
         )
+
+
+cascade_soft_delete(
+    Location, 'room', 'location_id'
+)
+cascade_soft_delete(
+    Location, 'office', 'location_id'
+)

@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship, validates
 from sqlalchemy.schema import Sequence
 
 from helpers.database import Base
-from utilities.utility import Utility, StateType
+from utilities.utility import Utility, StateType, cascade_soft_delete
 from api.block.models import Block   # noqa: F401
 
 
@@ -33,3 +33,11 @@ class Floor(Base, Utility):
     @validates('name')
     def convert_capitalize(self, key, value):
         return value.capitalize()
+
+
+cascade_soft_delete(
+    Floor, 'room', 'floor_id'
+)
+cascade_soft_delete(
+    Floor, 'wing', 'floor_id'
+)

@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship, validates
 from sqlalchemy.schema import Sequence
 
 from helpers.database import Base
-from utilities.utility import Utility, StateType
+from utilities.utility import Utility, StateType, cascade_soft_delete
 from api.floor.models import Floor  # noqa: F401
 
 
@@ -29,3 +29,8 @@ class Wing(Base, Utility):
     @validates('name')
     def convert_upper(self, key, value):
         return value.title()
+
+
+cascade_soft_delete(
+    Wing, 'room', 'wing_id'
+)
