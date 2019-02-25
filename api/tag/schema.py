@@ -1,12 +1,11 @@
 import graphene
-from sqlalchemy import func
 from graphql import GraphQLError
 from graphene_sqlalchemy import SQLAlchemyObjectType
 from api.tag.models import Tag as TagModel
 from utilities.validations import validate_empty_fields
 from utilities.utility import update_entity_fields
 from helpers.auth.authentication import Auth
-from utilities.validator import ErrorHandler
+from helpers.auth.error_handler import SaveContextManager
 
 
 class Tag(SQLAlchemyObjectType):
@@ -25,13 +24,13 @@ class CreateTag(graphene.Mutation):
     def mutate(self, info, **kwargs):
         validate_empty_fields(**kwargs)
         tag = TagModel(**kwargs)
-        query = Tag.get_query(info)
-        tags = query.filter(
-            func.lower(TagModel.name) == func.lower(kwargs.get('name')))
-        if tags.count():
-            ErrorHandler.check_conflict(self, kwargs['name'], 'Tag')
-        tag.save()
-        return CreateTag(tag=tag)
+        payload = {
+            'model': TagModel, 'field': 'name', 'value':  kwargs['name']
+            }
+        with SaveContextManager(
+           tag, 'Tag', payload
+        ):
+            return CreateTag(tag=tag)
 
 
 class UpdateTag(graphene.Mutation):

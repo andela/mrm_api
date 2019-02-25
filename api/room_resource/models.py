@@ -1,4 +1,4 @@
-from sqlalchemy import (Column, String, Integer, ForeignKey, Enum)
+from sqlalchemy import (Column, String, Integer, ForeignKey, Enum, Index)
 from sqlalchemy.orm import relationship
 from sqlalchemy.schema import Sequence
 
@@ -15,6 +15,14 @@ class Resource(Base, Utility):
     room_id = Column(Integer, ForeignKey('rooms.id', ondelete="CASCADE"))
     state = Column(Enum(StateType), default="active")
     room = relationship('Room')
+
+    __table_args__ = (
+            Index(
+                'ix_unique_resource_content',
+                'name',
+                unique=True,
+                postgresql_where=(state == 'active')),
+        )
 
     def __init__(self, **kwargs):
         validate_empty_fields(**kwargs)

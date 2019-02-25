@@ -15,7 +15,8 @@ from fixtures.block.create_block_fixtures import (
     delete_block,
     delete_block_response,
     delete_non_existent_block,
-    delete_non_existent_block_response
+    delete_non_existent_block_response,
+    create_block_query_with_non_nairobi_id
 )
 
 
@@ -103,4 +104,14 @@ class TestCreateBlock(BaseTestCase):
             self,
             delete_non_existent_block,
             delete_non_existent_block_response
+        )
+
+    def test_only_create_block_in_nairobi(self):
+        """
+        Test whether you can only create  a block in Nairobi
+        """
+        CommonTestCases.admin_token_assert_in(
+            self,
+            create_block_query_with_non_nairobi_id,
+            "You can only create block in Nairobi"
         )

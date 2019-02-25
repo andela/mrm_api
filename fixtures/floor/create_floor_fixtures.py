@@ -2,7 +2,7 @@ null = None
 
 create_floor_mutation = '''
     mutation {
-        createFloor(name: "2nd", blockId:1) {
+        createFloor(name: "4th", blockId:1) {
             floor {
             name
             blockId
@@ -15,7 +15,7 @@ create_floor_mutation_response = {
         "data": {
             "createFloor": {
                 "floor": {
-                    "name": "2nd",
+                    "name": "4th",
                     "blockId": 1
                 }
             }

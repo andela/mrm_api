@@ -39,7 +39,8 @@ class CreateFloor(graphene.Mutation):
         admin_roles.create_floor_update_delete_block(kwargs['block_id'])
         result = query_block.filter(
             Block.id == kwargs['block_id'],
-            FloorModel.name == kwargs.get('name').capitalize()
+            FloorModel.name == kwargs.get('name').capitalize(),
+            FloorModel.state == 'active'
         )
         if result.count() > 0:
             ErrorHandler.check_conflict(self, kwargs['name'], 'Floor')
@@ -68,7 +69,8 @@ class UpdateFloor(graphene.Mutation):
         admin_roles.update_delete_floor(floor_id)
         result = query_floor.filter(
             FloorModel.block_id == exact_floor.block_id,
-            FloorModel.name == kwargs.get('name').capitalize()
+            FloorModel.name == kwargs.get('name').capitalize(),
+            FloorModel.state == 'active'
         )
         if result.count() > 0:
             ErrorHandler.check_conflict(self, kwargs['name'], 'Floor')

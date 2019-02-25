@@ -93,7 +93,8 @@ class CreateRoom(graphene.Mutation):
         exact_query = room_join_office(query)
         result = exact_query.filter(
             Office.id == office_id,
-            RoomModel.name == kwargs.get('name'))
+            RoomModel.name == kwargs.get('name'),
+            RoomModel.state == "active")
         if result.count() > 0:
             ErrorHandler.check_conflict(self, kwargs['name'], 'Room')
         assert_block_id_is_required(get_office.name, kwargs)

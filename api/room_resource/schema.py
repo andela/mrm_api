@@ -8,6 +8,7 @@ from api.room.models import Room as RoomModel
 from utilities.validations import validate_empty_fields
 from utilities.utility import update_entity_fields
 from helpers.auth.authentication import Auth
+from helpers.auth.error_handler import SaveContextManager
 from helpers.auth.admin_roles import admin_roles
 from helpers.pagination.paginate import Paginate, validate_page
 from helpers.room_filter.room_filter import location_join_room
@@ -53,15 +54,22 @@ class CreateResource(graphene.Mutation):
     @Auth.user_roles('Admin')
     def mutate(self, info, **kwargs):
         location_query = location_join_room()
-        room_location = location_query.filter(RoomModel.id == kwargs['room_id']).first()  # noqa: E501
+        room_location = location_query.filter(
+            RoomModel.id == kwargs['room_id'], RoomModel.state == 'active'
+        ).first()
         if not room_location:
             raise GraphQLError("Room not found")
-        admin_roles.update_delete_rooms_create_resource(room_id=kwargs['room_id'])  # noqa: E501
-
+        admin_roles.update_delete_rooms_create_resource(
+            room_id=kwargs['room_id']
+        )
         resource = ResourceModel(**kwargs)
-        resource.save()
-
-        return CreateResource(resource=resource)
+        payload = {
+            'model': ResourceModel, 'field': 'name', 'value':  kwargs['name']
+            }
+        with SaveContextManager(
+          resource, 'Resource', payload
+        ):
+            return CreateResource(resource=resource)
 
 
 class UpdateRoomResource(graphene.Mutation):

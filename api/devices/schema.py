@@ -29,7 +29,8 @@ class CreateDevice(graphene.Mutation):
     @Auth.user_roles('Admin')
     def mutate(self, info, **kwargs):
         room_location = location_join_room().filter(
-            RoomModel.id == kwargs['room_id']
+            RoomModel.id == kwargs['room_id'],
+            RoomModel.state == 'active'
             ).first()
         if not room_location:
             raise GraphQLError("Room not found")
