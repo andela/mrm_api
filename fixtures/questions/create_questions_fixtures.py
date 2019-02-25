@@ -18,7 +18,7 @@ create_question_query = '''
  mutation{{
   createQuestion(questionType:"Rate",
   questionTitle:"Rating Feedback",
-  question:"How will you rate the brightness of the room",
+  question:"How will you rate the cleanliness of the room",
   startDate:"{}", endDate:"{}") {{
     question{{
       id
@@ -44,7 +44,7 @@ create_question_response = {
     "createQuestion": {
       "question": {
         "id": "4",
-        "question": "How will you rate the brightness of the room",
+        "question": "How will you rate the cleanliness of the room",
         "questionType": "rate",
         "startDate": start_date.replace('T', ' '),
         "endDate": end_date.replace('T', ' ')

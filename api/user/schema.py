@@ -35,7 +35,10 @@ class CreateUser(graphene.Mutation):
         user = UserModel(**kwargs)
         if not verify_email(user.email):
             raise GraphQLError("This email is not allowed")
-        with SaveContextManager(user, kwargs.get('email'), 'User email'):
+        payload = {
+            'model': UserModel, 'field': 'email', 'value':  kwargs['email']
+        }
+        with SaveContextManager(user, 'User email', payload):
             notification_settings = NotificationModel(user_id=user.id)
             notification_settings.save()
             return CreateUser(user=user)

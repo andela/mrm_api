@@ -1,4 +1,6 @@
-from sqlalchemy import (Column, String, Integer, ForeignKey, event, Table, Enum)
+from sqlalchemy import (
+    Column, String, Integer, ForeignKey, event, Table, Enum, Index
+)
 from sqlalchemy.orm import relationship
 from graphql import GraphQLError
 from sqlalchemy.schema import Sequence
@@ -46,6 +48,14 @@ class Room(Base, Utility):
     devices = relationship(
         'Devices', cascade="all, delete-orphan",
         order_by="func.lower(Devices.name)")
+
+    __table_args__ = (
+            Index(
+                'ix_unique_room_content',
+                'name',
+                unique=True,
+                postgresql_where=(state == 'active')),
+        )
 
 
 @event.listens_for(Room, 'before_insert')

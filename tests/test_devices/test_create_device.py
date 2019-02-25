@@ -5,6 +5,7 @@ from fixtures.devices.devices_fixtures import (
     create_devices_query,
     create_device_query_invalid_room
 )
+
 from fixtures.token.token_fixture import ADMIN_TOKEN
 
 import sys

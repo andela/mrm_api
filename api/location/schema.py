@@ -18,8 +18,8 @@ from helpers.email.email import send_email_notification
 from helpers.auth.error_handler import SaveContextManager
 from helpers.auth.user_details import get_user_from_db
 from helpers.room_filter.room_filter import room_join_location
-from utilities.validator import ErrorHandler
 from helpers.auth.authentication import Auth
+from helpers.auth.error_handler import SaveContextManager
 from helpers.auth.admin_roles import admin_roles
 
 

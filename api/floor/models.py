@@ -1,4 +1,4 @@
-from sqlalchemy import (Column, String, Integer, ForeignKey, Enum)
+from sqlalchemy import (Column, String, Integer, ForeignKey, Enum, Index)
 from sqlalchemy.orm import relationship, validates
 from sqlalchemy.schema import Sequence
 
@@ -21,6 +21,14 @@ class Floor(Base, Utility):
     wings = relationship(
         'Wing', cascade="all, delete-orphan",
         order_by="func.lower(Wing.name)")
+
+    __table_args__ = (
+            Index(
+                'ix_unique_floor_content',
+                'name',
+                unique=True,
+                postgresql_where=(state == 'active')),
+        )
 
     @validates('name')
     def convert_capitalize(self, key, value):

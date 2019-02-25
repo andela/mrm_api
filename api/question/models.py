@@ -1,4 +1,4 @@
-from sqlalchemy import (Column, String, Integer, Boolean, Enum)
+from sqlalchemy import (Column, String, Integer, Boolean, Enum, Index)
 from sqlalchemy.orm import relationship, validates
 
 from helpers.database import Base
@@ -18,6 +18,14 @@ class Question(Base, Utility):
     response = relationship('Response', cascade="all, delete-orphan")
     is_active = Column(Boolean, default=False)
     state = Column(Enum(StateType), default="active")
+
+    __table_args__ = (
+            Index(
+                'ix_unique_question_content',
+                'question',
+                unique=True,
+                postgresql_where=(state == 'active')),
+        )
 
     @validates('question_type')
     def convert_capitalize(self, key, value):

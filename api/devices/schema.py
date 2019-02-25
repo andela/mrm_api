@@ -30,7 +30,12 @@ class CreateDevice(graphene.Mutation):
     def mutate(self, info, **kwargs):
         room_location = location_join_room().filter(
             RoomModel.id == kwargs['room_id'],
+<<<<<<< HEAD
             RoomModel.state == "active").first()
+=======
+            RoomModel.state == 'active'
+            ).first()
+>>>>>>> fix(soft-delete): fix soft delete bug (#253)
         if not room_location:
             raise GraphQLError("Room not found")
         admin_roles.update_delete_rooms_create_resource(

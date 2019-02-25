@@ -1,4 +1,4 @@
-from sqlalchemy import (Column, String, Integer, Enum)
+from sqlalchemy import (Column, String, Integer, Enum, Index)
 from sqlalchemy.orm import relationship
 from sqlalchemy.schema import Sequence
 
@@ -33,3 +33,11 @@ class Location(Base, Utility):
     rooms = relationship(
         'Room', cascade="all, delete-orphan",
         order_by="func.lower(Room.name)")
+
+    __table_args__ = (
+            Index(
+                'ix_unique_location_content',
+                'name',
+                unique=True,
+                postgresql_where=(state == 'active')),
+        )

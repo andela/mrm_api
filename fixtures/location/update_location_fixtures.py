@@ -1,6 +1,6 @@
 null = None
 query_update_all_fields = '''mutation{
-    updateLocation(locationId: 1, name: "Nairobi", country: "Kenya", abbreviation: "KE"){ # noqa: E501
+    updateLocation(locationId: 1, name: "Kampala", country: "Kenya", abbreviation: "KE"){ # noqa: E501
         location{
             name
             abbreviation
@@ -14,7 +14,7 @@ expected_query_update_all_fields = {
     "data": {
         "updateLocation": {
             "location": {
-                "name": "Nairobi",
+                "name": "Kampala",
                 "abbreviation": "KE",
                 "country": "CountryType.Kenya"
             }

@@ -56,7 +56,43 @@ expected_create_devices_response = {
                                                     }
                                                     }
 
-
+create_device_non_existant_room_id = '''
+mutation{
+            createDevice(
+                name:"Apple tablet",
+                deviceType:"External Display",
+                roomId:4,
+                location:"Kenya",
+            ){
+                device{
+                name
+                location
+                deviceType
+                }
+            }
+            }
+            '''
+expected_non_existant_room_response = '''
+{
+  "errors": [
+    {
+      "message": "Room not found",
+      "locations": [
+        {
+          "line": 2,
+          "column": 13
+        }
+      ],
+      "path": [
+        "createDevice"
+      ]
+    }
+  ],
+  "data": {
+    "createDevice": null
+  }
+}
+'''
 update_device_query = '''
             mutation{
             updateDevice(
