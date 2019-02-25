@@ -225,7 +225,7 @@ room_mutation_query_duplicate_name_response = {
     "data": {
         "createRoom": null
     }
-
+}
 room_duplicate_calender_id_mutation_query = '''
     mutation {
         createRoom(

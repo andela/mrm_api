@@ -12,12 +12,9 @@ from fixtures.room.create_room_fixtures import (
     room_invalid_calendar_id_mutation_query,
     room_invalid_calendar_id_mutation_response,
     room_invalid_location_id_mutation,
-    room_invalid_tag_mutation)
+    room_invalid_tag_mutation,
     room_duplicate_calender_id_mutation_query,
     room_duplicate_calendar_id_mutation_response)
-from fixtures.room.create_room_in_block_fixtures import (
-    room_blockId_not_required_mutation
-)
 from fixtures.token.token_fixture import ADMIN_TOKEN
 
 sys.path.append(os.getcwd())
