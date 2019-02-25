@@ -225,4 +225,40 @@ room_mutation_query_duplicate_name_response = {
     "data": {
         "createRoom": null
     }
+
+room_duplicate_calender_id_mutation_query = '''
+    mutation {
+        createRoom(
+            name: "Mbarara", roomType: "Meeting", capacity: 4, floorId: 4, officeId: 1,
+            calendarId:"andela.com_3630363835303531343031@resource.calendar.google.com",
+            imageUrl: "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg") {  # noqa: E501
+            room {
+                name
+                roomType
+                capacity
+                floorId
+                imageUrl
+            }
+        }
+    }
+'''
+
+room_duplicate_calendar_id_mutation_response = {
+  "errors": [
+    {
+      "message": "andela.com_3630363835303531343031@resource.calendar.google.com CalenderId already exists",  # noqa: E501
+      "locations": [
+        {
+          "line": 3,
+          "column": 9
+        }
+      ],
+      "path": [
+        "createRoom"
+      ]
+    }
+  ],
+  "data": {
+    "createRoom": null
+  }
 }
