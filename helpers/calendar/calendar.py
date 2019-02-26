@@ -1,15 +1,13 @@
-from api.room.models import Room
+import json
 
 
-def check_calendar_id(info, calender_id):
-    """ Check calendar id. This method is responsible
-    for checking if a calendar exists
-    :params
-    - calendar_id
-    - info
-    """
-    query = Room.get_query(info)
-    result = query.filter(
-        Room.calendar_id == calendar_id  # noqa: F821
-    ).first()
-    return result
+def get_events_mock_data():
+    with open('events.json', 'r') as outfile:
+        events = json.load(outfile)
+    return events
+
+
+def get_calendar_list_mock_data():
+    with open('calendar_list.json', 'r') as outfile:
+        calendar_list = json.load(outfile)
+    return calendar_list

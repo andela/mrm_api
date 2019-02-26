@@ -12,6 +12,20 @@ get_top_ten_rooms = '''
     }
 '''
 
+top_ten_response = {
+  "data": {
+    "analyticsForMostBookedRooms": {
+      "analytics": [
+        {
+          "meetings": 2,
+          "percentage": 100,
+          "roomName": "Entebbe",
+        }
+      ]
+    }
+  }
+}
+
 get_bottom_ten_rooms = '''
     {
         analyticsForLeastBookedRooms(
@@ -31,21 +45,7 @@ bottom_ten_response = {
     "analyticsForLeastBookedRooms": {
       "analytics": [
         {
-          "meetings": 29,
-          "percentage": 100,
-          "roomName": "Entebbe",
-        }
-      ]
-    }
-  }
-}
-
-top_ten_response = {
-  "data": {
-    "analyticsForMostBookedRooms": {
-      "analytics": [
-        {
-          "meetings": 29,
+          "meetings": 2,
           "percentage": 100,
           "roomName": "Entebbe",
         }
@@ -57,7 +57,7 @@ top_ten_response = {
 test_for_division_error = '''
     {
         analyticsForLeastBookedRooms(
-            startDate:"Aug 8 2018", endDate: "Aug 12 2018")
+            startDate:"Aug 8 2018", endDate: "Aug 7 2018")
         {
             analytics {
                 roomName

@@ -29,21 +29,25 @@ query{
 
 daily_room_events_response = {
     "data": {
-        "analyticsForDailyRoomEvents": [
-            {
-                "day": "Thu Jan 10 2019",
-                "events": [
-                    {
-                        "eventSummary": "Meeting",
-                        "startTime": "12:30:00",
-                        "endTime": "13:00:00",
-                        "roomName": "Entebbe",
-                        "noOfParticipants": 2
-                    }
-                ]
-            }
-
-        ]
+        "analyticsForDailyRoomEvents": [{
+            "day": "Tue Jan 22 2019",
+            "events": [
+                {
+                    'endTime': '14:00:00',
+                    'eventSummary': 'SD sync',
+                    'noOfParticipants': 3,
+                    'roomName': 'Entebbe',
+                    'startTime': '13:30:00'
+                },
+                {
+                    'endTime': '14:45:00',
+                    'eventSummary': 'Uzo<>Philip',
+                    'noOfParticipants': 6,
+                    'roomName': 'Entebbe',
+                    'startTime': '14:00:00'
+                }
+            ]
+        }]
     }
 }
 
@@ -54,5 +58,5 @@ daily_events_wrong_date_format_response = {'errors': [
         'path': ['analyticsForDailyRoomEvents']}],
     'data': {
         'analyticsForDailyRoomEvents': None
-    }
+}
 }

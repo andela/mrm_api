@@ -16,6 +16,7 @@ class UpdateRecurringEvent():
     To test the functionality of this class run the command
     'python run_autocancel_room.py' from the root folder
     """
+
     def get_room_index_from_attendees(self, attendees, calendar_id):
         """
         :param attendees: this a list of attendees of an event
@@ -115,7 +116,7 @@ class UpdateRecurringEvent():
                 room_index = self.get_room_index_from_attendees(
                     attendees,
                     calendar_id
-                    )
+                )
                 event["attendees"][room_index]["responseStatus"] = "declined"
                 service.events().patch(
                     calendarId=calendar_id,

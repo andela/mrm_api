@@ -17,7 +17,7 @@ get_most_used_room_in_a_month_analytics_response = {
                 "analytics": [
                     {
                         "roomName": "Entebbe",
-                        "count": 0
+                        "count": 2
                     }
                 ]
             }
@@ -49,9 +49,14 @@ get_most_used_room_per_week_response = {
             "analytics": [
                 {
                     "roomName": "Entebbe",
-                    "count": 0,
-                    "hasEvents": False,
-                    "events": null
+                    "count": 2,
+                    "hasEvents": True,
+                    "events": [
+                        {
+                            "durationInMinutes": 30,
+                            "numberOfMeetings": 1
+                        }
+                    ]
                 }
             ]
         }
@@ -84,9 +89,14 @@ get_most_used_room_without_event_response = {
             "analytics": [
                 {
                     "roomName": "Entebbe",
-                    "count": 0,
-                    "hasEvents": False,
-                    "events": null}
+                    "count": 2,
+                    "hasEvents": True,
+                    "events": [
+                        {
+                            'durationInMinutes': 30,
+                            'numberOfMeetings': 1
+                        }
+                    ]}
             ]
         }
     }

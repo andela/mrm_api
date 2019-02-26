@@ -14,13 +14,13 @@ event_ratio_query = '''query {
 event_ratio_response = {
     "data": {
         "analyticsRatios": {
-            "bookings": 0,
+            "bookings": 2,
             "checkins": 0,
             "cancellations": 0,
             "cancellationsPercentage": 0,
             "checkinsPercentage": 0,
-            'appBookings': 0.0,
-            'appBookingsPercentage': 0.0
+            'appBookings': 0,
+            'appBookingsPercentage': 0
         }
     }
 }
@@ -58,13 +58,13 @@ event_ratio_per_room_response = {
             'ratios': [
                 {
                     'roomName': 'Entebbe',
-                    'bookings': 0,
+                    'bookings': 2,
                     'checkins': 0,
-                    'checkinsPercentage': 0.0,
+                    'checkinsPercentage': 0,
                     'cancellations': 0,
-                    'cancellationsPercentage': 0.0,
-                    'appBookings': 0.0,
-                    'appBookingsPercentage': 0.0
+                    'cancellationsPercentage': 0,
+                    'appBookings': 0,
+                    'appBookingsPercentage': 0
                 }
             ]
         }

@@ -72,12 +72,21 @@ room_query_with_non_existant_id_response = "Room not found"
 room_occupants_query = '''
                         {
                         roomOccupants(
-                            calendarId:"andela.com_3836323338323230343935@resource.calendar.google.com",
+                            calendarId:"andela.com_3630363835303531343031@resource.calendar.google.com",
                             days:7){
                         occupants
                         }
                         }
                         '''
+
+room_occupants_query_response = {
+    "data": {
+        "roomOccupants":
+            {"occupants": "['philip.wafula@andela.com', 'joy.uzosike@andela.com']"  # noqa: E501
+        }
+    }
+}
+
 room_schedule_query = '''
                         {
                         roomSchedule(
@@ -87,6 +96,13 @@ room_schedule_query = '''
                         }
                         }
                         '''
+
+room_schedule_query_response = {
+    "data": {
+        "roomSchedule":
+            {"events": "[{'start': '2019-01-22T05:30:00-08:00', 'summary': 'SD sync'}, {'start': '2019-01-22T06:00:00-08:00', 'summary': 'Uzo<>Philip'}]"}  # noqa: E501
+    }
+}
 
 room_schedule_query_with_non_existant_calendar_id = '''
                         {
@@ -188,3 +204,13 @@ paginated_rooms_query_blank_page = '''
 }
 }
 '''
+
+room_occupants_invalid_calendar_id_query = '''
+    {
+    roomOccupants(
+        calendarId:"abcd",
+        days:7){
+    occupants
+    }
+    }
+    '''
