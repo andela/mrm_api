@@ -164,7 +164,7 @@ room_invalid_calendar_id_mutation_query = '''
     mutation {
         createRoom(
             name: "Kigali", roomType: "Meeting", capacity: 6, floorId: 4, officeId: 1,
-            calendarId:"andela.com_38363233383232303439@resource.calendar.google.com",
+            calendarId:"andela.com_28363233383232303439@resource.calendar.google.com",
             imageUrl: "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg") {  # noqa: E501
             room {
                 name
@@ -185,7 +185,7 @@ room_invalid_calendar_id_mutation_response = {
             ],
             "path": [
                 "createRoom"
-                ]
+            ]
         }
     ],
     "data": {
@@ -262,24 +262,24 @@ room_mutation_query_duplicate_name = '''
 '''
 
 room_mutation_query_duplicate_name_response = {
-        "errors": [
-            {
-                "message": "Entebbe Room already exists",
-                "locations": [
-                    {
-                        "line": 3,
-                        "column": 9
-                    }
-                ],
-                "path": [
-                    "createRoom"
-                ]
-            }
-        ],
-        "data": {
-            "createRoom": null
+    "errors": [
+        {
+            "message": "Entebbe Room already exists",
+            "locations": [
+                {
+                    "line": 3,
+                    "column": 9
+                }
+            ],
+            "path": [
+                "createRoom"
+            ]
         }
+    ],
+    "data": {
+        "createRoom": null
     }
+}
 
 room_duplicate_calender_id_mutation_query = '''
     mutation {

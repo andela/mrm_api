@@ -1,6 +1,8 @@
 import json
+from unittest.mock import patch
 
 from tests.base import BaseTestCase, CommonTestCases
+from helpers.calendar.calendar import get_calendar_list_mock_data
 from fixtures.room.create_room_fixtures import (
     rooms_query,
     query_rooms_response)
@@ -29,7 +31,9 @@ class QueryRooms(BaseTestCase):
         expected_response = paginated_rooms_response
         self.assertEqual(paginate_query, expected_response)
 
-    def test_query_remote_rooms(self):
+    @patch("api.room.schema_query.get_google_api_calendar_list", spec=True)
+    def test_query_remote_rooms(self, mock_get_json):
+        mock_get_json.return_value = get_calendar_list_mock_data()
         CommonTestCases.admin_token_assert_in(
             self,
             all_remote_rooms_query,

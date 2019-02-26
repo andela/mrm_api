@@ -135,3 +135,7 @@ mrm.out.log
 
 # database
 converge_db/
+
+# google calendar data
+events.json
+calendar_list.json

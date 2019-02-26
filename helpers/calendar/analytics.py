@@ -3,7 +3,7 @@ from graphql import GraphQLError
 from .credentials import Credentials
 from helpers.calendar.analytics_helper import (
     CommonAnalytics, EventsDuration, RoomStatistics
-    )
+)
 
 
 class RoomAnalytics(Credentials):
@@ -15,6 +15,7 @@ class RoomAnalytics(Credentials):
            get_meetings_per_room_analytics
            get_meetings_duration_analytics
     """
+
     def get_events_number_meetings_room_analytics(self, query, start_date, end_date):  # noqa: E501
         """ Get events in rooms and number of meetings per room
          :params
