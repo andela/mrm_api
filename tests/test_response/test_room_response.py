@@ -155,3 +155,30 @@ class TestRoomResponse(BaseTestCase):
             query_paginated_responses_empty_page,
             "Page does not exist"
         )
+
+    def test_database_connection_error(self):
+        """
+        test a user friendly message is returned to a user when database
+        cannot be reached
+        """
+        BaseTestCase().tearDown()
+        CommonTestCases.admin_token_assert_in(
+            self,
+            get_room_response_query,
+            "The database cannot be reached"
+            )
+        CommonTestCases.admin_token_assert_in(
+            self,
+            summary_room_response_query,
+            "The database cannot be reached"
+            )
+        CommonTestCases.admin_token_assert_in(
+            self,
+            filter_by_response_query,
+            "The database cannot be reached"
+            )
+        CommonTestCases.admin_token_assert_in(
+            self,
+            search_response_by_room_only,
+            "The database cannot be reached"
+            )

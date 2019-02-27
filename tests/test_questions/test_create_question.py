@@ -1,6 +1,7 @@
 import sys
 import os
 from tests.base import BaseTestCase, CommonTestCases
+from helpers.database import engine, db_session
 from fixtures.questions.create_questions_fixtures import (
    create_question_query,
    create_question_response,
@@ -58,4 +59,29 @@ class TestCreateBlock(BaseTestCase):
             self,
             create_question_query_with_early_endDate,
             'endDate should be at least a day after startDate'
+        )
+
+    def test_database_connection_error(self):
+        """
+        test a user friendly message is returned to a user when database
+        cannot be reached
+        """
+        BaseTestCase().tearDown()
+        CommonTestCases.admin_token_assert_in(
+            self,
+            create_question_query,
+            "The database cannot be reached"
+            )
+
+    def test_create_question_without_question_model(self):
+        """
+        test question cannot be created without questions model
+        """
+        db_session.remove()
+        with engine.begin() as conn:
+            conn.execute("DROP TABLE questions CASCADE")
+        CommonTestCases.admin_token_assert_in(
+            self,
+            create_question_query,
+            "does not exist"
         )

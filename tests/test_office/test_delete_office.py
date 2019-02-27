@@ -31,3 +31,15 @@ class TestDeleteOffice(BaseTestCase):
                                       headers=headers)
         expected_response = json.loads(response.data)
         self.assertIn("You are not authorized to make changes in Nairobi", expected_response['errors'][0]['message'])  # noqa: E501
+
+    def test_database_connection_error(self):
+        """
+        test a user friendly message is returned to a user when database
+        cannot be reached
+        """
+        BaseTestCase().tearDown()
+        CommonTestCases.admin_token_assert_in(
+            self,
+            delete_office_mutation,
+            "The database cannot be reached"
+            )

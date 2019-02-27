@@ -41,3 +41,15 @@ class TestUpdateRoom(BaseTestCase):
             self,
             update_with_empty_field,
             "name is required field")
+
+    def test_database_connection_error(self):
+        """
+        test a user friendly message is returned to a user when database
+        cannot be reached
+        """
+        BaseTestCase().tearDown()
+        CommonTestCases.admin_token_assert_in(
+            self,
+            query_update_all_fields,
+            "The database cannot be reached"
+            )

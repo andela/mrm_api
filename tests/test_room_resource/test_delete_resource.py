@@ -4,7 +4,6 @@ import os
 from tests.base import BaseTestCase, CommonTestCases
 from fixtures.room_resource.delete_room_resource import (  # noqa: F401
   delete_resource, expected_query_after_delete, delete_non_existant_resource)  # noqa: E501
-from helpers.database import db_session  # noqa: F401
 
 
 sys.path.append(os.getcwd())
@@ -39,3 +38,15 @@ class TestDeleteRoomResource(BaseTestCase):
             delete_resource,
             "You are not authorized to make changes in Kampala"
         )
+
+    def test_database_connection_error(self):
+        """
+        test a user friendly message is returned to a user when database
+        cannot be reached
+        """
+        BaseTestCase().tearDown()
+        CommonTestCases.admin_token_assert_in(
+            self,
+            delete_resource,
+            "The database cannot be reached"
+            )

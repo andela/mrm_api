@@ -38,3 +38,15 @@ class TestUpdateRoomResorce(BaseTestCase):
             update_room_resource_query,
             "You are not authorized to make changes in Kampala"
         )
+
+    def test_database_connection_error(self):
+        """
+        test a user friendly message is returned to a user when database
+        cannot be reached
+        """
+        BaseTestCase().tearDown()
+        CommonTestCases.admin_token_assert_in(
+            self,
+            update_room_resource_query,
+            "The database cannot be reached"
+            )

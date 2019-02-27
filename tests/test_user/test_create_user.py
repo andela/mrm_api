@@ -7,7 +7,7 @@ from fixtures.user.add_user_fixture import (
     non_Andela_email_mutation,
     non_Andela_email_mutation_response
 )
-from helpers.database import db_session
+from helpers.database import db_session, engine
 
 import sys
 import os
@@ -49,3 +49,16 @@ class TestCreateUser(BaseTestCase):
             non_Andela_email_mutation,
             context_value={'session': db_session})
         self.assertEqual(query_response, non_Andela_email_mutation_response)
+
+    def test_user_creation_without_user_model(self):
+        """
+        Test a user cannot be created without a user model
+        """
+        db_session.remove()
+        with engine.begin() as conn:
+            conn.execute("DROP TABLE users CASCADE")
+        execute_query = self.client.execute(
+            user_mutation_query,
+            context_value={'session': db_session})
+
+        self.assertIn("does not exist", str(execute_query))

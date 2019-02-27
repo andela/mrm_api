@@ -1,4 +1,5 @@
 from tests.base import BaseTestCase, CommonTestCases
+from helpers.database import engine, db_session
 from fixtures.tags.create_tags_fixtures import (
     create_tag_query,
     create_tag_response,
@@ -57,3 +58,32 @@ class TestCreateTag(BaseTestCase):
             update_non_existent_tag_mutation,
             update_non_existent_tag_response
         )
+
+    def test_database_connection_error(self):
+        """
+        test a user friendly message is returned to a user when database
+        cannot be reached
+        """
+        BaseTestCase().tearDown()
+        CommonTestCases.admin_token_assert_in(
+            self,
+            create_tag_query,
+            "The database cannot be reached"
+            )
+        CommonTestCases.user_token_assert_in(
+            self,
+            update_tag_mutation,
+            "The database cannot be reached"
+        )
+
+    def test_create_tag_without_tags_model(self):
+        """
+        Test a user cannot create a tag when a tags model is missing
+        """
+        db_session.remove()
+        with engine.begin() as conn:
+            conn.execute("DROP TABLE tags CASCADE")
+        CommonTestCases.admin_token_assert_in(
+            self,
+            create_tag_query,
+            "does not exist")

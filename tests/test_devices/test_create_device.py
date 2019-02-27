@@ -42,3 +42,13 @@ class TestCreateDevice(BaseTestCase):
             create_device_query_invalid_room,
             "Room not found"
         )
+
+    def test_database_connection_error(self):
+        """
+        test a user friendly message is returned to a user when database
+        cannot be reached
+        """
+        BaseTestCase().tearDown()
+        headers = {"Authorization": "Bearer" + " " + ADMIN_TOKEN}
+        query = self.app_test.post(devices_query, headers=headers)
+        self.assertIn("The database cannot be reached", str(query.data))

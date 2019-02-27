@@ -1,6 +1,6 @@
 import graphene
 from graphene_sqlalchemy import (SQLAlchemyObjectType)
-from sqlalchemy import func
+from sqlalchemy import func, exc
 from graphql import GraphQLError
 
 from api.user.models import User as UserModel
@@ -142,22 +142,25 @@ class CreateUserRole(graphene.Mutation):
     user_role = graphene.Field(User)
 
     def mutate(self, info, **kwargs):
-        user = User.get_query(info)
-        exact_user = user.filter_by(id=kwargs['user_id']).first()
+        try:
+            user = User.get_query(info)
+            exact_user = user.filter_by(id=kwargs['user_id']).first()
 
-        if not exact_user:
-            raise GraphQLError('User not found')
+            if not exact_user:
+                raise GraphQLError('User not found')
 
-        role = Role.get_query(info)
-        exact_role = role.filter_by(id=kwargs['role_id']).first()
+            role = Role.get_query(info)
+            exact_role = role.filter_by(id=kwargs['role_id']).first()
 
-        if not exact_role:
-            raise GraphQLError('Role id does not exist')
+            if not exact_role:
+                raise GraphQLError('Role id does not exist')
 
-        exact_user.roles.append(exact_role)
-        exact_user.save()
+            exact_user.roles.append(exact_role)
+            exact_user.save()
 
-        return CreateUserRole(user_role=exact_user)
+            return CreateUserRole(user_role=exact_user)
+        except exc.ProgrammingError:
+            raise GraphQLError("The database cannot be reached")
 
 
 class InviteToConverge(graphene.Mutation):

@@ -1,5 +1,6 @@
 from tests.base import BaseTestCase, CommonTestCases
 
+from helpers.database import engine, db_session
 from fixtures.floor.update_floor_fixtures import (
     update_floor_mutation,
     update_with_empty_field,
@@ -42,3 +43,28 @@ class TestUpdateFloor(BaseTestCase):
             self,
             update_floor_mutation,
             "You are not authorized to make changes in Kampala")
+
+    def test_database_connection_error(self):
+        """
+        test a user friendly message is returned to a user when database
+        cannot be reached
+        """
+        BaseTestCase().tearDown()
+        CommonTestCases.admin_token_assert_in(
+            self,
+            update_floor_mutation,
+            "The database cannot be reached"
+            )
+
+    def test_update_floors_without_floors_relation(self):
+        """
+        Test a user cannot delete a floor without floor relation
+        """
+        db_session.remove()
+        with engine.begin() as conn:
+            conn.execute("DROP TABLE floors CASCADE")
+        CommonTestCases.admin_token_assert_in(
+          self,
+          update_floor_mutation,
+          "does not exist"
+        )
