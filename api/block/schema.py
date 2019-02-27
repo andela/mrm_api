@@ -15,11 +15,18 @@ from helpers.auth.error_handler import SaveContextManager
 
 
 class Block(SQLAlchemyObjectType):
+    """
+        Returns the payload with the fields
+        (id, name, officeId, state, offices, floors)
+    """
     class Meta:
         model = BlockModel
 
 
 class CreateBlock(graphene.Mutation):
+    '''
+        Returns payload after creating a block
+    '''
     class Arguments:
         state = graphene.String()
         name = graphene.String(required=True)
@@ -47,6 +54,9 @@ class CreateBlock(graphene.Mutation):
 
 
 class UpdateBlock(graphene.Mutation):
+    """
+       Returns payload on updating a block
+    """
     class Arguments:
         name = graphene.String(required=True)
         block_id = graphene.Int(required=True)
@@ -70,6 +80,9 @@ class UpdateBlock(graphene.Mutation):
 
 
 class DeleteBlock(graphene.Mutation):
+    """
+        Returns payload on deleting a block
+    """
     class Arguments:
         block_id = graphene.Int(required=True)
         state = graphene.String()
@@ -91,18 +104,27 @@ class DeleteBlock(graphene.Mutation):
 
 
 class Query(graphene.ObjectType):
-    all_blocks = graphene.List(Block)
+    all_blocks = graphene.List(
+        Block, description="Query That returns a list of all blocks")
     get_rooms_in_a_block = graphene.List(
         lambda: Room,
-        block_id=graphene.Int()
+        block_id=graphene.Int(),
+        description="Query that returns a list of rooms in a block and accepts the argument\
+            \n- block_id: Unique identifier of a block"
     )
 
     def resolve_all_blocks(self, info):
+        """
+            Returns list of all blocks
+        """
         query = Block.get_query(info)
         result = query.filter(BlockModel.state == "active")
         return result.order_by(func.lower(BlockModel.name)).all()
 
     def resolve_get_rooms_in_a_block(self, info, block_id):
+        """
+            Returns all rooms in a specific block
+        """
         query = Room.get_query(info)
         active_rooms = query.filter(RoomModel.state == "active")
         new_query = room_join_location(active_rooms)
@@ -111,6 +133,17 @@ class Query(graphene.ObjectType):
 
 
 class Mutation(graphene.ObjectType):
-    create_block = CreateBlock.Field()
-    update_block = UpdateBlock.Field()
-    Delete_block = DeleteBlock.Field()
+    create_block = CreateBlock.Field(
+        description="Creates a new block given the arguments\
+            \n- state: Check if the block is created\
+            \n- name: The name field of the block[required]\
+            \n- office_id: The unique identifier of the office where the \
+            block is found[required]")
+    update_block = UpdateBlock.Field(
+        description="Updates a block given the arguments\
+            \n- name: The name field of the block[required]\
+            \n- block_id: The unique identifier of the block[required]")
+    Delete_block = DeleteBlock.Field(
+        description="Deletes a given block given the arguments\
+            \n- block_id: The unique identifier of the block[required]\
+            \n- state: Check if the block is active, archived or deleted")

@@ -59,11 +59,17 @@ class RatiosPerRoom(graphene.ObjectType):
 
 
 class RemoteRoom(graphene.ObjectType):
+    """
+        Get remote room
+    """
     calendar_id = graphene.String()
     name = graphene.String()
 
 
 class AllRemoteRooms(graphene.ObjectType):
+    """
+        Get all remote rooms
+    """
     rooms = graphene.List(RemoteRoom)
 
 
@@ -82,6 +88,9 @@ class DailyEvents(graphene.ObjectType):
 
 
 class Query(graphene.ObjectType):
+    """
+        Returns paginated rooms
+    """
     all_rooms = graphene.Field(
         PaginatedRooms,
         page=graphene.Int(),
@@ -90,35 +99,59 @@ class Query(graphene.ObjectType):
         resources=graphene.String(),
         location=graphene.String(),
         office=graphene.String(),
-        devices=graphene.String()
+        devices=graphene.String(),
+        description="Returns a list of paginated rooms. Accepts the arguments\
+            \n- page: particular room page that is returned\
+            \n- per_page: Lower limit responses per page\
+            \n- capacity: number of users that a room can hold\
+            \n- resources: Resuources found in the room\
+            \n- location: Location of the room\
+            \n- office: Office where the room is found\
+            \n- devices: Devices that are in a room"
     )
     get_room_by_id = graphene.Field(
         Room,
-        room_id=graphene.Int()
+        room_id=graphene.Int(),
+        description="Returns a specific room using its id and accepts the argument\
+            \n- room_id: A unique identifier of the room"
     )
 
-    all_remote_rooms = graphene.Field(AllRemoteRooms)
+    all_remote_rooms = graphene.Field(
+        AllRemoteRooms,
+        description="Returns a list of all remote rooms")
 
     get_room_by_name = graphene.List(
         Room,
-        name=graphene.String()
+        name=graphene.String(),
+        description="Returns a specific room by its name and takes the argument\
+            \n- name: Name of the room"
     )
 
     room_schedule = graphene.Field(
         Calendar,
         calendar_id=graphene.String(),
         days=graphene.Int(),
+        description="Returns the schedule of a room and accepts the arguments\
+            \n- calender_id: Unique identifier of the calendar\
+            \n- days: Number of days that the room has a schedule"
     )
     room_occupants = graphene.Field(
         Calendar,
         calendar_id=graphene.String(),
         days=graphene.Int(),
+        description="Returns the room's occupants in an event and accepts the arguments\
+            \n- calender_id: Unique identifier of the calendar\
+            \n- days: Number of days that the room has a schedule"
     )
 
     analytics_for_daily_room_events = graphene.Field(
         graphene.List(DailyEvents),
         start_date=graphene.String(required=True),
-        end_date=graphene.String(required=True)
+        end_date=graphene.String(required=True),
+        description="Returns the analytics of daily room events and accepts the arguments\
+            \n- start_date: Start date when you want to get analytics from\
+            [required]\n- end_date: The end date to take the analytics upto\
+                [required]"
 
     )
 
@@ -128,17 +161,28 @@ class Query(graphene.ObjectType):
         end_date=graphene.String(),
         page=graphene.Int(),
         per_page=graphene.Int(),
+        description="Returns the anylytics for meetings durations and accepts the arguments\
+            \n- start_date: Start date when you want to get analytics from\
+            [required]\n- end_date: The end date to take the analytics upto\
+            \n- page: particular room page that is returned\
+            \n- per_page: Lower limit responses per page"
     )
 
     analytics_for_least_used_rooms = graphene.Field(
         Analytics,
         start_date=graphene.String(required=True),
         end_date=graphene.String(),
+        description="Returns the analytics for the least used rooms and accepts the arguments\
+            \n- start_date: Start date when you want to get analytics from\
+            [required]\n- end_date: The end date to take the analytics upto"
     )
     analytics_for_most_used_rooms = graphene.Field(
         Analytics,
         start_date=graphene.String(required=True),
         end_date=graphene.String(),
+        description="Returns the analytics for the most used rooms and accepts the arguments\
+            \n- start_date: Start date when you want to get analytics from\
+            [required]\n- end_date: The end date to take the analytics upto"
     )
 
     analytics_for_booked_rooms = graphene.Field(
@@ -147,30 +191,48 @@ class Query(graphene.ObjectType):
         end_date=graphene.String(),
         limit=graphene.Int(),
         criteria=graphene.String(),
+        description="Returns the analytics for booked rooms and accepts the arguments\
+            \n- start_date: Start date when you want to get analytics from\
+            [required]\n- end_date: The end date to take the analytics upto"
     )
 
     analytics_for_meetings_per_room = graphene.Field(
         Analytics,
         start_date=graphene.String(required=True),
         end_date=graphene.String(),
+        description="Returns the analytics of the number of meetings per room \
+            and accepts the arguments\n- start_date: When the scheduled event \
+            begins[required]\n- end_date: The end date to take the analytics\
+                 upto"
     )
 
     analytics_ratios = graphene.Field(
         RatioOfCheckinsAndCancellations,
         start_date=graphene.String(required=True),
         end_date=graphene.String(),
+        description="Returns the ratios of meetings checkins to cancellations \
+            and accepts the arguments\n- start_date: When the scheduled event \
+            begins[required]\n- end_date: The end date to take the analytics \
+                upto"
     )
 
     analytics_ratios_per_room = graphene.Field(
         RatiosPerRoom,
         start_date=graphene.String(required=True),
         end_date=graphene.String(),
+        description="Returns the ratios per room and accepts the arguments\
+            \n- start_date: Start date when you want to get analytics from\
+            [required]\n- end_date: The end date to take the analytics upto"
     )
 
     bookings_analytics_count = graphene.List(
         BookingsAnalyticsCount,
         start_date=graphene.String(required=True),
         end_date=graphene.String(required=True),
+        description="Returns the total number of room bookings and accepts the arguments\
+            \n- start_date: Start date when you want to get analytics from\
+            [required]\n- end_date: The end date to take the analytics upto\
+                [required]"
     )
 
     def check_valid_calendar_id(self, query, calendar_id):
@@ -303,6 +365,7 @@ class Query(graphene.ObjectType):
     @Auth.user_roles('Admin', 'Default User')
     def resolve_bookings_analytics_count(
             self, info, start_date, end_date):
+        # Getting booking analytics count
         query = Room.get_query(info)
         analytics = RoomAnalyticsRatios.get_bookings_analytics_count(
             self, query, start_date, end_date)
