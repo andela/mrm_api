@@ -79,7 +79,7 @@ filter_rooms_by_resources_location_capacity = '''query {
     }
 }
     '''
-filter_rooms_by_resources_location_capacityresponse = {
+filter_rooms_by_resources_location_capacity_response = {
     "data": {
         "allRooms": {
             "rooms": [
@@ -136,7 +136,7 @@ filter_rooms_by_location_capacity_response = {
         }
     }
 }
-filter_rooms_by_resources_capacity = '''query {
+filter_rooms_by_resources_capacity_location = '''query {
   allRooms(location:"Kampala",capacity:6,resources:"Markers"){
    rooms{
       name
@@ -147,7 +147,7 @@ filter_rooms_by_resources_capacity = '''query {
     }
 }
     '''
-filter_rooms_by_resources_capacity_response = {
+filter_rooms_by_resources_capacity_location_response = {
     "data": {
         "allRooms": {
             "rooms": [
@@ -238,6 +238,18 @@ filter_rooms_by_office_location = '''query {
     '''
 filter_rooms_by_office_capacity_location = '''query {
   allRooms(capacity:6 ,location:"Kampala", office:"St. Catherines"){
+   rooms{
+      name
+      capacity
+      roomType
+      imageUrl
+        }
+    }
+}
+    '''
+
+filter_rooms_by_resources_capacity = '''query {
+  allRooms(capacity:6,resources:"Markers"){
    rooms{
       name
       capacity

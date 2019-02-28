@@ -36,3 +36,9 @@ class TestUpdateFloor(BaseTestCase):
             self,
             update_with_nonexistent_floor_id,
             "Floor not found")
+
+    def test_update_floor_that_is_not_in_admin_location_throws_errors(self):
+        CommonTestCases.lagos_admin_token_assert_in(
+            self,
+            update_floor_mutation,
+            "You are not authorized to make changes in Kampala")

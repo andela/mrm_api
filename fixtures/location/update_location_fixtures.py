@@ -50,3 +50,33 @@ expected_location_id_non_existant_query = {
       "data": {
       "updateLocation": null}
 }
+
+query_update_location_invalid_timezone = '''mutation {
+    updateLocation(
+    locationId: 1,
+    timeZone: "ABC",
+    name: "Kigali",
+    country: "Kenya",
+    abbreviation: "KE"){
+    location{
+      name
+      id
+      }
+  }
+}
+'''
+
+query_update_location_invalid_image_url = '''mutation {
+    updateLocation(
+    locationId: 1,
+    imageUrl: "http;//",
+    name: "Kigali",
+    country: "Kenya",
+    abbreviation: "KE"){
+    location{
+      name
+      id
+      }
+  }
+}
+'''

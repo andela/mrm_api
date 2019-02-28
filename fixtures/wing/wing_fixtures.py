@@ -221,3 +221,20 @@ delete_wing_id_not_found = '''
     }
 }
 '''
+
+query_all_wings = '''
+query{
+  allWings {
+    name
+  }
+}
+'''
+
+query_all_wings_response = {
+    "data": {
+        "allWings": [
+                {"name": "Big Apple"},
+                {"name": "Naija"}
+            ]
+    }
+}

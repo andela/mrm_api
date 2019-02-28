@@ -125,9 +125,6 @@ class ChangeUserRole(graphene.Mutation):
         if not exact_user:
             raise GraphQLError("User not found")
 
-        if not exact_user.roles:
-            raise GraphQLError('user has no role')
-
         new_role = RoleModel.query.filter_by(id=kwargs['role_id']).first()
         if not new_role:
             raise GraphQLError('invalid role id')
@@ -156,9 +153,6 @@ class CreateUserRole(graphene.Mutation):
 
         if not exact_role:
             raise GraphQLError('Role id does not exist')
-
-        if exact_user.roles:
-            raise GraphQLError('user already has a role')
 
         exact_user.roles.append(exact_role)
         exact_user.save()

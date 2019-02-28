@@ -19,7 +19,7 @@ class TestDeleteRoomResource(BaseTestCase):
             "You are not authorized to perform this action"
         )
 
-    def test_deleteresource_mutation_when_admin(self):
+    def test_delete_resource_mutation_when_admin(self):
         CommonTestCases.admin_token_assert_in(
             self,
             delete_resource,
@@ -31,4 +31,11 @@ class TestDeleteRoomResource(BaseTestCase):
             self,
             delete_non_existant_resource,
             "Resource not found"
+        )
+
+    def test_delete_resource_in_room_that_is_not_in_admin_location(self):
+        CommonTestCases.lagos_admin_token_assert_in(
+            self,
+            delete_resource,
+            "You are not authorized to make changes in Kampala"
         )

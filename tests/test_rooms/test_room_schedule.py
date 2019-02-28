@@ -1,6 +1,6 @@
 """This module containes test for the RoomSchedule Query
 """
-from tests.base import BaseTestCase
+from tests.base import BaseTestCase, CommonTestCases
 
 from fixtures.room.query_room_fixtures import (
     room_schedule_query,
@@ -27,6 +27,10 @@ class QueryRoomSchedule(BaseTestCase):
         query = self.client.execute(room_schedule_query)
         assert type(query) is dict
         self.assertNotEquals(query, {})
+        CommonTestCases.admin_token_assert_in(
+            self,
+            room_schedule_query,
+            "events")
 
     def test_room_schedule_with_non_existant_calendar_id(self):
         """This function tests whether an error is raised if the calendarId is

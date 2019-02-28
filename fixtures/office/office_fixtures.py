@@ -195,3 +195,23 @@ query {
 }
 '''
 office_mutation_query_response = {'data': {'createOffice': {'office': {'name': 'The Crest', 'locationId': 1, 'blocks': [{'id': '3', 'name': 'The Crest'}]}}}} # noqa
+
+get_office_by_invalid_name = '''
+query{
+    getOfficeByName(name:"No name"){
+        name
+        id
+        blocks{
+            name
+            floors{
+                name
+                id
+                rooms{
+                name
+                  id
+                    }
+                    }
+                    }
+                }
+        }
+'''

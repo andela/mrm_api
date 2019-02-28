@@ -65,14 +65,8 @@ class Admin_roles():
         admin_details = get_user_from_db()
         location_query = location_join_resources()
         resource_location = location_query.filter(ResourceModel.id == resource_id).first()  # noqa: E501
-
         if admin_details.location != resource_location.name:
             raise GraphQLError("You are not authorized to make changes in " + resource_location.name)  # noqa: E501
-        # check room_id incase the resource room is to be updated.
-        location_query = location_join_room()
-        room_location = location_query.filter(RoomModel.id == room_id).first()  # noqa: E501
-        if admin_details.location != room_location.name:
-            raise GraphQLError("You are not authorized to make changes in " + room_location.name)  # noqa: E501
 
     def delete_resource(self, resource_id):
         admin_details = get_user_from_db()

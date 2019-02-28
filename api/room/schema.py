@@ -11,7 +11,7 @@ from utilities.validations import validate_empty_fields
 from utilities.utility import update_entity_fields
 from helpers.auth.authentication import Auth
 from helpers.auth.admin_roles import admin_roles
-from utilities.verify_ids_for_room import verify_ids, validate_block
+from utilities.verify_ids_for_room import verify_ids
 from utilities.validator import (
     ErrorHandler,
     assert_wing_is_required,
@@ -103,7 +103,6 @@ class CreateRoom(graphene.Mutation):
         if result.count():
             ErrorHandler.check_conflict(self, kwargs['name'], 'Room')
         assert_block_id_is_required(get_office.name, kwargs)
-        validate_block(office_id, kwargs)
         assert_wing_is_required(get_office.name, kwargs)
         # remove block ID from kwargs, can't be saved in rooms model
         if kwargs.get('block_id'):
