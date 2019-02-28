@@ -1,5 +1,6 @@
 import json
 import jwt
+import os
 
 from flask import request, jsonify
 from functools import wraps
@@ -91,7 +92,7 @@ class Authentication:
             pass
         return True
 
-    def user_roles(self, *expected_args):
+    def user_roles(self, *expected_args):  # noqa: C901
         """ User roles """
 
         def decorator(func):
@@ -104,10 +105,14 @@ class Authentication:
                     user = User.query.filter_by(email=email).first()
                     headers = {"Authorization": 'Bearer ' + self.get_token()}
                     try:
-                        data = requests.get(
-                            api_url + "users?email=%s"
-                            % user.email, headers=headers)
-                        response = json.loads(data.content.decode("utf-8"))
+                        if(os.getenv('APP_SETTINGS') == "testing"):
+                            with open('users.json', 'r') as f:
+                                response = json.load(f)
+                        else:  # pragma: no cover
+                            data = requests.get(
+                                api_url + "users?email=%s"
+                                % user.email, headers=headers)
+                            response = json.loads(data.content.decode("utf-8"))
                     except requests.exceptions.ConnectionError:
                         message = "Failed internet connection"
                         status = 408
@@ -118,13 +123,14 @@ class Authentication:
                         status = 401
                         handle_http_error(message, status, expected_args)
 
-                    if response['values'][0]['location']:
-                        user.location = \
-                            response['values'][0]['location']['name']
-                        user.save()
-                    else:
-                        user.location = "Nairobi"
-                        user.save()
+                    for value in response['values']:
+                        if user.email == value["email"]:
+                            if value['location']:
+                                user.location = value['location']['name']
+                                user.save()
+                            else:
+                                user.location = "Nairobi"
+                                user.save()
 
                     if user.roles and user.roles[0].role in expected_args:
                         return func(*args, **kwargs)
