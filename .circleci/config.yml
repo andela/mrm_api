@@ -198,71 +198,122 @@ jobs:
       - *notify_success
       - *notify_failure
 
+  build_docker_image:
+    <<: *defaults
+    <<: *set_workspace
+
+    steps:
+      - checkout
+      - *decode_credentials
+      - *gcloud_setup
+
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: create environment variables
+          command: |
+            echo "APP_SETTINGS"=$(echo $IMAGE_APP_SETTINGS) >> .env
+            echo "ANDELA_LOGIN_URL"=$(echo $IMAGE_ANDELA_LOGIN_URL) >> .env
+            echo "ANDELA_API_URL"=$(echo $IMAGE_ANDELA_API_URL) >> .env
+            if [ "$CIRCLE_BRANCH" == master ]; then
+              echo "DEV_DATABASE_URL"=$(echo $IMAGE_DEV_DATABASE_URL_PRODUCTION) >> .env
+              echo "DATABASE_URL"=$(echo $IMAGE_DATABASE_URL_PRODUCTION) >> .env
+              echo "CELERY_BROKER_URL"=$(echo $IMAGE_CELERY_BROKER_URL_PRODUCTION) >> .env
+              echo "CELERY_RESULT_BACKEND"=$(echo $IMAGE_CELERY_RESULT_BACKEND_PRODUCTION) >> .env
+            elif [ "$CIRCLE_BRANCH" == develop ]; then
+              echo "DEV_DATABASE_URL"=$(echo $IMAGE_DEV_DATABASE_URL_STAGING) >> .env
+              echo "DATABASE_URL"=$(echo $IMAGE_DATABASE_URL_STAGING) >> .env
+              echo "CELERY_BROKER_URL"=$(echo $IMAGE_CELERY_BROKER_URL_STAGING) >> .env
+              echo "CELERY_RESULT_BACKEND"=$(echo $IMAGE_CELERY_RESULT_BACKEND_STAGING) >> .env
+            else
+              echo "DEV_DATABASE_URL"=$(echo $IMAGE_DEV_DATABASE_URL_SANDBOX) >> .env
+              echo "DATABASE_URL"=$(echo $IMAGE_DATABASE_URL_SANDBOX) >> .env
+              echo "CELERY_BROKER_URL"=$(echo $IMAGE_CELERY_BROKER_URL_SANDBOX) >> .env
+              echo "CELERY_RESULT_BACKEND"=$(echo $IMAGE_CELERY_RESULT_BACKEND_SANDBOX) >> .env
+            fi
+            echo "SECRET_KEY"=$(echo $IMAGE_SECRET_KEY) >> .env
+            echo "MAIL_SERVER"=$(echo $IMAGE_MAIL_SERVER) >> .env
+            echo "MAIL_PORT"=$(echo $IMAGE_MAIL_PORT) >> .env
+            echo "MAIL_USE_TLS"=$(echo $IMAGE_MAIL_USE_TLS) >> .env
+            echo "MAIL_USERNAME"=$(echo $IMAGE_MAIL_USERNAME) >> .env
+            echo "MAIL_PASSWORD"=$(echo $IMAGE_MAIL_PASSWORD) >> .env
+            echo "C_FORCE_ROOT=true" >> .env
+      - run:
+          name: build backend docker image
+          command: |
+            export PATH=$PATH:/usr/local/gcloud/google-cloud-sdk/bin
+            GIT_HASH=$(echo $CIRCLE_SHA1 | cut -c -7)
+            if [ "$CIRCLE_BRANCH" == master ]; then
+              docker login -u _json_key -p "$(echo $GOOGLE_CREDENTIALS_STAGING | base64 --decode )" https://gcr.io
+              gsutil cp gs://${BACKEND_BASE_IMAGE_VERSION_PATH_PRODUCTION}current_version .
+              VERSION=$(cat current_version)
+              export IMAGE=$BACKEND_BASE_IMAGE_PRODUCTION:$VERSION
+              sed -i "s|{{IMAGE}}|$IMAGE|g" docker/prod/Dockerfile
+              docker build -f docker/prod/Dockerfile -t ${PRODUCTION_BACKEND_IMAGE}:$GIT_HASH .
+              docker push ${PRODUCTION_BACKEND_IMAGE}:$GIT_HASH
+              touch current_version
+              echo ${GIT_HASH} > current_version
+              gsutil cp current_version gs://${PRODUCTION_BACKEND_IMAGE_VERSION_PATH}
+            elif [ "$CIRCLE_BRANCH" == develop ]; then
+              docker login -u _json_key -p "$(echo $GOOGLE_CREDENTIALS_STAGING | base64 --decode )" https://gcr.io
+              gsutil cp gs://${BACKEND_BASE_IMAGE_VERSION_PATH_STAGING}current_version .
+              VERSION=$(cat current_version)
+              export IMAGE=$BACKEND_BASE_IMAGE_STAGING:$VERSION
+              sed -i "s|{{IMAGE}}|$IMAGE|g" docker/prod/Dockerfile
+              docker build -f docker/prod/Dockerfile -t ${STAGING_BACKEND_IMAGE}:$GIT_HASH .
+              docker push ${STAGING_BACKEND_IMAGE}:$GIT_HASH
+              touch current_version
+              echo ${GIT_HASH} > current_version
+              gsutil cp current_version gs://${STAGING_BACKEND_IMAGE_VERSION_PATH}
+            else
+              echo $GOOGLE_CREDENTIALS_SANDBOX | base64 --decode > ${HOME}/gcloud-service-key.json
+              gcloud auth activate-service-account --key-file ${HOME}/gcloud-service-key.json
+              gcloud --quiet config set project ${GOOGLE_PROJECT_ID_SANDBOX}
+              gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
+              docker login -u _json_key -p "$(echo $GOOGLE_CREDENTIALS_SANDBOX | base64 --decode )" https://gcr.io
+              gsutil cp gs://${BACKEND_BASE_IMAGE_VERSION_PATH_SANDBOX}current_version .
+              VERSION=$(cat current_version)
+              export IMAGE=$BACKEND_BASE_IMAGE_SANDBOX:$VERSION
+              sed -i "s|{{IMAGE}}|$IMAGE|g" docker/prod/Dockerfile
+              docker build -f docker/prod/Dockerfile -t ${SANDBOX_BACKEND_IMAGE}:$GIT_HASH .
+              docker push ${SANDBOX_BACKEND_IMAGE}:$GIT_HASH
+              touch current_version
+              echo ${GIT_HASH} > current_version
+              gsutil cp current_version gs://${SANDBOX_BACKEND_IMAGE_VERSION_PATH}
+            fi
+
   deploy-job:
     docker:
-      - image: google/cloud-sdk
+      - image: ${CIRCLECI_IMAGE}
+        auth:
+          username: _json_key
+          password: ${GOOGLE_CREDS}
         environment:
-          GOOGLE_APPLICATION_CREDENTIALS: ${HOME}/gcloud-service-key.json
-          GOOGLE_PROJECT_ID: ${GOOGLE_PROJECT_ID}
-          GOOGLE_COMPUTE_ZONE: ${GOOGLE_COMPUTE_ZONE}
-    steps:
-      - checkout
-      - run:
-          name: Store Service Account Key into file
-          command: echo $GCLOUD_SERVICE_KEY > ${HOME}/gcloud-service-key.json
-      - run:
-          name: Authenticate on gcloud
-          command: |
-            gcloud auth activate-service-account --key-file ${HOME}/gcloud-service-key.json
-            gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
-            gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
-      - run:
-          name: Deploy to gcloud
-          command: |
-            if [[ ${CIRCLE_BRANCH} == 'develop' ]]; then
-              gcloud beta compute instance-groups managed rolling-action replace mrm-prod-backend-instance-group-staging --zone europe-west1-b
-            elif [[ ${CIRCLE_BRANCH} == 'master' ]]; then
-              gcloud beta compute instance-groups managed rolling-action replace mrm-prod-backend-instance-group-prod --zone europe-west1-b
-            fi
-      - run:
-          name: Register deployment status (succeeded)
-          when: on_success
-          command: |
-            bash ~/project/.circleci/gcloud_bucket.sh succeeded
-            bash ~/project/.circleci/notify_slack.sh success
-      - run:
-          name: Register deployment status (failed)
-          when: on_fail
-          command: |
-            bash ~/project/.circleci/gcloud_bucket.sh failed
-            bash ~/project/.circleci/notify_slack.sh fail
+          GOOGLE_APPLICATION_CREDENTIALS: ${HOME}/google-service-key.json
 
-  deployment-report:
-    docker:
-      - image: google/cloud-sdk
-        environment:
-          GOOGLE_APPLICATION_CREDENTIALS: ${HOME}/gcloud-service-key.json
-          GOOGLE_PROJECT_ID: ${GOOGLE_PROJECT_ID}
-          GOOGLE_COMPUTE_ZONE: ${GOOGLE_COMPUTE_ZONE}
     steps:
       - checkout
       - run:
-          name: Store Service Account Key into file
-          command: echo $GCLOUD_SERVICE_KEY > ${HOME}/gcloud-service-key.json
-      - run:
-          name: Authenticate on gcloud
+          name: setup gcloud
           command: |
-            gcloud auth activate-service-account --key-file ${HOME}/gcloud-service-key.json
-            gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
-            gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
+            if [ "$CIRCLE_BRANCH" == master ] || [ "$CIRCLE_BRANCH" == develop ]; then
+              touch google-service-key.json
+              echo $GOOGLE_CREDENTIALS_STAGING | base64 --decode >> google-service-key.json 
+              gcloud auth activate-service-account --key-file google-service-key.json
+              gcloud --quiet config set project ${GOOGLE_PROJECT_ID_STAGING}
+              gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
+            else
+              touch google-service-key.json
+              echo $GOOGLE_CREDENTIALS_SANDBOX | base64 --decode >> google-service-key.json 
+              gcloud auth activate-service-account --key-file google-service-key.json
+              gcloud --quiet config set project ${GOOGLE_PROJECT_ID_SANDBOX}
+              gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
+            fi
+
       - run:
-          name: Install querycsv depencency
+          name: Deploy to kubernetes
           command: |
-              pip install querycsv
-      - run:
-          name: Get deployment report 
-          command: |
-              bash ~/project/.circleci/deployment_report.sh
+            . .circleci/deploy_backend_to_kubernetes.sh
 
 workflows:
   version: 2
@@ -274,24 +325,21 @@ workflows:
           requires:
             - test-3.5
             - test-3.6-flake
-      - deploy-job:
+      - build_docker_image:
           requires:
             - code-climate
           filters:
             branches:
               only:
+                - v2
                 - develop
                 - master
-
-  #cron job set to run e very friday on 15:00
-  schedule-workflow:
-    triggers:
-      - schedule:
-          cron: "0 15 * * 5"
+      - deploy-job:
+          requires:
+            - build_docker_image
           filters:
             branches:
               only:
+                - v2
                 - develop
                 - master
-    jobs:
-      - deployment-report
