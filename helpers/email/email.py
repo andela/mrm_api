@@ -3,7 +3,7 @@ from config import Config
 from flask import render_template
 
 
-def send_email_notification(admin_email, new_office, location_name):
+def send_email_notification(admin_email, new_office, location_name, user_name):
     # send the email
     recipients = [admin_email]
 
@@ -12,7 +12,8 @@ def send_email_notification(admin_email, new_office, location_name):
         render_template(
             'office_success.html',
             office_name=new_office,
-            location_name=location_name
+            location_name=location_name,
+            user_name=user_name
         ))
 
     return email.send()

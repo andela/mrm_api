@@ -40,6 +40,8 @@ class CreateOffice(graphene.Mutation):
         office = OfficeModel(**kwargs)
         admin = get_user_from_db()
         email = admin.email
+        username = email.split("@")[0]
+        admin_name = username.split(".")[0]
         payload = {
             'model': OfficeModel, 'field': 'name', 'value':  kwargs['name']
             }
@@ -47,7 +49,7 @@ class CreateOffice(graphene.Mutation):
            office, 'Office', payload
         ):
             new_office = kwargs['name']
-            if not send_email_notification(email, new_office, location.name):
+            if not send_email_notification(email, new_office, location.name, admin_name):  # noqa
                 raise GraphQLError("Office created but Emails not Sent")
             return CreateOffice(office=office)
 
