@@ -31,7 +31,7 @@ def user_filter(query, filter_data):
 def filter_by_location(query, location):
     get_location = LocationModel.query.filter_by(id=location).first()
     if not get_location:
-        raise GraphQLError("No users found")
+        raise GraphQLError("Location id does not exist")
     return query.filter_by(location=get_location.name)
 
 

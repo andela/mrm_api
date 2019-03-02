@@ -3,73 +3,51 @@ all_locations_query = '''
     allLocations{
         name
         abbreviation
-        offices{
+        rooms {
             name
-            blocks {
+            roomType
+            capacity
+            roomTags {
                 name
-                floors {
-                    name
-                    rooms {
-                        capacity
-                        name
-                        roomType
-                    }
-                }
+                color
+                description
             }
         }
     }
 }
 '''
 
-
 expected_query_all_locations = {
     "data": {
-        "allLocations": [{
-            "name": "Kampala",
-            "abbreviation": "KLA",
-            "offices": [
-                {
-                    "name": "St. catherines",
-                    "blocks": [{
-                        "name": "Ec",
-                        "floors": [{
-                            "name": "3rd",
-                            "rooms": [{
-                                "capacity": 6,
-                                "name": "Entebbe",  # noqa: E501
-                                "roomType": "meeting"  # noqa: E501
-                            }]
-                        }]
-                    }]
-                }
-            ]
-        },
-        {
-            "name": "Lagos",
-            "abbreviation": "LOS",
-            "offices": [
-                {
-                    "name": "Epic tower",
-                    "blocks": [{
-                        "name": "Epic Tower",
-                        "floors": [{
-                            "name": "2nd",
-                            "rooms": []
-                        }]
-                    }]
-                }
-            ]
-        },
-        {
-            "name": "Nairobi",
-            "abbreviation": "NBO",
-            "offices": [
-                {
-                    "name": "Dojo",
-                    "blocks": []
-                }
-                 ]
-        },
+        "allLocations": [
+            {
+                "name": "Kampala",
+                "abbreviation": "KLA",
+                "rooms": [
+                    {
+                        "name": "Entebbe",
+                        "roomType": "meeting",
+                        "capacity": 6,
+                        "roomTags": [
+                            {
+                                "name": "Block-B",
+                                "color": "green",
+                                "description": "The description"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "name": "Lagos",
+                "abbreviation": "LOS",
+                "rooms": []
+            },
+            {
+                "name": "Nairobi",
+                "abbreviation": "NBO",
+                "rooms": []
+            }
         ]
     }
 }
@@ -80,22 +58,6 @@ pass_an_arg_all_locations = '''
             name
             id
             abbreviation
-            offices {
-                blocks {
-                    name
-                    id
-                    floors {
-                        name
-                        id
-                        rooms {
-                            id
-                            name
-                            roomType
-                            capacity
-                        }
-                    }
-                }
-            }
         }
     }'''
 

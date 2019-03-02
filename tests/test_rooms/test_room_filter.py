@@ -14,14 +14,9 @@ from fixtures.room.filter_room_fixtures import (
     filter_rooms_by_non_existant_data_response,
     filter_rooms_by_location_capacity,
     filter_rooms_by_location_capacity_response,
-    filter_rooms_by_resources_capacity_location,
     filter_rooms_by_resources_capacity_location_response,
     filter_rooms_by_resources_location,
     filter_rooms_by_resources_location_response,
-    filter_rooms_by_office,
-    filter_rooms_by_office_capacity,
-    filter_rooms_by_office_location,
-    filter_rooms_by_office_capacity_location,
     filter_rooms_response,
     filter_rooms_by_resources_capacity
 )
@@ -62,7 +57,7 @@ class RoomsFilter(BaseTestCase):
     def test_filter_room_by_resources_capacity_location(self):
         CommonTestCases.user_token_assert_equal(
             self,
-            filter_rooms_by_resources_capacity_location,
+            filter_rooms_by_resources_capacity,
             filter_rooms_by_resources_capacity_location_response
         )
 
@@ -85,34 +80,6 @@ class RoomsFilter(BaseTestCase):
             self,
             filter_rooms_by_resources_location,
             filter_rooms_by_resources_location_response
-        )
-
-    def test_filter_room_by_office(self):
-        CommonTestCases.user_token_assert_equal(
-            self,
-            filter_rooms_by_office,
-            filter_rooms_response
-        )
-
-    def test_filter_room_by_office_capacity(self):
-        CommonTestCases.user_token_assert_equal(
-            self,
-            filter_rooms_by_office_capacity,
-            filter_rooms_response
-        )
-
-    def test_filter_room_by_office_location(self):
-        CommonTestCases.user_token_assert_equal(
-            self,
-            filter_rooms_by_office_location,
-            filter_rooms_response
-        )
-
-    def test_filter_room_by_office_capacity_location(self):
-        CommonTestCases.user_token_assert_equal(
-            self,
-            filter_rooms_by_office_capacity_location,
-            filter_rooms_response
         )
 
     def test_filter_room_by_resources_capacity(self):

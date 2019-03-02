@@ -11,16 +11,12 @@ from app import create_app
 from schema import schema
 from helpers.database import engine, db_session, Base
 from api.location.models import Location
-from api.block.models import Block
-from api.floor.models import Floor
-from api.wing.models import Wing
 from api.room.models import Room
 from api.room_resource.models import Resource
 from api.user.models import User
 from api.role.models import Role
 from api.events.models import Events
 from api.devices.models import Devices
-from api.office.models import Office
 from api.question.models import Question
 from api.response.models import Response
 from api.tag.models import Tag
@@ -71,22 +67,6 @@ class BaseTestCase(TestCase):
             location_two.save()
             location_three = Location(name='Lagos', abbreviation='LOS')
             location_three.save()
-            office = Office(name="St. catherines", location_id=location.id)
-            office.save()
-            office_two = Office(name="Dojo", location_id=location_two.id)
-            office_two.save()
-            block = Block(name='EC', office_id=office.id)
-            block.save()
-            office_three = Office(name="Epic tower", location_id=location_three.id)  # noqa: E501
-            office_three.save()
-            floor = Floor(name='3rd', block_id=block.id)
-            floor.save()
-            floor_two = Floor(name='2nd', block_id=2)
-            floor_two.save()
-            wing = Wing(name="Naija", floor_id=floor_two.id)
-            wing.save()
-            wing_two = Wing(name="Big Apple", floor_id=floor_two.id)
-            wing_two.save()
             tag = Tag(name='Block-B',
                       color='green',
                       description='The description')
@@ -98,7 +78,6 @@ class BaseTestCase(TestCase):
             room = Room(name='Entebbe',
                         room_type='meeting',
                         capacity=6,
-                        floor_id=floor.id,
                         location_id=location.id,
                         calendar_id='andela.com_3630363835303531343031@resource.calendar.google.com',  # noqa: E501
                         image_url="https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg")  # noqa: E501
