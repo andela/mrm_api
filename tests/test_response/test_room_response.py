@@ -4,6 +4,7 @@ from tests.base import BaseTestCase, CommonTestCases
 from fixtures.response.room_response_fixture import (
    get_room_response_query,
    get_room_response_query_data,
+   get_room_response_query_by_date,
    get_room_response_non_existence_room_id,
    search_response_by_room_invalid_room_query,
    search_response_by_room_query,
@@ -17,7 +18,10 @@ from fixtures.response.room_response_fixture import (
    filter_by_response_data,
    query_paginated_responses,
    query_paginated_responses_response,
-   query_paginated_responses_empty_page
+   query_paginated_responses_empty_page,
+   get_room_response_query_by_date_query,
+   get_room_response_query_with_invalid_date,
+   get_room_response_query_with_higher_lower_limit
 )
 
 
@@ -78,7 +82,7 @@ class TestRoomResponse(BaseTestCase):
         CommonTestCases.admin_token_assert_in(
             self,
             filter_by_response_invalid_query,
-            "Provide upper and lower limits to filter by response number"
+            "Provide upper and lower limits to filter"
         )
 
     def test_filter_search_response_room_name(self):
@@ -155,3 +159,33 @@ class TestRoomResponse(BaseTestCase):
             query_paginated_responses_empty_page,
             "Page does not exist"
         )
+
+    def test_room_response_with_date_range(self):
+        """
+        Testing for room response with date range
+        """
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            get_room_response_query_by_date,
+            get_room_response_query_by_date_query
+        )
+
+    def test_room_response_with_invalid_date(self):
+        """
+        Testing for room response with invalid/ future dates
+        """
+        CommonTestCases.admin_token_assert_in(
+                self,
+                get_room_response_query_with_invalid_date,
+                "Dates should be before today"
+            )
+
+    def test_room_with_invalid_date_difference(self):
+        """
+        Testing for room response with higher lower limit
+        """
+        CommonTestCases.admin_token_assert_in(
+                self,
+                get_room_response_query_with_higher_lower_limit,
+                "Earlier date should be lower than later date"
+            )

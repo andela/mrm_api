@@ -66,3 +66,13 @@ def validate_timezone_field(**kwargs):
     time_zone = kwargs['time_zone']
     if time_zone not in timezones:
         raise AttributeError("Not a valid time zone")
+
+
+def validate_date_range(**kwargs):
+    if (('upper_date_limit' and 'lower_date_limit' in kwargs) and
+        kwargs['upper_date_limit'] > datetime.datetime.now() or
+            kwargs['lower_date_limit'] > datetime.datetime.now()):
+        raise ValueError('Dates should be before today')
+    elif (('upper_date_limit' and 'lower_date_limit' in kwargs) and
+            kwargs['upper_date_limit'] < kwargs['lower_date_limit']):
+        raise ValueError('Earlier date should be lower than later date')
