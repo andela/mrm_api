@@ -113,3 +113,14 @@ class TestCreateRoom(BaseTestCase):
             room_duplicate_calender_id_mutation_query,
             room_duplicate_calendar_id_mutation_response
         )
+
+    def test_database_connection_error(self):
+        """
+        test a user friendly message is returned to a user when database
+        cannot be reached
+        """
+        BaseTestCase().tearDown()
+        headers = {"Authorization": "Bearer" + " " + ADMIN_TOKEN}
+
+        query = self.app_test.post(query_string, headers=headers)
+        self.assertIn("The database cannot be reached", str(query.data))

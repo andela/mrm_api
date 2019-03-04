@@ -124,3 +124,27 @@ class TestEventCheckin(BaseTestCase):
             checkin_mutation_for_event_existing_in_db,
             response_for_event_existing_in_db_checkin
         )
+
+    def test_checkin_without_events_model(self):
+        """
+        test a user friendly message is returned to a user when database
+        cannot be reached
+        """
+        BaseTestCase().tearDown()
+        CommonTestCases.admin_token_assert_in(
+            self,
+            event_checkin_mutation,
+            "does not exist",
+        )
+
+    def test_cancel_without_events_model(self):
+        """
+        test a user friendly message is returned to a user when database
+        cannot be reached
+        """
+        BaseTestCase().tearDown()
+        CommonTestCases.admin_token_assert_in(
+            self,
+            cancel_event_mutation,
+            "does not exist",
+        )

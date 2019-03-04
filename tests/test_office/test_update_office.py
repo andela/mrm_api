@@ -53,3 +53,15 @@ class TestUpdateOffice(BaseTestCase):
             update_office_in_another_location_query,
             "You are not authorized to make changes in"
         )
+
+    def test_database_connection_error(self):
+        """
+        test a user friendly message is returned to a user when database
+        cannot be reached
+        """
+        BaseTestCase().tearDown()
+        CommonTestCases.admin_token_assert_in(
+            self,
+            update_office_query,
+            "The database cannot be reached"
+            )

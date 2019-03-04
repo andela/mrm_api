@@ -27,3 +27,15 @@ class TestDeleteRoom(BaseTestCase):
             delete_room_query_non_existant_room_id,
             "Room not found"
         )
+
+    def test_database_connection_error(self):
+        """
+        test a user friendly message is returned to a user when database
+        cannot be reached
+        """
+        BaseTestCase().tearDown()
+        CommonTestCases.admin_token_assert_in(
+            self,
+            delete_room_query,
+            "The database cannot be reached"
+            )

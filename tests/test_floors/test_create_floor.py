@@ -1,5 +1,6 @@
 from tests.base import BaseTestCase, CommonTestCases
 
+from helpers.database import engine, db_session
 from fixtures.floor.create_floor_fixtures import (
     create_floor_mutation, create_floor_mutation_response,
     floor_name_empty_mutation, floor_mutation_duplicate_name,
@@ -48,3 +49,28 @@ class TestCreateFloor(BaseTestCase):
             self,
             create_with_nonexistent_block_id,
             "Block not found")
+
+    def test_database_connection_error(self):
+        """
+        test a user friendly message is returned to a user when database
+        cannot be reached
+        """
+        BaseTestCase().tearDown()
+        CommonTestCases.admin_token_assert_in(
+            self,
+            create_floor_mutation,
+            "The database cannot be reached"
+            )
+
+    def test_create_floors_without_floors_relation(self):
+        """
+        Test a user cannot create a floor without floor relation
+        """
+        db_session.remove()
+        with engine.begin() as conn:
+            conn.execute("DROP TABLE floors CASCADE")
+        CommonTestCases.admin_token_assert_in(
+          self,
+          create_floor_mutation,
+          "does not exist"
+        )

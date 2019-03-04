@@ -1,5 +1,6 @@
 from tests.base import BaseTestCase, CommonTestCases
 
+from helpers.database import engine, db_session
 from fixtures.floor.delete_floor_fixtures import (
     delete_floor_mutation,
     delete_with_nonexistent_floor_id,
@@ -26,4 +27,29 @@ class TestDeleteRoom(BaseTestCase):
             self,
             delete_with_nonexistent_floor_id,
             "Floor not found"
+        )
+
+    def test_database_connection_error(self):
+        """
+        test a user friendly message is returned to a user when database
+        cannot be reached
+        """
+        BaseTestCase().tearDown()
+        CommonTestCases.admin_token_assert_in(
+            self,
+            delete_floor_mutation,
+            "The database cannot be reached"
+            )
+
+    def test_delete_floors_without_floors_relation(self):
+        """
+        Test a user cannot delete a floor without floor relation
+        """
+        db_session.remove()
+        with engine.begin() as conn:
+            conn.execute("DROP TABLE floors CASCADE")
+        CommonTestCases.admin_token_assert_in(
+          self,
+          delete_floor_mutation,
+          "does not exist"
         )

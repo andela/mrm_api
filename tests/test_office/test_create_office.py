@@ -53,3 +53,15 @@ class TestCreateOffice(BaseTestCase):
             office_mutation_query_duplicate_name,
             office_mutation_query_duplicate_name_responce
         )
+
+    def test_database_connection_error(self):
+        """
+        test a user friendly message is returned to a user when database
+        cannot be reached
+        """
+        BaseTestCase().tearDown()
+        CommonTestCases.admin_token_assert_in(
+            self,
+            office_mutation_query,
+            "The database cannot be reached"
+            )
