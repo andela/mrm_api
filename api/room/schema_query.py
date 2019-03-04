@@ -11,7 +11,7 @@ from api.room.schema import (RatioOfCheckinsAndCancellations,
                              BookingsAnalyticsCount)
 from helpers.pagination.paginate import ListPaginate
 from helpers.calendar.analytics_helper import CommonAnalytics
-from helpers.calendar.credentials import Credentials
+from helpers.calendar.credentials import get_google_api_calendar_list
 
 
 class Analytics(graphene.ObjectType):
@@ -167,14 +167,12 @@ class Query(graphene.ObjectType):
 
     @Auth.user_roles('Admin')
     def resolve_all_remote_rooms(self, info):
-        service = Credentials().set_api_credentials()
         page_token = None
         remote_rooms = []
         while True:
-            calendar_list = service.calendarList().list(
-                pageToken=page_token).execute()
+            calendar_list = get_google_api_calendar_list(pageToken=page_token)
             for room_object in calendar_list['items']:
-                if 'andela.com' in room_object['id'] and room_object['id'].endswith( # noqa
+                if 'andela.com' in room_object['id'] and room_object['id'].endswith(  # noqa
                         'resource.calendar.google.com'):
                     calendar_id = room_object['id']
                     room_name = room_object['summary']

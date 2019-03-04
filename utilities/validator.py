@@ -1,6 +1,7 @@
 import re
 from graphql import GraphQLError
-from helpers.calendar.credentials import Credentials
+from helpers.calendar.credentials import (
+    get_all_google_calendar_events)
 
 from api.location.models import Location
 
@@ -10,9 +11,8 @@ def verify_email(email):
 
 
 def verify_calendar_id(calendar_id):
-    service = Credentials.set_api_credentials(Credentials)
     try:
-        service.events().list(calendarId=calendar_id).execute()
+        get_all_google_calendar_events(calendarId=calendar_id)
         return True
     except Exception:
         return False

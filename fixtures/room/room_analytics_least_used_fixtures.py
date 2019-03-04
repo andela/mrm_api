@@ -26,17 +26,14 @@ get_least_used_room_per_week_response = {
         "analyticsForLeastUsedRooms": {
             "analytics": [
                 {
-                    "roomName": "Nairobi - 2nd Floor Block A Khartoum (1)",
-                    "count": 5,
+                    "roomName": "Entebbe",
+                    "count": 2,
                     "hasEvents": True,
-                    "events": [{
-                        "durationInMinutes": 30,
-                        "numberOfMeetings": 1
-                    },
+                    "events": [
                         {
-                        "durationInMinutes": 25,
-                        "numberOfMeetings": 4
-                    }
+                            "durationInMinutes": 30,
+                            "numberOfMeetings": 1
+                        }
                     ]
                 }
             ]
@@ -70,9 +67,14 @@ get_least_used_room_without_event_response = {
             "analytics": [
                 {
                     "roomName": "Entebbe",
-                    "count": 0,
-                    "hasEvents": False,
-                    "events": null
+                    "count": 2,
+                    "hasEvents": True,
+                    "events": [
+                        {
+                            "durationInMinutes": 30,
+                            "numberOfMeetings": 1
+                        }
+                    ]
                 }
             ]
         }
@@ -94,8 +96,8 @@ get_room_usage_analytics = '''
 get_room_usage_anaytics_response = {
     "data": {
         "analyticsForMeetingsPerRoom": {
-            "analytics": [{'roomName': 'Entebbe', 'count': 3}]
-                    }
+            "analytics": [{'roomName': 'Entebbe', 'count': 2}]
+        }
     }
 }
 
@@ -117,7 +119,7 @@ get_least_used_room_per_month_response = {
             'analytics': [
                 {
                     'roomName': 'Entebbe',
-                    'count': 0
+                    'count': 2
                 }
             ]
         }
@@ -146,8 +148,14 @@ analytics_for_least_used_room_day_response = {
             "analytics": [
                 {
                     "roomName": "Entebbe",
-                    "count": 0,
-                    "events": null}
+                    "count": 2,
+                    "events": [
+                        {
+                            "durationInMinutes": 30,
+                            "numberOfMeetings": 1
+                        }
+                    ]
+                }
             ]
         }
     }

@@ -1,5 +1,6 @@
 import graphene
-from helpers.calendar.credentials import Credentials
+from helpers.calendar.credentials import (
+    get_all_google_calendar_events)
 from api.room.models import Room as RoomModel
 from helpers.auth.authentication import Auth
 from helpers.calendar.analytics_helper import CommonAnalytics
@@ -21,13 +22,13 @@ class Query(graphene.ObjectType):
         '''
         query = RoomModel.query
         calendar_ids = CommonAnalytics.get_calendar_id_name(self, query)
-        service = Credentials.set_api_credentials(self)
 
         invalid_rooms = []
         message = "All rooms have valid calendar IDs"
         for cal in calendar_ids:
             try:
-                service.events().list(calendarId=cal['calendar_id']).execute()
+                get_all_google_calendar_events(
+                    calendarId=cal['calendar_id'])
             except Exception:
                 exact_room = query.filter(
                     RoomModel.calendar_id == cal['calendar_id']).first()
