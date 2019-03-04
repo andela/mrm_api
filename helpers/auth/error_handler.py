@@ -1,4 +1,6 @@
+import os
 from sqlalchemy import exc
+from graphql import GraphQLError
 from utilities.validator import ErrorHandler
 
 
@@ -14,6 +16,16 @@ class SaveContextManager():
     def __enter__(self):
         try:
             self.model_obj.save()
+        except exc.ProgrammingError as error:
+            if (os.getenv('APP_SETTINGS') in ("testing", "development")):
+                long_error_message = str(error.orig)
+                index = long_error_message.find("\n")
+                Specific_error = long_error_message[:index]
+                raise GraphQLError(Specific_error)
+            else:  # pragma: no cover
+                raise GraphQLError(
+                    "There seems to be a database connection error \
+                        contact your admin for assistance")
         except exc.IntegrityError as err:
             res = 'Database integrity error'
             if "duplicate key value violates unique constraint" in str(err):
