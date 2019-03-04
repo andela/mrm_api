@@ -13,6 +13,7 @@ import api.question.schema
 import api.response.schema
 import api.response.schema_query
 import api.tag.schema
+import api.office_structure.schema
 
 
 class Query(
@@ -43,6 +44,7 @@ class Mutation(
     api.question.schema.Mutation,
     api.response.schema.Mutation,
     api.tag.schema.Mutation,
+    api.office_structure.schema.Mutation,
 ):
     pass
 

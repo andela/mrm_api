@@ -1,8 +1,10 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
-from helpers.database import Base
-from utilities.utility import Utility
 
 from sqlalchemy_mptt.mixins import BaseNestedSets
+
+from helpers.database import Base
+from utilities.utility import Utility
+from helpers.database import db_session
 
 
 class OfficeStructure(Base, Utility, BaseNestedSets):
@@ -17,4 +19,22 @@ class OfficeStructure(Base, Utility, BaseNestedSets):
     )
 
     def __repr__(self):
-        return "<{}>".format(self.name)
+        return "<OfficeStructure {}>".format(self.name)
+
+    def add_node(self, name, parent_id=None):
+        """Function for adding nodes"""
+        if parent_id is None:
+            db_session.add(OfficeStructure(name=name))
+        else:
+            db_session.add(OfficeStructure(name=name, parent_id=parent_id))
+
+        db_session.commit()
+
+    def add_branch(self, nodes):
+        """
+        Function to add a single branch
+        :params list of nodes
+        """
+        db_session.add_all(nodes)
+
+        db_session.commit()
