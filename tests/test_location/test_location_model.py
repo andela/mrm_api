@@ -10,7 +10,9 @@ class TestLocationModel(BaseTestCase):
 
         object_count = Location.query.count()
 
-        test_location = Location(name='Kenya', abbreviation='KY')
+        test_location = Location(name='Kenya',
+                                 abbreviation='KY',
+                                 structure_id=1)
         test_location.save()
 
         new_count = Location.query.count()

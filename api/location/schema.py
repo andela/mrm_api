@@ -34,6 +34,7 @@ class CreateLocation(graphene.Mutation):
         country = graphene.String(required=True)
         image_url = graphene.String()
         time_zone = graphene.String(required=True)
+        structure_id = graphene.Int(required=True)
         state = graphene.String()
     location = graphene.Field(Location)
 
