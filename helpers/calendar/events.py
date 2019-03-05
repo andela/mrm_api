@@ -1,11 +1,12 @@
 import datetime
 import re
+
 import pytz
 from dateutil import parser
 from graphql import GraphQLError
 
-from api.room.models import Room as RoomModel
 from api.events.models import Events as EventsModel
+from api.room.models import Room as RoomModel
 from .analytics_helper import CommonAnalytics
 from .credentials import Credentials, get_google_calendar_events
 
@@ -100,15 +101,15 @@ class RoomSchedules(Credentials):
             room_id = RoomModel.query.filter_by(
                 calendar_id=kwargs['calendar_id']).first().id
             checked_in_events = EventsModel.query.filter_by(
-                    event_id=kwargs['event_id'],
-                    room_id=room_id,
-                    start_time=kwargs['start_time'],
-                    checked_in=True).count()
+                event_id=kwargs['event_id'],
+                room_id=room_id,
+                start_time=kwargs['start_time'],
+                checked_in=True).count()
             cancelled_events = EventsModel.query.filter_by(
-                    event_id=kwargs['event_id'],
-                    room_id=room_id,
-                    start_time=kwargs['start_time'],
-                    cancelled=True).count()
+                event_id=kwargs['event_id'],
+                room_id=room_id,
+                start_time=kwargs['start_time'],
+                cancelled=True).count()
             if checked_in_events > 0:
                 raise GraphQLError("Event already checked in")
 
@@ -118,3 +119,78 @@ class RoomSchedules(Credentials):
         except AttributeError:
             raise GraphQLError(
                 "This Calendar ID is invalid")
+
+
+class CalendarEvents:
+    """
+    Sync all calendar events with Converge Database
+    :methods
+        sync_single_room_events
+        sync_all_events
+    """
+
+    def sync_single_room_events(self, room):
+        """
+        This method gets data from the calendar api
+        and syncs it with the local data
+
+        """
+        next_page = None
+        next_sync_token = None
+        while True:
+            event_results = get_google_calendar_events(
+                calendarId=room.calendar_id,
+                syncToken=room.next_sync_token,
+                pageToken=next_page)
+
+            next_page = event_results.get("nextPageToken")
+            room_events = event_results["items"]
+            next_sync_token = event_results.get("nextSyncToken")
+            for event in room_events:
+                existing_event = EventsModel.query.filter_by(
+                    event_id=event.get("id")
+                ).first()
+                participants = event.get('attendees')
+                number_of_attendees = 0
+                if participants:
+                    number_of_attendees = len(participants)
+
+                if existing_event and event.get("status") == "cancelled":
+                    existing_event.state = "archived"
+                    existing_event.save()
+
+                elif existing_event:
+                    existing_event.event_title = event.get("summary")
+                    existing_event.start_time = event["start"]["dateTime"]
+                    existing_event.end_time = event["end"]["dateTime"]
+                    existing_event.number_of_participants = number_of_attendees
+                    existing_event.save()
+
+                elif not event.get("status") == "cancelled":
+                    new_event = EventsModel(
+                        event_id=event.get("id"),
+                        recurring_event_id=event.get("recurringEventId"),
+                        room_id=room.id,
+                        event_title=event.get("summary"),
+                        start_time=event["start"]["dateTime"],
+                        end_time=event["end"]["dateTime"],
+                        number_of_participants=number_of_attendees,
+                        checked_in=False,
+                        cancelled=False
+                    )
+                    new_event.save()
+            if not next_page:
+                break
+
+        room.next_sync_token = next_sync_token
+        room.save()
+
+    def sync_all_events(self):
+        """
+        This method sync the calendar events for all rooms
+        within the database
+        :return:
+        """
+        rooms = RoomModel.query.filter_by(state='active')
+        for room in rooms:
+            self.sync_single_room_events(room)

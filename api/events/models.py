@@ -11,10 +11,12 @@ class Events(Base, Utility):
     id = Column(Integer, Sequence('events_id_seq', start=1, increment=1), primary_key=True) # noqa
     event_id = Column(String, nullable=False)
     room_id = Column(Integer, ForeignKey('rooms.id', ondelete="CASCADE"))
-    event_title = Column(String, nullable=False)
+    event_title = Column(String, nullable=True)
     start_time = Column(String, nullable=False)
     end_time = Column(String, nullable=False)
     checked_in = Column(Boolean, nullable=True)
     cancelled = Column(Boolean, nullable=True)
     state = Column(Enum(StateType), default="active")
     room = relationship('Room')
+    recurring_event_id = Column(String, nullable=True)
+    number_of_participants = Column(Integer, nullable=False)

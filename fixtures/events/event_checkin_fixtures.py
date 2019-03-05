@@ -1,7 +1,7 @@
 event_checkin_mutation = '''mutation {
     eventCheckin(
         calendarId:"andela.com_3630363835303531343031@resource.calendar.google.com",
-        eventId:"test_id5", eventTitle:"Onboarding",
+        eventId:"test_id5", eventTitle:"Onboarding", numberOfParticipants: 4,
         startTime:"2018-07-10T09:00:00Z",
         endTime:"2018-07-10T09:45:00Z"){
             event{
@@ -40,7 +40,7 @@ event_checkin_response = {
 wrong_calendar_id_checkin_mutation = '''mutation {
     eventCheckin(
         calendarId:"fake_calendar_id",
-        eventId:"test_id5", eventTitle:"Onboarding",
+        eventId:"test_id5", eventTitle:"Onboarding", numberOfParticipants: 4,
         startTime:"2018-07-10T09:00:00Z",
         endTime:"2018-07-10T09:45:00Z"){
             event{
@@ -62,7 +62,7 @@ cancel_event_mutation = '''
     mutation {
         cancelEvent(
         calendarId:"andela.com_3630363835303531343031@resource.calendar.google.com",
-        eventId:"test_id5", eventTitle:"Onboarding",
+        eventId:"test_id5", eventTitle:"Onboarding", numberOfParticipants: 4,
         startTime:"2018-07-10T09:00:00Z",
         endTime:"2018-07-10T09:45:00Z")
         {
@@ -102,7 +102,7 @@ cancel_event_respone = {
 checkin_mutation_for_event_existing_in_db = '''mutation {
     eventCheckin(
         calendarId:"andela.com_3630363835303531343031@resource.calendar.google.com",
-        eventId:"test_id5", eventTitle:"Onboarding",
+        eventId:"test_id5", eventTitle:"Onboarding", numberOfParticipants: 4,
         startTime:"2018-07-11T09:00:00Z",
         endTime:"2018-07-11T09:45:00Z"){
             event{
