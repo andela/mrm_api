@@ -15,7 +15,8 @@ paginated_rooms_query = '''
  query {
   allRooms(page:1, perPage:1){
    rooms{
-      name
+      name,
+      structureId
    }
    hasNext
    hasPrevious
@@ -29,7 +30,8 @@ paginated_rooms_response = {
         "allRooms": {
             "rooms": [
                 {
-                    "name": "Entebbe"
+                    "name": "Entebbe",
+                    "structureId": 1
                 }
             ],
             "hasNext": False,

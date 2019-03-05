@@ -5,7 +5,8 @@ room_mutation_query = '''
         createRoom(
             name: "Mbarara", roomType: "Meeting", capacity: 4, roomTags: [1], locationId: 1,
             calendarId:"andela.com_3836323338323230343935@resource.calendar.google.com",
-            imageUrl: "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg") {  # noqa: E501
+            imageUrl: "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg",
+            structureId: 1){  # noqa: E501
             room {
                 id
                 name
@@ -29,7 +30,8 @@ room_mutation_response = {
                 "name": "Mbarara",
                 "roomType": "Meeting",
                 "capacity": 4,
-                "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg"  # noqa: E501
+                "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg",   # noqa: E501
+                "structureId": 1
             }
         }
     }
@@ -41,7 +43,8 @@ room_invalid_location_id_mutation = '''
             name: "aso", roomType: "Meeting", capacity: 4,
             locationId: 9, roomTags: [1],
             calendarId:"andela.com_3836323338323230343935@resource.calendar.google.com",
-            imageUrl: "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg") {  # noqa: E501
+            imageUrl: "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg"
+            structureId: 1) {  # noqa: E501
             room {
                 name
                 roomType
@@ -62,7 +65,8 @@ room_invalid_tag_mutation = '''
         createRoom(
             name: "Mbarara", roomType: "Meeting", capacity: 4, roomTags: [8], locationId: 1,
             calendarId:"andela.com_3836323338323230343935@resource.calendar.google.com",
-            imageUrl: "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg") {  # noqa: E501
+            imageUrl: "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg",
+            structureId: 1) {  # noqa: E501
             room {
                 id
                 name
@@ -70,6 +74,7 @@ room_invalid_tag_mutation = '''
                 capacity
                 locationId
                 imageUrl
+                structureId
             }
         }
     }
@@ -81,12 +86,14 @@ room_name_empty_mutation = '''
             name: "", roomType: "Meeting", capacity: 4,
             locationId: 1, roomTags: [1],
             calendarId:"andela.com_3836323338323230343935@resource.calendar.google.com",
-            imageUrl: "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg") {  # noqa: E501
+            imageUrl: "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg",
+            structureId: 1) {  # noqa: E501
             room {
                 name
                 roomType
                 capacity
                 imageUrl
+                structureId
             }
         }
     }
@@ -97,7 +104,8 @@ room_invalid_calendar_id_mutation_query = '''
         createRoom(
             name: "Kigali", roomType: "Meeting", capacity: 6, locationId: 1, roomTags: [1],
             calendarId:"andela.com_38363233383232303439@resource.calendar.google.com",
-            imageUrl: "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg") {  # noqa: E501
+            imageUrl: "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg",
+            structureId: 1) {  # noqa: E501
             room {
                 name
             }
@@ -178,7 +186,7 @@ query_rooms_response = {
                             "color": "green"
                         }
                     ],
-                    "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg"  # noqa: E501
+                    "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg",  # noqa: E501
                 }
             ]
         }
@@ -190,7 +198,8 @@ room_mutation_query_duplicate_name = '''
         createRoom(
             name: "Entebbe", roomType: "Meeting", capacity: 4, roomTags: [1], locationId: 1,
             calendarId:"andela.com_3836323338323230343935@resource.calendar.google.com",
-            imageUrl: "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg") {  # noqa: E501
+            imageUrl: "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg"
+            structureId: 1) {  # noqa: E501
             room {
                 id
                 name
@@ -232,7 +241,8 @@ room_duplicate_calender_id_mutation_query = '''
         createRoom(
             name: "Mbarara", roomType: "Meeting", capacity: 4, locationId:1,
             calendarId:"andela.com_3630363835303531343031@resource.calendar.google.com",
-            imageUrl: "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg") {  # noqa: E501
+            imageUrl: "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg"
+            structureId: 1) {  # noqa: E501
             room {
                 name
                 roomType

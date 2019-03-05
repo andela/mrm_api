@@ -10,6 +10,7 @@ from utilities.validations import validate_empty_fields
 from utilities.utility import update_entity_fields
 from helpers.auth.authentication import Auth
 from helpers.auth.admin_roles import admin_roles
+from helpers.auth.error_handler import SaveContextManager
 from utilities.validator import (
     verify_location_id,
     ErrorHandler)
@@ -101,6 +102,7 @@ class CreateRoom(graphene.Mutation):
         image_url = graphene.String()
         location_id = graphene.Int(required=True)
         calendar_id = graphene.String()
+        structure_id = graphene.Int(required=True)
         cancellation_duration = graphene.Int()
         room_tags = graphene.List(graphene.Int)
         room_labels = graphene.List(graphene.String)
@@ -128,8 +130,15 @@ class CreateRoom(graphene.Mutation):
         if kwargs.get('room_tags'):
             room_tags = kwargs.pop('room_tags')
         room = RoomModel(**kwargs)
-        save_room_tags(room, room_tags)
-        return CreateRoom(room=room)
+        payload = {
+            'model': RoomModel, 'field': 'structure_id',
+            'value':  kwargs['structure_id']
+            }
+        with SaveContextManager(
+          room, 'structure_id', payload
+        ):
+            save_room_tags(room, room_tags)
+            return CreateRoom(room=room)
 
 
 class PaginatedRooms(Paginate):

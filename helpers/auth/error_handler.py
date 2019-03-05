@@ -33,7 +33,7 @@ class SaveContextManager():
                     self, self.entity['value'], self.entity_name)
             elif "violates foreign key constraint" in str(err):
                 res = ErrorHandler.foreign_key_conflict(
-                    self, self.entity_name, self.entity)
+                    self, self.entity_name, self.entity['value'])
             return res
         except exc.DBAPIError:
             return ErrorHandler.db_connection(self)

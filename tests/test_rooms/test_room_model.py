@@ -18,7 +18,8 @@ class TestRoomModel(BaseTestCase):
                     capacity=5,
                     location_id=1,
                     calendar_id='andela.com_3836323338323230343935@resource.calendar.google.com',  # noqa: E501
-                    image_url="https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg")  # noqa: E501
+                    image_url="https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg",  # noqa: E501
+                    structure_id=1)
         room.save()
 
         new_count = Room.query.count()
