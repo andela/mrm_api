@@ -128,8 +128,9 @@ jobs:
       - run:
           name: upload test coverage to bucket
           command: |
+            GIT_HASH=$(echo $CIRCLE_SHA1 | cut -c -7)
             export PATH=$PATH:/usr/local/gcloud/google-cloud-sdk/bin
-            gsutil cp .coverage gs://parallel-coverage-reports/backend/python3.5/
+            gsutil cp .coverage gs://parallel-coverage-reports/backend/python3.5/.coverage-$GIT_HASH
       - *store_the_artifacts
       - *notify_success
       - *notify_failure
@@ -155,8 +156,9 @@ jobs:
       - run:
           name: upload test coverage to bucket
           command: |
+            GIT_HASH=$(echo $CIRCLE_SHA1 | cut -c -7)
             export PATH=$PATH:/usr/local/gcloud/google-cloud-sdk/bin
-            gsutil cp .coverage gs://parallel-coverage-reports/backend/python3.6/
+            gsutil cp .coverage gs://parallel-coverage-reports/backend/python3.6/.coverage-$GIT_HASH
       - *store_the_artifacts
       - *notify_success
       - *notify_failure
@@ -174,12 +176,15 @@ jobs:
       - run:
           name: retrieve code climate reports
           command: |
+            GIT_HASH=$(echo $CIRCLE_SHA1 | cut -c -7)
             mkdir -p parallel-coverage
             export PATH=$PATH:/usr/local/gcloud/google-cloud-sdk/bin
-            gsutil cp gs://parallel-coverage-reports/backend/python3.5/.coverage \
+            gsutil cp gs://parallel-coverage-reports/backend/python3.5/.coverage-$GIT_HASH \
               parallel-coverage/.coverage.3.5
-            gsutil cp gs://parallel-coverage-reports/backend/python3.6/.coverage \
+            gsutil cp gs://parallel-coverage-reports/backend/python3.6/.coverage-$GIT_HASH \
               parallel-coverage/.coverage.3.6
+            gsutil rm gs://parallel-coverage-reports/backend/python3.5/.coverage-$GIT_HASH
+            gsutil rm gs://parallel-coverage-reports/backend/python3.6/.coverage-$GIT_HASH
       - run:
           name: consolidate results
           command: |
