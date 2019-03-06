@@ -105,3 +105,18 @@ def validate_date_range(**kwargs):
     elif (('end_date' and 'start_date' in kwargs) and
             kwargs['end_date'] < kwargs['start_date']):
         raise ValueError('Earlier date should be lower than later date')
+
+
+def remove_invalid_events(event, events_result, start_date):
+    """
+    Function to remove an event that does not lie
+    in the date range passed
+    :params
+        - event
+        - events_result
+        - start_date
+    """
+    if event["start"]["dateTime"] < start_date:
+        events_result.remove(event)
+        return True
+    return False

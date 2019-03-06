@@ -335,7 +335,7 @@ class Query(graphene.ObjectType):
     def resolve_analytics_for_least_used_rooms(self, info, start_date, end_date=None):  # noqa: E501
         query = Room.get_query(info)
         room_analytics = RoomAnalytics.get_least_used_rooms_analytics(
-            self, query, start_date, end_date
+            self, query.filter_by(state='active'), start_date, end_date
         )
         return Analytics(
             analytics=room_analytics
@@ -345,7 +345,7 @@ class Query(graphene.ObjectType):
     def resolve_analytics_for_most_used_rooms(self, info, start_date, end_date=None):  # noqa: E501
         query = Room.get_query(info)
         room_analytics = RoomAnalytics.get_most_used_rooms_analytics(
-            self, query, start_date, end_date
+            self, query.filter_by(state='active'), start_date, end_date
         )
         room_most_used_per_week = Analytics(
             analytics=room_analytics
@@ -356,7 +356,7 @@ class Query(graphene.ObjectType):
     def resolve_analytics_for_meetings_per_room(self, info, start_date, end_date=None):  # noqa: E501
         query = Room.get_query(info)
         meeting_summary = RoomAnalytics.get_meetings_per_room_analytics(
-            self, query, start_date, end_date
+            self, query.filter_by(state='active'), start_date, end_date
         )
         return Analytics(
             analytics=meeting_summary
@@ -365,7 +365,7 @@ class Query(graphene.ObjectType):
     @Auth.user_roles('Admin', 'Default User')
     def resolve_analytics_for_meetings_durations(self, info, start_date, end_date=None, per_page=None, page=None):  # noqa: E501
         query = Room.get_query(info)
-        results = RoomAnalytics.get_meetings_duration_analytics(self, query, start_date, end_date)  # noqa: E501
+        results = RoomAnalytics.get_meetings_duration_analytics(self, query.filter_by(state='active'), start_date, end_date)  # noqa: E501
         if page and per_page:
             paginated_results = ListPaginate(iterable=results, per_page=per_page, page=page)  # noqa: E501
             current_page = paginated_results.current_page
@@ -380,7 +380,7 @@ class Query(graphene.ObjectType):
             self, info, start_date, end_date=None):
         query = Room.get_query(info)
         ratio = RoomAnalyticsRatios.get_analytics_ratios(
-            self, query, start_date, end_date)
+            self, query.filter_by(state='active'), start_date, end_date)
         return ratio
 
     @Auth.user_roles('Admin', 'Default User')
@@ -388,7 +388,7 @@ class Query(graphene.ObjectType):
         room_id = kwargs.get('room_id')
         query = Room.get_query(info)
         ratio = RoomAnalyticsRatios.get_analytics_ratios_per_room(
-            self, query, **kwargs)
+            self, query.filter_by(state='active'), **kwargs)
         if room_id:
             exact_room = query.filter(RoomModel.id == room_id).first()
             if not exact_room:
@@ -398,11 +398,14 @@ class Query(graphene.ObjectType):
 
     @Auth.user_roles('Admin', 'Default User')
     def resolve_bookings_analytics_count(
-            self, info, start_date, end_date, room_id=None):
+        self, info, start_date, end_date, room_id=None
+    ):
         # Getting booking analytics count
         query = Room.get_query(info)
         analytics = RoomAnalyticsRatios.get_bookings_analytics_count(
-            self, query, start_date, end_date, room_id=room_id)
+            self, query.filter_by(state='active'), start_date,
+            end_date, room_id=room_id
+        )
         return analytics
 
     def resolve_analytics_for_daily_room_events(
@@ -413,7 +416,7 @@ class Query(graphene.ObjectType):
         )
         query = Room.get_query(info)
         all_events, all_dates = RoomSchedules().get_all_room_schedules(
-            query, start_date, end_date
+            query.filter_by(state='active'), start_date, end_date
         )
         all_days_events = []
         for date in set(all_dates):

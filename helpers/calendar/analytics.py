@@ -3,6 +3,7 @@ from .credentials import Credentials
 from helpers.calendar.analytics_helper import (
     CommonAnalytics, EventsDuration, RoomStatistics
 )
+from utilities.validations import remove_invalid_events
 
 
 class RoomAnalytics(Credentials):
@@ -35,6 +36,8 @@ class RoomAnalytics(Credentials):
                 number_of_meetings.append(0)
             else:
                 for event in all_events:
+                    if remove_invalid_events(event, all_events, start_date):
+                        continue
                     if event.get('attendees'):
                         event_details = CommonAnalytics.get_event_details(self, event, room['calendar_id'])  # noqa: E501
                         output.append(event_details)
@@ -103,6 +106,8 @@ class RoomAnalytics(Credentials):
                 continue
             events_duration = []
             for event in events:
+                if remove_invalid_events(event, events, start_date):
+                    continue
                 start = event['start'].get('dateTime', event['start'].get('date'))  # noqa: E501
                 end = event['end'].get('dateTime', event['end'].get('date'))
                 duration = CommonAnalytics.get_time_duration_for_event(self, start, end)  # noqa: E501

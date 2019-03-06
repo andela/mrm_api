@@ -8,6 +8,7 @@ from api.room.models import Room as RoomModel
 from api.events.models import Events as EventsModel
 from .analytics_helper import CommonAnalytics
 from .credentials import Credentials, get_events_within_datetime_range
+from utilities.validations import remove_invalid_events
 
 
 class RoomSchedules(Credentials):
@@ -70,6 +71,8 @@ class RoomSchedules(Credentials):
             except GraphQLError:
                 continue
             for event in events_result:
+                if remove_invalid_events(event, events_result, start_date):
+                    continue
                 CommonAnalytics.format_date(event["start"]["dateTime"])
                 event_start_date = parser.parse(
                     event["start"]["dateTime"]).astimezone(pytz.utc)

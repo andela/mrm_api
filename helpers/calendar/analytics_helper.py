@@ -87,7 +87,7 @@ class CommonAnalytics(Credentials):
          :params
         """
         location_id = admin_roles.user_location_for_analytics_view()
-        exact_query = room_join_location(query)
+        exact_query = room_join_location(query.filter_by(state='active'))
         rooms_in_locations = exact_query.filter(
             LocationModel.id == location_id)
         if not rooms_in_locations.all():
