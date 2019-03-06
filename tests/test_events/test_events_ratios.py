@@ -15,10 +15,9 @@ from fixtures.events.events_ratios_fixtures import (
 sys.path.append(os.getcwd())
 
 
-@patch("helpers.calendar.analytics_helper.get_events_within_datetime_range",
-       spec=True)
 class TestEventRatios(BaseTestCase):
-
+    @patch("helpers.calendar.analytics_helper.get_events_within_datetime_range",
+           spec=True)
     def test_events_checkins_to_bookings_ratio_on_date_range(self,
                                                              mock_get_json):
         """
@@ -32,6 +31,8 @@ class TestEventRatios(BaseTestCase):
             event_ratio_response
         )
 
+    @patch("helpers.calendar.analytics_helper.get_events_within_datetime_range",
+           spec=True)
     def test_events_checkins_to_bookings_ratio_for_single_day(self,
                                                               mock_get_json):
         """
@@ -45,6 +46,8 @@ class TestEventRatios(BaseTestCase):
             event_ratio_response
         )
 
+    @patch("helpers.calendar.analytics_helper.get_events_within_datetime_range",
+           spec=True)
     def test_event_checkin_and_cancellation_ratio_per_room(self, mock_get_json):
         """
         Test that an admin is able to get the ratio of checkins to bookings
