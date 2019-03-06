@@ -1,5 +1,7 @@
 import sys
 import os
+from unittest.mock import patch
+
 from tests.base import BaseTestCase, CommonTestCases
 from fixtures.helpers.decorators_fixtures import (
     query_string, query_string_response
@@ -10,7 +12,6 @@ from fixtures.room.create_room_fixtures import (
     room_mutation_query_duplicate_name,
     room_mutation_query_duplicate_name_response,
     room_invalid_calendar_id_mutation_query,
-    room_invalid_calendar_id_mutation_response,
     room_duplicate_calender_id_mutation_query,
     room_duplicate_calendar_id_mutation_response)
 from fixtures.room.create_room_in_block_fixtures import (
@@ -94,14 +95,17 @@ class TestCreateRoom(BaseTestCase):
             "Block ID is not required for this office"
         )
 
-    def test_room_creation_with_invalid_calendar_id(self):
+    @patch("api.room.models.verify_calendar_id",
+           spec=True)
+    def test_room_creation_with_invalid_calendar_id(self, mock_get_json):
         """
-        Test room creation with Block ID not required
+        Test room creation with invalid calendar id
         """
-        CommonTestCases.admin_token_assert_equal(
+        mock_get_json.return_value = False
+        CommonTestCases.admin_token_assert_in(
             self,
             room_invalid_calendar_id_mutation_query,
-            room_invalid_calendar_id_mutation_response
+            "Room calendar Id is invalid"
         )
 
     def test_room_creation_with_invalid_duplicate_calendar_id(self):

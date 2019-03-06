@@ -34,3 +34,28 @@ class Credentials():
         service = build('calendar', 'v3', developerKey=api_key,
                         http=credentials.authorize(Http()))
         return service
+
+
+def get_events_within_datetime_range(calendarId=None, timeMin=None,
+                                     timeMax=None,
+                                     singleEvents=None, orderBy=None):
+    credentials = Credentials()
+    service = credentials.set_api_credentials()
+    events = service.events().list(calendarId=calendarId, timeMin=timeMin,
+                                   timeMax=timeMax, singleEvents=singleEvents,
+                                   orderBy=orderBy).execute()
+    return events
+
+
+def get_all_google_calendar_events(calendarId=None):
+    credentials = Credentials()
+    service = credentials.set_api_credentials()
+    events = service.events().list(calendarId=calendarId).execute()
+    return events
+
+
+def get_google_api_calendar_list(pageToken=None):
+    credentials = Credentials()
+    service = credentials.set_api_credentials()
+    calendar_list = service.calendarList().list(pageToken=pageToken).execute()
+    return calendar_list
