@@ -19,6 +19,7 @@ from api.devices.models import Devices
 from api.question.models import Question
 from api.response.models import Response
 from api.tag.models import Tag
+from api.office_structure.models import OfficeStructure
 from fixtures.token.token_fixture import (
     ADMIN_TOKEN, USER_TOKEN, ADMIN_NIGERIA_TOKEN)
 
@@ -53,6 +54,11 @@ class BaseTestCase(TestCase):
             role.save()
             admin_user.roles.append(role)
             lagos_admin.roles.append(role)
+
+            root_node = OfficeStructure(name='location')
+            root_node.save()
+            leaf_node = OfficeStructure(name='wings', parent_id=1)
+            leaf_node.save()
 
             location = Location(name='Kampala', abbreviation='KLA')
             location.save()

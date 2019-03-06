@@ -31,7 +31,7 @@ bottom_ten_response = {
     "analyticsForLeastBookedRooms": {
       "analytics": [
         {
-          "meetings": 30,
+          "meetings": 29,
           "percentage": 100,
           "roomName": "Entebbe",
         }
@@ -45,7 +45,7 @@ top_ten_response = {
     "analyticsForMostBookedRooms": {
       "analytics": [
         {
-          "meetings": 30,
+          "meetings": 29,
           "percentage": 100,
           "roomName": "Entebbe",
         }
