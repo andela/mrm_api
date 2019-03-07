@@ -34,14 +34,22 @@ class PaginatedResponses(graphene.ObjectType):
 
 class Query(graphene.ObjectType):
     room_response = graphene.Field(
-        RoomResponse, room_id=graphene.Int())
+        RoomResponse, room_id=graphene.Int(),
+        description="Returns a list of pagiunated room responses. Accepts the arguments\
+            \n- room_id: Unique identifier of a room")
     all_room_responses = graphene.Field(
         PaginatedResponses,
         page=graphene.Int(),
         per_page=graphene.Int(),
         upper_limit=graphene.Int(),
         lower_limit=graphene.Int(),
-        room=graphene.String()
+        room=graphene.String(),
+        description="Returns a list of room responses. Accepts the arguments\
+            \n- page: Page number of responses\
+            \n- per_page: Number of room responses per page\
+            \n- upper_limit: Highest number of room responses\
+            \n- lower_limit: Highest number of room responses\
+            \n- room: Room name where the response is sent to"
     )
 
     def get_room_response(self, room_response, room_id):

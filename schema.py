@@ -36,6 +36,7 @@ class Query(
     api.response.schema_query.Query,
     api.question.schema.Query,
 ):
+    """Root for converge Graphql queries"""
     pass
 
 
@@ -56,6 +57,7 @@ class Mutation(
     api.response.schema.Mutation,
     api.tag.schema.Mutation,
 ):
+    """The root query for implementing GraphQL mutations."""
     pass
 
 
