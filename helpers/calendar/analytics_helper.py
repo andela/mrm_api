@@ -7,7 +7,7 @@ from collections import Counter
 from api.location.models import Location as LocationModel
 from helpers.room_filter.room_filter import room_join_location
 from helpers.auth.admin_roles import admin_roles
-from .credentials import Credentials
+from .credentials import Credentials, get_google_calendar_events
 from flask import request
 from flask_json import JsonError
 
@@ -104,11 +104,11 @@ class CommonAnalytics(Credentials):
             - calendar_id - for specific room
             - min_limit, max_limit(Time range)
         """
-        service = Credentials.set_api_credentials(self)
         try:
-            events_result = service.events().list(
-                calendarId=calendar_id, timeMin=min_limit, timeMax=max_limit,
-                singleEvents=True, orderBy='startTime').execute()
+            events_result = get_google_calendar_events(
+                calendarId=calendar_id, timeMin=min_limit,
+                timeMax=max_limit, singleEvents=True,
+                orderBy='startTime')
         except Exception:
             raise GraphQLError("Resource not found")
         all_events = events_result.get('items', [])
@@ -146,7 +146,7 @@ class CommonAnalytics(Credentials):
         """
         result = []
         for room_details in all_details:
-            if number_of_events_in_room == 0:
+            if number_of_events_in_room == 0:   # pragma: no cover
                 for detail in room_details:
                     if 'has_events' in detail.keys():
                         output = RoomStatistics(

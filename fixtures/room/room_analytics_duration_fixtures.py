@@ -24,9 +24,18 @@ get_daily_meetings_total_duration_response = {
             "MeetingsDurationaAnalytics": [
                 {
                     "roomName": "Entebbe",
-                    "count": 0,
-                    "totalDuration": 0,
-                    "events": []
+                    "count": 2,
+                    "totalDuration": 75,
+                    "events": [
+                        {
+                            "durationInMinutes": 30,
+                            "numberOfMeetings": 1
+                        },
+                        {
+                            "durationInMinutes": 45,
+                            "numberOfMeetings": 1
+                        }
+                    ]
                 }
             ]
         }
@@ -71,9 +80,19 @@ get_weekly_meetings_total_duration_response = {
             'MeetingsDurationaAnalytics': [
                 {
                     'roomName': 'Entebbe',
-                    'count': 0,
-                    'totalDuration': 0,
-                    'events': []}]}}}
+                    'count': 2,
+                    'totalDuration': 75,
+                    "events": [
+                        {
+                            "durationInMinutes": 30,
+                            "numberOfMeetings": 1
+                        },
+                        {
+                            "durationInMinutes": 45,
+                            "numberOfMeetings": 1
+                        }
+                    ]
+                    }]}}}
 
 get_paginated_meetings_total_duration_query = '''
 query {
@@ -103,9 +122,18 @@ get_paginated_meetings_total_duration_response = {
       "MeetingsDurationaAnalytics": [
         {
           "roomName": "Entebbe",
-          "count": 0,
-          "totalDuration": 0,
-          "events": []
+          "count": 2,
+          "totalDuration": 75,
+          "events": [
+                        {
+                            "durationInMinutes": 30,
+                            "numberOfMeetings": 1
+                        },
+                        {
+                            "durationInMinutes": 45,
+                            "numberOfMeetings": 1
+                        }
+                    ]
         }
       ]
     }

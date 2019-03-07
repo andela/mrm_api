@@ -21,9 +21,18 @@ get_monthly_meetings_total_duration_response = {
                 "MeetingsDurationaAnalytics": [
                     {
                         "roomName": "Entebbe",
-                        "totalDuration": 0,
-                        "count": 0,
-                        "events": []
+                        "totalDuration": 75,
+                        "count": 2,
+                        "events": [
+                            {
+                                "durationInMinutes": 30,
+                                "numberOfMeetings": 1
+                            },
+                            {
+                                "durationInMinutes": 45,
+                                "numberOfMeetings": 1
+                            }
+                        ]
                     }
                 ]
             }

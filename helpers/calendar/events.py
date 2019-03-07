@@ -7,7 +7,7 @@ from graphql import GraphQLError
 from api.room.models import Room as RoomModel
 from api.events.models import Events as EventsModel
 from .analytics_helper import CommonAnalytics
-from .credentials import Credentials
+from .credentials import Credentials, get_google_calendar_events
 
 
 class RoomSchedules(Credentials):
@@ -25,14 +25,15 @@ class RoomSchedules(Credentials):
             - calendar_id
             - days(Time limit for the schedule you need)
         """
-        service = Credentials.set_api_credentials(self)
         # 'Z' indicates UTC time
         now = datetime.datetime.utcnow().isoformat() + 'Z'
         new_time = (datetime.datetime.now() + datetime.timedelta(days=days)
                     ).isoformat() + 'Z'
-        events_result = service.events().list(
-            calendarId=calendar_id, timeMin=now, timeMax=new_time,
-            singleEvents=True, orderBy='startTime').execute()
+        events_result = get_google_calendar_events(calendarId=calendar_id,
+                                                   timeMin=now,
+                                                   timeMax=new_time,
+                                                   singleEvents=True,
+                                                   orderBy='startTime')
         calendar_events = events_result.get('items', [])
         output = []
         if not calendar_events:
