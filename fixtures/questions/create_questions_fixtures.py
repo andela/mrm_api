@@ -70,6 +70,23 @@ question_mutation_query_without_name = '''
 }}
 '''.format(start_date, end_date)
 
+question_mutation_query_with_invalid_question_type = '''
+ mutation{{
+  createQuestion(questionType:"Rates",
+  questionTitle:"Rating Feedback",
+  question:"How will you rate the cleanliness of the room",
+  startDate:"{}", endDate:"{}") {{
+    question{{
+      id
+      question
+      questionType
+      startDate
+      endDate
+      }}
+  }}
+}}
+'''.format(start_date, end_date)
+
 update_question_mutation = '''
   mutation {{
       updateQuestion(questionId:1,
@@ -108,6 +125,21 @@ update_question_invalidId = '''
   }
 }
 '''
+
+update_question_with_invalid_question_type = '''
+  mutation {{
+      updateQuestion(questionId:1,
+      questionType: "Rates"
+      questionTitle:"Rating Feedback"
+      startDate:"{}", endDate:"{}") {{
+        question {{
+          id,
+          startDate,
+          endDate,
+        }}
+      }}
+  }}
+'''.format(start_date, end_date)
 
 delete_question_mutation = '''
  mutation{
