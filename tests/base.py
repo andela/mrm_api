@@ -61,12 +61,10 @@ class BaseTestCase(TestCase):
             role.save()
             admin_user.roles.append(role)
             lagos_admin.roles.append(role)
-
             root_node = OfficeStructure(name='location')
             root_node.save()
             leaf_node = OfficeStructure(name='wings', parent_id=1)
             leaf_node.save()
-
             location = Location(name='Kampala', abbreviation='KLA')
             location.save()
             location_two = Location(name='Nairobi', abbreviation='NBO')
