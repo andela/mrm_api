@@ -7,11 +7,17 @@ from helpers.calendar.events import RoomSchedules, CalendarEvents
 
 
 class Events(SQLAlchemyObjectType):
+    """
+        Returns the events payload
+    """
     class Meta:
         model = EventsModel
 
 
 class EventCheckin(graphene.Mutation):
+    """
+        Returns the eventcheckin payload
+    """
     class Arguments:
         calendar_id = graphene.String(required=True)
         event_id = graphene.String(required=True)
@@ -38,6 +44,9 @@ class EventCheckin(graphene.Mutation):
 
 
 class CancelEvent(graphene.Mutation):
+    """
+        Returns the payload on event cancelation
+    """
     class Arguments:
         calendar_id = graphene.String(required=True)
         event_id = graphene.String(required=True)
@@ -48,6 +57,7 @@ class CancelEvent(graphene.Mutation):
     event = graphene.Field(Events)
 
     def mutate(self, info, **kwargs):
+        # mutation to create an event
         room_id, event = check_event_in_db(self, info, "cancelled", **kwargs)
         if not event:
             event = EventsModel(
@@ -109,7 +119,23 @@ def check_event_in_db(instance, info, event_check, **kwargs):
 
 
 class Mutation(graphene.ObjectType):
-    event_checkin = EventCheckin.Field()
-    cancel_event = CancelEvent.Field()
     sync_event_data = SyncEventData.Field()
     mrm_notification = MrmNotification.Field()
+    event_checkin = EventCheckin.Field(
+        description="Mutation to check in to a calendar event given the arguments\
+            \n- calendar_id: The unique identifier of the calendar event\
+            [required]\n- event_id: The unique identifier of the target\
+                 calendar event[required]\
+            \n- event_title: The title field of the calendar event[required]\
+            \n- start_time: The start time of the calendar event[required]\
+            \n- end_time: The field with the end time of the calendar event\
+            [required]")
+    cancel_event = CancelEvent.Field(
+        description="Mutation to cancel a claendar event given the arguments\
+            \n- calendar_id: The unique identifier of the calendar event\
+            [required]\n- event_id: The unique identifier of the target \
+                calendar event\
+            [required]\n- event_title: The title field of the calendar event\
+            [required]\n- start_time: The start time of the calendar event\
+            [required]\n- end_time: The field with the end time of the calendar\
+             event[required]")
