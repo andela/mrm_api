@@ -47,11 +47,13 @@ class CreateLocation(graphene.Mutation):
         location = LocationModel(**kwargs)
         admin = get_user_from_db()
         email = admin.email
+        username = email.split("@")[0]
+        admin_name = username.split(".")[0]
         payload = {
             'model': LocationModel, 'field': 'name', 'value':  kwargs['name']
             }
         with SaveContextManager(location, 'Location', payload):
-            if not send_email_notification(email, location.name):
+            if not send_email_notification(email, location.name, admin_name):
                 raise GraphQLError("Location created but email not sent")
             return CreateLocation(location=location)
 

@@ -102,7 +102,10 @@ class Authentication:
                 if type(user_data) is dict:
                     self.save_user()
                     email = user_data['email']
-                    user = User.query.filter_by(email=email).first()
+                    try:
+                        user = User.query.filter_by(email=email).first()
+                    except Exception:
+                        raise GraphQLError("The database cannot be reached")
                     headers = {"Authorization": 'Bearer ' + self.get_token()}
                     try:
                         if(os.getenv('APP_SETTINGS') == "testing"):
