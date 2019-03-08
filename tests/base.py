@@ -65,11 +65,18 @@ class BaseTestCase(TestCase):
             root_node.save()
             leaf_node = OfficeStructure(name='wings', parent_id=1)
             leaf_node.save()
-            location = Location(name='Kampala', abbreviation='KLA')
+
+            location = Location(name='Kampala',
+                                abbreviation='KLA',
+                                structure_id=1)
             location.save()
-            location_two = Location(name='Nairobi', abbreviation='NBO')
+            location_two = Location(name='Nairobi',
+                                    abbreviation='NBO',
+                                    structure_id=1)
             location_two.save()
-            location_three = Location(name='Lagos', abbreviation='LOS')
+            location_three = Location(name='Lagos',
+                                      abbreviation='LOS',
+                                      structure_id=1)
             location_three.save()
             tag = Tag(name='Block-B',
                       color='green',

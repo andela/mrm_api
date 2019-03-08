@@ -1,9 +1,8 @@
-from sqlalchemy import (Column, String, Integer, Enum, Index)
+from sqlalchemy import (Column, String, Integer, Enum, Index, ForeignKey)
 from sqlalchemy.orm import relationship
 from sqlalchemy.schema import Sequence
 
 from helpers.database import Base
-
 from utilities.utility import Utility, StateType, cascade_soft_delete
 import enum
 
@@ -29,6 +28,12 @@ class Location(Base, Utility):
     time_zone = Column(Enum(TimeZoneType))
     image_url = Column(String)
     state = Column(Enum(StateType), default="active")
+    structure_id = Column(
+        Integer,
+        ForeignKey('structure.id', ondelete="CASCADE"),
+        nullable=False
+    )
+    structure = relationship('OfficeStructure')
     rooms = relationship(
         'Room', cascade="all, delete-orphan",
         order_by="func.lower(Room.name)")
