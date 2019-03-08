@@ -8,6 +8,10 @@ from api.room.schema import (PaginatedRooms, Calendar, Room)
 from helpers.calendar.events import RoomSchedules
 from helpers.calendar.analytics import RoomStatistics  # noqa: E501
 from api.room.models import Room as RoomModel
+from helpers.auth.user_details import get_user_from_db
+from helpers.remote_rooms.remote_rooms_location import (
+     map_remote_room_location_to_filter
+)
 from api.room.schema import (RatioOfCheckinsAndCancellations,
                              BookingsAnalyticsCount)
 from helpers.pagination.paginate import ListPaginate
@@ -118,7 +122,9 @@ class Query(graphene.ObjectType):
 
     all_remote_rooms = graphene.Field(
         AllRemoteRooms,
-        description="Returns a list of all remote rooms")
+        description="Returns a list of all remote rooms",
+        return_all=graphene.Boolean()
+        )
 
     get_room_by_name = graphene.List(
         Room,
@@ -256,13 +262,19 @@ class Query(graphene.ObjectType):
         return response
 
     @Auth.user_roles('Admin')
-    def resolve_all_remote_rooms(self, info):
+    def resolve_all_remote_rooms(self, info, return_all=None):
         page_token = None
+        filter = map_remote_room_location_to_filter()
+        location = 'all' if return_all else get_user_from_db().location
         remote_rooms = []
         while True:
             calendar_list = get_google_api_calendar_list(pageToken=page_token)
             for room_object in calendar_list['items']:
-                if 'andela.com' in room_object['id'] and room_object['id'].endswith('resource.calendar.google.com'):  # noqa
+                if 'andela.com' in room_object['id'] and room_object['id'].endswith( # noqa
+                    'resource.calendar.google.com') and filter.get(location)(
+                        room_object[
+                            'summary'
+                        ]):
                     calendar_id = room_object['id']
                     room_name = room_object['summary']
                     remote_room = RemoteRoom(
