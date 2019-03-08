@@ -65,6 +65,20 @@ class DeleteNode(graphene.Mutation):
         return DeleteNode(node=node)
 
 
+class Query(graphene.ObjectType):
+    node = graphene.Field(
+        OfficeStructure,
+        node_id=graphene.Int()
+    )
+
+    def resolve_node(self, info, node_id):
+        query = OfficeStructure.get_query(info)
+        node = query.filter(OfficeStructureModel.id == node_id).first()
+        if not node:
+            raise GraphQLError("Node not found")
+        return node
+
+
 class Mutation(graphene.ObjectType):
     create_node = CreateNode.Field(
         description="Creates a level or node when given the arguments\

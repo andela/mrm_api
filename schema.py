@@ -30,6 +30,7 @@ class Query(
         api.response.schema.Query,
         api.response.schema_query.Query,
         api.question.schema.Query,
+        api.office_structure.schema.Query,
         api.structure.schema.Query
 ):
     """Root for converge Graphql queries"""
