@@ -3,6 +3,7 @@ from graphql import GraphQLError
 from helpers.calendar.analytics import RoomAnalytics  # noqa: E501
 from helpers.calendar.ratios_and_utilization import RoomAnalyticsRatios
 from helpers.auth.authentication import Auth
+from helpers.auth.admin_roles import admin_roles
 from api.room.schema import (PaginatedRooms, Calendar, Room)
 from helpers.calendar.events import RoomSchedules
 from helpers.calendar.analytics import RoomStatistics  # noqa: E501
@@ -16,6 +17,37 @@ from api.room.schema import (RatioOfCheckinsAndCancellations,
                              BookingsAnalyticsCount)
 from helpers.pagination.paginate import ListPaginate
 from helpers.calendar.analytics_helper import CommonAnalytics
+
+
+def resolve_booked_rooms_analytics(*args):
+    instance, info, start_date, end_date, criteria, limit = args
+    query = Room.get_query(info)
+    location_id = admin_roles.user_location_for_analytics_view()
+    active_rooms = query.filter(
+        RoomModel.state == "active",
+        RoomModel.location_id == location_id)
+    booked_rooms = get_most_and_least_booked_rooms(
+        instance, active_rooms, start_date, end_date, limit, criteria)
+    booked_rooms_statistics = Analytics(
+        analytics=booked_rooms
+    )
+    return booked_rooms_statistics
+
+
+def get_most_and_least_booked_rooms(*args):
+    instance, active_rooms, start_date, end_date, criteria, limit = args
+    if limit and criteria == "least_booked":
+        limit = (-limit)
+        return RoomAnalytics.get_booked_rooms(instance, active_rooms,
+                                              start_date, end_date
+                                              )[limit:]
+    elif limit and criteria == "most_booked":
+        return RoomAnalytics.get_booked_rooms(instance, active_rooms,
+                                              start_date, end_date
+                                              )[:limit]
+    else:
+        return RoomAnalytics.get_booked_rooms(instance, active_rooms,
+                                              start_date, end_date)
 
 
 class Analytics(graphene.ObjectType):
@@ -117,16 +149,12 @@ class Query(graphene.ObjectType):
         end_date=graphene.String(),
     )
 
-    analytics_for_most_booked_rooms = graphene.Field(
+    analytics_for_booked_rooms = graphene.Field(
         Analytics,
         start_date=graphene.String(required=True),
         end_date=graphene.String(),
-    )
-
-    analytics_for_least_booked_rooms = graphene.Field(
-        Analytics,
-        start_date=graphene.String(required=True),
-        end_date=graphene.String(),
+        limit=graphene.Int(),
+        criteria=graphene.String(),
     )
 
     analytics_for_meetings_per_room = graphene.Field(
@@ -328,27 +356,12 @@ class Query(graphene.ObjectType):
         return all_days_events
 
     @Auth.user_roles('Admin', 'Default User')
-    def resolve_analytics_for_most_booked_rooms(
-            self, info, start_date, end_date=None):
-        query = Room.get_query(info)
-        active_rooms = query.filter(RoomModel.state == "active")
-        most_booked = RoomAnalytics.get_booked_rooms(
-            self, active_rooms, start_date, end_date
-        )[:10]
-        room_most_booked_per_week = Analytics(
-            analytics=most_booked
+    def resolve_analytics_for_booked_rooms(self, info, **kwargs):
+        start_date, criteria, end_date, limit = (
+            kwargs.get('start_date', ''),
+            kwargs.get('criteria', None),
+            kwargs.get('end_date', None),
+            kwargs.get('limit', None)
         )
-        return room_most_booked_per_week
-
-    @Auth.user_roles('Admin', 'Default User')
-    def resolve_analytics_for_least_booked_rooms(
-            self, info, start_date, end_date=None):
-        query = Room.get_query(info)
-        active_rooms = query.filter(RoomModel.state == "active")
-        least_booked = RoomAnalytics.get_booked_rooms(
-            self, active_rooms, start_date, end_date
-        )[-10:]
-        room_least_booked_per_week = Analytics(
-            analytics=least_booked
-        )
-        return room_least_booked_per_week
+        return resolve_booked_rooms_analytics(
+            self, info, start_date, end_date, limit, criteria)
