@@ -132,12 +132,10 @@ class DeleteLocation(graphene.Mutation):
 
 
 class Query(graphene.ObjectType):
-    """
-        Query for locations
-    """
     all_locations = graphene.List(
-        Location,
-        description="Returns a list of all locations")
+        Location, description="Returns a list of all locations and their\
+        respective office structure"
+    )
     get_rooms_in_a_location = graphene.List(
         lambda: Room,
         location_id=graphene.Int(),

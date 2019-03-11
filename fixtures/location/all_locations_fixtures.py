@@ -3,6 +3,13 @@ all_locations_query = '''
     allLocations{
         name
         abbreviation
+        structureInfo{
+            name
+            nodes{
+                name
+                level
+            }
+        }
         rooms {
             name
             roomType
@@ -23,6 +30,19 @@ expected_query_all_locations = {
             {
                 "name": "Kampala",
                 "abbreviation": "KLA",
+                "structureInfo": {
+                    "name": "location",
+                    "nodes": [
+                        {
+                            "name": "location",
+                            "level": 1,
+                        },
+                        {
+                            "name": "wings",
+                            "level": 2
+                        }
+                    ]
+                },
                 "rooms": [
                     {
                         "name": "Entebbe",
@@ -41,11 +61,38 @@ expected_query_all_locations = {
             {
                 "name": "Lagos",
                 "abbreviation": "LOS",
+                "structureInfo": {
+                    "name": "location",
+
+                    "nodes": [
+                        {
+                            "name": "location",
+                            "level": 1,
+                        },
+                        {
+                            "name": "wings",
+                            "level": 2
+                        }
+                    ]
+                },
                 "rooms": []
             },
             {
                 "name": "Nairobi",
                 "abbreviation": "NBO",
+                "structureInfo": {
+                    "name": "location",
+                    "nodes": [
+                        {
+                            "name": "location",
+                            "level": 1,
+                        },
+                        {
+                            "name": "wings",
+                            "level": 2
+                        }
+                    ],
+                },
                 "rooms": []
             }
         ]

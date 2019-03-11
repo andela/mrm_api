@@ -38,3 +38,11 @@ class OfficeStructure(Base, Utility, BaseNestedSets):
         db_session.add_all(nodes)
 
         db_session.commit()
+
+    @property
+    def nodes(self):
+        """
+        Function to return all the nodes
+        """
+        nodes = OfficeStructure.query.filter_by(tree_id=self.tree_id).all()
+        return nodes

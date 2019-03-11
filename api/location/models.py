@@ -34,6 +34,7 @@ class Location(Base, Utility):
         nullable=False
     )
     structure = Column(String, nullable=True)
+    structure_info = relationship('OfficeStructure')
     rooms = relationship(
         'Room', cascade="all, delete-orphan",
         order_by="func.lower(Room.name)")
