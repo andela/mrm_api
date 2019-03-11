@@ -6,9 +6,11 @@ from fixtures.questions.create_questions_fixtures import (
    create_question_query,
    create_question_response,
    question_mutation_query_without_name,
+   question_mutation_with_very_long_title,
    create_question_query_with_early_startDate,
    create_question_query_with_early_endDate,
-   question_mutation_query_with_invalid_question_type
+   question_mutation_query_with_invalid_question_type,
+   question_mutation_query_with_spaces_only_title
 )
 
 
@@ -26,6 +28,17 @@ class TestCreateBlock(BaseTestCase):
             self,
             create_question_query,
             create_question_response
+        )
+
+    def test_create_question_with_long_title(self):
+        """
+        Testing create question with title more
+        than 20 characters
+        """
+        CommonTestCases.admin_token_assert_in(
+            self,
+            question_mutation_with_very_long_title,
+            "questionTitle should be less that 20 characters"
         )
 
     def test_question_creation_with_name_empty(self):
@@ -46,6 +59,16 @@ class TestCreateBlock(BaseTestCase):
             self,
             question_mutation_query_with_invalid_question_type,
             "Not a valid question type"
+        )
+
+    def test_question_creation_with_spaces_only(self):
+        """
+        Test question creation with spaces only
+        """
+        CommonTestCases.admin_token_assert_in(
+            self,
+            question_mutation_query_with_spaces_only_title,
+            "question_title is required field"
         )
 
     def test_question_creation_with_wrong_startDate(self):

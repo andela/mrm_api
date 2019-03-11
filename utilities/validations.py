@@ -22,8 +22,20 @@ def validate_empty_fields(**kwargs):
     """
     for field in kwargs:
         value = kwargs.get(field)
+        if isinstance(value, str):
+            value = value.strip()
         if not type(value) is bool and not value:
             raise AttributeError(field + " is required field")
+
+
+def validate_question_length(question_title):
+    """
+    Function to validate the question length is less than
+    20 characters
+    :params question
+    """
+    if not len(question_title) < 20:
+        raise AttributeError("questionTitle should be less that 20 characters")
 
 
 def validate_date_time_range(**kwargs):
