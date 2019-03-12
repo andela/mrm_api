@@ -2,7 +2,8 @@ from tests.base import BaseTestCase, CommonTestCases
 from fixtures.office_structure.create_node_fixtures import (
     node_creation_mutation,
     duplicate_node_creation,
-    child_node_creation_mutation_with_non_existent_parent_id
+    child_node_creation_mutation_with_non_existent_parent_id,
+    node_creation_mutation_with_non_existent_tag_id
 )
 from api.office_structure.models import OfficeStructure
 
@@ -43,6 +44,18 @@ class TestAddNode(BaseTestCase):
             "Parent node ID Provided does not exist"
         )
 
+    def test_add_node_with_non_existent_tag_id(self):
+        """
+        Tests an admin can not create
+        a node with a non_existent
+        tagId
+        """
+        CommonTestCases.admin_token_assert_in(
+            self,
+            node_creation_mutation_with_non_existent_tag_id,
+            "Tag ID Provided does not exist"
+        )
+
     def test_add_node_method(self):
         """
         Tests a node can be
@@ -60,6 +73,8 @@ class TestAddNode(BaseTestCase):
         self.assertEqual(child_node.parent_id, 1)
         nodes = OfficeStructure.query.all()
         self.assertEqual(len(nodes), 4)
+        node_tags = OfficeStructure.query.filter_by(id=1).first()
+        self.assertEqual(node_tags.tag_id, 1)
 
     def test_add_branch(self):
         """

@@ -4,6 +4,7 @@ from helpers.calendar.credentials import (
     get_google_calendar_events)
 
 from api.location.models import Location
+from api.tag.models import Tag as TagModel
 
 
 def verify_email(email):
@@ -23,6 +24,16 @@ def verify_location_id(kwargs):
     if location_id and not Location.query.filter_by(id=location_id,
                                                     state="active").first():
         raise AttributeError("Location Id does not exist")
+
+
+def verify_tag_id(tag_id):
+    """
+    Function to validate tag ID
+    when creating a node or a child
+    """
+    tag_id = TagModel.query.filter_by(id=tag_id).first()
+    if not tag_id:
+        raise GraphQLError("Tag ID Provided does not exist")
 
 
 class ErrorHandler():

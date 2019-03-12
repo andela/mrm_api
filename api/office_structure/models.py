@@ -21,12 +21,12 @@ class OfficeStructure(Base, Utility, BaseNestedSets):
     def __repr__(self):
         return "<OfficeStructure {}>".format(self.name)
 
-    def add_node(self, name, parent_id=None):
+    def add_node(self, **kwargs):
         """Function for adding nodes"""
-        if parent_id is None:
-            db_session.add(OfficeStructure(name=name))
-        else:
-            db_session.add(OfficeStructure(name=name, parent_id=parent_id))
+        db_session.add(OfficeStructure(
+                name=kwargs['name'],
+                parent_id=kwargs.get('parent_id', None),
+                tag_id=kwargs.get('tag_id', None)))
 
         db_session.commit()
 

@@ -62,7 +62,11 @@ class BaseTestCase(TestCase):
             role.save()
             admin_user.roles.append(role)
             lagos_admin.roles.append(role)
-            root_node = OfficeStructure(name='location')
+            tag = Tag(name='Block-B',
+                      color='green',
+                      description='The description')
+            tag.save()
+            root_node = OfficeStructure(name='location', tag_id=1)
             root_node.save()
             leaf_node = OfficeStructure(name='wings', parent_id=1)
             leaf_node.save()
@@ -79,10 +83,6 @@ class BaseTestCase(TestCase):
                                       abbreviation='LOS',
                                       structure_id=1)
             location_three.save()
-            tag = Tag(name='Block-B',
-                      color='green',
-                      description='The description')
-            tag.save()
             tag_two = Tag(name='Block-C',
                           color='blue',
                           description='The description')
