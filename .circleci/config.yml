@@ -244,7 +244,6 @@ jobs:
             export PATH=$PATH:/usr/local/gcloud/google-cloud-sdk/bin
             GIT_HASH=$(echo $CIRCLE_SHA1 | cut -c -7)
             if [ "$CIRCLE_BRANCH" == master ]; then
-              git checkout develop
               docker login -u _json_key -p "$(echo $GOOGLE_CREDENTIALS_STAGING | base64 --decode )" https://gcr.io
               gsutil cp gs://${BACKEND_BASE_IMAGE_VERSION_PATH_PRODUCTION}current_version .
               VERSION=$(cat current_version)
@@ -256,7 +255,6 @@ jobs:
               echo ${GIT_HASH} > current_version
               gsutil cp current_version gs://${PRODUCTION_BACKEND_IMAGE_VERSION_PATH}
             elif [ "$CIRCLE_BRANCH" == develop ]; then
-              git checkout develop
               docker login -u _json_key -p "$(echo $GOOGLE_CREDENTIALS_STAGING | base64 --decode )" https://gcr.io
               gsutil cp gs://${BACKEND_BASE_IMAGE_VERSION_PATH_STAGING}current_version .
               VERSION=$(cat current_version)
