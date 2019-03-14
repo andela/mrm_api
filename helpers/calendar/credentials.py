@@ -38,12 +38,15 @@ class Credentials():
 
 
 def get_google_calendar_events(calendarId=None, timeMin=None,
-                               timeMax=None, singleEvents=None, orderBy=None):
+                               timeMax=None, singleEvents=None, orderBy=None,
+                               syncToken=None, pageToken=None
+                               ):
     credentials = Credentials()
     service = credentials.set_api_credentials()
     events = service.events().list(calendarId=calendarId, timeMin=timeMin,
                                    timeMax=timeMax, singleEvents=singleEvents,
-                                   orderBy=orderBy).execute()
+                                   orderBy=orderBy, syncToken=syncToken,
+                                   pageToken=pageToken).execute()
     return events
 
 

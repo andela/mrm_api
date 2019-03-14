@@ -127,6 +127,7 @@ class BaseTestCase(TestCase):
                 event_title="Onboarding",
                 start_time="2018-07-11T09:00:00Z",
                 end_time="2018-07-11T09:45:00Z",
+                number_of_participants=4,
                 checked_in=False,
                 cancelled=False)
             event.save()

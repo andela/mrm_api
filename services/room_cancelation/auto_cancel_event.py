@@ -95,7 +95,8 @@ class UpdateRecurringEvent():
             start_date = event["start_date"]
             end_date = event["end_date"]
             new_recurring_event = EventsModel(
-                event_id=event["recurring_event_id"],
+                event_id=event["event_id"],
+                recurring_event=event["recurring_event_id"],
                 room_id=event["room_id"],
                 event_title=event["event_summary"],
                 start_time=start_date,
@@ -104,14 +105,16 @@ class UpdateRecurringEvent():
                 cancelled=False)
             event_query = EventsModel.query
             calendar_id = event["calendar_id"]
-            event_id = event["recurring_event_id"]
+            recurring_event_id = event["recurring_event_id"]
             service = Credentials().set_api_credentials()
             missed_checkins = event_query.filter(
-                EventsModel.event_id == event["recurring_event_id"] and
+                EventsModel.recuring_event_id == event["recurring_event_id"] and
                 EventsModel.checked_in == "False")
             if missed_checkins.count() >= 3:
                 event = service.events().get(
-                    calendarId=calendar_id, eventId=event_id).execute()
+                    calendarId=calendar_id,
+                    eventId=recurring_event_id
+                ).execute()
                 attendees = event["attendees"]
                 room_index = self.get_room_index_from_attendees(
                     attendees,
@@ -120,7 +123,7 @@ class UpdateRecurringEvent():
                 event["attendees"][room_index]["responseStatus"] = "declined"
                 service.events().patch(
                     calendarId=calendar_id,
-                    eventId=event_id,
+                    eventId=recurring_event_id,
                     body=event,
                     sendUpdates="all").execute()
                 for missed_checkin in missed_checkins:
@@ -128,8 +131,7 @@ class UpdateRecurringEvent():
                     missed_checkin.save()
             else:
                 event_exists = event_query.filter_by(
-                    start_time=start_date,
-                    event_id=event["recurring_event_id"]
+                    event_id=event["event_id"]
                 )
                 if not event_exists.count():
                     new_recurring_event.save()

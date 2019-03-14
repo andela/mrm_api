@@ -39,6 +39,7 @@ class Room(Base, Utility):
     firebase_token = Column(String, nullable=True)
     cancellation_duration = Column(Integer, default=10)
     state = Column(Enum(StateType), default="active")
+    next_sync_token = Column(String, nullable=True)
     resources = relationship(
         'Resource', cascade="all, delete-orphan",
         order_by="func.lower(Resource.name)")
