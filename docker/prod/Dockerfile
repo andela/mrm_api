@@ -1,4 +1,4 @@
-FROM ${IMAGE}
+FROM {{IMAGE}}
 
 WORKDIR /app
 
