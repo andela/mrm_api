@@ -110,7 +110,7 @@ class CommonAnalytics(Credentials):
                 timeMax=max_limit, singleEvents=True,
                 orderBy='startTime')
         except Exception:
-            raise GraphQLError("Resource not found")
+            return []
         all_events = events_result.get('items', [])
         return all_events
 

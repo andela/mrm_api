@@ -101,6 +101,26 @@ get_room_usage_anaytics_response = {
     }
 }
 
+get_room_usage_no_meetings_analytics = '''
+    {
+    analyticsForMeetingsPerRoom(
+        startDate:"Aug 12 2018" endDate:"Aug 12 2018"){
+            analytics{
+                roomName
+                count
+            }
+        }
+    }
+'''
+
+get_room_usage_no_meetings_anaytics_response = {
+    "data": {
+        "analyticsForMeetingsPerRoom": {
+            "analytics": []
+        }
+    }
+}
+
 get_least_used_room_per_month = '''
     {
         analyticsForLeastUsedRooms(startDate:"Jul 1 2018", endDate:"Jul 31 2018")  # noqa: E501
