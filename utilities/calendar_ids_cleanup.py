@@ -21,7 +21,7 @@ class Query(graphene.ObjectType):
         Deletes all rooms with invalid calendar IDs.
         '''
         query = RoomModel.query
-        calendar_ids = CommonAnalytics.get_calendar_id_name(self, query)
+        calendar_ids = CommonAnalytics.get_room_details(self, query)
 
         invalid_rooms = []
         message = "All rooms have valid calendar IDs"

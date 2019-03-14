@@ -4,7 +4,7 @@ false = False
 
 get_daily_meetings_total_duration_query = '''
 query {
-    analyticsForMeetingsDurations(startDate:"sep 10 2018"){
+    analyticsForMeetingsDurations(startDate:"Jul 11 2018"){
         MeetingsDurationaAnalytics{
             roomName
             count
@@ -24,13 +24,9 @@ get_daily_meetings_total_duration_response = {
             "MeetingsDurationaAnalytics": [
                 {
                     "roomName": "Entebbe",
-                    "count": 2,
-                    "totalDuration": 75,
+                    "count": 1,
+                    "totalDuration": 45,
                     "events": [
-                        {
-                            "durationInMinutes": 30,
-                            "numberOfMeetings": 1
-                        },
                         {
                             "durationInMinutes": 45,
                             "numberOfMeetings": 1
@@ -60,7 +56,7 @@ query {
 
 get_weekly_meetings_total_duration_query = '''
 query {
-    analyticsForMeetingsDurations(startDate:"Jan 3 2018", endDate:"Jan 9 2018"){  # noqa: E501
+    analyticsForMeetingsDurations(startDate:"Jul 11 2018", endDate:"Jul 11 2018"){  # noqa: E501
         MeetingsDurationaAnalytics{
             roomName
             count
@@ -80,13 +76,9 @@ get_weekly_meetings_total_duration_response = {
             'MeetingsDurationaAnalytics': [
                 {
                     'roomName': 'Entebbe',
-                    'count': 2,
-                    'totalDuration': 75,
+                    'count': 1,
+                    'totalDuration': 45,
                     "events": [
-                        {
-                            "durationInMinutes": 30,
-                            "numberOfMeetings": 1
-                        },
                         {
                             "durationInMinutes": 45,
                             "numberOfMeetings": 1
@@ -96,7 +88,7 @@ get_weekly_meetings_total_duration_response = {
 
 get_paginated_meetings_total_duration_query = '''
 query {
-    analyticsForMeetingsDurations(startDate:"sep 10 2018", perPage:1, page:1){
+    analyticsForMeetingsDurations(startDate:"Jul 11 2018", perPage:1, page:1){
     hasPrevious,
     hasNext,
     pages,
@@ -122,13 +114,9 @@ get_paginated_meetings_total_duration_response = {
       "MeetingsDurationaAnalytics": [
         {
           "roomName": "Entebbe",
-          "count": 2,
-          "totalDuration": 75,
+          "count": 1,
+          "totalDuration": 45,
           "events": [
-                        {
-                            "durationInMinutes": 30,
-                            "numberOfMeetings": 1
-                        },
                         {
                             "durationInMinutes": 45,
                             "numberOfMeetings": 1
@@ -142,7 +130,7 @@ get_paginated_meetings_total_duration_response = {
 
 get_paginated_meetings_total_duration_query_invalid_page = '''
 query {
-    analyticsForMeetingsDurations(startDate:"sep 10 2018", perPage:1, page:100){
+    analyticsForMeetingsDurations(startDate:"Jul 11 2018", perPage:1, page:100){
     hasPrevious,
     hasNext,
     pages,

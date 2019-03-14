@@ -1,6 +1,6 @@
 daily_room_events_query = '''
 query{
-    analyticsForDailyRoomEvents(startDate:"jan 10 2019", endDate:"jan 10 2019"){
+    analyticsForDailyRoomEvents(startDate:"Jul 11 2018", endDate:"Jul 11 2018"){
         day
         events{
             eventSummary
@@ -14,7 +14,7 @@ query{
 '''
 daily_room_events_wrong_date_format_query = '''
 query{
-    analyticsForDailyRoomEvents(startDate:"10 jan 2019", endDate:"jan 10 2019"){
+    analyticsForDailyRoomEvents(startDate:"10 jan 2019", endDate:"10 jan 2019"){
         day
         events{
             eventSummary
@@ -30,21 +30,14 @@ query{
 daily_room_events_response = {
     "data": {
         "analyticsForDailyRoomEvents": [{
-            "day": "Tue Jan 22 2019",
+            "day": "Wed Jul 11 2018",
             "events": [
                 {
-                    'endTime': '14:00:00',
-                    'eventSummary': 'SD sync',
-                    'noOfParticipants': 3,
+                    'endTime': '09:45:00',
+                    'eventSummary': 'Onboarding',
+                    'noOfParticipants': 4,
                     'roomName': 'Entebbe',
-                    'startTime': '13:30:00'
-                },
-                {
-                    'endTime': '14:45:00',
-                    'eventSummary': 'Uzo<>Philip',
-                    'noOfParticipants': 6,
-                    'roomName': 'Entebbe',
-                    'startTime': '14:00:00'
+                    'startTime': '09:00:00'
                 }
             ]
         }]

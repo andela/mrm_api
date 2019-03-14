@@ -14,7 +14,7 @@ event_ratio_query = '''query {
 event_ratio_response = {
     "data": {
         "analyticsRatios": {
-            "bookings": 2,
+            "bookings": 1,
             "checkins": 0,
             "cancellations": 0,
             "cancellationsPercentage": 0,
@@ -26,7 +26,7 @@ event_ratio_response = {
 }
 
 event_ratio_for_one_day_query = '''query {
-    analyticsRatios(startDate:"Jul 10 2018"){
+    analyticsRatios(startDate:"Jul 11 2018"){
         bookings
         checkins
         cancellations
@@ -38,7 +38,7 @@ event_ratio_for_one_day_query = '''query {
 }'''
 
 event_ratio_per_room_query = '''query{
-    analyticsRatiosPerRoom(startDate:"Aug 9 2018", endDate:"Aug 10 2018"){
+    analyticsRatiosPerRoom(startDate:"Jul 11 2018", endDate:"Jul 11 2018"){
         ratios{
             roomName
             bookings
@@ -58,7 +58,7 @@ event_ratio_per_room_response = {
             'ratios': [
                 {
                     'roomName': 'Entebbe',
-                    'bookings': 2,
+                    'bookings': 1,
                     'checkins': 0,
                     'checkinsPercentage': 0,
                     'cancellations': 0,
@@ -81,7 +81,7 @@ event_ratio_percentage_cancellation_query = '''query {
 event_ratio_percentage_cancellation_response = {
     "data": {
         "analyticsRatios": {
-            "cancellationsPercentage": 100.0
+            "cancellationsPercentage": 33.33333333333333
         }
     }
 }

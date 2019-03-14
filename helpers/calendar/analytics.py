@@ -1,12 +1,10 @@
 from collections import Counter
-from graphql import GraphQLError
-from .credentials import Credentials
 from helpers.calendar.analytics_helper import (
     CommonAnalytics, EventsDuration, RoomStatistics
 )
 
 
-class RoomAnalytics(Credentials):
+class RoomAnalytics:
     """Get room analytics
        :methods
            get_events_number_meetings_room_analytics
@@ -24,20 +22,21 @@ class RoomAnalytics(Credentials):
         """
         start_date, end_date = CommonAnalytics.convert_dates(
             self, start_date, end_date)
-        rooms_available = CommonAnalytics.get_calendar_id_name(
+        rooms_available = CommonAnalytics.get_room_details(
             self, query)
         result, number_of_meetings = [], []
         for room in rooms_available:
             all_events = CommonAnalytics.get_all_events_in_a_room(
-                self, room['calendar_id'], start_date, end_date)
+                self, room['room_id'], start_date, end_date)
             output = []
             if not all_events:
-                output.append({'RoomName': room['name'], 'has_events': False})
+                output.append({'roomName': room['name']})
                 number_of_meetings.append(0)
             else:
                 for event in all_events:
-                    if event.get('attendees'):
-                        event_details = CommonAnalytics.get_event_details(self, event, room['calendar_id'])  # noqa: E501
+                    if event['participants']:
+                        event_details = CommonAnalytics.get_event_details(
+                            self, query, event, room['room_id'])
                         output.append(event_details)
                 number_of_meetings.append(len(output))
             result.append(output)
@@ -75,12 +74,12 @@ class RoomAnalytics(Credentials):
         """
         start_date, end_date = CommonAnalytics.convert_dates(
             self, start_date, end_date)
-        rooms_available = CommonAnalytics.get_calendar_id_name(
+        rooms_available = CommonAnalytics.get_room_details(
             self, query)
         res = []
         for room in rooms_available:
             all_events = CommonAnalytics.get_all_events_in_a_room(
-                self, room['calendar_id'], start_date, end_date)
+                self, room['room_id'], start_date, end_date)
             room_details = RoomStatistics(room_name=room["name"], count=len(all_events))  # noqa: E501
             res.append(room_details)
         return res
@@ -93,15 +92,16 @@ class RoomAnalytics(Credentials):
         """
         start_date, end_date = CommonAnalytics.validate_current_date(
             self, start_date, end_date)
-        rooms = CommonAnalytics.get_calendar_id_name(
+        rooms = CommonAnalytics.get_room_details(
             self, query)
         result = []
         for room in rooms:
-            events = CommonAnalytics.get_all_events_in_a_room(self, room['calendar_id'], start_date, end_date)  # noqa: E501
+            events = CommonAnalytics.get_all_events_in_a_room(
+                self, room['room_id'], start_date, end_date)
             events_duration = []
             for event in events:
-                start = event['start'].get('dateTime', event['start'].get('date'))  # noqa: E501
-                end = event['end'].get('dateTime', event['end'].get('date'))
+                start = event['event_start_time']
+                end = event['event_end_time']
                 duration = CommonAnalytics.get_time_duration_for_event(self, start, end)  # noqa: E501
                 events_duration.append(duration)
 
@@ -131,23 +131,26 @@ class RoomAnalytics(Credentials):
         """
         start_date, end_date = CommonAnalytics.convert_dates(
             self, start_date, end_date)
-        rooms_available = CommonAnalytics.get_calendar_id_name(
+        rooms_available = CommonAnalytics.get_room_details(
             self, query)
         result = []
         bookings = 0
         for room in rooms_available:
             all_events_in_all_rooms = CommonAnalytics.get_all_events_in_a_room(
-                self, room['calendar_id'], start_date, end_date)
+                self, room['room_id'], start_date, end_date)
             if all_events_in_all_rooms:
                 bookings += len(all_events_in_all_rooms)
 
         for room in rooms_available:
             all_events = CommonAnalytics.get_all_events_in_a_room(
-                self, room['calendar_id'], start_date, end_date)
-            try:
-                room_details = RoomStatistics(room_name=room["name"], meetings=len(all_events), percentage=(len(all_events))/bookings*100)  # noqa: E501
-            except ZeroDivisionError:
-                raise GraphQLError("There are no meetings")
+                self, room['room_id'], start_date, end_date)
+            room_details = RoomStatistics(
+                                            room_name=room["name"],
+                                            meetings=len(all_events),
+                                            percentage=(
+                                                len(all_events))/bookings*100
+                                        )
+
             result.append(room_details)
             result.sort(key=lambda x: x.meetings, reverse=True)
         return result

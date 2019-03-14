@@ -15,7 +15,7 @@ class AnalyticsReport():
            get_least_used_rooms
     """
 
-    def get_dataframe(self, rooms_available, start_date, end_date):
+    def get_dataframe(self, query, rooms_available, start_date, end_date):
         """ Get all rooms data in a dataframe
          :params
             - rooms_available
@@ -35,7 +35,7 @@ class AnalyticsReport():
             for event in all_events:
                 if event.get('attendees'):
                     event_details = CommonAnalytics.get_event_details(
-                        self, event, room['calendar_id'])
+                        self, query, event, room['calendar_id'])
                     event_details['attendees'] = len(event.get('attendees'))
                     all_rooms_data_df.append(event_details)
         return pd.DataFrame(all_rooms_data_df)
@@ -44,7 +44,7 @@ class AnalyticsReport():
         '''
         Get a summarry data for all rooms in a dataframe
         '''
-        rooms_available = CommonAnalytics.get_calendar_id_name(self, query)
+        rooms_available = CommonAnalytics.get_room_details(self, query)
         all_rooms_data_df = AnalyticsReport.get_dataframe(
             self, rooms_available, start_date, end_date)
 
