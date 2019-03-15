@@ -103,7 +103,7 @@ class CreateRoom(graphene.Mutation):
         room_type = graphene.String()
         capacity = graphene.Int(required=True)
         image_url = graphene.String()
-        location_id = graphene.Int()
+        location_id = graphene.Int(required=True)
         floor_id = graphene.Int(required=True)
         calendar_id = graphene.String()
         office_id = graphene.Int(required=True)
