@@ -172,3 +172,27 @@ get_paginated_meetings_total_duration_invalid_page_result = {
         "analyticsForMeetingsDurations": null
     }
 }
+
+get_weekly_meetings_total_duration_no_meetings_query = '''
+query {
+    analyticsForMeetingsDurations(startDate:"Aug 12 2018", endDate:"Aug 12 2018"){  # noqa: E501
+        MeetingsDurationaAnalytics{
+            roomName
+            count
+            totalDuration
+            events{
+                durationInMinutes
+                numberOfMeetings
+            }
+        }
+    }
+}
+'''
+
+get_weekly_meetings_total_duration_no_meetings_response = {
+    'data': {
+        'analyticsForMeetingsDurations': {
+            'MeetingsDurationaAnalytics': []
+        }
+    }
+}

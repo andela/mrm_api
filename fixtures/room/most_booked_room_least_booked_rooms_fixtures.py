@@ -74,10 +74,10 @@ top_ten_response = {
   }
 }
 
-test_for_division_error = '''
+test_for_no_meetings = '''
     {
         analyticsForBookedRooms(
-            startDate:"Aug 8 2018", endDate: "Aug 12 2018", limit:10)
+            startDate:"Aug 12 2018", endDate: "Aug 12 2018", limit:10)
         {
             analytics {
                 roomName
@@ -87,3 +87,11 @@ test_for_division_error = '''
         }
     }
 '''
+
+test_for_no_meetings_response = {
+  "data": {
+    "analyticsForBookedRooms": {
+      "analytics": []
+    }
+  }
+}

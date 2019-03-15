@@ -1,5 +1,4 @@
 from collections import Counter
-from graphql import GraphQLError
 from .credentials import Credentials
 from helpers.calendar.analytics_helper import (
     CommonAnalytics, EventsDuration, RoomStatistics
@@ -81,6 +80,8 @@ class RoomAnalytics(Credentials):
         for room in rooms_available:
             all_events = CommonAnalytics.get_all_events_in_a_room(
                 self, room['calendar_id'], start_date, end_date)
+            if len(all_events) == 0:
+                continue
             room_details = RoomStatistics(room_name=room["name"], count=len(all_events))  # noqa: E501
             res.append(room_details)
         return res
@@ -98,6 +99,8 @@ class RoomAnalytics(Credentials):
         result = []
         for room in rooms:
             events = CommonAnalytics.get_all_events_in_a_room(self, room['calendar_id'], start_date, end_date)  # noqa: E501
+            if len(events) == 0:
+                continue
             events_duration = []
             for event in events:
                 start = event['start'].get('dateTime', event['start'].get('date'))  # noqa: E501
@@ -144,10 +147,9 @@ class RoomAnalytics(Credentials):
         for room in rooms_available:
             all_events = CommonAnalytics.get_all_events_in_a_room(
                 self, room['calendar_id'], start_date, end_date)
-            try:
-                room_details = RoomStatistics(room_name=room["name"], meetings=len(all_events), percentage=(len(all_events))/bookings*100)  # noqa: E501
-            except ZeroDivisionError:
-                raise GraphQLError("There are no meetings")
+            if len(all_events) == 0:
+                continue
+            room_details = RoomStatistics(room_name=room["name"], meetings=len(all_events), percentage=(len(all_events))/bookings*100)  # noqa: E501
             result.append(room_details)
             result.sort(key=lambda x: x.meetings, reverse=True)
         return result
