@@ -121,7 +121,8 @@ class BaseTestCase(TestCase):
                 question_title="Rating Feedback",
                 question="How will you rate the brightness of the room",
                 start_date="20 Nov 2018",
-                end_date="28 Nov 2018"
+                end_date="28 Nov 2018",
+                is_active=True
             )
             question_1.save()
             question_2 = Question(
@@ -129,7 +130,8 @@ class BaseTestCase(TestCase):
                 question_title="check Feedback",
                 question="Is there anything missing in the room",
                 start_date="20 Nov 2018",
-                end_date="28 Nov 2018"
+                end_date="30 Nov 2018",
+                is_active=True
             )
             event = Events(
                 event_id="test_id5",
