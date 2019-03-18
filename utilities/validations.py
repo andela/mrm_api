@@ -66,3 +66,16 @@ def validate_timezone_field(**kwargs):
     time_zone = kwargs['time_zone']
     if time_zone not in timezones:
         raise AttributeError("Not a valid time zone")
+
+
+def validate_question_type(**kwargs):
+    """
+    Function to validate the question types,
+    should allow only check, input and rate
+    :params kwargs
+    """
+    question_types = ['check', 'input', 'rate']
+    if 'question_type' in kwargs:
+        type = kwargs['question_type']
+        if type.lower() not in question_types:
+            raise AttributeError("Not a valid question type")

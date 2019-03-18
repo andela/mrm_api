@@ -5,7 +5,8 @@ from graphql import GraphQLError
 from api.question.models import Question as QuestionModel
 from utilities.validations import (
     validate_empty_fields,
-    validate_date_time_range
+    validate_date_time_range,
+    validate_question_type
     )
 from utilities.utility import update_entity_fields
 from helpers.auth.authentication import Auth
@@ -42,6 +43,7 @@ class CreateQuestion(graphene.Mutation):
     @Auth.user_roles('Admin')
     def mutate(self, info, **kwargs):
         validate_empty_fields(**kwargs)
+        validate_question_type(**kwargs)
         validate_date_time_range(**kwargs)
         question = QuestionModel(**kwargs)
         payload = {
@@ -96,6 +98,7 @@ class UpdateQuestion(graphene.Mutation):
     @Auth.user_roles('Admin')
     def mutate(self, info, question_id, **kwargs):
         validate_empty_fields(**kwargs)
+        validate_question_type(**kwargs)
         query_question = Question.get_query(info)
         active_questions = query_question.filter(
             QuestionModel.state == "active")
