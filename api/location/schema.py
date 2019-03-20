@@ -36,6 +36,7 @@ class CreateLocation(graphene.Mutation):
         time_zone = graphene.String(required=True)
         structure_id = graphene.Int(required=True)
         state = graphene.String()
+        structure = graphene.String()
     location = graphene.Field(Location)
 
     @Auth.user_roles('Admin')
@@ -44,6 +45,7 @@ class CreateLocation(graphene.Mutation):
         validate_country_field(**kwargs)
         validate_timezone_field(**kwargs)
         validate_url(**kwargs)
+        validate_empty_fields(**kwargs)
         location = LocationModel(**kwargs)
         admin = get_user_from_db()
         email = admin.email
@@ -66,6 +68,7 @@ class UpdateLocation(graphene.Mutation):
         country = graphene.String()
         image_url = graphene.String()
         time_zone = graphene.String()
+        structure = graphene.String()
     location = graphene.Field(Location)
 
     @Auth.user_roles('Admin')
@@ -83,8 +86,7 @@ class UpdateLocation(graphene.Mutation):
             validate_country_field(**kwargs)
         if "image_url" in kwargs:
             validate_url(**kwargs)
-        if "abbreviation" in kwargs:  # noqa
-            validate_empty_fields(**kwargs)
+        validate_empty_fields(**kwargs)
         active_locations = result.filter(
             LocationModel.name == kwargs.get('name'))
         if active_locations:
