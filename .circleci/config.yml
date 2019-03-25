@@ -29,7 +29,7 @@ defaults: &defaults
         SECRET_KEY: "********"
         POSTGRES_USER: postgres
         POSTGRES_DB: mrm_test_db
-        POSTGRES_PASSWORD:
+        POSTGRES_PASSWORD: ""
 
 # setup gcloud
 gcloud_setup: &gcloud_setup
@@ -317,6 +317,10 @@ jobs:
           name: Deploy to kubernetes
           command: |
             . .circleci/deploy_backend_to_kubernetes.sh
+
+      #notifications to slack
+      - *notify_success
+      - *notify_failure
 
 workflows:
   version: 2
