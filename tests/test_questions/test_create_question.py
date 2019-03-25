@@ -6,7 +6,8 @@ from fixtures.questions.create_questions_fixtures import (
    create_question_response,
    question_mutation_query_without_name,
    create_question_query_with_early_startDate,
-   create_question_query_with_early_endDate
+   create_question_query_with_early_endDate,
+   question_mutation_query_with_invalid_question_type
 )
 
 
@@ -34,6 +35,16 @@ class TestCreateBlock(BaseTestCase):
             self,
             question_mutation_query_without_name,
             "question_type is required field"
+        )
+
+    def test_question_creation_with_invalid_type(self):
+        """
+        Test question creation with field empty
+        """
+        CommonTestCases.admin_token_assert_in(
+            self,
+            question_mutation_query_with_invalid_question_type,
+            "Not a valid question type"
         )
 
     def test_question_creation_with_wrong_startDate(self):

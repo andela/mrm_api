@@ -80,3 +80,16 @@ def validate_parent_node_id(parent_id):
     parent_node = OfficeStructureModel.query.filter_by(id=parent_id).first()
     if not parent_node:
         raise GraphQLError("Parent node ID Provided does not exist")
+
+
+def validate_question_type(**kwargs):
+    """
+    Function to validate the question types,
+    should allow only check, input and rate
+    :params kwargs
+    """
+    question_types = ['check', 'input', 'rate']
+    if 'question_type' in kwargs:
+        type = kwargs['question_type']
+        if type.lower() not in question_types:
+            raise AttributeError("Not a valid question type")
