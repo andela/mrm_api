@@ -7,9 +7,9 @@ from collections import Counter
 from api.location.models import Location as LocationModel
 from helpers.room_filter.room_filter import room_join_location
 from helpers.auth.admin_roles import admin_roles
-from .credentials import Credentials, get_google_calendar_events
 from flask import request
 from flask_json import JsonError
+from api.events.models import Events as EventsModel
 
 
 class EventsDuration(graphene.ObjectType):
@@ -27,7 +27,7 @@ class RoomStatistics(graphene.ObjectType):
     percentage = graphene.Int()
 
 
-class CommonAnalytics(Credentials):
+class CommonAnalytics:
 
     def convert_dates(self, start_date, end_date):
         """
@@ -81,8 +81,8 @@ class CommonAnalytics(Credentials):
         event_duration = end_time - start_time
         return event_duration.seconds / 60
 
-    def get_calendar_id_name(self, query):
-        """ Get all room(name, calendar_id) in a location
+    def get_room_details(self, query):
+        """ Get all room(name, calendar_id, room_id) in a location
          :params
         """
         location_id = admin_roles.admin_location_for_analytics_view()
@@ -94,48 +94,51 @@ class CommonAnalytics(Credentials):
                 raise JsonError(Message='No rooms in this location')
             else:
                 raise GraphQLError("No rooms in this location")
-        result = [{'name': room.name, 'calendar_id': room.calendar_id}
-                  for room in rooms_in_locations.all()]
+        result = [{
+            'name': room.name,
+            'room_id': room.id,
+            'calendar_id': room.calendar_id
+        }for room in rooms_in_locations.all()]
         return result
 
-    def get_all_events_in_a_room(self, calendar_id, min_limit, max_limit):
+    def get_all_events_in_a_room(self,
+                                 room_id,
+                                 event_start_time,
+                                 event_end_time):
         """ Get all events in a room
          :params
-            - calendar_id - for specific room
-            - min_limit, max_limit(Time range)
+            - room_id - for specific room
+            - event_start_time, event_end_time(Time range)
         """
-        try:
-            events_result = get_google_calendar_events(
-                calendarId=calendar_id, timeMin=min_limit,
-                timeMax=max_limit, singleEvents=True,
-                orderBy='startTime')
-        except Exception:
-            raise GraphQLError("Resource not found")
-        all_events = events_result.get('items', [])
-        return all_events
+        events = EventsModel.query.all()
+        room_events = []
+        for event in events:
+            if event.room_id == room_id and not (
+                event.start_time < event_start_time or
+                    event.end_time > event_end_time):
+                room_event = {
+                    'room_id': event.room_id,
+                    'event_start_time': event.start_time,
+                    'event_end_time': event.end_time,
+                    'event_title': event.event_title,
+                    'participants': event.number_of_participants,
+                    'event_id': event.event_id,
+                }
+                room_events.append(room_event)
+        return room_events
 
-    def get_event_details(self, event, calendar_id):
+    def get_event_details(self, query, event, room_id):
         """ Filter details of an event
          :params
             - event
         """
         event_details = {}
-        if event.get('attendees'):
-            for resource in event.get('attendees'):
-                if resource.get('resource') and resource.get('email') == calendar_id:  # noqa: E501
-                    event_details["minutes"] = CommonAnalytics.get_time_duration_for_event(  # noqa: E501
-                        self,
-                        event['start'].get('dateTime', event['start'].get('date')),  # noqa: E501
-                        event['end'].get('dateTime', event['end'].get('date'))
-                    )
-                    event_details["roomName"] = resource.get(
-                        'displayName') or None
-                    event_details["summary"] = event.get("summary")
-        elif event.get('organizer') and event.get(
-                'organizer').get('email') == calendar_id:
-            event_details["roomName"] = event.get(
-                'organizer').get('displayName') or None
-            event_details["summary"] = event.get("summary")
+        rooms_available = CommonAnalytics.get_room_details(
+            self, query)
+        for room in rooms_available:
+            event_details["minutes"] = CommonAnalytics.get_time_duration_for_event(self, event['event_start_time'], event['event_end_time'])  # noqa: E501
+            event_details["roomName"] = room['name']
+            event_details["summary"] = event['event_title']
         return event_details
 
     def get_room_statistics(self, number_of_events_in_room, all_details):
@@ -148,13 +151,11 @@ class CommonAnalytics(Credentials):
         for room_details in all_details:
             if number_of_events_in_room == 0:   # pragma: no cover
                 for detail in room_details:
-                    if 'has_events' in detail.keys():
-                        output = RoomStatistics(
-                            room_name=detail['RoomName'],
-                            has_events=detail['has_events'],
-                            count=0)
-                        result.append(output)
-            elif len(room_details) == number_of_events_in_room and 'has_events' not in room_details[0].keys():  # noqa: E501
+                    output = RoomStatistics(
+                        room_name=detail['roomName'],
+                        count=0)
+                    result.append(output)
+            elif len(room_details) == number_of_events_in_room:
                 events_count = Counter(
                     detail['minutes'] for detail in room_details if detail)
                 duration_of_events_in_room = [
@@ -165,8 +166,7 @@ class CommonAnalytics(Credentials):
                 ]
                 output = RoomStatistics(room_name=room_details[0]['roomName'],
                                         count=number_of_events_in_room,
-                                        events=duration_of_events_in_room,
-                                        has_events=True
+                                        events=duration_of_events_in_room
                                         )
                 result.append(output)
         return result
@@ -174,10 +174,10 @@ class CommonAnalytics(Credentials):
     @staticmethod
     def get_total_bookings(self, query, start_date, end_date):
         bookings = 0
-        rooms = CommonAnalytics.get_calendar_id_name(self, query)
+        rooms = CommonAnalytics.get_room_details(self, query)
         for room in rooms:
             all_events = CommonAnalytics.get_all_events_in_a_room(
-                self, room["calendar_id"], start_date, end_date)
+                self, room["room_id"], start_date, end_date)
             if all_events:
                 bookings += len(all_events)
         return bookings

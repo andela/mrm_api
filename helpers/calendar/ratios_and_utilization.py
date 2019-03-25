@@ -1,6 +1,5 @@
 import dateutil.parser
 
-from .credentials import Credentials
 from helpers.calendar.analytics_helper import (CommonAnalytics)
 from api.room.models import Room as RoomModel
 from api.events.models import Events
@@ -8,7 +7,7 @@ from api.room.schema import (RatioOfCheckinsAndCancellations,
                              BookingsAnalyticsCount)
 
 
-class RoomAnalyticsRatios(Credentials):
+class RoomAnalyticsRatios:
     """Get room analytics ratios
        :methods
            get_least_used_room_week
@@ -21,7 +20,7 @@ class RoomAnalyticsRatios(Credentials):
         """
         start_date, day_after_end_date = CommonAnalytics.validate_current_date(
                 self, start, end)
-        rooms = CommonAnalytics.get_calendar_id_name(
+        rooms = CommonAnalytics.get_room_details(
             self, query)
 
         checkins = 0
@@ -30,7 +29,7 @@ class RoomAnalyticsRatios(Credentials):
         app_events_list = []
 
         for room in rooms:
-            checkins, cancellations, calendar_events_list, app_events_list = RoomAnalyticsRatios().retrieve_cancellations_and_checkins_for_room(room['calendar_id'], # noqa 
+            checkins, cancellations, calendar_events_list, app_events_list = RoomAnalyticsRatios().retrieve_cancellations_and_checkins_for_room(room['room_id'], # noqa 
                                                         start_date,
                                                         day_after_end_date,
                                                         checkins,
@@ -53,7 +52,7 @@ class RoomAnalyticsRatios(Credentials):
         """
         start_date, day_after_end_date = CommonAnalytics.validate_current_date(
                 self, start, end)
-        rooms = CommonAnalytics.get_calendar_id_name(
+        rooms = CommonAnalytics.get_room_details(
             self, query)
 
         response = []
@@ -63,7 +62,7 @@ class RoomAnalyticsRatios(Credentials):
             calendar_events_list = []
             app_events_list = []
 
-            checkins, cancellations, calendar_events_list, app_events_list = RoomAnalyticsRatios().retrieve_cancellations_and_checkins_for_room(room['calendar_id'], # noqa
+            checkins, cancellations, calendar_events_list, app_events_list = RoomAnalyticsRatios().retrieve_cancellations_and_checkins_for_room(room['room_id'], # noqa
                                                         start_date,
                                                         day_after_end_date,
                                                         checkins,
@@ -82,7 +81,7 @@ class RoomAnalyticsRatios(Credentials):
         return response
 
     def retrieve_cancellations_and_checkins_for_room(self,
-                                                     calendar_id,
+                                                     room_id,
                                                      start_date,
                                                      day_after_end_date,
                                                      checkins,
@@ -91,22 +90,16 @@ class RoomAnalyticsRatios(Credentials):
                                                      app_events_list):
         """ Retrieve cancellations and checkins for a room
         :params
-            - calendar_id, start_date, day_after_end_date,
+            - room_id, start_date, day_after_end_date,
                 checkins,cancellations, output
         """
         all_events = CommonAnalytics.get_all_events_in_a_room(
-                self, calendar_id, start_date, day_after_end_date)
+                self, room_id, start_date, day_after_end_date)
         if all_events:
             for event in all_events:
-                event_details = CommonAnalytics.get_event_details(
-                        self, event, calendar_id)
-                if event.get('attendees'):
-                    calendar_events_list.append(event_details)
-                if event.get('organizer') and event.get(
-                        'organizer').get('email') == calendar_id:
-                    app_events_list.append(event_details)
-
-        room_id = RoomModel.query.filter_by(calendar_id=calendar_id,).first().id  # noqa
+                if event['participants']:
+                    calendar_events_list.append(event)
+        room_id = RoomModel.query.filter_by(id=room_id).first().id
 
         checkins += (Events.query.filter(Events.room_id==room_id, Events.checked_in==True, Events.start_time>=start_date, Events.end_time<day_after_end_date)).count()  # noqa
 
