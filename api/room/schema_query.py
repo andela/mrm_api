@@ -10,7 +10,7 @@ from helpers.calendar.analytics import RoomStatistics  # noqa: E501
 from api.room.models import Room as RoomModel
 from helpers.auth.user_details import get_user_from_db
 from helpers.remote_rooms.remote_rooms_location import (
-     map_remote_room_location_to_filter
+    map_remote_room_location_to_filter
 )
 from api.room.schema import (RatioOfCheckinsAndCancellations,
                              BookingsAnalyticsCount)
@@ -124,7 +124,7 @@ class Query(graphene.ObjectType):
         AllRemoteRooms,
         description="Returns a list of all remote rooms",
         return_all=graphene.Boolean()
-        )
+    )
 
     get_room_by_name = graphene.List(
         Room,
@@ -235,6 +235,7 @@ class Query(graphene.ObjectType):
         BookingsAnalyticsCount,
         start_date=graphene.String(required=True),
         end_date=graphene.String(required=True),
+        room_id=graphene.Int(),
         description="Returns the total number of room bookings and accepts the arguments\
             \n- start_date: Start date when you want to get analytics from\
             [required]\n- end_date: The end date to take the analytics upto\
@@ -270,7 +271,7 @@ class Query(graphene.ObjectType):
         while True:
             calendar_list = get_google_api_calendar_list(pageToken=page_token)
             for room_object in calendar_list['items']:
-                if 'andela.com' in room_object['id'] and room_object['id'].endswith( # noqa
+                if 'andela.com' in room_object['id'] and room_object['id'].endswith(  # noqa
                     'resource.calendar.google.com') and filter.get(location)(
                         room_object[
                             'summary'
@@ -376,11 +377,11 @@ class Query(graphene.ObjectType):
 
     @Auth.user_roles('Admin', 'Default User')
     def resolve_bookings_analytics_count(
-            self, info, start_date, end_date):
+            self, info, start_date, end_date, room_id=None):
         # Getting booking analytics count
         query = Room.get_query(info)
         analytics = RoomAnalyticsRatios.get_bookings_analytics_count(
-            self, query, start_date, end_date)
+            self, query, start_date, end_date, room_id=room_id)
         return analytics
 
     def resolve_analytics_for_daily_room_events(self, info,

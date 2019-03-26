@@ -92,6 +92,7 @@ class BookingsAnalyticsCount(graphene.ObjectType):
     """
     bookings = graphene.Int()
     period = graphene.String()
+    room_name = graphene.String()
 
 
 class CreateRoom(graphene.Mutation):
