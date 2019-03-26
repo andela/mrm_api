@@ -53,6 +53,24 @@ create_question_response = {
   }
 }
 
+question_mutation_with_very_long_title = '''
+     mutation{{
+  createQuestion(questionType:"Rate",
+  questionTitle:"This is a very very long question title"
+  question:"How will you rate the brightness of the room",
+  startDate:"{}", endDate:"{}") {{
+    question{{
+      id
+      question
+      questionType
+      startDate
+      endDate
+      }}
+  }}
+}}
+'''.format(start_date, end_date)
+
+
 question_mutation_query_without_name = '''
      mutation{{
   createQuestion(questionType:"",
@@ -75,6 +93,23 @@ question_mutation_query_with_invalid_question_type = '''
   createQuestion(questionType:"Rates",
   questionTitle:"Rating Feedback",
   question:"How will you rate the cleanliness of the room",
+  startDate:"{}", endDate:"{}") {{
+    question{{
+      id
+      question
+      questionType
+      startDate
+      endDate
+      }}
+  }}
+}}
+'''.format(start_date, end_date)
+
+question_mutation_query_with_spaces_only_title = '''
+     mutation{{
+  createQuestion(questionType:"Rating",
+  questionTitle:"  "
+  question:"How will you rate the brightness of the room",
   startDate:"{}", endDate:"{}") {{
     question{{
       id

@@ -6,7 +6,8 @@ from api.question.models import Question as QuestionModel
 from utilities.validations import (
     validate_empty_fields,
     validate_date_time_range,
-    validate_question_type
+    validate_question_type,
+    validate_question_length
     )
 from utilities.utility import update_entity_fields
 from helpers.auth.authentication import Auth
@@ -44,6 +45,7 @@ class CreateQuestion(graphene.Mutation):
     def mutate(self, info, **kwargs):
         validate_empty_fields(**kwargs)
         validate_question_type(**kwargs)
+        validate_question_length(kwargs['question_title'])
         validate_date_time_range(**kwargs)
         question = QuestionModel(**kwargs)
         payload = {
