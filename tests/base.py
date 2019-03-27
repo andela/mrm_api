@@ -67,17 +67,31 @@ class BaseTestCase(TestCase):
             leaf_node = OfficeStructure(name='wings', parent_id=1)
             leaf_node.save()
 
+            structure = Structure(
+                web_id='b05fc5f2-b4aa-4f48-a8fb-30bdcc3fc968',
+                level=1,
+                name='Epic tower',
+                parent_id=1,
+                tag='Building',
+                location_id=1,
+                position=1,
+            )
+            structure.save()
+
             location = Location(name='Kampala',
                                 abbreviation='KLA',
-                                structure_id=1)
+                                structure_id=1,
+                                office_structures_id=1)
             location.save()
             location_two = Location(name='Nairobi',
                                     abbreviation='NBO',
-                                    structure_id=1)
+                                    structure_id=1,
+                                    office_structures_id=1)
             location_two.save()
             location_three = Location(name='Lagos',
                                       abbreviation='LOS',
-                                      structure_id=1)
+                                      structure_id=1,
+                                      office_structures_id=1)
             location_three.save()
             tag = Tag(name='Block-B',
                       color='green',
@@ -156,16 +170,6 @@ class BaseTestCase(TestCase):
             )
             response_2.save()
             response_2.missing_resources.append(resource)
-            structure = Structure(
-                web_id='b05fc5f2-b4aa-4f48-a8fb-30bdcc3fc968',
-                level=1,
-                name='Epic tower',
-                parent_id=1,
-                tag='Building',
-                location_id=1,
-                position=1,
-            )
-            structure.save()
             db_session.commit()
 
     def tearDown(self):

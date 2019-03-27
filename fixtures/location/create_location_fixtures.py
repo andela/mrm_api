@@ -1,6 +1,6 @@
 create_location_query = '''
     mutation {
-  createLocation(name: "New", abbreviation: "KLA", country: "Uganda", timeZone: "EAST_AFRICA_TIME", imageUrl:"https://lala.com", structureId: 1) {   # noqa E501
+  createLocation(name: "New", abbreviation: "KLA", country: "Uganda", timeZone: "EAST_AFRICA_TIME", imageUrl:"https://lala.com", structureId: 1, officeStructuresId:1) {   # noqa E501
     location {
       name
     }
@@ -42,7 +42,10 @@ create_duplicate_location_query = '''
 mutation {
   createLocation(
     name: "Kampala", abbreviation: "KLA", country: "Uganda",
-    timeZone: "EAST_AFRICA_TIME", imageUrl:"https://lala.com", structureId: 1) {
+    timeZone: "EAST_AFRICA_TIME",
+    imageUrl:"https://lala.com",
+    structureId: 1,
+    officeStructuresId:1) {
     location {
       name
     }

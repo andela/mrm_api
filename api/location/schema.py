@@ -36,6 +36,7 @@ class CreateLocation(graphene.Mutation):
         time_zone = graphene.String(required=True)
         structure_id = graphene.Int(required=True)
         state = graphene.String()
+        office_structures_id = graphene.Int()
     location = graphene.Field(Location)
 
     @Auth.user_roles('Admin')
@@ -51,7 +52,7 @@ class CreateLocation(graphene.Mutation):
         admin_name = username.split(".")[0]
         payload = {
             'model': LocationModel, 'field': 'name', 'value':  kwargs['name']
-            }
+        }
         with SaveContextManager(location, 'Location', payload):
             if not send_email_notification(email, location.name, admin_name):
                 raise GraphQLError("Location created but email not sent")

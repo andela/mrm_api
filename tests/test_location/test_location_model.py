@@ -12,7 +12,8 @@ class TestLocationModel(BaseTestCase):
 
         test_location = Location(name='Kenya',
                                  abbreviation='KY',
-                                 structure_id=1)
+                                 structure_id=1,
+                                 office_structures_id=1)
         test_location.save()
 
         new_count = Location.query.count()
