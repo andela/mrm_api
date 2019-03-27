@@ -20,7 +20,7 @@ class Query(graphene.ObjectType):
 
     def resolve_get_structure_by_web_id(self, info, web_id):
         if not web_id.strip():
-            raise GraphQLError("Please input Structure id")
+            raise GraphQLError("Please input a valid structure webId")
         query = Structure.get_query(info)
         structure = query.filter(StructureModel.web_id == web_id).first()
         if not structure:
