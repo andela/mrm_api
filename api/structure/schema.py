@@ -18,4 +18,11 @@ class Query(graphene.ObjectType):
         query = Structure.get_query(info)
         return query.order_by(func.lower(StructureModel.name)).all()
 
-
+    def resolve_get_structure_by_web_id(self, info, web_id):
+        if not web_id.strip():
+            raise GraphQLError("Please input Structure id")
+        query = Structure.get_query(info)
+        structure = query.filter(StructureModel.web_id == web_id).first()
+        if not structure:
+            raise GraphQLError("Structure not found")
+        return structure
