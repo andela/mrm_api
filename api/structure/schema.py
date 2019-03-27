@@ -1,10 +1,10 @@
 import graphene
 from graphql import GraphQLError
-from datetime import datetime
 from graphene_sqlalchemy import SQLAlchemyObjectType
 from sqlalchemy import func
 from helpers.auth.authentication import Auth
 from api.structure.models import Structure as StructureModel
+
 
 class Structure(SQLAlchemyObjectType):
     class Meta:
@@ -13,7 +13,8 @@ class Structure(SQLAlchemyObjectType):
 
 class Query(graphene.ObjectType):
     all_structures = graphene.List(Structure)
-    get_structure_by_web_id = graphene.Field(Structure, web_id=graphene.String())
+    get_structure_by_web_id = \
+      graphene.Field(Structure, web_id=graphene.String())
 
     @Auth.user_roles('Admin')
     def resolve_all_structures(self, info):
