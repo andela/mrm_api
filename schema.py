@@ -14,6 +14,7 @@ import api.response.schema
 import api.response.schema_query
 import api.tag.schema
 import api.office_structure.schema
+import api.structure.schema
 
 
 class Query(
@@ -28,6 +29,7 @@ class Query(
     api.response.schema.Query,
     api.response.schema_query.Query,
     api.question.schema.Query,
+    api.structure.schema.Query
 ):
     pass
 
