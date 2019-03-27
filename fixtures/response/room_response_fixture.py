@@ -303,3 +303,66 @@ query_paginated_responses_empty_page = '''
 }
 }
 '''
+
+mark_response_as_resolved_mutation = '''
+    mutation{
+  resolveRoomResponse(responseId:1){
+    roomResponse{
+      resolved
+      id
+      rate
+      roomId
+    }
+  }
+}
+'''
+
+mark_user_response_as_resolved_mutation_response = {
+  "data": {
+    "resolveRoomResponse": {
+      "roomResponse": {
+        "resolved": True,
+        "id": "1",
+        "rate": 2,
+        "roomId": 1,
+      }
+    }
+  }
+}
+mark_response_as_resolved_mutation_with_an_invalid_response_id = '''
+    mutation{
+    resolveRoomResponse(responseId:4){
+        roomResponse{
+        resolved
+        id
+        rate
+        roomId
+        textArea
+        }
+    }
+}
+'''
+
+mark_a_user_response_as_unresolved_mutation = '''
+    mutation{
+  resolveRoomResponse(responseId:2){
+    roomResponse{
+      resolved
+      id
+      roomId
+    }
+  }
+}
+'''
+
+mark_a_user_response_as_unresolved_mutation_response = {
+  "data": {
+    "resolveRoomResponse": {
+      "roomResponse": {
+        "resolved": False,
+        "id": "2",
+        "roomId": 1,
+      }
+    }
+  }
+}

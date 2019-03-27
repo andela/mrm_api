@@ -14,38 +14,39 @@ import api.response.schema
 import api.response.schema_query
 import api.tag.schema
 import api.office_structure.schema
+import api.response.schema_query
 
 
 class Query(
-    api.location.schema.Query,
-    api.room.schema_query.Query,
-    api.room_resource.schema.Query,
-    api.role.schema.Query,
-    api.user.schema.Query,
-    api.devices.schema.Query,
-    utilities.calendar_ids_cleanup.Query,
-    api.notification.schema.Query,
-    api.response.schema.Query,
-    api.response.schema_query.Query,
-    api.question.schema.Query,
+        api.location.schema.Query,
+        api.room.schema_query.Query,
+        api.room_resource.schema.Query,
+        api.role.schema.Query,
+        api.user.schema.Query,
+        api.devices.schema.Query,
+        utilities.calendar_ids_cleanup.Query,
+        api.notification.schema.Query,
+        api.response.schema.Query,
+        api.response.schema_query.Query,
+        api.question.schema.Query,
 ):
     """Root for converge Graphql queries"""
     pass
 
 
 class Mutation(
-    api.room.schema.Mutation,
-    api.room_resource.schema.Mutation,
-    api.role.schema.Mutation,
-    api.user.schema.Mutation,
-    api.devices.schema.Mutation,
-    api.location.schema.Mutation,
-    api.events.schema.Mutation,
-    api.notification.schema.Mutation,
-    api.question.schema.Mutation,
-    api.response.schema.Mutation,
-    api.tag.schema.Mutation,
-    api.office_structure.schema.Mutation,
+        api.room.schema.Mutation,
+        api.room_resource.schema.Mutation,
+        api.role.schema.Mutation,
+        api.user.schema.Mutation,
+        api.devices.schema.Mutation,
+        api.location.schema.Mutation,
+        api.events.schema.Mutation,
+        api.notification.schema.Mutation,
+        api.question.schema.Mutation,
+        api.response.schema.Mutation,
+        api.tag.schema.Mutation,
+        api.office_structure.schema.Mutation,
 ):
     """The root query for implementing GraphQL mutations."""
     pass
