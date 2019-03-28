@@ -15,6 +15,7 @@ import api.response.schema_query
 import api.tag.schema
 import api.office_structure.schema
 import api.response.schema_query
+import api.structure.schema
 
 
 class Query(
@@ -47,6 +48,7 @@ class Mutation(
         api.response.schema.Mutation,
         api.tag.schema.Mutation,
         api.office_structure.schema.Mutation,
+        api.structure.schema.Mutation,
 ):
     """The root query for implementing GraphQL mutations."""
     pass
