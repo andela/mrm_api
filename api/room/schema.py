@@ -56,6 +56,7 @@ class RatioOfCheckinsAndCancellations(graphene.ObjectType):
                     via app \n- app_bookings_percentage: The field with the
                         percentage of room bookings via app
     """
+    room_id = graphene.Int()
     room_name = graphene.String()
     checkins = graphene.Int()
     cancellations = graphene.Int()
