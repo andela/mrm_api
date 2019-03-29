@@ -20,8 +20,6 @@ run_terraform() {
     cd ${HOME}/deployments/
     . .circleci/deploy_to_kubernetes.sh
     deploy
-    cat secrets/ssl_andela_certificate.crt
-    cat secrets/ssl_andela_key.key
 }
 
 main() {
