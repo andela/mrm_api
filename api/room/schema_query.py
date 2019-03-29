@@ -88,6 +88,17 @@ class DailyEvents(graphene.ObjectType):
     events = graphene.List(CalendarEvent)
 
 
+class PaginatedEvents(graphene.ObjectType):
+    """
+        Paginated result for daily room events
+        analytics
+    """
+    DailyRoomEvents = graphene.List(DailyEvents)
+    has_previous = graphene.Boolean()
+    has_next = graphene.Boolean()
+    pages = graphene.Int()
+
+
 class Query(graphene.ObjectType):
     all_rooms = graphene.Field(
         PaginatedRooms,
@@ -127,9 +138,11 @@ class Query(graphene.ObjectType):
     )
 
     analytics_for_daily_room_events = graphene.Field(
-        graphene.List(DailyEvents),
+        PaginatedEvents,
         start_date=graphene.String(required=True),
-        end_date=graphene.String(required=True)
+        end_date=graphene.String(required=True),
+        page=graphene.Int(),
+        per_page=graphene.Int(),
 
     )
 
@@ -325,9 +338,9 @@ class Query(graphene.ObjectType):
             self, query, start_date, end_date)
         return analytics
 
-    def resolve_analytics_for_daily_room_events(self, info,
-                                                start_date, end_date
-                                                ):
+    def resolve_analytics_for_daily_room_events(
+        self, info, start_date, end_date, page=None, per_page=None
+    ):
         start_date, end_date = CommonAnalytics().convert_dates(
             start_date, end_date
         )
@@ -358,8 +371,23 @@ class Query(graphene.ObjectType):
                     events=daily_events
                 )
             )
-
-        return all_days_events
+        if page and per_page:
+            paginated_results = ListPaginate(
+                iterable=all_days_events, per_page=per_page, page=page
+            )
+            current_page = paginated_results.current_page
+            has_previous = paginated_results.has_previous
+            has_next = paginated_results.has_next
+            pages = paginated_results.pages
+            return PaginatedEvents(
+                DailyRoomEvents=current_page,
+                has_next=has_next,
+                has_previous=has_previous,
+                pages=pages
+            )
+        return PaginatedEvents(
+            DailyRoomEvents=all_days_events
+        )
 
     @Auth.user_roles('Admin', 'Default User')
     def resolve_analytics_for_booked_rooms(self, info, **kwargs):

@@ -1,35 +1,42 @@
 daily_room_events_query = '''
 query{
     analyticsForDailyRoomEvents(startDate:"Jul 11 2018", endDate:"Jul 11 2018"){
-        day
-        events{
-            eventSummary
-            startTime
-            endTime
-            roomName
-            noOfParticipants
+        DailyRoomEvents {
+            day
+            events{
+                eventSummary
+                startTime
+                endTime
+                roomName
+                noOfParticipants
+            }
         }
     }
 }
 '''
 daily_room_events_wrong_date_format_query = '''
 query{
-    analyticsForDailyRoomEvents(startDate:"10 jan 2019", endDate:"10 jan 2019"){
-        day
-        events{
-            eventSummary
-            startTime
-            endTime
-            roomName
-            noOfParticipants
+    analyticsForDailyRoomEvents(startDate:"10 jan 2019", endDate:"jan 10 2019"){
+        DailyRoomEvents {
+            day
+            events {
+                noOfParticipants,
+                eventSummary,
+                startTime,
+                endTime,
+                roomName,
+                eventId
+            }
         }
     }
 }
 '''
 
 daily_room_events_response = {
-    "data": {
-        "analyticsForDailyRoomEvents": [{
+  "data": {
+    "analyticsForDailyRoomEvents": {
+      "DailyRoomEvents": [
+        {
             "day": "Wed Jul 11 2018",
             "events": [
                 {
@@ -40,8 +47,75 @@ daily_room_events_response = {
                     'startTime': '09:00:00'
                 }
             ]
-        }]
+        }
+      ]
     }
+  }
+}
+
+paginated_daily_room_events_query = '''
+query{
+    analyticsForDailyRoomEvents(startDate:"Jul 11 2018",page:1, perPage:1,
+     endDate:"Jul 11 2018"){
+        DailyRoomEvents {
+            day
+            events{
+                eventSummary
+                startTime
+                endTime
+                roomName
+                noOfParticipants
+            }
+        }
+        pages
+        hasNext
+        hasPrevious
+    }
+}'''
+
+invalid_page_for_analytics_for_daily_events_query = '''
+query{
+    analyticsForDailyRoomEvents(startDate:"Jul 11 2018",page:1500, perPage:1000,
+     endDate:"Jul 11 2018"){
+        DailyRoomEvents {
+            day
+            events{
+                eventSummary
+                startTime
+                endTime
+                roomName
+                noOfParticipants
+            }
+        }
+        pages
+        hasNext
+        hasPrevious
+    }
+}'''  # fetch for invalid page number(non-existing)
+
+
+daily_paginated_room_events_response = {
+  "data": {
+    "analyticsForDailyRoomEvents": {
+      "DailyRoomEvents": [
+        {
+          "day": "Wed Jul 11 2018",
+          "events": [
+            {
+              "eventSummary": "Onboarding",
+              "startTime": "09:00:00",
+              "endTime": "09:45:00",
+              "roomName": "Entebbe",
+              "noOfParticipants": 4
+            }
+          ]
+        }
+      ],
+      "pages": 1,
+      "hasNext": False,
+      "hasPrevious": False
+    }
+  }
 }
 
 daily_events_wrong_date_format_response = {'errors': [
