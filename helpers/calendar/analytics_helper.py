@@ -123,6 +123,9 @@ class CommonAnalytics:
                     'event_title': event.event_title,
                     'participants': event.number_of_participants,
                     'event_id': event.event_id,
+                    'cancelled_status': event.cancelled,
+                    'checked_in_status': event.checked_in,
+                    'state': event.state,
                 }
                 room_events.append(room_event)
         return room_events

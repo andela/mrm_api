@@ -84,6 +84,9 @@ class RoomSchedules(Credentials):
                     "event_summary": event['event_title'],
                     "date_of_event": day_of_event,
                     "event_id": event['event_id'],
+                    "state": event['state'],
+                    "checked_in": event['checked_in_status'],
+                    "cancelled": event['cancelled_status'],
                 }
                 all_events.append(current_event)
 
