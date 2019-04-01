@@ -20,3 +20,5 @@ class Events(Base, Utility):
     room = relationship('Room')
     recurring_event_id = Column(String, nullable=True)
     number_of_participants = Column(Integer, nullable=False)
+    check_in_time = Column(String, nullable=True)
+    meeting_end_time = Column(String, nullable=True)
