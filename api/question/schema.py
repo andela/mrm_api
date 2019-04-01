@@ -12,6 +12,9 @@ from utilities.utility import update_entity_fields
 from helpers.auth.authentication import Auth
 from helpers.auth.error_handler import SaveContextManager
 from helpers.pagination.paginate import Paginate, validate_page
+from helpers.questions_filter.questions_filter import (
+    filter_questions_by_date_range
+)
 
 
 class Question(SQLAlchemyObjectType):
@@ -142,11 +145,21 @@ class Query(graphene.ObjectType):
         per_page=graphene.Int(),
     )
     question = graphene.Field(lambda: Question, id=graphene.Int())
-    all_questions = graphene.List(Question)
+    all_questions = graphene.List(
+        Question,
+        start_date=graphene.String(),
+        end_date=graphene.String(),
+        description="Returns a list of all questions")
 
-    def resolve_all_questions(self, info):
+    def resolve_all_questions(self, info, start_date=None, end_date=None):
+        # get all questions
         query = Question.get_query(info)
-        return query.all()
+        questions = query.filter(QuestionModel.is_active)
+        questions_by_range = filter_questions_by_date_range(
+                                                            questions,
+                                                            start_date, end_date
+                                                            )
+        return questions_by_range
 
     def resolve_questions(self, info, **kwargs):
         response = PaginatedQuestions(**kwargs)

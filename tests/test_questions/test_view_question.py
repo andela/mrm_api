@@ -11,7 +11,10 @@ from fixtures.questions.get_question_fixtures import (
     get_question_invalid_id_query,
     get_all_questions_query,
     get_all_questions_query_response,
-    paginated_questions_empty_page
+    paginated_questions_empty_page,
+    all_questions_higher_start_date_query,
+    all_questions_query_no_date_range,
+    all_questions_query_no_date_range_response
 )
 
 sys.path.append(os.getcwd())
@@ -75,4 +78,24 @@ class TestQueryQuestion(BaseTestCase):
             self,
             paginated_questions_empty_page,
             "No questions found"
+        )
+
+    def test_get_questions_with_invalid_date_difference(self):
+        """
+        Test cannot return questions with start date higher than end date
+        """
+        CommonTestCases.admin_token_assert_in(
+            self,
+            all_questions_higher_start_date_query,
+            "Start date must be lower than end date"
+        )
+
+    def test_get_questions_no_date_range(self):
+        """
+        Test getting questions with no date range returns all questions
+        """
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            all_questions_query_no_date_range,
+            all_questions_query_no_date_range_response
         )
