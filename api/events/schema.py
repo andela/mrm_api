@@ -25,6 +25,7 @@ class EventCheckin(graphene.Mutation):
         start_time = graphene.String(required=True)
         end_time = graphene.String(required=True)
         number_of_participants = graphene.Int(required=True)
+        check_in_time = graphene.String(required=False)
     event = graphene.Field(Events)
 
     def mutate(self, info, **kwargs):
@@ -113,6 +114,10 @@ def check_event_in_db(instance, info, event_check, **kwargs):
         return room_id, event
     elif event and event_check == 'checked_in':
         event.checked_in = True
+        if 'check_in_time' in kwargs:
+            event.check_in_time = kwargs['check_in_time']
+        else:
+            event.check_in_time = None
         event.save()
         return room_id, event
     return room_id, event
