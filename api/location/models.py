@@ -33,7 +33,7 @@ class Location(Base, Utility):
         ForeignKey('structure.id', ondelete="CASCADE"),
         nullable=False
     )
-    structure = relationship('OfficeStructure')
+    structure = Column(String, nullable=True)
     rooms = relationship(
         'Room', cascade="all, delete-orphan",
         order_by="func.lower(Room.name)")
