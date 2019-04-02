@@ -18,3 +18,5 @@ class Events(Base, Utility):
     cancelled = Column(Boolean, nullable=True)
     state = Column(Enum(StateType), default="active")
     room = relationship('Room')
+    check_in_time = Column(String, nullable=True)
+    meeting_end_time = Column(String, nullable=True)
