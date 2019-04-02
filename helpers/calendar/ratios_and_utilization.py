@@ -5,6 +5,7 @@ from api.room.models import Room as RoomModel
 from api.events.models import Events
 from api.room.schema import (RatioOfCheckinsAndCancellations,
                              BookingsAnalyticsCount)
+from utilities.verify_ids_for_room import get_room_name
 
 
 class RoomAnalyticsRatios:
@@ -152,27 +153,36 @@ class RoomAnalyticsRatios:
         except ZeroDivisionError:
             return 0
 
-    def get_bookings_analytics_count(self, query, start, end):
+    def get_bookings_analytics_count(self, query, start, end, room_id=None):
         results = []
-        start_date, day_after_end_date = CommonAnalytics.convert_dates(self, start, end)  # noqa E501
+        start_date, day_after_end_date = CommonAnalytics.convert_dates(
+            self, start, end)
         start_dt = dateutil.parser.parse(start_date)
         end_dt = dateutil.parser.parse(day_after_end_date)
         number_of_days = (end_dt - start_dt).days
+        room_name = get_room_name(room_id)
 
         if number_of_days <= 30:
-            dates = CommonAnalytics.get_list_of_dates(start, number_of_days)  # noqa E501
+            dates = CommonAnalytics.get_list_of_dates(
+                start, number_of_days)
             for date in dates:
-                bookings = CommonAnalytics.get_total_bookings(self, query, date[0], date[1])  # noqa E501
-                string_date = dateutil.parser.parse(date[0]).strftime("%b %d %Y")  # noqa E501
-                output = BookingsAnalyticsCount(period=string_date, bookings=bookings) # noqa E501
+                bookings = CommonAnalytics.get_total_bookings(
+                    self, query, date[0], date[1], room_id=room_id)
+                string_date = dateutil.parser.parse(
+                    date[0]).strftime("%b %d %Y")
+                output = BookingsAnalyticsCount(
+                    period=string_date, bookings=bookings, room_name=room_name)
                 results.append(output)
 
         else:
-            dates = CommonAnalytics.get_list_of_month_dates(start_date, start_dt, day_after_end_date, end_dt)  # noqa E501
+            dates = CommonAnalytics.get_list_of_month_dates(
+                start_date, start_dt, day_after_end_date, end_dt)
             for date in dates:
-                bookings = CommonAnalytics.get_total_bookings(self, query, date[0], date[1])  # noqa E501
+                bookings = CommonAnalytics.get_total_bookings(
+                    self, query, date[0], date[1], room_id=room_id)
                 string_month = dateutil.parser.parse(date[0]).strftime("%B")
-                output = BookingsAnalyticsCount(period=string_month, bookings=bookings) # noqa E501
+                output = BookingsAnalyticsCount(
+                    period=string_month, bookings=bookings, room_name=room_name)
                 results.append(output)
 
         return results

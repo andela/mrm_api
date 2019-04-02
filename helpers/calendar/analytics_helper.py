@@ -4,6 +4,7 @@ import dateutil.parser
 from dateutil.relativedelta import relativedelta
 from graphql import GraphQLError
 from collections import Counter
+from api.room.models import Room as RoomModel
 from api.location.models import Location as LocationModel
 from helpers.room_filter.room_filter import room_join_location
 from helpers.auth.admin_roles import admin_roles
@@ -177,15 +178,30 @@ class CommonAnalytics:
         return result
 
     @staticmethod
-    def get_total_bookings(self, query, start_date, end_date):
+    def get_total_bookings(instance, query, start_date, end_date, room_id=None):
         bookings = 0
-        rooms = CommonAnalytics.get_room_details(self, query)
+        rooms = CommonAnalytics.get_room_details(instance, query)
+        active_rooms = RoomModel.query.filter(RoomModel.state == "active")
         for room in rooms:
-            all_events = CommonAnalytics.get_all_events_in_a_room(
-                self, room["room_id"], start_date, end_date)
-            if all_events:
-                bookings += len(all_events)
+            if room_id:
+                exact_room = active_rooms.filter(
+                    RoomModel.id == room_id).first()
+                if not exact_room:
+                    raise GraphQLError("Room Id does not exist")
+
+            bookings = CommonAnalytics.get_bookings_count(instance, room,
+                                                          start_date,
+                                                          end_date,
+                                                          bookings)
         return bookings
+
+    @staticmethod
+    def get_bookings_count(*args):
+        instance, room, start_date, end_date, bookings_count = args
+        all_events = CommonAnalytics.get_all_events_in_a_room(
+            instance, room["room_id"], start_date, end_date)
+        bookings_count += len(all_events)
+        return bookings_count
 
     @staticmethod
     def get_last_day_of_month(date_obj):
