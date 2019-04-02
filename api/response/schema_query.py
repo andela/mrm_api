@@ -6,6 +6,13 @@ from api.room.schema import Room
 from api.room.models import Room as RoomModel
 from helpers.auth.authentication import Auth
 from helpers.pagination.paginate import ListPaginate
+from helpers.response.query_response import (
+    filter_response_by_date, check_limits_are_provided,
+    filter_rooms_by_responses,
+    validate_responses_by_room,
+    check_response_and_room,
+    filter_responses
+)
 
 
 class ResponseDetails(graphene.ObjectType):
@@ -41,14 +48,18 @@ class Query(graphene.ObjectType):
         PaginatedResponses,
         page=graphene.Int(),
         per_page=graphene.Int(),
-        upper_limit=graphene.Int(),
-        lower_limit=graphene.Int(),
+        upper_limit_count=graphene.Int(),
+        lower_limit_count=graphene.Int(),
+        end_date=graphene.String(),
+        start_date=graphene.String(),
         room=graphene.String(),
         description="Returns a list of room responses. Accepts the arguments\
             \n- page: Page number of responses\
             \n- per_page: Number of room responses per page\
-            \n- upper_limit: Highest number of room responses\
-            \n- lower_limit: Highest number of room responses\
+            \n- upper_limit_count: Highest number of room responses\
+            \n- lower_limit_count: Highest number of room responses\
+             \n- end_date: Latest date range given\
+            \n- start_date: Earliest date range given\
             \n- room: Room name where the response is sent to"
     )
 
@@ -102,49 +113,24 @@ class Query(graphene.ObjectType):
             total_room_resources=total_room_resources,
             response=responses)
 
-    def get_all_reponses(self, info):
-        response = []
-        rooms = RoomModel.query.all()
-        for room in rooms:
-            room_name = room.name
-            room_response = Response.get_query(info).filter_by(room_id=room.id)
-            total_response = room_response.count()
-            all_responses, total_room_resources = Query.get_room_response(
-                self, room_response, room.id)
-            responses = RoomResponse(
-                room_id=room.id,
-                room_name=room_name,
-                total_responses=total_response,
-                total_room_resources=total_room_resources,
-                response=all_responses)
-            response.append(responses)
-        return response
-
-    def filter_rooms_by_responses(self, info, upper_limit, lower_limit):
-        all_responses = Query.get_all_reponses(self, info)
-        filtered_responses = []
-        for response in all_responses:
-            reponse_count = response.total_responses
-            if lower_limit <= reponse_count <= upper_limit:
-                filtered_responses.append(response)
-        return filtered_responses
-
-    def search_response_by_room(
-        self, info, upper_limit, lower_limit, room
-    ):
+    def search_response_by_room(self, info, upper_limit, lower_limit, room):
         search_result = []
         filtered_search = []
-        if upper_limit and lower_limit:
-            filtered_response = Query.filter_rooms_by_responses(
-                self, info, upper_limit, lower_limit)
-            for response in filtered_response:
-                if response.room_name.lower() == room.lower():
-                    filtered_search.append(response)
-            if filtered_search:
-                return filtered_search
-            else:
-                raise GraphQLError(
-                    "No response for this room at this range")
+        if isinstance(upper_limit, int):
+            filtered_count_search = validate_responses_by_room(
+                    int, filter_rooms_by_responses, upper_limit=upper_limit,
+                    lower_limit=lower_limit, room=room, Query=Query, info=info,
+                    filtered_search=filtered_search
+                )
+            if filtered_count_search:
+                return filtered_count_search
+        filtered_date_search = validate_responses_by_room(
+            str, filter_response_by_date, upper_limit=upper_limit,
+            lower_limit=lower_limit, room=room, Query=Query, info=info,
+            filtered_search=filtered_search
+        )
+        if filtered_date_search:
+            return filtered_date_search
         exact_room = RoomModel.query.filter(
             RoomModel.name.ilike('%' + room + '%')).first()
         if not exact_room:
@@ -167,36 +153,48 @@ class Query(graphene.ObjectType):
         search_result.append(responses)
         return search_result
 
+    def get_all_reponses(self, info):
+        response = []
+        rooms = RoomModel.query.all()
+        for room in rooms:
+            room_name = room.name
+            room_response = Response.get_query(info).filter_by(room_id=room.id)
+            response_count = room_response.count()
+            all_responses, total_room_resources = Query.get_room_response(
+                self, room_response, room.id)
+            responses = RoomResponse(
+                room_id=room.id,
+                room_name=room_name,
+                total_responses=response_count,
+                total_room_resources=total_room_resources,
+                response=all_responses)
+            response.append(responses)
+        return response
+
     @Auth.user_roles('Admin')
-    def resolve_all_room_responses(
-            self, info, page=None, per_page=None, lower_limit=None,
-            upper_limit=None, room=None, **kwargs):
+    def resolve_all_room_responses(self, info, **kwargs):
         responses = Query.get_all_reponses(self, info)
-        if isinstance(lower_limit, int) and isinstance(upper_limit, int):
-            responses = Query.filter_rooms_by_responses(
-                self, info, upper_limit, lower_limit
-            )
-        if (
-            (isinstance(lower_limit, int)
-                and not isinstance(upper_limit, int))
-                or (isinstance(upper_limit, int)
-                    and not isinstance(lower_limit, int))):
-            raise GraphQLError(
-                "Provide upper and lower limits to filter by response number")
-        if (
-            isinstance(lower_limit, int)
-                and isinstance(upper_limit, int)
-                and room):
-            responses = Query.search_response_by_room(
-                self, info, upper_limit, lower_limit, room)
-        if not upper_limit and not lower_limit and room:
+        check_limits_are_provided(
+            kwargs.get('lower_limit_count'),
+            kwargs.get('upper_limit_count'), int
+        )
+        responses = filter_responses(
+            int, filter_rooms_by_responses, kwargs.get('upper_limit_count'),
+            kwargs.get('lower_limit_count'),  Query, info, responses
+        )
+        responses = check_response_and_room(
+            int, info, kwargs.get('room'), kwargs.get('upper_limit_count'),
+            kwargs.get('lower_limit_count'), responses, Query
+        )
+        if not kwargs.get('upper_limit_count') and not kwargs.get('lower_limit_count') and kwargs.get('room'): # noqa
             upper_limit = None
             lower_limit = None
             responses = Query.search_response_by_room(
-                self, info, upper_limit, lower_limit, room)
-        if page and per_page:
+                self, info, upper_limit, lower_limit, kwargs.get('room'))
+        if kwargs.get('page') and kwargs.get('per_page'):
             paginated_response = ListPaginate(
-                iterable=responses, per_page=per_page, page=page)
+                iterable=responses, per_page=kwargs.get('per_page'),
+                page=kwargs.get('page'))
             current_page = paginated_response.current_page
             has_previous = paginated_response.has_previous
             has_next = paginated_response.has_next
@@ -207,4 +205,15 @@ class Query(graphene.ObjectType):
                                       has_next=has_next,
                                       query_total=query_total,
                                       pages=pages)
+        check_limits_are_provided(
+            kwargs.get('start_date'), kwargs.get('end_date'), str
+        )
+        responses = filter_responses(
+            str, filter_response_by_date, kwargs.get('end_date'),
+            kwargs.get('start_date'),  Query, info, responses
+        )
+        responses = check_response_and_room(
+            str, info, kwargs.get('room'), kwargs.get('end_date'),
+            kwargs.get('start_date'), responses, Query
+        )
         return PaginatedResponses(responses=responses)
