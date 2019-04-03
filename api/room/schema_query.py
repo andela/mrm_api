@@ -80,6 +80,8 @@ class CalendarEvent(graphene.ObjectType):
     cancelled = graphene.Boolean()
     state = graphene.String()
     checked_in = graphene.Boolean()
+    check_in_time = graphene.String()
+    meeting_end_time = graphene.String()
 
 
 class DailyEvents(graphene.ObjectType):
@@ -361,7 +363,9 @@ class Query(graphene.ObjectType):
                         event_id=event["event_id"],
                         cancelled=event["cancelled"],
                         state=event["state"],
-                        checked_in=event["checked_in"]
+                        checked_in=event["checked_in"],
+                        check_in_time=event["check_in_time"],
+                        meeting_end_time=event["meeting_end_time"]
                     )
                     daily_events.append(current_event)
             all_days_events.append(

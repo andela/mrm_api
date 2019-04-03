@@ -126,6 +126,8 @@ class CommonAnalytics:
                     'cancelled_status': event.cancelled,
                     'checked_in_status': event.checked_in,
                     'state': event.state,
+                    'meeting_end_time': event.meeting_end_time,
+                    'check_in_time': event.check_in_time
                 }
                 room_events.append(room_event)
         return room_events
