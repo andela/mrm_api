@@ -40,9 +40,6 @@ class Room(Base, Utility):
     cancellation_duration = Column(Integer, default=10)
     state = Column(Enum(StateType), default="active")
     next_sync_token = Column(String, nullable=True)
-    resources = relationship(
-        'Resource', cascade="all, delete-orphan",
-        order_by="func.lower(Resource.name)")
     events = relationship('Events', cascade="all, delete-orphan")
     response = relationship('Response', cascade="all, delete-orphan")
     room_tags = relationship(
@@ -72,9 +69,6 @@ def receive_before_insert(mapper, connection, target):
         pass
 
 
-cascade_soft_delete(
-    Room, 'room_resource', 'room_id'
-)
 cascade_soft_delete(
     Room, 'events', 'room_id'
 )

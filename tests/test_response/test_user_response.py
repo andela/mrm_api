@@ -13,10 +13,7 @@ from fixtures.response.user_response_check import (
     filter_question_by_room,
     filter_question_by_room_response,
     filter_question_by_invalid_room,
-    filter_question_by_invalid_room_response,
-    create_check_query,
-    create_check_response,
-    create_check_query_non_existence_item
+    filter_question_by_invalid_room_response
 )
 from fixtures.response.user_response_suggestions import (
     create_suggestion_question,
@@ -83,27 +80,6 @@ class TestCreateResponse(BaseTestCase):
             self,
             check_with_non_existent_room,
             "Non-existent room id"
-        )
-
-    def test_create_check(self):
-        """
-        Testing for creating check
-
-        """
-        CommonTestCases.user_token_assert_equal(
-            self,
-            create_check_query,
-            create_check_response
-        )
-
-    def test_check_non_existence_missing_items(self):
-        """
-        Testing for no missing items list
-        """
-        CommonTestCases.user_token_assert_in(
-            self,
-            create_check_query_non_existence_item,
-            "one of the resource provided does not exist"
         )
 
     def test_create_suggestion(self):

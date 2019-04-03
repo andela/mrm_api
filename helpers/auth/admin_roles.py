@@ -2,10 +2,8 @@ from graphql import GraphQLError
 
 from api.location.models import Location
 from api.room.models import Room as RoomModel
-from api.room_resource.models import Resource as ResourceModel
 from helpers.auth.user_details import get_user_from_db
 from helpers.room_filter.room_filter import (
-    location_join_resources,
     location_join_room)
 
 
@@ -32,24 +30,6 @@ class Admin_roles():
             RoomModel.id == room_id, RoomModel.state == "active").first()
         if admin_details.location != room_location.name:
             raise GraphQLError("You are not authorized to make changes in " + room_location.name)  # noqa: E501
-
-    def update_resource(self, resource_id, room_id):
-        admin_details = get_user_from_db()
-        location_query = location_join_resources()
-        resource_location = location_query.filter(
-            ResourceModel.id == resource_id,
-            ResourceModel.state == "active").first()
-        if admin_details.location != resource_location.name:
-            raise GraphQLError("You are not authorized to make changes in " + resource_location.name)  # noqa: E501
-
-    def delete_resource(self, resource_id):
-        admin_details = get_user_from_db()
-        location_query = location_join_resources()
-        resource_location = location_query.filter(
-            ResourceModel.id == resource_id,
-            ResourceModel.state == "active").first()
-        if admin_details.location != resource_location.name:
-            raise GraphQLError("You are not authorized to make changes in " + resource_location.name)  # noqa: E501
 
     def user_location_for_analytics_view(self):
         """
