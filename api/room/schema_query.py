@@ -37,10 +37,10 @@ def resolve_booked_rooms_analytics(*args):
 def get_most_and_least_booked_rooms(*args):
     instance, active_rooms, start_date, end_date, criteria, limit = args
     if limit and criteria == "least_booked":
-        limit = (-limit)
-        return RoomAnalytics.get_booked_rooms(instance, active_rooms,
-                                              start_date, end_date
-                                              )[limit:]
+        reversed_order = RoomAnalytics.get_booked_rooms(instance, active_rooms,
+                                                        start_date, end_date
+                                                        )[::-1]
+        return reversed_order[:limit]
     elif limit and criteria == "most_booked":
         return RoomAnalytics.get_booked_rooms(instance, active_rooms,
                                               start_date, end_date
