@@ -23,6 +23,10 @@ from fixtures.response.room_response_fixture import (
     mark_response_as_resolved_mutation_with_an_invalid_response_id,
     mark_a_user_response_as_unresolved_mutation,
     mark_a_user_response_as_unresolved_mutation_response,
+    get_room_response_query_by_date,
+    get_room_response_query_by_date_query,
+    get_room_response_query_with_invalid_date,
+    get_room_response_query_with_higher_lower_limit
 )
 
 sys.path.append(os.getcwd())
@@ -68,8 +72,10 @@ class TestRoomResponse(BaseTestCase):
         using ignoring one of the limits
         """
         CommonTestCases.admin_token_assert_in(
-            self, filter_by_response_invalid_query,
-            "Provide upper and lower limits to filter by response number")
+            self,
+            filter_by_response_invalid_query,
+            "Provide upper and lower limits to filter"
+        )
 
     def test_filter_search_response_room_name(self):
         """
@@ -157,3 +163,60 @@ class TestRoomResponse(BaseTestCase):
         CommonTestCases.admin_token_assert_equal(
             self, mark_a_user_response_as_unresolved_mutation,
             mark_a_user_response_as_unresolved_mutation_response)
+
+    def test_room_response_with_date_range(self):
+        """
+        Testing for room response with date range
+        """
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            get_room_response_query_by_date,
+            get_room_response_query_by_date_query
+        )
+
+    def test_room_response_with_invalid_date(self):
+        """
+        Testing for room response with invalid/ future dates
+        """
+        CommonTestCases.admin_token_assert_in(
+                self,
+                get_room_response_query_with_invalid_date,
+                "Dates should be before today"
+            )
+
+    def test_room_with_invalid_date_difference(self):
+        """
+        Testing for room response with higher lower limit
+        """
+        CommonTestCases.admin_token_assert_in(
+                self,
+                get_room_response_query_with_higher_lower_limit,
+                "Earlier date should be lower than later date"
+            )
+
+    def test_database_connection_error(self):
+        """
+        test a user friendly message is returned to a user when database
+        cannot be reached
+        """
+        BaseTestCase().tearDown()
+        CommonTestCases.admin_token_assert_in(
+            self,
+            get_room_response_query,
+            "The database cannot be reached"
+            )
+        CommonTestCases.admin_token_assert_in(
+            self,
+            summary_room_response_query,
+            "The database cannot be reached"
+            )
+        CommonTestCases.admin_token_assert_in(
+            self,
+            filter_by_response_query,
+            "The database cannot be reached"
+            )
+        CommonTestCases.admin_token_assert_in(
+            self,
+            search_response_by_room_only,
+            "The database cannot be reached"
+        )
