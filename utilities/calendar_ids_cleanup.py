@@ -12,7 +12,9 @@ class DeleteResponse(graphene.ObjectType):
 
 
 class Query(graphene.ObjectType):
-    validate_rooms_calendar_ids = graphene.Field(DeleteResponse)
+    validate_rooms_calendar_ids = graphene.Field(
+        DeleteResponse,
+        description="Query to return a list of valid calendar ids")
 
     @Auth.user_roles('Admin')
     def resolve_validate_rooms_calendar_ids(self, info):

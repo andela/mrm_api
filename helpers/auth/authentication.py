@@ -121,10 +121,14 @@ class Authentication:
                         status = 408
                         handle_http_error(message, status, expected_args)
 
-                    if 'error' in response:
+                    if 'error' in response:  # pragma: no cover
                         message = response['error']
                         status = 401
-                        handle_http_error(message, status, expected_args)
+                        if(message == "invalid token"):
+                            handle_http_error("You don't have a valid token \
+                                to perform this action", status, expected_args)
+                        else:
+                            handle_http_error(message, status, expected_args)
 
                     for value in response['values']:
                         if user.email == value["email"]:

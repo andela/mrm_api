@@ -14,11 +14,20 @@ from helpers.auth.admin_roles import admin_roles
 
 
 class Devices(SQLAlchemyObjectType):
+    """
+        Returns the device payload with the fields
+        [id: ID!, name: String!, deviceType: String!,
+         dateAdded: DateTime!, lastSeen: DateTime!,
+         location: String!, roomId: Int and room: Room)
+    """
     class Meta:
         model = DevicesModel
 
 
 class CreateDevice(graphene.Mutation):
+    """
+        Returns the device payload after creating
+    """
     class Arguments:
         name = graphene.String(required=True)
         room_id = graphene.Int(required=True)
@@ -48,6 +57,9 @@ class CreateDevice(graphene.Mutation):
 
 
 class UpdateDevice(graphene.Mutation):
+    """
+         Returns the device payload after updating
+    """
     class Arguments:
         device_id = graphene.Int()
         name = graphene.String()
@@ -75,7 +87,12 @@ class UpdateDevice(graphene.Mutation):
 
 
 class Query(graphene.ObjectType):
-    all_devices = graphene.List(Devices)
+    """
+        Query to get list of all devices
+    """
+    all_devices = graphene.List(
+        Devices,
+        description="Query that returns a list of all devices")
 
     def resolve_all_devices(self, info):
         query = Devices.get_query(info)
@@ -83,5 +100,17 @@ class Query(graphene.ObjectType):
 
 
 class Mutation(graphene.ObjectType):
-    create_device = CreateDevice.Field()
-    update_device = UpdateDevice.Field()
+    create_device = CreateDevice.Field(
+        description="Creates a new device with the arguments\
+            \n- device_name: The name field of the device[required]\
+            \n- room_id: Unique identifier of a room where the device is found\
+            [required]\n- device_type: The type field of the device[required]\
+            \n- location: The location of the device")
+    update_device = UpdateDevice.Field(
+        description="Updates a given device details given the arguments\
+            \n- device_id: Unique identifier of the tag\
+            \n- name: The name field of the device\
+            \n- device_type: The type field of the device\
+            \n- location: The location of the device\
+            \n- room_id: Unique identifier of a room where the device is found\
+            [required]")
