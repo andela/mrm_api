@@ -228,3 +228,48 @@ filter_rooms_by_resources_capacity_response = {
         }
     }
 }
+
+filter_rooms_by_tag = '''query {
+    filterRoomsByTag(tagId: 1){
+        id
+        name
+        }
+    }'''
+
+filter_rooms_by_tag_response = {
+    "data": {
+        "filterRoomsByTag": [
+            {
+                "id": "1",
+                "name": "Entebbe"
+            }
+        ]
+    }
+}
+
+filter_rooms_by_invalid_tag = '''query {
+    filterRoomsByTag(tagId: 100){
+        id
+        name
+        }
+    }'''
+
+filter_rooms_by_invalid_tag_error_response = {
+    "errors": [
+        {
+            "message": "No rooms found with this tag",
+            "locations": [
+                {
+                    "line": 2,
+                    "column": 5
+                }
+            ],
+            "path": [
+                "filterRoomsByTag"
+            ]
+        }
+    ],
+    "data": {
+        "filterRoomsByTag": None
+    }
+}

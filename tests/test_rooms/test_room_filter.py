@@ -18,7 +18,11 @@ from fixtures.room.filter_room_fixtures import (
     filter_rooms_by_resources_location,
     filter_rooms_by_resources_location_response,
     filter_rooms_response,
-    filter_rooms_by_resources_capacity
+    filter_rooms_by_resources_capacity,
+    filter_rooms_by_tag,
+    filter_rooms_by_tag_response,
+    filter_rooms_by_invalid_tag,
+    filter_rooms_by_invalid_tag_error_response
 )
 
 sys.path.append(os.getcwd())
@@ -87,4 +91,24 @@ class RoomsFilter(BaseTestCase):
             self,
             filter_rooms_by_resources_capacity,
             filter_rooms_response
+        )
+
+    def test_filter_room_by_tag(self):
+        """
+        test admin can filter rooms by tag
+        """
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            filter_rooms_by_tag,
+            filter_rooms_by_tag_response
+        )
+
+    def test_filter_room_by_invalid_tag(self):
+        """
+        test admin cannot filter rooms with  invalid tag_id
+        """
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            filter_rooms_by_invalid_tag,
+            filter_rooms_by_invalid_tag_error_response
         )
