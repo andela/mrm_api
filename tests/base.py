@@ -161,7 +161,7 @@ class BaseTestCase(TestCase):
             response_2.save()
             response_2.missing_resources.append(resource)
             structure = Structure(
-                web_id='b05fc5f2-b4aa-4f48-a8fb-30bdcc3fc968',
+                structure_id='b05fc5f2-b4aa-4f48-a8fb-30bdcc3fc968',
                 level=1,
                 name='Epic tower',
                 parent_id=1,
