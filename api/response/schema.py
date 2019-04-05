@@ -86,9 +86,40 @@ class Query(graphene.ObjectType):
         return room_feedback
 
 
+class HandleRoomResponse(graphene.Mutation):
+    """
+        Returns payload on marking or unmarking
+        a response as resolved
+    """
+    class Arguments:
+        response_id = graphene.Int()
+
+    room_response = graphene.Field(Response)
+
+    @Auth.user_roles('Admin')
+    def mutate(self, info, response_id, **kwargs):
+        query_responses = Response.get_query(info)
+        room_response = query_responses.filter(
+            ResponseModel.id == response_id).first()
+        if not room_response:
+            raise GraphQLError("Response does not exist")
+        if room_response.resolved:
+            room_response.resolved = False
+            room_response.save()
+        else:
+            room_response.resolved = True
+            room_response.save()
+        return HandleRoomResponse(room_response=room_response)
+
+
 class Mutation(graphene.ObjectType):
     create_response = CreateResponse.Field(
         description="Mutation to create a new response taking the arguments\
             \n- responses: Field for the response inputs\
             \n- room_id: Unique key identifier of the room where the response \
             is made")
+    resolve_room_response = HandleRoomResponse.Field(
+        description="Mutation to mark or unmark a response as resolved\
+            \n- room_response: Field for the response inputs\
+            \n- response_id: Unique key identifier of a room_response"
+    )

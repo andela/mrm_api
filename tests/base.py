@@ -147,14 +147,16 @@ class BaseTestCase(TestCase):
                 question_id=1,
                 room_id=1,
                 rate=2,
-                created_date=datetime.now()
+                created_date=datetime.now(),
+                resolved=False,
             )
             response_1.save()
             response_2 = Response(
                 question_id=question_2.id,
                 room_id=room.id,
                 check=True,
-                created_date=datetime.now()
+                created_date=datetime.now(),
+                resolved=True,
             )
             response_2.save()
             response_2.missing_resources.append(resource)
