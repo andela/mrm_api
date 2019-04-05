@@ -3,7 +3,8 @@ event_checkin_mutation = '''mutation {
         calendarId:"andela.com_3630363835303531343031@resource.calendar.google.com",
         eventId:"test_id5", eventTitle:"Onboarding", numberOfParticipants: 4,
         startTime:"2018-07-10T09:00:00Z",
-        endTime:"2018-07-10T09:45:00Z"){
+        endTime:"2018-07-10T09:45:00Z",
+        checkInTime:"2018-07-10T09:00:00Z"){
             event{
                 eventId
                 roomId
