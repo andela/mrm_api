@@ -31,6 +31,7 @@ class Response(Base, Utility):
     check = Column(Boolean, nullable=True)
     text_area = Column(String, nullable=True)
     created_date = Column(DateTime, nullable=False)
+    resolved = Column(Boolean, default=False)
     question = relationship('Question')
     room = relationship('Room')
     missing_resources = relationship(

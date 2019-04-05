@@ -21,6 +21,7 @@ class ResponseDetails(graphene.ObjectType):
     missing_items = graphene.List(graphene.String)
     created_date = graphene.DateTime()
     rating = graphene.Int()
+    resolved = graphene.Boolean()
 
 
 class RoomResponse(graphene.ObjectType):
@@ -72,6 +73,7 @@ class Query(graphene.ObjectType):
             suggestion = responses.text_area
             created_date = responses.created_date
             rating = responses.rate
+            resolved = responses.resolved
             if len(responses.missing_resources) > 0:
                 for resources in responses.missing_resources:
                     resource_name = resources.name
@@ -81,7 +83,8 @@ class Query(graphene.ObjectType):
                     suggestion=suggestion,
                     created_date=created_date,
                     rating=rating,
-                    missing_items=missing_resource)
+                    missing_items=missing_resource,
+                    resolved=resolved)
                 missing_resource = []
                 response.append(response_in_room)
             else:
@@ -91,7 +94,8 @@ class Query(graphene.ObjectType):
                     suggestion=suggestion,
                     created_date=created_date,
                     rating=rating,
-                    missing_items=missing_items)
+                    missing_items=missing_items,
+                    resolved=resolved)
                 response.append(response_in_room)
         return (response, total_room_resources)
 
