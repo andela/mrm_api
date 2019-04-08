@@ -8,9 +8,11 @@ from api.room.schema import (PaginatedRooms, Calendar, Room)
 from helpers.calendar.events import RoomSchedules
 from helpers.calendar.analytics import RoomStatistics  # noqa: E501
 from api.room.models import Room as RoomModel
+from api.room.models import tags
+from api.tag.models import Tag
 from helpers.auth.user_details import get_user_from_db
 from helpers.remote_rooms.remote_rooms_location import (
-     map_remote_room_location_to_filter
+    map_remote_room_location_to_filter
 )
 from helpers.calendar.credentials import get_google_api_calendar_list
 from api.room.schema import (RatioOfCheckinsAndCancellations,
@@ -136,11 +138,17 @@ class Query(graphene.ObjectType):
             \n- room_id: A unique identifier of the room"
     )
 
+    filter_rooms_by_tag = graphene.List(
+        Room,
+        tagId=graphene.Int(),
+        description="Returns a list of rooms with a specific tag. Accepts the argument\
+           \n- tagId: Unique identifier of a tag")
+
     all_remote_rooms = graphene.Field(
         AllRemoteRooms,
         description="Returns a list of all remote rooms",
         return_all=graphene.Boolean()
-        )
+    )
 
     get_room_by_name = graphene.List(
         Room,
@@ -288,7 +296,7 @@ class Query(graphene.ObjectType):
         while True:
             calendar_list = get_google_api_calendar_list(pageToken=page_token)
             for room_object in calendar_list['items']:
-                if 'andela.com' in room_object['id'] and room_object['id'].endswith( # noqa
+                if 'andela.com' in room_object['id'] and room_object['id'].endswith(  # noqa
                     'resource.calendar.google.com') and filter.get(location)(
                         room_object[
                             'summary'
@@ -303,6 +311,15 @@ class Query(graphene.ObjectType):
             if not page_token:
                 break
         return AllRemoteRooms(rooms=remote_rooms)
+
+    @Auth.user_roles('Admin')
+    def resolve_filter_rooms_by_tag(self, info, tagId):
+        rooms = Room.get_query(info).join(tags).join(
+            Tag).filter(tags.c.tag_id == tagId).all()
+        if not rooms:
+            raise GraphQLError('No rooms found with this tag')
+
+        return rooms
 
     def resolve_get_room_by_id(self, info, room_id):
         query = Room.get_query(info)
