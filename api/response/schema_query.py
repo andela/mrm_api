@@ -1,7 +1,6 @@
 import graphene
 from graphql import GraphQLError
 from api.response.schema import Response
-from api.room_resource.models import Resource
 from api.room.schema import Room
 from api.room.models import Room as RoomModel
 from helpers.auth.authentication import Auth
@@ -21,7 +20,6 @@ class RoomResponse(graphene.ObjectType):
     room_id = graphene.Int()
     room_name = graphene.String()
     total_responses = graphene.Int()
-    total_room_resources = graphene.Int()
     response = graphene.List(ResponseDetails)
 
 
@@ -56,8 +54,6 @@ class Query(graphene.ObjectType):
     def get_room_response(self, room_response, room_id):
         response = []
         missing_resource = []
-        total_room_resources = Resource.query.filter_by(
-            room_id=room_id).count()
         for responses in room_response:
             response_id = responses.id
             suggestion = responses.text_area
@@ -87,7 +83,7 @@ class Query(graphene.ObjectType):
                     missing_items=missing_items,
                     resolved=resolved)
                 response.append(response_in_room)
-        return (response, total_room_resources)
+        return (response)
 
     @Auth.user_roles('Admin')
     def resolve_room_response(self, info, room_id):
@@ -97,14 +93,13 @@ class Query(graphene.ObjectType):
         if not room:
             raise GraphQLError("Non-existent room id")
         room_response = query_response.filter_by(room_id=room_id)
-        responses, total_room_resources = Query.get_room_response(
+        responses = Query.get_room_response(
             self, room_response, room_id)
         total_response = room_response.count()
         room_name = room.name
         return RoomResponse(
             room_name=room_name,
             total_responses=total_response,
-            total_room_resources=total_room_resources,
             response=responses)
 
     def get_all_reponses(self, info):
@@ -114,13 +109,12 @@ class Query(graphene.ObjectType):
             room_name = room.name
             room_response = Response.get_query(info).filter_by(room_id=room.id)
             total_response = room_response.count()
-            all_responses, total_room_resources = Query.get_room_response(
+            all_responses = Query.get_room_response(
                 self, room_response, room.id)
             responses = RoomResponse(
                 room_id=room.id,
                 room_name=room_name,
                 total_responses=total_response,
-                total_room_resources=total_room_resources,
                 response=all_responses)
             response.append(responses)
         return response
@@ -158,13 +152,13 @@ class Query(graphene.ObjectType):
         if not room_response:
             raise GraphQLError("No response for this room at the moment")
         total_response = room_response_query.count()
-        all_responses, total_room_resources = Query.get_room_response(
+        all_responses = Query.get_room_response(
             self, room_response, exact_room.id)
         responses = RoomResponse(
             room_name=exact_room.name,
             total_responses=total_response,
-            total_room_resources=total_room_resources,
-            response=all_responses)
+            response=all_responses
+        )
         search_result.append(responses)
         return search_result
 

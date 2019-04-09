@@ -72,18 +72,6 @@ create_check_response = {
   }
 }
 
-create_check_query_non_existence_item = '''
-mutation{
-  createResponse(responses: [{questionId:2, missingItems:[10]}], roomId:1) {
-    response{
-      id
-      questionId
-      roomId
-      }
-  }
-}
-'''
-
 filter_question_by_room = '''
 {
   getRoomResponse(roomId: 1) {

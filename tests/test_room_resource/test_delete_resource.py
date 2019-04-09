@@ -26,16 +26,9 @@ class TestDeleteRoomResource(BaseTestCase):
             "Markers"
         )
 
-    def test_non_existant_deleteresource_mutation(self):
+    def test_non_existant_delete_resource_mutation(self):
         CommonTestCases.admin_token_assert_in(
             self,
             delete_non_existant_resource,
             "Resource not found"
-        )
-
-    def test_delete_resource_in_room_that_is_not_in_admin_location(self):
-        CommonTestCases.lagos_admin_token_assert_in(
-            self,
-            delete_resource,
-            "You are not authorized to make changes in Kampala"
         )

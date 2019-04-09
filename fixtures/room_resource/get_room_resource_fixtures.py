@@ -22,15 +22,6 @@ resource_query_response = {
     }
 }
 
-get_room_resources_by_room_id = '''
-{
-    getResourcesByRoomId(roomId: 1){
-        roomId
-        name
-    }
-}
-'''
-
 get_room_resources_by_room_id_response = {
     "data": {
         "getResourcesByRoomId": [
@@ -69,17 +60,6 @@ get_paginated_room_resources_response = {
         }
     }
 }
-
-get_room_resources_by_room_id_error = '''
-{
-    getResourcesByRoomId(roomId: 100){
-        roomId
-        name
-    }
-}
-'''
-
-get_room_resources_by_room_id_error_response = "Room has no resource yet"
 
 filter_unique_resources = '''
 query {

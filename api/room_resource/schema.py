@@ -4,14 +4,11 @@ from sqlalchemy import func
 from graphql import GraphQLError
 
 from api.room_resource.models import Resource as ResourceModel
-from api.room.models import Room as RoomModel
 from utilities.validations import validate_empty_fields
 from utilities.utility import update_entity_fields
 from helpers.auth.authentication import Auth
 from helpers.auth.error_handler import SaveContextManager
-from helpers.auth.admin_roles import admin_roles
 from helpers.pagination.paginate import Paginate, validate_page
-from helpers.room_filter.room_filter import location_join_room
 
 
 class Resource(SQLAlchemyObjectType):
@@ -57,21 +54,11 @@ class CreateResource(graphene.Mutation):
 
     class Arguments:
         name = graphene.String(required=True)
-        room_id = graphene.Int(required=True)
         quantity = graphene.Int(required=True)
     resource = graphene.Field(Resource)
 
     @Auth.user_roles('Admin')
     def mutate(self, info, **kwargs):
-        location_query = location_join_room()
-        room_location = location_query.filter(
-            RoomModel.id == kwargs['room_id'], RoomModel.state == 'active'
-        ).first()
-        if not room_location:
-            raise GraphQLError("Room not found")
-        admin_roles.update_delete_rooms_create_resource(
-            room_id=kwargs['room_id']
-        )
         resource = ResourceModel(**kwargs)
         payload = {
             'model': ResourceModel, 'field': 'name', 'value':  kwargs['name']
@@ -88,7 +75,6 @@ class UpdateRoomResource(graphene.Mutation):
     """
     class Arguments:
         name = graphene.String()
-        room_id = graphene.Int()
         resource_id = graphene.Int()
         quantity = graphene.Int()
     resource = graphene.Field(Resource)
@@ -102,9 +88,6 @@ class UpdateRoomResource(graphene.Mutation):
             ResourceModel.id == resource_id).first()
         if not exact_resource:
             raise GraphQLError("Resource not found")
-
-        admin_roles.update_resource(resource_id, room_id=kwargs['room_id'])
-
         update_entity_fields(exact_resource, **kwargs)
         exact_resource.save()
         return UpdateRoomResource(resource=exact_resource)
@@ -129,8 +112,6 @@ class DeleteResource(graphene.Mutation):
             ResourceModel.id == resource_id).first()
         if not exact_room_resource:
             raise GraphQLError("Resource not found")
-
-        admin_roles.delete_resource(resource_id)
         update_entity_fields(exact_room_resource, state="archived", **kwargs)
         exact_room_resource.save()
         return DeleteResource(resource=exact_room_resource)
