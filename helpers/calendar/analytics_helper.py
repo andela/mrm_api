@@ -95,7 +95,8 @@ class CommonAnalytics(Credentials):
                 raise JsonError(Message='No rooms in this location')
             else:
                 raise GraphQLError("No rooms in this location")
-        result = [{'name': room.name, 'calendar_id': room.calendar_id}
+        result = [{'id': room.id, 'name': room.name,
+                   'calendar_id': room.calendar_id}
                   for room in rooms_in_locations.all()]
         return result
 
