@@ -102,6 +102,7 @@ class CreateRoom(graphene.Mutation):
         calendar_id = graphene.String()
         cancellation_duration = graphene.Int()
         room_tags = graphene.List(graphene.Int)
+        room_labels = graphene.List(graphene.String)
     room = graphene.Field(Room)
 
     @Auth.user_roles('Admin')
@@ -168,6 +169,7 @@ class UpdateRoom(graphene.Mutation):
         firebase_token = graphene.String()
         cancellation_duration = graphene.Int()
         room_tags = graphene.List(graphene.Int)
+        room_labels = graphene.List(graphene.String)
     room = graphene.Field(Room)
 
     @Auth.user_roles('Admin')
