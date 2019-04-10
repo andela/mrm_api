@@ -1,6 +1,6 @@
 null = None
 
-structure_query = '''
+structures_query = '''
    {
       allStructures {
         structureId
@@ -14,7 +14,7 @@ structure_query = '''
     }
         '''
 
-expected_structure_query_response = {
+expected_structures_query_response = {
     "data": {
         "allStructures": [
             {
@@ -30,24 +30,26 @@ expected_structure_query_response = {
     }
 }
 
-structures_query = '''
+structure_query = '''
    {
      structureByStructureId(structureId: "b05fc5f2-b4aa-4f48-a8fb-30bdcc3fc968")
      {
           name
           level
           tag
+          locationId
       }
    }
         '''
 
-expected_structures_query_response = {
+expected_structure_query_response = {
     "data": {
         "structureByStructureId":
             {
                 "name": "Epic tower",
                 "level": 1,
-                "tag": "Building"
+                "tag": "Building",
+                "locationId": 1
             }
     }
 }

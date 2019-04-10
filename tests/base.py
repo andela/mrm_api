@@ -1,6 +1,7 @@
 import os
 import sys
 import json
+import jwt
 
 from flask_testing import TestCase
 from graphene.test import Client
@@ -24,7 +25,6 @@ from api.office_structure.models import OfficeStructure
 from api.structure.models import Structure
 from fixtures.token.token_fixture import (
     ADMIN_TOKEN, USER_TOKEN, ADMIN_NIGERIA_TOKEN)
-
 
 sys.path.append(os.getcwd())
 
@@ -173,6 +173,13 @@ class BaseTestCase(TestCase):
             structure.save()
             db_session.commit()
 
+    def get_admin_location_id(self):
+        payload = jwt.decode(ADMIN_TOKEN, verify=False)
+        email = payload['UserInfo']['email']
+        user = User.query.filter_by(email=email).first()
+        location = Location.query.filter_by(name=user.location).first()
+        return location.id
+
     def tearDown(self):
         app = self.create_app()
         with app.app_context():
@@ -262,6 +269,37 @@ class CommonTestCases(BaseTestCase):
         headers = {"Authorization": "Bearer" + " " + USER_TOKEN}
         response = self.app_test.post('/mrm?query=' + query, headers=headers)
         self.assertIn(expected_response, str(response.data))
+
+    def single_structure_query_matches_admin_location(self, query):
+        """
+        Make a request with admin token to query a structure
+        and assert it returns a structure in the admins location
+        :params
+            - query
+        """
+        headers = {"Authorization": "Bearer" + " " + ADMIN_TOKEN}
+        response = self.app_test.post(
+            '/mrm?query=' + query, headers=headers)
+        admin_location_id = self.get_admin_location_id()
+        response_data = json.loads(response.data)['data']
+        actual_response = response_data['structureByStructureId']
+        actual_location_id = actual_response['locationId']
+        self.assertEquals(actual_location_id, admin_location_id)
+
+    def structures_query_matches_admin_location(self, query):
+        """
+        Make a request with admin token to query structures
+        and assert it returns structures in the admins location
+        :params
+            - query
+        """
+        headers = {"Authorization": "Bearer" + " " + ADMIN_TOKEN}
+        response = self.app_test.post(
+            '/mrm?query=' + query, headers=headers)
+        admin_location_id = self.get_admin_location_id()
+        all_structures = json.loads(response.data)['data']['allStructures']
+        for structure in all_structures:
+            self.assertEquals(structure['locationId'], admin_location_id)
 
 
 def change_user_role_helper(func):
