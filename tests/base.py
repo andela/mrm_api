@@ -96,8 +96,7 @@ class BaseTestCase(TestCase):
             room.save()
             room.room_tags.append(tag)
             resource = Resource(name='Markers',
-                                quantity=3,
-                                room_id=room.id)
+                                quantity=3)
             resource.save()
             device = Devices(
                 last_seen="2018-06-08T11:17:58.785136",
