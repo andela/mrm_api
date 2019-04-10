@@ -1,6 +1,7 @@
 from sqlalchemy import (
     Column, String, Integer, ForeignKey, event, Table, Enum, Index
 )
+from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import relationship
 from graphql import GraphQLError
 from sqlalchemy.schema import Sequence
@@ -29,6 +30,7 @@ class Room(Base, Utility):
     name = Column(String, nullable=False)
     room_type = Column(String)
     capacity = Column(Integer, nullable=False)
+    room_labels = Column(postgresql.ARRAY(String), default=[])
     image_url = Column(String)
     calendar_id = Column(String)
     location_id = Column(
