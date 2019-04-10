@@ -1,9 +1,8 @@
 resource_mutation_query = '''
     mutation {
-        createResource(name: "Speakers", roomId: 1, quantity: 3) {
+        createResource(name: "Speakers", quantity: 3) {
             resource{
                 name
-                roomId
                 quantity
             }
         }
@@ -15,7 +14,6 @@ resource_mutation_response = {
         "createResource": {
             "resource": {
                 "name": "Speakers",
-                "roomId": 1,
                 "quantity": 3
             }
         }
@@ -24,30 +22,25 @@ resource_mutation_response = {
 
 resource_mutation_empty_name = '''
     mutation {
-        createResource(name: "", roomId: 1, quantity: 3) {
+        createResource(name: "", quantity: 3) {
             resource{
                 name
-                roomId
                 quantity
             }
         }
     }
 '''
 
-
-resource_mutation_0_room_id = '''
+resource_mutation_negative_quantity_query = '''
     mutation {
-        createResource(
-            name: "Speaker"
-            roomId: 0
-            quantity: 3
-            ) {
-                resource{
-                    name
-                    roomId
-                    quantity
-                    id
-                }
+        createResource(name: "Speakers", quantity: -3) {
+            resource{
+                name
+                quantity
             }
+        }
     }
 '''
+
+resource_mutation_negative_quantity_response = \
+    "The quantity should not be less than 0"

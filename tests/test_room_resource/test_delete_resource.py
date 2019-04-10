@@ -32,13 +32,6 @@ class TestDeleteRoomResource(BaseTestCase):
             "Resource not found"
         )
 
-    def test_delete_resource_in_room_that_is_not_in_admin_location(self):
-        CommonTestCases.lagos_admin_token_assert_in(
-            self,
-            delete_resource,
-            "You are not authorized to make changes in Kampala"
-        )
-
     def test_database_connection_error(self):
         """
         test a user friendly message is returned to a user when database

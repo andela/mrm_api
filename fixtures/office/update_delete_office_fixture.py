@@ -66,10 +66,6 @@ mutation{
                         name
                         roomType
                         capacity
-                        resources{
-                            name
-                            quantity
-                            }
                         devices{
                             name
                         }
@@ -97,12 +93,6 @@ delete_office_mutation_response = {
                                         "name": "Entebbe",
                                         "roomType": "meeting",
                                         "capacity": 6,
-                                        "resources": [
-                                            {
-                                                "name": "Markers",
-                                                "quantity": 3,
-                                            }
-                                            ],
                                         "devices": []
                                     }
                                 ]

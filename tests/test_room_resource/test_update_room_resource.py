@@ -1,7 +1,11 @@
 from tests.base import BaseTestCase, CommonTestCases
 from fixtures.room_resource.update_resource_fixtures import (
     update_room_resource_query,
-    non_existant_resource_id_query
+    non_existant_resource_id_query,
+    update_room_resource_negative_amount_query
+)
+from fixtures.room_resource.room_resource_fixtures import (
+    resource_mutation_negative_quantity_response
 )
 
 import os
@@ -32,13 +36,6 @@ class TestUpdateRoomResorce(BaseTestCase):
             "Resource not found"
         )
 
-    def test_update_resource_that_is_not_in_admin_location_throws_error(self):
-        CommonTestCases.lagos_admin_token_assert_in(
-            self,
-            update_room_resource_query,
-            "You are not authorized to make changes in Kampala"
-        )
-
     def test_database_connection_error(self):
         """
         test a user friendly message is returned to a user when database
@@ -49,4 +46,11 @@ class TestUpdateRoomResorce(BaseTestCase):
             self,
             update_room_resource_query,
             "The database cannot be reached"
+            )
+
+    def test_update_resource_with_negative_quantity(self):
+        CommonTestCases.admin_token_assert_in(
+            self,
+            update_room_resource_negative_amount_query,
+            resource_mutation_negative_quantity_response
             )

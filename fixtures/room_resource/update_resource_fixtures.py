@@ -2,7 +2,7 @@ null = None
 
 update_room_resource_query = '''
             mutation{
-            updateRoomResource(resourceId:1,name:"Markers",roomId:1){
+            updateRoomResource(resourceId:1,name:"Markers"){
                 resource{
                 name
                 }
@@ -75,3 +75,13 @@ expected_response_empty_field = {
     }
 
 }
+
+update_room_resource_negative_amount_query = '''
+        mutation{
+        updateRoomResource(resourceId:1,name:"Markers",quantity:-1){
+            resource{
+            name
+            }
+        }
+        }
+        '''

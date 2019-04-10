@@ -1,8 +1,9 @@
 from tests.base import BaseTestCase, CommonTestCases
 from fixtures.room_resource.room_resource_fixtures import (
     resource_mutation_query,
-    resource_mutation_0_room_id,
-    resource_mutation_empty_name
+    resource_mutation_empty_name,
+    resource_mutation_negative_quantity_query,
+    resource_mutation_negative_quantity_response
 )
 
 import sys
@@ -33,24 +34,6 @@ class TestCreateRoomResource(BaseTestCase):
             "name is required"
         )
 
-    def test_room_resource_creation_room_id_error(self):
-        CommonTestCases.admin_token_assert_in(
-            self,
-            resource_mutation_0_room_id,
-            "Room not found"
-        )
-
-    def test_resource_creation_in_room_that_is_not_in_admin_location(self):
-        """
-        Test for creation of resource in room that is not in the
-        location the admin is in
-        """
-        CommonTestCases.lagos_admin_token_assert_in(
-            self,
-            resource_mutation_query,
-            "You are not authorized to make changes in Kampala"
-        )
-
     def test_database_connection_error(self):
         """
         test a user friendly message is returned to a user when database
@@ -62,3 +45,10 @@ class TestCreateRoomResource(BaseTestCase):
             resource_mutation_query,
             "The database cannot be reached"
             )
+
+    def test_room_resource_negative_quantity(self):
+        CommonTestCases.admin_token_assert_in(
+            self,
+            resource_mutation_negative_quantity_query,
+            resource_mutation_negative_quantity_response
+        )

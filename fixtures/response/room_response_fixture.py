@@ -7,7 +7,6 @@ room_response_query_sample = '''{
         response{
             responseId,
             createdDate,
-            missingItems,
             suggestion,
             rating
         }
@@ -41,7 +40,6 @@ query{
             roomName
             response{
                 responseId
-                missingItems
             }
         }
     }
@@ -56,7 +54,6 @@ query{
             roomName
             response{
                 responseId
-                missingItems
             }
         }
     }
@@ -71,7 +68,6 @@ query{
             roomName
             response{
                 responseId
-                missingItems
             }
         }
     }
@@ -99,7 +95,6 @@ get_room_response_non_existence_room_id = '''{
         totalResponses,
         response{
             responseId,
-            missingItems,
             suggestion,
             rating
         }
@@ -116,7 +111,6 @@ summary_room_response_query = '''{
           responseId,
           rating,
           suggestion,
-          missingItems
         }
       }
     }
@@ -134,14 +128,12 @@ summary_room_response_data = {
             {
               "responseId": 2,
               "rating": None,
-              "suggestion": None,
-              "missingItems": ['Markers']
+              "suggestion": None
             },
             {
               "responseId": 1,
               "rating": 2,
-              "suggestion": None,
-              "missingItems": []
+              "suggestion": None
             }
           ]
         }
@@ -158,7 +150,6 @@ query{
             roomName
             response{
                 responseId
-                missingItems
             }
         }
     }
@@ -173,7 +164,6 @@ query{
             roomName
             response{
                 responseId
-                missingItems
             }
         }
     }
@@ -188,7 +178,6 @@ search_response_by_room_query = '''
             roomName
             response{
                 responseId
-                missingItems
             }
         }
     }
@@ -203,7 +192,6 @@ query{
             roomName
             response{
                 responseId
-                missingItems
             }
         }
     }
@@ -218,7 +206,6 @@ query{
             roomName
             response{
                 responseId
-                missingItems
             }
         }
     }
@@ -233,7 +220,6 @@ query{
             roomName
             response{
                 responseId
-                missingItems
             }
         }
     }
@@ -248,7 +234,6 @@ query{
             roomName
             response{
                 responseId
-                missingItems
             }
         }
     }
@@ -264,7 +249,6 @@ query{
             roomName
             response{
                 responseId
-                missingItems
             }
         }
     }
@@ -278,11 +262,9 @@ filter_by_response_data = {
                 {
                     'response': [
                         {
-                            'missingItems': ['Markers'],
                             'responseId': 2,
                         },
                         {
-                            'missingItems': [],
                             'responseId': 1,
                         }
 
@@ -304,8 +286,7 @@ query_paginated_responses = '''
         response {
           responseId,
           rating,
-          suggestion,
-          missingItems
+          suggestion
         }
       }
    hasNext
@@ -326,14 +307,12 @@ query_paginated_responses_response = {
                         {
                             "responseId": 2,
                             "rating": None,
-                            "suggestion": None,
-                            "missingItems": ['Markers']
+                            "suggestion": None
                         },
                         {
                             "responseId": 1,
                             "rating": 2,
-                            "suggestion": None,
-                            "missingItems": []
+                            "suggestion": None
                         }
                     ]
                 }
@@ -354,8 +333,7 @@ query_paginated_responses_empty_page = '''
         response {
           responseId,
           rating,
-          suggestion,
-          missingItems
+          suggestion
         }
       }
    hasNext
