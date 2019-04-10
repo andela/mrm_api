@@ -1,5 +1,6 @@
 from sqlalchemy import (Column, String, Integer, Enum, Index)
 from sqlalchemy.schema import Sequence
+from sqlalchemy.orm import relationship
 from helpers.database import Base
 from utilities.utility import Utility, StateType
 from utilities.validations import validate_empty_fields
@@ -11,6 +12,7 @@ class Resource(Base, Utility):
     name = Column(String, nullable=False)
     quantity = Column(Integer, nullable=False)
     state = Column(Enum(StateType), default="active")
+    room = relationship("RoomResource", back_populates="resource")
 
     __table_args__ = (
             Index(
