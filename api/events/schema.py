@@ -1,5 +1,6 @@
 import graphene
 from graphene_sqlalchemy import SQLAlchemyObjectType
+from graphql import GraphQLError
 
 from api.events.models import Events as EventsModel
 from api.room.models import Room as RoomModel
@@ -75,6 +76,31 @@ class CancelEvent(graphene.Mutation):
         return CancelEvent(event=event)
 
 
+class EndEvent(graphene.Mutation):
+    """
+    Mutation to end an event
+    Returns event payload on ending the event
+    """
+    class Arguments:
+        calendar_id = graphene.String(required=True)
+        event_id = graphene.String(required=True)
+        start_time = graphene.String(required=True)
+        end_time = graphene.String(required=True)
+        meeting_end_time = graphene.String(required=True)
+    event = graphene.Field(Events)
+
+    def mutate(self, info, **kwargs):
+        room_id, event = check_event_in_db(self, info, "ended", **kwargs)
+        if not event:
+            event = EventsModel(
+                event_id=kwargs['event_id'],
+                meeting_end_time=kwargs['meeting_end_time']
+                )
+            event.save()
+
+        return EndEvent(event=event)
+
+
 class SyncEventData(graphene.Mutation):
     """
     Mutation to sync the event data in the db
@@ -120,10 +146,28 @@ def check_event_in_db(instance, info, event_check, **kwargs):
             event.check_in_time = None
         event.save()
         return room_id, event
+    elif event and event_check == 'ended':
+        if event.meeting_end_time:
+            raise GraphQLError("Event has already ended")
+        event.meeting_end_time = kwargs['meeting_end_time']
+        event.save()
+        return room_id, event
     return room_id, event
 
 
 class Mutation(graphene.ObjectType):
+    event_checkin = EventCheckin.Field()
+    cancel_event = CancelEvent.Field()
+    end_event = EndEvent.Field(
+        description="Mutation to end a calendar event given the arguments\
+            \n- calendar_id: The unique identifier of the calendar event\
+            [required]\n- event_id: The unique identifier of the target\
+                 calendar event[required]\
+            \n- event_id: The unique identifier of the calendar event[required]\
+            \n- start_time: The start time of the calendar event[required]\
+            \n- end_time: The field with the end time of the calendar event\
+            [required]\
+            \n- meeting_end_time: The time the calendar event ended[required]")
     sync_event_data = SyncEventData.Field()
     mrm_notification = MrmNotification.Field()
     event_checkin = EventCheckin.Field(
