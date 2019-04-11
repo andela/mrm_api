@@ -261,6 +261,7 @@ class Query(graphene.ObjectType):
         BookingsAnalyticsCount,
         start_date=graphene.String(required=True),
         end_date=graphene.String(required=True),
+        room_id=graphene.Int(),
         description="Returns the total number of room bookings and accepts the arguments\
             \n- start_date: Start date when you want to get analytics from\
             [required]\n- end_date: The end date to take the analytics upto\
@@ -411,11 +412,13 @@ class Query(graphene.ObjectType):
 
     @Auth.user_roles('Admin', 'Default User')
     def resolve_bookings_analytics_count(
-            self, info, start_date, end_date):
-        # Getting booking analytics count
+            self, info, **kwargs):
+        start_date, end_date, room_id = (kwargs.get('start_date'),
+                                         kwargs.get('end_date'),
+                                         kwargs.get('room_id'))
         query = Room.get_query(info)
         analytics = RoomAnalyticsRatios.get_bookings_analytics_count(
-            self, query, start_date, end_date)
+            self, query, start_date, end_date, room_id=room_id)
         return analytics
 
     def resolve_analytics_for_daily_room_events(

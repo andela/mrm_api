@@ -33,6 +33,10 @@ from fixtures.room.room_analytics_bookings_count_fixtures import (
     get_bookings_count_monthly_response,
     get_bookings_count_monthly_diff_years,
     get_bookings_count_monthly_diff_years_response,
+    get_single_room_daily_count,
+    get_single_room_daily_count_response,
+    non_existing_room_id_query,
+    non_existing_room_id_response
 )
 
 
@@ -117,3 +121,21 @@ class QueryRoomsAnalytics(BaseTestCase):
         CommonTestCases.admin_token_assert_equal(
             self, get_bookings_count_monthly_diff_years,
             get_bookings_count_monthly_diff_years_response)
+
+    def test_single_room_daily_bookings(self):
+        """This function tests that the booking count for a single
+                 room is returned provided a room_id is provided
+        """
+        CommonTestCases.admin_token_assert_equal(
+            self, get_single_room_daily_count,
+            get_single_room_daily_count_response
+        )
+
+    def test_non_existing_room_id(self):
+        """This function tests for when the provided room_id
+         does not exist in the database
+        """
+        CommonTestCases.admin_token_assert_equal(
+            self, non_existing_room_id_query,
+            non_existing_room_id_response
+        )
