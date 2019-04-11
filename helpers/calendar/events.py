@@ -105,13 +105,14 @@ class RoomSchedules(Credentials):
                     start_time=kwargs['start_time'],
                     checked_in=True).count()
             cancelled_events = EventsModel.query.filter_by(
-                    event_id=kwargs['event_id'],
-                    room_id=room_id,
-                    start_time=kwargs['start_time'],
-                    cancelled=True).count()
-            if checked_in_events > 0:
+                event_id=kwargs['event_id'],
+                room_id=room_id,
+                start_time=kwargs['start_time'],
+                cancelled=True).count()
+            if checked_in_events > 0 and 'meeting_end_time' not in kwargs:
                 raise GraphQLError("Event already checked in")
-
+            elif checked_in_events < 1 and 'meeting_end_time' in kwargs:
+                raise GraphQLError("Event yet to be checked in")
             elif cancelled_events > 0:
                 raise GraphQLError("Event already cancelled")
             return room_id
