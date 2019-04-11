@@ -41,7 +41,8 @@ def save_room_tags(room, room_tags):
 class RatioOfCheckinsAndCancellations(graphene.ObjectType):
     """
         Query to get the ratio of checkins to cancellations and takes the
-            arguments \n- room_name: The name of the room
+            arguments \n- room_id: The id of the room
+                \n- room_name: The name of the room
                 \n- checkins: The number of the event checkins in a room
                 \n- cancellations: The number of the even cacellations in a room
                 \n- bookings: The number of the room bookings
@@ -51,6 +52,7 @@ class RatioOfCheckinsAndCancellations(graphene.ObjectType):
                     via app \n- app_bookings_percentage: The field with the
                         percentage of room bookings via app
     """
+    room_id = graphene.Int()
     room_name = graphene.String()
     checkins = graphene.Int()
     cancellations = graphene.Int()
