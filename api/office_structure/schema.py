@@ -9,6 +9,7 @@ from utilities.validations import (
     validate_empty_fields,
     validate_parent_node_id,
     )
+from utilities.validator import verify_tag_id
 
 
 class OfficeStructure(SQLAlchemyObjectType):
@@ -24,6 +25,7 @@ class CreateNode(graphene.Mutation):
     class Arguments:
         name = graphene.String(required=True)
         parent_id = graphene.Int(required=False)
+        tag_id = graphene.Int(required=False)
     node = graphene.Field(OfficeStructure)
 
     @Auth.user_roles('Admin')
@@ -31,6 +33,8 @@ class CreateNode(graphene.Mutation):
         validate_empty_fields(**kwargs)
         if 'parent_id' in kwargs:
             validate_parent_node_id(parent_id=kwargs['parent_id'])
+        if 'tag_id' in kwargs:
+            verify_tag_id(tag_id=kwargs['tag_id'])
         node = OfficeStructureModel(**kwargs)
         payload = {
             'model': OfficeStructureModel,
