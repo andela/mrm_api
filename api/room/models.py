@@ -55,8 +55,9 @@ class Room(Base, Utility):
 
     __table_args__ = (
             Index(
-                'ix_unique_room_content',
+                'ix_unique_room_in_location_content',
                 'name',
+                'location_id',
                 unique=True,
                 postgresql_where=(state == 'active')),
         )

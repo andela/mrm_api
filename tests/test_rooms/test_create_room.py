@@ -43,9 +43,10 @@ class TestCreateRoom(BaseTestCase):
             "name is required field"
         )
 
-    def test_room_creation_with_duplicate_name(self):
+    def test_room_creation_with_duplicate_name_in_the_same_location(self):
         """
-        Test room creation with an already existing room name
+        Test that room creation with duplicate room name in the same
+        location will fail
         """
         CommonTestCases.admin_token_assert_equal(
             self,

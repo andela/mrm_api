@@ -121,7 +121,9 @@ class CreateRoom(graphene.Mutation):
         exact_query = room_join_location(active_rooms)
         result = exact_query.filter(
             RoomModel.name == kwargs.get('name'),
-            RoomModel.state == "active")
+            RoomModel.state == "active",
+            RoomModel.location_id == kwargs.get('location_id')
+            )
         if result.count():
             ErrorHandler.check_conflict(self, kwargs['name'], 'Room')
         room_tags = []
