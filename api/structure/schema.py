@@ -16,10 +16,11 @@ class StructureInputs(graphene.InputObjectType):
     structure_id = graphene.String(required=True)
     level = graphene.Int(required=True)
     name = graphene.String(required=True)
-    parent_id = graphene.Int(required=True)
+    parent_id = graphene.String()
+    parent_title = graphene.String()
     tag = graphene.String(required=True)
     location_id = graphene.Int(required=True)
-    position = graphene.String(required=True)
+    position = graphene.Int(required=True)
 
 
 class CreateOfficeStructure(graphene.Mutation):
@@ -32,7 +33,8 @@ class CreateOfficeStructure(graphene.Mutation):
             \n- structure_id: The structure id for office structure[required]\
             \n- level: The level of the office structure[required]\
             \n- name: The name of the office structure[required]\
-            \n- parent_id: The parent id of the office structure[required]\
+            \n- parent_id: The parent id of the office structure\
+            \n- parent_title: The parent title of the structure\
             \n- tag: Tags for the office structure[required]\
             \n- location_id: The location id of the office structure[required]\
             \n- position: The position of the office structure[required]"
