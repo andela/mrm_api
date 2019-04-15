@@ -13,6 +13,7 @@ from api.user.models import User
 from api.role.models import Role
 from api.notification.models import Notification as NotificationModel
 from helpers.connection.connection_error_handler import handle_http_error
+from helpers.location.location import check_and_add_location
 
 from helpers.database import db_session
 
@@ -100,12 +101,7 @@ class Authentication:
             def wrapper(*args, **kwargs):
                 user_data = self.decode_token()
                 if type(user_data) is dict:
-                    self.save_user()
                     email = user_data['email']
-                    try:
-                        user = User.query.filter_by(email=email).first()
-                    except Exception:
-                        raise GraphQLError("The database cannot be reached")
                     headers = {"Authorization": 'Bearer ' + self.get_token()}
                     try:
                         if(os.getenv('APP_SETTINGS') == "testing"):
@@ -114,7 +110,7 @@ class Authentication:
                         else:  # pragma: no cover
                             data = requests.get(
                                 api_url + "users?email=%s"
-                                % user.email, headers=headers)
+                                % email, headers=headers)
                             response = json.loads(data.content.decode("utf-8"))
                     except requests.exceptions.ConnectionError:
                         message = "Failed internet connection"
@@ -129,16 +125,19 @@ class Authentication:
                                 to perform this action", status, expected_args)
                         else:
                             handle_http_error(message, status, expected_args)
-
+                    self.save_user()
+                    try:
+                        user = User.query.filter_by(email=email).first()
+                    except Exception:
+                        raise GraphQLError("The database cannot be reached")
                     for value in response['values']:
                         if user.email == value["email"]:
                             if value['location']:
-                                user.location = value['location']['name']
+                                user.location = value['location'][
+                                    'name'
+                                ] or "Nairobi"
                                 user.save()
-                            else:
-                                user.location = "Nairobi"
-                                user.save()
-
+                                check_and_add_location(user.location)
                     if user.roles and user.roles[0].role in expected_args:
                         return func(*args, **kwargs)
                     else:

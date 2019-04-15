@@ -23,7 +23,7 @@ class Location(Base, Utility):
     id = Column(Integer, Sequence('locations_id_seq',
                                   start=1, increment=1), primary_key=True)
     name = Column(String, nullable=False)
-    abbreviation = Column(String, nullable=False)
+    abbreviation = Column(String)
     country = Column(Enum(CountryType))
     time_zone = Column(Enum(TimeZoneType))
     image_url = Column(String)
@@ -31,7 +31,6 @@ class Location(Base, Utility):
     structure_id = Column(
         Integer,
         ForeignKey('structure.id', ondelete="CASCADE"),
-        nullable=False
     )
     structure = Column(String, nullable=True)
     rooms = relationship(
