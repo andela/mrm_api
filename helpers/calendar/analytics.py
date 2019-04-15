@@ -144,13 +144,14 @@ class RoomAnalytics:
         for room in rooms_available:
             all_events = CommonAnalytics.get_all_events_in_a_room(
                 self, room['room_id'], start_date, end_date)
-            room_details = RoomStatistics(
-                                            room_name=room["name"],
-                                            meetings=len(all_events),
-                                            percentage=(
-                                                len(all_events))/bookings*100
-                                        )
+            if all_events:
+                room_details = RoomStatistics(
+                    room_name=room["name"],
+                    meetings=len(all_events),
+                    percentage=(len(all_events))/bookings*100)
 
-            result.append(room_details)
-            result.sort(key=lambda x: x.meetings, reverse=True)
+                result.append(room_details)
+                result.sort(key=lambda x: x.meetings, reverse=True)
+            else:
+                return result
         return result
