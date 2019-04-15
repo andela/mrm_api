@@ -1,5 +1,6 @@
 import sys
 import os
+from unittest.mock import patch
 from tests.base import BaseTestCase, CommonTestCases
 from fixtures.events.event_checkin_fixtures import (
     event_checkin_mutation,
@@ -13,6 +14,7 @@ from fixtures.events.event_checkin_fixtures import (
 from fixtures.events.events_ratios_fixtures import (
     event_ratio_percentage_cancellation_query,
     event_ratio_percentage_cancellation_response)
+from helpers.calendar.calendar import get_events_mock_data
 
 sys.path.append(os.getcwd())
 
@@ -54,21 +56,25 @@ class TestEventCheckin(BaseTestCase):
             "This Calendar ID is invalid"
         )
 
-    def test_cancel_event(self):
+    @patch("api.events.schema.get_single_calendar_event", spec=True)
+    def test_cancel_event(self, mocked_method):
         '''
         Test that event status is updated to cancelled.
         '''
-        CommonTestCases.user_token_assert_equal(
+        mocked_method.return_value = get_events_mock_data()['items'][0]
+        CommonTestCases.user_token_assert_in(
             self,
             cancel_event_mutation,
             cancel_event_respone
         )
 
-    def test_cancel_event_twice(self):
+    @patch("api.events.schema.get_single_calendar_event", spec=True)
+    def test_cancel_event_twice(self, mocked_method):
         '''
         test that you cannot cancel an event twice
         '''
-        CommonTestCases.user_token_assert_equal(
+        mocked_method.return_value = get_events_mock_data()['items'][0]
+        CommonTestCases.user_token_assert_in(
             self,
             cancel_event_mutation,
             cancel_event_respone
@@ -85,11 +91,13 @@ class TestEventCheckin(BaseTestCase):
             event_ratio_percentage_cancellation_response
         )
 
-    def test_check_in_to_a_cancelled_event(self):
+    @patch("api.events.schema.get_single_calendar_event", spec=True)
+    def test_check_in_to_a_cancelled_event(self, mocked_method):
         """
         test that you cannot check-in to a cancelled event
         """
-        CommonTestCases.user_token_assert_equal(
+        mocked_method.return_value = get_events_mock_data()['items'][0]
+        CommonTestCases.user_token_assert_in(
             self,
             cancel_event_mutation,
             cancel_event_respone

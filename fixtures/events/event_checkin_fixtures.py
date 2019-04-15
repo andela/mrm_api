@@ -82,23 +82,7 @@ cancel_event_mutation = '''
     }
 '''
 
-cancel_event_respone = {
-    "data": {
-        "cancelEvent": {
-            "event": {
-                "eventId": "test_id5",
-                "roomId": 1,
-                "checkedIn": False,
-                "cancelled": True,
-                "room": {
-                    "id": "1",
-                    "name": "Entebbe",
-                    "calendarId": "andela.com_3630363835303531343031@resource.calendar.google.com"  # noqa: E501
-                }
-            }
-        }
-    }
-}
+cancel_event_respone = "Event cancelled but email not sent"
 
 checkin_mutation_for_event_existing_in_db = '''mutation {
     eventCheckin(

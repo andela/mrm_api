@@ -10,7 +10,7 @@ from helpers.auth.authentication import Auth
 from utilities.validator import verify_email
 from helpers.pagination.paginate import Paginate, validate_page
 from helpers.auth.error_handler import SaveContextManager
-from helpers.email.email import email_invite
+from helpers.email.email import notification
 from helpers.user_filter.user_filter import user_filter
 from utilities.utility import update_entity_fields
 from api.role.schema import Role
@@ -212,7 +212,7 @@ class InviteToConverge(graphene.Mutation):
         if user:
             raise GraphQLError("User already joined Converge")
         admin = get_user_from_db()
-        email_invite(email, admin.__dict__["name"])
+        notification.email_invite(email, admin.__dict__["name"])
         return InviteToConverge(email=email)
 
 

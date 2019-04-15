@@ -14,7 +14,7 @@ from helpers.room_filter.room_filter import (
 from helpers.auth.admin_roles import admin_roles
 from helpers.auth.error_handler import SaveContextManager
 from helpers.pagination.paginate import Paginate, validate_page
-from helpers.email.email import send_email_notification
+from helpers.email.email import notification
 from helpers.auth.user_details import get_user_from_db
 
 
@@ -55,7 +55,9 @@ class CreateOffice(graphene.Mutation):
            office, 'Office', payload
         ):
             new_office = kwargs['name']
-            if not send_email_notification(email, new_office, location.name, admin_name):  # noqa
+            if not notification.send_email_notification(
+                email, new_office, location.name, admin_name
+            ):
                 raise GraphQLError("Office created but Emails not Sent")
             return CreateOffice(office=office)
 
