@@ -4,7 +4,7 @@ from api.structure.models import Structure as StructureModel
 from helpers.auth.authentication import Auth
 from helpers.structure.create_structure import create_structure
 from graphql import GraphQLError
-from sqlalchemy import func
+from helpers.auth.admin_roles import admin_roles
 
 
 class Structure(SQLAlchemyObjectType):
@@ -68,15 +68,19 @@ class Query(graphene.ObjectType):
     @Auth.user_roles('Admin')
     def resolve_all_structures(self, info):
         query = Structure.get_query(info)
-        return query.order_by(func.lower(StructureModel.name)).all()
+        location_id = admin_roles.user_location_for_analytics_view()
+        all_structures = query.filter(
+          StructureModel.location_id == location_id).all()
+        return all_structures
 
     @Auth.user_roles('Admin')
     def resolve_structure_by_structure_id(self, info, structure_id):
         if not structure_id.strip():
             raise GraphQLError("Please input a valid structureId")
         query = Structure.get_query(info)
+        location_id = admin_roles.user_location_for_analytics_view()
         structure = query.filter(
           StructureModel.structure_id == structure_id).first()
-        if not structure:
+        if not structure or location_id != structure.location_id:
             raise GraphQLError("Structure not found")
         return structure

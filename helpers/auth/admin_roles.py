@@ -5,6 +5,7 @@ from api.room.models import Room as RoomModel
 from helpers.auth.user_details import get_user_from_db
 from helpers.room_filter.room_filter import (
     location_join_room)
+from utilities.utility import StateType
 
 
 class Admin_roles():
@@ -36,8 +37,14 @@ class Admin_roles():
         Return admin's location for viewing analytics data
         """
         admin_details = get_user_from_db()
-        location = Location.query.filter_by(name=admin_details.location).first()
-        return location.id
+        location = Location.query.filter_by(
+             name=admin_details.location
+        ).first()
+        if location:
+            if location.state != StateType.active:
+                raise GraphQLError('Location is not active')
+            return location.id
+        raise GraphQLError('Your location does not exist')
 
 
 admin_roles = Admin_roles()

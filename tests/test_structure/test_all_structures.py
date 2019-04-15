@@ -16,3 +16,13 @@ class TestAllStructures(BaseTestCase):
           structures_query,
           expected_structures_query_response
         )
+
+    def test_structures_location_id_matches_admin_location(self):
+        """
+        Test that an admin only views the structures
+        in their location
+        """
+        CommonTestCases.structures_query_matches_admin_location(
+          self,
+          structures_query
+        )
