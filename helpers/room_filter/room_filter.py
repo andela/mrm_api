@@ -2,6 +2,7 @@ from api.room.models import Room as RoomModel
 from api.room_resource.models import Resource
 from api.location.models import Location
 from api.room.models import Room
+from sqlalchemy import String, func, cast
 
 
 def resource_join_location(query):
@@ -52,6 +53,7 @@ def room_filter(query, filter_data):  # noqa: ignore=C901
     location = filter_data.pop("location", None)
     capacity = filter_data.pop("capacity", None)
     resources = filter_data.pop("resources", None)
+    room_labels = filter_data.get("room_labels")
 
     if location and not (resources or capacity):
         query = room_join_location(query)
@@ -78,5 +80,12 @@ def room_filter(query, filter_data):  # noqa: ignore=C901
         query = query.filter(RoomModel.capacity == capacity)
         query = query.filter(Resource.name.ilike('%' + resources + '%'))
         return query.filter(Location.name.ilike('%' + location + '%'))
+    elif room_labels:
+        room_labels = room_labels.split(",")
+        for room_label in room_labels:
+            query = query.filter(func.lower(
+                cast(RoomModel.room_labels, String)).contains(
+                    room_label.lower().strip()))
+        return query
     else:
         return query

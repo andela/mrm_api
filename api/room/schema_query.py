@@ -116,6 +116,7 @@ class Query(graphene.ObjectType):
     """
     all_rooms = graphene.Field(
         PaginatedRooms,
+        room_labels=graphene.String(),
         page=graphene.Int(),
         per_page=graphene.Int(),
         capacity=graphene.Int(),
@@ -130,7 +131,8 @@ class Query(graphene.ObjectType):
             \n- resources: Resuources found in the room\
             \n- location: Location of the room\
             \n- office: Office where the room is found\
-            \n- devices: Devices that are in a room"
+            \n- devices: Devices that are in a room\
+            \n- room_labels: Labels to filter the rooms with"
     )
     get_room_by_id = graphene.Field(
         Room,
