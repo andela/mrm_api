@@ -253,7 +253,7 @@ class UpdateFirebaseToken(graphene.Mutation):
             raise GraphQLError("Room not found")
         update_entity_fields(room, **kwargs)
         room.save()
-        requests.get(url=Config.MRM_PUSH_URL, params="hello")
+        requests.get(url=Config.MRM_PUSH_URL + "/refresh", params="hello")
         return UpdateFirebaseToken(room=room)
 
 
