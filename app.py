@@ -1,11 +1,11 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect
 
 from flask_graphql import GraphQLView
 from flask_cors import CORS
 from flask_json import FlaskJSON
 
 from flask_mail import Mail
-from config import config
+from config import config, Config
 from helpers.database import db_session
 from schema import schema
 from healthcheck_schema import healthcheck_schema
@@ -22,6 +22,10 @@ def create_app(config_name):
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
     mail.init_app(app)
+
+    @app.route("/notifications", methods=["POST", "GET"])
+    def redirect_notifications():
+        return redirect(Config.MRM_PUSH_URL + "/notifications", code=307)
 
     @app.route("/", methods=['GET'])
     def index():
