@@ -1,4 +1,5 @@
-from flask import Flask, render_template, redirect
+from requests import post
+from flask import Flask, render_template, request
 
 from flask_graphql import GraphQLView
 from flask_cors import CORS
@@ -25,7 +26,9 @@ def create_app(config_name):
 
     @app.route("/notifications", methods=["POST", "GET"])
     def redirect_notifications():
-        return redirect(Config.MRM_PUSH_URL + "/notifications", code=307)
+        post(Config.MRM_PUSH_URL + "/notifications",
+             data=request.data, headers=request.headers)
+        return 'OK'
 
     @app.route("/", methods=['GET'])
     def index():
