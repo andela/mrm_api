@@ -12,7 +12,7 @@ from app import create_app
 from schema import schema
 from helpers.database import engine, db_session, Base
 from api.location.models import Location
-from api.room.models import Room
+from api.room.models import Room, RoomResource
 from api.room_resource.models import Resource
 from api.user.models import User
 from api.role.models import Role
@@ -170,6 +170,12 @@ class BaseTestCase(TestCase):
                 position=1,
             )
             structure.save()
+            room_resource = RoomResource(
+                room_id=1,
+                resource_id=1,
+                quantity=2
+            )
+            room_resource.save()
             db_session.commit()
 
     def get_admin_location_id(self):

@@ -75,6 +75,48 @@ class AssignResource(graphene.Mutation):
         return AssignResource(room_resource=room_resources)
 
 
+class UpdateAssignedResource(graphene.Mutation):
+    """
+        Update assigned resource in a room
+    """
+    class Arguments:
+        resource_id = graphene.Int(required=True)
+        room_id = graphene.Int(required=True)
+        quantity = graphene.Int(required=True)
+    room_resource = graphene.Field(RoomResource)
+
+    @Auth.user_roles('Admin')
+    def mutate(self, info, resource_id, room_id, **kwargs):
+        room_resource_query = RoomResource.get_query(info)
+        room = room_resource_query.filter(
+            RoomResourceModel.room_id == room_id).all()
+        if not room:
+            raise GraphQLError('Room has no assigned resource.')
+        resource = [resource for resource in room if resource.resource_id == resource_id]  # noqa
+        try:
+            room_resource = resource[0]
+        except:
+            raise GraphQLError('Resource does not exist in the room')
+        current_quantity = room_resource.quantity
+        new_quantity = kwargs['quantity']
+        if new_quantity < 0:
+            raise GraphQLError(
+                "Assigned quantity cannot be less than zero"
+            )
+        exact_resource = ResourceModel.query.filter_by(
+            id=resource_id).first()
+        unassigned_quantity = exact_resource.quantity
+        total_quantity = current_quantity + unassigned_quantity
+        if new_quantity > total_quantity:
+            raise GraphQLError(
+                'Assigned resource cannot exceed available quantity'
+            )
+        exact_resource.quantity = total_quantity - new_quantity
+        update_entity_fields(room_resource, **kwargs)
+        room_resource.save()
+        return UpdateAssignedResource(room_resource=room_resource)
+
+
 class PaginatedResource(Paginate):
     """
         Returns paginated room resources
@@ -117,9 +159,9 @@ class CreateResource(graphene.Mutation):
         resource = ResourceModel(**kwargs)
         payload = {
             'model': ResourceModel, 'field': 'name', 'value':  kwargs['name']
-            }
+        }
         with SaveContextManager(
-          resource, 'Resource', payload
+            resource, 'Resource', payload
         ):
             return CreateResource(resource=resource)
 
@@ -129,7 +171,7 @@ class UpdateRoomResource(graphene.Mutation):
         Update a room resource
     """
     class Arguments:
-        name = graphene.String()
+        name = graphene.String(required=True)
         resource_id = graphene.Int()
         quantity = graphene.Int()
     resource = graphene.Field(Resource)
@@ -219,7 +261,7 @@ class Mutation(graphene.ObjectType):
             \n- name: The name field of the resource[required]\
             \n- room_id: The unique identifier of the room where the resource \
             is created[required]\n- quantity: The number of resources[required]"
-                )
+    )
     update_room_resource = UpdateRoomResource.Field(
         description="Updates the room resources fields below\
             \n- name: The name field of the resource\
@@ -235,4 +277,10 @@ class Mutation(graphene.ObjectType):
             \n- roomId: Unique key identifier of a room[required]\
             \n- resourceId: Unique key identifier of a resource[required]\
             \n- quantity: The number of resources to be assigned to a room`"
+    )
+    update_assigned_resource = UpdateAssignedResource.Field(
+        description="Updates the quantity of an assigned resource\
+            \n- room_id: The room id of the room with the resource\
+            \n- resource_id: The resource id\
+            \n- quantity: The new quantity of the resource id"
     )
