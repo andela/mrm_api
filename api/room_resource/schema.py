@@ -94,16 +94,16 @@ class UpdateAssignedResource(graphene.Mutation):
         exact_resource = ResourceModel.query.filter_by(
             id=resource_id).first()
         room_resource_query = RoomResource.get_query(info)
-        room_resources = room_resource_query.filter(
+        rooms_with_resource = room_resource_query.filter(
             RoomResourceModel.room_id == room_id).all()
-        if not room_resources:
+        if not rooms_with_resource:
             raise GraphQLError('Room has no assigned resource')
         current_resource = None
-        for room_resource in room_resources:
+        for room_resource in rooms_with_resource:
             if room_resource.resource_id == resource_id:
                 current_resource = room_resource.quantity
                 break
-        if not current_resource:
+        if current_resource is None:
             raise GraphQLError('Resource does not exist in the room')
         if kwargs['quantity'] < 0:
             raise GraphQLError(
