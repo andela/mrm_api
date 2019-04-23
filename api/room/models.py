@@ -14,13 +14,21 @@ from api.tag.models import Tag  # noqa: F401
 from utilities.validator import verify_calendar_id
 from api.devices.models import Devices # noqa F4
 
-
 tags = Table(
     'room_tags',
     Base.metadata,
     Column('tag_id', Integer, ForeignKey('tags.id')),
     Column('room_id', Integer, ForeignKey('rooms.id'))
 )
+
+
+class RoomResource(Base, Utility):
+    __tablename__ = 'room_resources'
+    room_id = Column(Integer, ForeignKey('rooms.id'), primary_key=True)
+    resource_id = Column(Integer, ForeignKey('resources.id'), primary_key=True)
+    quantity = Column(Integer)
+    resource = relationship("Resource", back_populates="room")
+    room = relationship("Room", back_populates="resource")
 
 
 class Room(Base, Utility):
@@ -52,6 +60,7 @@ class Room(Base, Utility):
     devices = relationship(
         'Devices', cascade="all, delete-orphan",
         order_by="func.lower(Devices.name)")
+    resource = relationship("RoomResource", back_populates='room')
 
     __table_args__ = (
             Index(

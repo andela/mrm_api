@@ -4,6 +4,9 @@ from sqlalchemy import func
 from graphql import GraphQLError
 
 from api.room_resource.models import Resource as ResourceModel
+from api.room.models import RoomResource as RoomResourceModel
+from api.room.models import Room as RoomModel
+from api.room.schema import Room as RoomSQLAlchemyObject
 from utilities.validations import validate_empty_fields
 from utilities.utility import update_entity_fields
 from helpers.auth.authentication import Auth
@@ -18,6 +21,58 @@ class Resource(SQLAlchemyObjectType):
 
     class Meta:
         model = ResourceModel
+
+
+class RoomResource(SQLAlchemyObjectType):
+    class Meta:
+        model = RoomResourceModel
+
+
+class AssignResource(graphene.Mutation):
+    """
+        Assigns a resource to a room
+    """
+    class Arguments:
+        resource_id = graphene.Int(required=True)
+        quantity = graphene.Int(required=True)
+        room_id = graphene.Int(required=True)
+    room_resource = graphene.Field(RoomResource)
+
+    @Auth.user_roles('Admin')
+    def mutate(self, info, **kwargs):
+        validate_empty_fields(**kwargs)
+        query = RoomSQLAlchemyObject.get_query(info)
+        active_rooms = query.filter(RoomModel.state == "active")
+        exact_room = active_rooms.filter(
+            RoomModel.id == kwargs['room_id']).first()
+        if not exact_room:
+            raise GraphQLError("Room not found")
+        exact_resource = ResourceModel.query.filter_by(
+            id=kwargs['resource_id'], state="active").first()
+        if not exact_resource:
+            raise GraphQLError('Resource with such id does not exist.')
+        exact_quantity = exact_resource.quantity
+        assigned_quantity = kwargs['quantity']
+        if assigned_quantity > exact_quantity:
+            raise GraphQLError(
+                'Assigned resource cannot exceed quantity in database.'
+            )
+        if assigned_quantity < 1:
+            raise GraphQLError(
+                "Assigned quantity cannot be less than 1."
+            )
+        exact_resource.quantity = exact_quantity - assigned_quantity
+        resource_query = RoomResource.get_query(info)
+        exact_resource_id = resource_query.filter(
+            RoomResourceModel.resource_id == kwargs['resource_id'],
+            RoomResourceModel.room_id == kwargs['room_id']).first()
+        if exact_resource_id:
+            raise GraphQLError(
+                'Resource already exists in the room.'
+            )
+        room_resources = RoomResourceModel(**kwargs)
+        room_resources.save()
+        return AssignResource(room_resource=room_resources)
 
 
 class PaginatedResource(Paginate):
@@ -175,3 +230,9 @@ class Mutation(graphene.ObjectType):
             \n- resource_id: Unique id identifier of the resource\
             \n- state: Check if the room response is active,\
                  archived or deleted")
+    assign_resource = AssignResource.Field(
+        description="Mutation to assign a resource to a room with arguments\
+            \n- roomId: Unique key identifier of a room[required]\
+            \n- resourceId: Unique key identifier of a resource[required]\
+            \n- quantity: The number of resources to be assigned to a room`"
+    )
