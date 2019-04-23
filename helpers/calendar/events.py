@@ -57,8 +57,17 @@ class RoomSchedules(Credentials):
                         all_attendees.append(attendee.get('email'))
         return [all_attendees, output]
 
-    def get_all_room_schedules(self, query, start_date, end_date):
-        rooms = query.filter_by(state="active")
+    def get_all_room_schedules(self, query, start_date, end_date, location_id):
+        """
+            Get all room schedules. This method is responsible for getting
+            all events that happened in a room for a specific date and location
+            :params
+                - query
+                - start_date(The start date for events in various rooms)
+                - end_date(The end date for event in various rooms)
+                - location_id(The id of the location of the requersting user)
+        """
+        rooms = query.filter_by(state="active", location_id=location_id)
         all_events = []
         all_dates = []
         for room in rooms:
