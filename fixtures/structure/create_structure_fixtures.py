@@ -7,10 +7,10 @@ office_structure_mutation_query = '''
                 {structureId: "a-web-story", name: "Office 1", level: 1,
                 parentId: "1", parentTitle: "parent1", tag: "office",
                 position: 1, locationId: 2},
-                {structureId: "a-web-user", name: "Office 1", level: 1,
+                {structureId: "a-web-user", name: "1st Floor", level: 1,
                 parentId: "1", parentTitle: "parent2", tag: "office",
                 position: 2, locationId: 2},
-                {structureId: "a-web-guy", name: "Office 1", level: 1,
+                {structureId: "a-web-guy", name: "Block A", level: 1,
                 parentId: "1", parentTitle: "parent3", tag: "office",
                 position: 2, locationId: 2}
             ]){
@@ -45,7 +45,7 @@ office_structure_mutation_response = {
                 },
                 {
                     "structureId": "a-web-user",
-                    "name": "Office 1",
+                    "name": "1st Floor",
                     "level": 1,
                     "parentId": "1",
                     "parentTitle": "parent2",
@@ -55,7 +55,7 @@ office_structure_mutation_response = {
                 },
                 {
                     "structureId": "a-web-guy",
-                    "name": "Office 1",
+                    "name": "Block A",
                     "level": 1,
                     "parentId": "1",
                     "parentTitle": "parent3",

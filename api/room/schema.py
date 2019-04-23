@@ -6,7 +6,7 @@ from graphql import GraphQLError
 from config import Config
 from api.room.models import Room as RoomModel
 from api.tag.models import Tag as TagModel
-from utilities.validations import validate_empty_fields
+from utilities.validations import validate_empty_fields, validate_room_labels
 from utilities.utility import update_entity_fields
 from helpers.auth.authentication import Auth
 from helpers.auth.admin_roles import admin_roles
@@ -105,13 +105,15 @@ class CreateRoom(graphene.Mutation):
         calendar_id = graphene.String()
         cancellation_duration = graphene.Int()
         room_tags = graphene.List(graphene.Int)
-        room_labels = graphene.List(graphene.String)
+        room_labels = graphene.List(graphene.String, required=False)
     room = graphene.Field(Room)
 
     @Auth.user_roles('Admin')
     def mutate(self, info, **kwargs):
         validate_empty_fields(**kwargs)
         verify_location_id(kwargs)
+        query = RoomModel.query
+        validate_room_labels(**kwargs, query=query)
         admin_roles.create_rooms_update_delete_location(kwargs)
         query = Room.get_query(info)
         active_rooms = query.filter(RoomModel.state == "active")
@@ -125,7 +127,7 @@ class CreateRoom(graphene.Mutation):
             RoomModel.name == kwargs.get('name'),
             RoomModel.state == "active",
             RoomModel.location_id == kwargs.get('location_id')
-            )
+        )
         if result.count():
             ErrorHandler.check_conflict(self, kwargs['name'], 'Room')
         room_tags = []
