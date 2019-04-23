@@ -48,7 +48,7 @@ class AssignResource(graphene.Mutation):
         if not exact_room:
             raise GraphQLError("Room not found")
         exact_resource = ResourceModel.query.filter_by(
-            id=kwargs['resource_id']).first()
+            id=kwargs['resource_id'], state="active").first()
         if not exact_resource:
             raise GraphQLError('Resource with such id does not exist.')
         exact_quantity = exact_resource.quantity

@@ -1,3 +1,6 @@
+import sys
+import os
+
 from tests.base import BaseTestCase, CommonTestCases
 from fixtures.token.token_fixture import ADMIN_TOKEN
 from fixtures.room.assign_resource_fixture import (
@@ -10,8 +13,6 @@ from fixtures.room.assign_resource_fixture import (
     query_string
     )
 
-import sys
-import os
 sys.path.append(os.getcwd())
 
 
