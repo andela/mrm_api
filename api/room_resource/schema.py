@@ -79,6 +79,48 @@ class AssignResource(graphene.Mutation):
         return AssignResource(room_resource=room_resources)
 
 
+class UpdateAssignedResource(graphene.Mutation):
+    """
+        Update assigned resource in a room
+    """
+    class Arguments:
+        resource_id = graphene.Int(required=True)
+        room_id = graphene.Int(required=True)
+        quantity = graphene.Int(required=True)
+    room_resource = graphene.Field(RoomResource)
+
+    @Auth.user_roles('Admin')
+    def mutate(self, info, resource_id, room_id, **kwargs):
+        exact_resource = ResourceModel.query.filter_by(
+            id=resource_id).first()
+        room_resource_query = RoomResource.get_query(info)
+        room_resources = room_resource_query.filter(
+            RoomResourceModel.room_id == room_id).all()
+        if not room_resources:
+            raise GraphQLError('Room has no assigned resource')
+        current_resource = None
+        for room_resource in room_resources:
+            if room_resource.resource_id == resource_id:
+                current_resource = room_resource.quantity
+                break
+        if not current_resource:
+            raise GraphQLError('Resource does not exist in the room')
+        if kwargs['quantity'] < 0:
+            raise GraphQLError(
+                'Assigned quantity cannot be less than zero'
+            )
+        available_resources = exact_resource.quantity
+        total_resources = current_resource + available_resources
+        if kwargs['quantity'] > total_resources:
+            raise GraphQLError(
+                'Assigned resource cannot exceed available quantity'
+            )
+        exact_resource.quantity = total_resources - kwargs['quantity']
+        update_entity_fields(room_resource, **kwargs)
+        room_resource.save()
+        return UpdateAssignedResource(room_resource=room_resource)
+
+
 class PaginatedResource(Paginate):
     """
         Returns paginated room resources
@@ -253,4 +295,10 @@ class Mutation(graphene.ObjectType):
             \n- roomId: Unique key identifier of a room[required]\
             \n- resourceId: Unique key identifier of a resource[required]\
             \n- quantity: The number of resources to be assigned to a room`"
+    )
+    update_assigned_resource = UpdateAssignedResource.Field(
+        description="Updates the quantity of an assigned resource\
+            \n- room_id: The room id of the room with the resource\
+            \n- resource_id: The resource id\
+            \n- quantity: The new quantity of the resource"
     )
