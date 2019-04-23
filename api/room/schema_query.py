@@ -62,6 +62,7 @@ class Analytics(graphene.ObjectType):
 
 class RatiosPerRoom(graphene.ObjectType):
     ratios = graphene.List(RatioOfCheckinsAndCancellations)
+    ratio = graphene.Field(RatioOfCheckinsAndCancellations)
 
 
 class RemoteRoom(graphene.ObjectType):
@@ -242,6 +243,7 @@ class Query(graphene.ObjectType):
         RatioOfCheckinsAndCancellations,
         start_date=graphene.String(required=True),
         end_date=graphene.String(),
+        room_id=graphene.Int(),
         description="Returns the ratios of meetings checkins to cancellations \
             and accepts the arguments\n- start_date: When the scheduled event \
             begins[required]\n- end_date: The end date to take the analytics \
@@ -252,9 +254,11 @@ class Query(graphene.ObjectType):
         RatiosPerRoom,
         start_date=graphene.String(required=True),
         end_date=graphene.String(),
+        room_id=graphene.Int(),
         description="Returns the ratios per room and accepts the arguments\
             \n- start_date: Start date when you want to get analytics from\
-            [required]\n- end_date: The end date to take the analytics upto"
+            [required]\n- end_date: The end date to take the analytics upto\
+            room_id: Room id which you want to get analytics for"
     )
 
     bookings_analytics_count = graphene.List(
@@ -403,12 +407,18 @@ class Query(graphene.ObjectType):
         return ratio
 
     @Auth.user_roles('Admin', 'Default User')
-    def resolve_analytics_ratios_per_room(
-            self, info, start_date, end_date=None):
+    def resolve_analytics_ratios_per_room(self, info, **kwargs):
+        room_id = kwargs.get('room_id')
         query = Room.get_query(info)
         ratio = RoomAnalyticsRatios.get_analytics_ratios_per_room(
-            self, query, start_date, end_date)
-        return RatiosPerRoom(ratio)
+            self, query, kwargs.get('start_date'), kwargs.get('end_date'),
+            **kwargs)
+        if room_id:
+            exact_room = query.filter(RoomModel.id == room_id).first()
+            if not exact_room:
+                raise GraphQLError("Room not found")
+            return RatiosPerRoom(ratios=[], ratio=ratio)
+        return RatiosPerRoom(ratios=ratio, ratio={})
 
     @Auth.user_roles('Admin', 'Default User')
     def resolve_bookings_analytics_count(

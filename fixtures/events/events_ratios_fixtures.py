@@ -85,3 +85,72 @@ event_ratio_percentage_cancellation_response = {
         }
     }
 }
+
+event_ratio_single_room_query = '''query{
+    analyticsRatiosPerRoom(startDate:"Mar 1 2019", endDate:"Mar 27 2019",
+    roomId:1){
+        ratio{
+            roomName
+            bookings
+            checkins
+            checkinsPercentage
+            cancellations
+            cancellationsPercentage
+            appBookings
+            appBookingsPercentage
+        }
+    }
+}'''
+
+event_ratio_single_room_response = {
+    "data": {
+        "analyticsRatiosPerRoom": {
+            "ratio": {
+                "roomName": "Entebbe",
+                "bookings": 0,
+                "checkins": 0,
+                "checkinsPercentage": 0.0,
+                "cancellations": 0,
+                "cancellationsPercentage": 0.0,
+                "appBookings": 0,
+                "appBookingsPercentage": 0.0
+            }
+        }
+    }
+}
+
+event_ratio_single_room_query_with_non_existing_id = '''query{
+    analyticsRatiosPerRoom(startDate:"Mar 1 2019", endDate:"Mar 27 2019",
+    roomId:5){
+        ratio{
+            roomName
+            bookings
+            checkins
+            checkinsPercentage
+            cancellations
+            cancellationsPercentage
+            appBookings
+            appBookingsPercentage
+        }
+    }
+}'''
+
+event_ratio_single_room_with_non_existing_id_response = {
+    "errors": [
+        {
+            "message": "Room not found",
+            "locations": [
+                {
+                    "line": 2,
+                    "column": 5
+                }
+            ],
+            "path": [
+                "analyticsRatiosPerRoom"
+            ]
+        }
+    ],
+    "data": {
+        "analyticsRatiosPerRoom": None
+    }
+}
