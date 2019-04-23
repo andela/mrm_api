@@ -20,7 +20,7 @@ class RoomAnalyticsRatios:
             - start_date, end_date
         """
         start_date, day_after_end_date = CommonAnalytics.validate_current_date(
-                self, start, end)
+            self, start, end)
         rooms = CommonAnalytics.get_room_details(
             self, query)
 
@@ -30,7 +30,7 @@ class RoomAnalyticsRatios:
         app_events_list = []
 
         for room in rooms:
-            checkins, cancellations, calendar_events_list, app_events_list = RoomAnalyticsRatios().retrieve_cancellations_and_checkins_for_room(room['room_id'], # noqa 
+            checkins, cancellations, calendar_events_list, app_events_list = RoomAnalyticsRatios().retrieve_cancellations_and_checkins_for_room(room['room_id'],  # noqa
                                                         start_date,
                                                         day_after_end_date,
                                                         checkins,
@@ -39,20 +39,21 @@ class RoomAnalyticsRatios:
                                                         app_events_list)
 
         ratio_object = RoomAnalyticsRatios().map_results_to_ratio_class(
-                            checkins,
-                            cancellations,
-                            calendar_events_list,
-                            app_events_list)
+            checkins=checkins,
+            cancellations=cancellations,
+            calendar_events_list=calendar_events_list,
+            app_events_list=app_events_list)
 
         return ratio_object
 
-    def get_analytics_ratios_per_room(self, query, start, end):
+    def get_analytics_ratios_per_room(self, query, start, end, **kwargs):
         """ Get ratios of checkings/cancellations to bookings per room.
          :params
-            - start_date, end_date
+            - start_date, end_date, room_id
         """
+        room_id = kwargs.get('room_id')
         start_date, day_after_end_date = CommonAnalytics.validate_current_date(
-                self, start, end)
+            self, start, end)
         rooms = CommonAnalytics.get_room_details(
             self, query)
 
@@ -63,7 +64,7 @@ class RoomAnalyticsRatios:
             calendar_events_list = []
             app_events_list = []
 
-            checkins, cancellations, calendar_events_list, app_events_list = RoomAnalyticsRatios().retrieve_cancellations_and_checkins_for_room(room['room_id'], # noqa
+            checkins, cancellations, calendar_events_list, app_events_list = RoomAnalyticsRatios().retrieve_cancellations_and_checkins_for_room(room['room_id'],  # noqa
                                                         start_date,
                                                         day_after_end_date,
                                                         checkins,
@@ -72,13 +73,18 @@ class RoomAnalyticsRatios:
                                                         app_events_list)
 
             ratio_object = RoomAnalyticsRatios().map_results_to_ratio_class(
-                                checkins,
-                                cancellations,
-                                calendar_events_list,
-                                app_events_list,
-                                room['name'])
+                checkins=checkins,
+                cancellations=cancellations,
+                calendar_events_list=calendar_events_list,
+                app_events_list=app_events_list,
+                room_name=room['name'],
+                room_id=room['room_id'])
+
+            if room_id == ratio_object.room_id:
+                return ratio_object
 
             response.append(ratio_object)
+
         return response
 
     def retrieve_cancellations_and_checkins_for_room(self,
@@ -95,30 +101,30 @@ class RoomAnalyticsRatios:
                 checkins,cancellations, output
         """
         all_events = CommonAnalytics.get_all_events_in_a_room(
-                self, room_id, start_date, day_after_end_date)
+            self, room_id, start_date, day_after_end_date)
         if all_events:
             for event in all_events:
                 if event['participants']:
                     calendar_events_list.append(event)
         room_id = RoomModel.query.filter_by(id=room_id).first().id
 
-        checkins += (Events.query.filter(Events.room_id==room_id, Events.checked_in==True, Events.start_time>=start_date, Events.end_time<day_after_end_date)).count()  # noqa
+        checkins += (Events.query.filter(Events.room_id == room_id, Events.checked_in == True, Events.start_time >= start_date, Events.end_time < day_after_end_date)).count()  # noqa
 
-        cancellations += (Events.query.filter(Events.room_id==room_id, Events.cancelled==True, Events.start_time>=start_date, Events.end_time<day_after_end_date)).count()  # noqa
+        cancellations += (Events.query.filter(Events.room_id == room_id, Events.cancelled == True, Events.start_time >= start_date, Events.end_time < day_after_end_date)).count()  # noqa
 
         return checkins, cancellations, calendar_events_list, app_events_list
 
-    def map_results_to_ratio_class(self,
-                                   checkins,
-                                   cancellations,
-                                   calendar_events_list,
-                                   app_events_list,
-                                   room_name=None):
+    def map_results_to_ratio_class(self, **kwargs):
         """ Maps the checkins and cancellations to the ratio object
         :params
-            - checkins, cancellations, output, room_name
+            - checkins, cancellations, calendar_events_list, app_events_list,
+            room_name, room_id
         """
-        bookings = len(calendar_events_list) + len(
+        checkins = kwargs.get('checkins')
+        cancellations = kwargs.get('cancellations')
+        app_events_list = kwargs.get('app_events_list')
+
+        bookings = len(kwargs.get('calendar_events_list')) + len(
             app_events_list) + cancellations
         app_bookings = len(app_events_list) + cancellations
         app_bookings_percentage = RoomAnalyticsRatios().percentage_formater(
@@ -131,15 +137,16 @@ class RoomAnalyticsRatios:
             checkins,
             bookings)
         result = RatioOfCheckinsAndCancellations(
-                room_name=room_name,
-                checkins=checkins,
-                cancellations=cancellations,
-                bookings=bookings,
-                checkins_percentage=checkins_percentage,
-                cancellations_percentage=cancellations_percentage,
-                app_bookings=app_bookings,
-                app_bookings_percentage=app_bookings_percentage,
-            )
+            room_id=kwargs.get('room_id'),
+            room_name=kwargs.get('room_name'),
+            checkins=checkins,
+            cancellations=cancellations,
+            bookings=bookings,
+            checkins_percentage=checkins_percentage,
+            cancellations_percentage=cancellations_percentage,
+            app_bookings=app_bookings,
+            app_bookings_percentage=app_bookings_percentage,
+        )
         return result
 
     def percentage_formater(self, portion, total):
