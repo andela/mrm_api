@@ -10,6 +10,7 @@ from helpers.calendar.analytics import RoomStatistics  # noqa: E501
 from api.room.models import Room as RoomModel
 from api.room.models import tags
 from api.tag.models import Tag
+from api.room_resource.schema import RoomResource
 from helpers.auth.user_details import get_user_from_db
 from helpers.remote_rooms.remote_rooms_location import (
     map_remote_room_location_to_filter
@@ -144,6 +145,14 @@ class Query(graphene.ObjectType):
         tagId=graphene.Int(),
         description="Returns a list of rooms with a specific tag. Accepts the argument\
            \n- tagId: Unique identifier of a tag")
+
+    total_resources_in_room = graphene.List(
+        RoomResource,
+        room_id=graphene.Int(),
+        description="Returns total number of resources that are assigned the the\
+            specified room\
+            \n - room_id: A unique identifier of the room"
+    )
 
     all_remote_rooms = graphene.Field(
         AllRemoteRooms,
@@ -325,6 +334,15 @@ class Query(graphene.ObjectType):
             raise GraphQLError('No rooms found with this tag')
 
         return rooms
+
+    @Auth.user_roles('Admin')
+    def resolve_total_resources_in_room(self, info, room_id):
+        query = RoomResource.get_query(info)
+        num_of_resource = len(query.filter_by(room_id=room_id).all())
+        if not num_of_resource:
+            raise GraphQLError('No resources found in this room')
+
+        return RoomResource(num_of_resource=num_of_resource)
 
     def resolve_get_room_by_id(self, info, room_id):
         query = Room.get_query(info)

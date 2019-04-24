@@ -172,6 +172,7 @@ room_search_by_name_response = {
     }
 }
 
+
 room_search_by_empty_name = '''
 {
     getRoomByName(name:""){
