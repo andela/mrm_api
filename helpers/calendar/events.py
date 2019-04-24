@@ -160,8 +160,10 @@ class CalendarEvents:
 
                 elif existing_event:
                     existing_event.event_title = event.get("summary")
-                    existing_event.start_time = event["start"]["dateTime"]
-                    existing_event.end_time = event["end"]["dateTime"]
+                    existing_event.start_time = event["start"].get(
+                        "dateTime") or event["start"].get("date")
+                    existing_event.end_time = event["end"].get(
+                        "dateTime") or event["end"].get("date")
                     existing_event.number_of_participants = number_of_attendees
                     existing_event.save()
 
@@ -171,8 +173,10 @@ class CalendarEvents:
                         recurring_event_id=event.get("recurringEventId"),
                         room_id=room.id,
                         event_title=event.get("summary"),
-                        start_time=event["start"]["dateTime"],
-                        end_time=event["end"]["dateTime"],
+                        start_time=event["start"].get(
+                            "dateTime") or event["start"].get("date"),
+                        end_time=event["end"].get(
+                            "dateTime") or event["end"].get("date"),
                         number_of_participants=number_of_attendees,
                         checked_in=False,
                         cancelled=False
