@@ -8,7 +8,11 @@ from fixtures.room.filter_room_fixtures import (
     filter_rooms_by_location,
     filter_rooms_by_location_response,
     filter_rooms_by_location_capacity,
-    filter_rooms_by_location_capacity_response
+    filter_rooms_by_location_capacity_response,
+    filter_rooms_by_wings_and_floors,
+    filter_rooms_by_wings_and_floors_response,
+    filter_rooms_by_non_existent_room_label,
+    filter_rooms_by_non_existent_room_label_response
 )
 
 sys.path.append(os.getcwd())
@@ -35,4 +39,18 @@ class RoomsFilter(BaseTestCase):
             self,
             filter_rooms_by_location_capacity,
             filter_rooms_by_location_capacity_response
+        )
+
+    def test_filter_room_by_wings_and_floors(self):
+        CommonTestCases.user_token_assert_equal(
+            self,
+            filter_rooms_by_wings_and_floors,
+            filter_rooms_by_wings_and_floors_response
+        )
+
+    def test_room_filter_with_non_existent_room_label(self):
+        CommonTestCases.user_token_assert_equal(
+            self,
+            filter_rooms_by_non_existent_room_label,
+            filter_rooms_by_non_existent_room_label_response
         )

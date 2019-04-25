@@ -48,6 +48,53 @@ filter_rooms_by_location_response = {
         }
     }
 }
+filter_rooms_by_wings_and_floors = '''
+    query {
+    allRooms(roomLabels:"1st Floor, Wing A") {
+        rooms {
+        id
+        name
+        roomLabels
+        }
+    }
+    }
+    '''
+
+filter_rooms_by_wings_and_floors_response = {
+    'data': {
+        'allRooms': {
+            'rooms': [
+                {
+                    'id': '1',
+                    'name': 'Entebbe',
+                    'roomLabels': [
+                        '1st Floor',
+                        'Wing A'
+                    ]
+                }
+            ]
+        }
+    }
+}
+filter_rooms_by_non_existent_room_label = '''
+    query {
+    allRooms(roomLabels:"Random") {
+        rooms {
+        id
+        name
+        roomLabels
+        }
+    }
+    }
+    '''
+
+filter_rooms_by_non_existent_room_label_response = {
+    'data': {
+        'allRooms': {
+            'rooms': []
+        }
+    }
+}
 filter_rooms_by_location_capacity = '''query {
   allRooms(location:"Kampala",capacity:6){
    rooms{
