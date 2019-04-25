@@ -107,6 +107,35 @@ class UpdateAssignedResource(graphene.Mutation):
         return UpdateAssignedResource(room_resource=room_resource)
 
 
+class DeleteAssignedResource(graphene.Mutation):
+    """
+        Delete assigned resource in a room
+    """
+    class Arguments:
+        resource_id = graphene.Int(required=True)
+        room_id = graphene.Int(required=True)
+    room_resource = graphene.Field(RoomResource)
+
+    @Auth.user_roles('Admin')
+    def mutate(self, info, resource_id, room_id):
+        query = RoomResource.get_query(info)
+        exact_room = RoomModel.query.filter_by(id=room_id).first()
+        if not exact_room:
+            raise GraphQLError('Room does not exist')
+        exact_resource = ResourceModel.query.filter_by(
+            id=resource_id).first()
+        if not exact_resource:
+            raise GraphQLError('Resource does not exist')
+        assigned_resource = query.filter(
+            RoomResourceModel.room_id == room_id,
+            RoomResourceModel.resource_id == resource_id).first()
+        if not assigned_resource:
+            raise GraphQLError(
+                'The resource has not been assigned to the specified room')
+        assigned_resource.delete()
+        return DeleteAssignedResource(room_resource=assigned_resource)
+
+
 class PaginatedResource(Paginate):
     """
         Returns paginated room resources
@@ -148,9 +177,9 @@ class CreateResource(graphene.Mutation):
         resource = ResourceModel(**kwargs)
         payload = {
             'model': ResourceModel, 'field': 'name', 'value':  kwargs['name']
-            }
+        }
         with SaveContextManager(
-          resource, 'Resource', payload
+            resource, 'Resource', payload
         ):
             return CreateResource(resource=resource)
 
@@ -222,9 +251,9 @@ class Query(graphene.ObjectType):
         description="Returns a list of room's resources. Accepts the argument\
             \n- room_id: Unique identifier of a room")
     rooms_containing_resource = graphene.List(
-      RoomResource,
-      resource_id=graphene.Int(),
-      description="Returns a list of rooms containing the supplied resource id.\
+        RoomResource,
+        resource_id=graphene.Int(),
+        description="Returns a list of rooms containing the supplied resource id.\
             \n- resource_id: Unique identifier of a resource")
 
     def resolve_all_resources(self, info, **kwargs):
@@ -264,11 +293,11 @@ class Query(graphene.ObjectType):
         if not resource_exists:
             raise GraphQLError('Resource does not exist')
         query = RoomResource.get_query(info).join(ResourceModel).join(
-          RoomModel)
+            RoomModel)
         rooms_with_resource = query.filter(
-                RoomResourceModel.resource_id == resource_id,
-                ResourceModel.state == "active").filter(
-                  RoomModel.state == "active")
+            RoomResourceModel.resource_id == resource_id,
+            ResourceModel.state == "active").filter(
+            RoomModel.state == "active")
         return rooms_with_resource
 
 
@@ -282,7 +311,7 @@ class Mutation(graphene.ObjectType):
             \n- name: The name field of the resource[required]\
             \n- room_id: The unique identifier of the room where the resource \
             is created[required]\n- quantity: The number of resources[required]"
-                )
+    )
     update_room_resource = UpdateRoomResource.Field(
         description="Updates the room resources fields below\
             \n- name: The name field of the resource\
@@ -303,5 +332,9 @@ class Mutation(graphene.ObjectType):
         description="Updates the quantity of an assigned resource\
             \n- room_id: The room id of the room with the resource\
             \n- resource_id: The resource id\
-            \n- quantity: The new quantity of the resource"
+            \n- quantity: The new quantity of the resource")
+    delete_assigned_resource = DeleteAssignedResource.Field(
+        description="Deletes an assigned resource in a room \
+            \n- room_id: The room id of the room with the resource\
+            \n- resource_id: The resource id"
     )
