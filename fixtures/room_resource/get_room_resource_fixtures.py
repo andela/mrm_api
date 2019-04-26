@@ -35,7 +35,7 @@ get_room_resources_by_room_id_response = {
 
 get_paginated_room_resources = '''
  {
-  allResources(page:1, perPage:2){
+  allResources(page:1, perPage:1){
    resources{
       name
    }
@@ -47,18 +47,18 @@ get_paginated_room_resources = '''
 '''
 
 get_paginated_room_resources_response = {
-    "data": {
-        "allResources": {
-            "resources": [
-                {
-                    "name": "Markers"
-                }
-            ],
-            "hasNext":  False,
-            "hasPrevious": False,
-            "pages": 1
+  "data": {
+    "allResources": {
+      "resources": [
+        {
+          "name": "Markers"
         }
+      ],
+      "hasNext": False,
+      "hasPrevious": False,
+      "pages": 1
     }
+  }
 }
 
 filter_unique_resources = '''
@@ -114,7 +114,7 @@ get_paginated_resources_response = {
 
 get_paginated_resources_past_page = '''
 query {
-  allResources(page:2, perPage:1){
+  allResources(page:2, perPage:2){
    resources {
     name
     id
@@ -138,3 +138,41 @@ query {
 }
 }
 '''
+
+get_resource_by_room_id = '''
+query
+{
+  getResourcesByRoomId(roomId:1){
+    roomResources{
+      name
+      id
+      quantity
+    }
+  }
+}'''
+
+get_resource_by_room_id_response_by_admin = {
+  "data": {
+    "getResourcesByRoomId": {
+      "roomResources": [
+        {
+          "name": "Markers",
+          "quantity": 1,
+          "id": "1"
+        }
+      ]
+    }
+  }
+}
+
+get_resource_by_non_existing_room_id = '''
+query
+{
+  getResourcesByRoomId(roomId:143){
+    roomResources{
+      name
+      id
+      quantity
+    }
+  }
+}'''

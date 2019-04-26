@@ -28,6 +28,10 @@ class RoomResource(SQLAlchemyObjectType):
         model = RoomResourceModel
 
 
+class RoomResources(graphene.ObjectType):
+    roomResources = graphene.List(Resource)
+
+
 class AssignResource(graphene.Mutation):
     """
         Assigns a resource to a room
@@ -186,8 +190,8 @@ class Query(graphene.ObjectType):
             \n- page: Field for page of the room response\
             \n- per_page: Field for number of responses per page\
             \n- unique: Boolean field for uniqueroom response")
-    get_resources_by_room_id = graphene.List(
-        lambda: Resource,
+    get_resources_by_room_id = graphene.Field(
+        lambda: RoomResources,
         room_id=graphene.Int(),
         description="Returns a list of room's resources. Accepts the argument\
             \n- room_id: Unique identifier of a room")
@@ -197,16 +201,30 @@ class Query(graphene.ObjectType):
         resp = PaginatedResource(**kwargs)
         return resp
 
+    @Auth.user_roles('Admin')
     def resolve_get_resources_by_room_id(self, info, room_id):
-        # Get resources of a specifics room
-        query = Resource.get_query(info)
-        active_resources = query.filter(ResourceModel.state == "active")
-        check_room = active_resources.filter(
-            ResourceModel.room_id == room_id).first()
-        if not check_room:
+        # Get resources of a specific room
+        exact_room = RoomSQLAlchemyObject.get_query(info).filter(
+            RoomModel.id == room_id,
+            RoomModel.state == "active"
+        ).first()
+        if not exact_room:
+            raise GraphQLError("Room not found")
+        resource_query = Resource.get_query(info)
+        room_resources = RoomResource.get_query(info).filter(
+            RoomResourceModel.room_id == room_id
+        )
+        if not room_resources.first():
             raise GraphQLError("Room has no resource yet")
-
-        return active_resources.filter(ResourceModel.room_id == room_id)
+        resources = []
+        for resource in room_resources:
+            room_resource = resource_query.filter(
+                ResourceModel.state == "active",
+                ResourceModel.id == resource.resource_id
+            ).first()
+            room_resource.quantity = resource.quantity
+            resources.append(room_resource)
+        return RoomResources(roomResources=resources)
 
 
 class Mutation(graphene.ObjectType):
