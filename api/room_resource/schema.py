@@ -237,6 +237,11 @@ class Query(graphene.ObjectType):
         room_id=graphene.Int(),
         description="Returns a list of room's resources. Accepts the argument\
             \n- room_id: Unique identifier of a room")
+    rooms_containing_resource = graphene.List(
+      RoomResource,
+      resource_id=graphene.Int(),
+      description="Returns a list of rooms containing the supplied resource id.\
+            \n- resource_id: Unique identifier of a resource")
 
     def resolve_all_resources(self, info, **kwargs):
         # Get all resources
@@ -267,6 +272,20 @@ class Query(graphene.ObjectType):
             room_resource.quantity = resource.quantity
             resources.append(room_resource)
         return RoomResources(roomResources=resources)
+
+    @Auth.user_roles('Admin')
+    def resolve_rooms_containing_resource(self, info, resource_id):
+        resource_exists = Resource.get_query(info).filter_by(
+            id=resource_id).first()
+        if not resource_exists:
+            raise GraphQLError('Resource does not exist')
+        query = RoomResource.get_query(info).join(ResourceModel).join(
+          RoomModel)
+        rooms_with_resource = query.filter(
+                RoomResourceModel.resource_id == resource_id,
+                ResourceModel.state == "active").filter(
+                  RoomModel.state == "active")
+        return rooms_with_resource
 
 
 class Mutation(graphene.ObjectType):
