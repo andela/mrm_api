@@ -2,7 +2,7 @@ null = None
 
 update_room_resource_query = '''
             mutation{
-            updateRoomResource(resourceId:1,name:"Markers"){
+            updateRoomResource(resourceId:1,name:"Markers", quantity:100){
                 resource{
                 name
                 }
@@ -74,4 +74,34 @@ expected_response_empty_field = {
         "updateRoomResource": null
     }
 
+}
+
+update_room_resource_negative_integer = '''
+            mutation{
+            updateRoomResource(resourceId:1,quantity:-2){
+                resource{
+                name
+                }
+            }
+            }
+            '''
+
+update_room_resource_negative_integer_response = {
+    "errors": [
+        {
+            "message": "Quantity cannot be less than zero",
+            "locations": [
+                {
+                    "line": 3,
+                    "column": 13
+                }
+            ],
+            "path": [
+                "updateRoomResource"
+            ]
+        }
+    ],
+    "data": {
+        "updateRoomResource": null
+    }
 }
