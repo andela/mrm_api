@@ -24,6 +24,15 @@ tags = Table(
     )
 
 
+class RoomResource(Base, Utility):
+    __tablename__ = 'room_resources'
+    room_id = Column(Integer, ForeignKey('rooms.id'), primary_key=True)
+    resource_id = Column(Integer, ForeignKey('resources.id'), primary_key=True)
+    quantity = Column(Integer)
+    resource = relationship("Resource", back_populates="room")
+    room = relationship("Room", back_populates="resource")
+
+
 class Room(Base, Utility):
     __tablename__ = 'rooms'
     id = Column(Integer, Sequence('rooms_id_seq', start=1, increment=1), primary_key=True) # noqa
@@ -56,6 +65,7 @@ class Room(Base, Utility):
     devices = relationship(
         'Devices', cascade="all, delete-orphan",
         order_by="func.lower(Devices.name)")
+    resource = relationship("RoomResource", back_populates='room')
 
     __table_args__ = (
             Index(
