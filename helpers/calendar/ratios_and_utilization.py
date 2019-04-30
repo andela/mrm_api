@@ -104,7 +104,7 @@ class RoomAnalyticsRatios:
             self, room_id, start_date, day_after_end_date)
         if all_events:
             for event in all_events:
-                if event['participants']:
+                if event.number_of_participants:
                     calendar_events_list.append(event)
         room_id = RoomModel.query.filter_by(id=room_id).first().id
 

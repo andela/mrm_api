@@ -33,10 +33,10 @@ class AnalyticsReport():
                     'attendees': 0
                 })
             for event in all_events:
-                if event.get('attendees'):
+                if event.attendees:
                     event_details = CommonAnalytics.get_event_details(
                         self, query, event, room['calendar_id'])
-                    event_details['attendees'] = len(event.get('attendees'))
+                    event_details['attendees'] = len(event.attendees)
                     all_rooms_data_df.append(event_details)
         return pd.DataFrame(all_rooms_data_df)
 
