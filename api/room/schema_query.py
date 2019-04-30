@@ -433,15 +433,19 @@ class Query(graphene.ObjectType):
             self, query, start_date, end_date, room_id=room_id)
         return analytics
 
+    @Auth.user_roles('Admin', 'Default User')
     def resolve_analytics_for_daily_room_events(
-        self, info, start_date, end_date, page=None, per_page=None
+        self, info, **kwargs
     ):
+        start_date = kwargs.get('start_date')
+        end_date = kwargs.get('end_date')
+        location_id = admin_roles.user_location_for_analytics_view()
         start_date, end_date = CommonAnalytics().convert_dates(
             start_date, end_date
         )
         query = Room.get_query(info)
         all_events, all_dates = RoomSchedules().get_all_room_schedules(
-            query, start_date, end_date
+            query, start_date, end_date, location_id
         )
         all_days_events = []
         for date in set(all_dates):
@@ -468,6 +472,8 @@ class Query(graphene.ObjectType):
                     events=daily_events
                 )
             )
+        page = kwargs.get('page')
+        per_page = kwargs.get('per_page')
         if page and per_page:
             paginated_results = ListPaginate(
                 iterable=all_days_events, per_page=per_page, page=page
