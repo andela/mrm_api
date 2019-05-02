@@ -111,27 +111,13 @@ class CommonAnalytics:
             - room_id - for specific room
             - event_start_time, event_end_time(Time range)
         """
-        events = EventsModel.query.all()
-        room_events = []
-        for event in events:
-            if event.room_id == room_id and not (
-                event.start_time < event_start_time or
-                    event.end_time > event_end_time):
-                room_event = {
-                    'room_id': event.room_id,
-                    'event_start_time': event.start_time,
-                    'event_end_time': event.end_time,
-                    'event_title': event.event_title,
-                    'participants': event.number_of_participants,
-                    'event_id': event.event_id,
-                    'cancelled_status': event.cancelled,
-                    'checked_in_status': event.checked_in,
-                    'state': event.state,
-                    'meeting_end_time': event.meeting_end_time,
-                    'check_in_time': event.check_in_time
-                }
-                room_events.append(room_event)
-        return room_events
+        events = EventsModel.query.filter(
+            EventsModel.room_id == room_id,
+            EventsModel.state == 'active',
+            EventsModel.end_time < event_end_time,
+            EventsModel.start_time > event_start_time
+        ).all()
+        return events
 
     def get_event_details(self, query, event, room_id):
         """ Filter details of an event
@@ -142,9 +128,9 @@ class CommonAnalytics:
         rooms_available = CommonAnalytics.get_room_details(
             self, query)
         for room in rooms_available:
-            event_details["minutes"] = CommonAnalytics.get_time_duration_for_event(self, event['event_start_time'], event['event_end_time'])  # noqa: E501
+            event_details["minutes"] = CommonAnalytics.get_time_duration_for_event(self, event.start_time, event.end_time)  # noqa: E501
             event_details["roomName"] = room['name']
-            event_details["summary"] = event['event_title']
+            event_details["summary"] = event.event_title
         return event_details
 
     def get_room_statistics(self, number_of_events_in_room, all_details):

@@ -77,27 +77,27 @@ class RoomSchedules(Credentials):
             except GraphQLError:
                 continue
             for event in events_result:
-                CommonAnalytics.format_date(event["event_start_time"])
+                CommonAnalytics.format_date(event.start_time)
                 event_start_date = parser.parse(
-                    event["event_start_time"]).astimezone(pytz.utc)
+                    event.start_time).astimezone(pytz.utc)
                 event_end_date = parser.parse(
-                    event["event_end_time"]
+                    event.end_time
                 ).astimezone(pytz.utc)
                 day_of_event = event_start_date.strftime("%a %b %d %Y")
                 all_dates.append(day_of_event)
                 current_event = {
                     "start_time": event_start_date.time(),
                     "end_time": event_end_date.time(),
-                    "no_of_participants": event['participants'],
+                    "no_of_participants": event.number_of_participants,
                     "room_name": room.name,
-                    "event_summary": event['event_title'],
+                    "event_summary": event.event_title,
                     "date_of_event": day_of_event,
-                    "event_id": event['event_id'],
-                    "state": event['state'],
-                    "checked_in": event['checked_in_status'],
-                    "cancelled": event['cancelled_status'],
-                    "check_in_time": event['check_in_time'],
-                    "meeting_end_time": event['meeting_end_time'],
+                    "event_id": event.event_id,
+                    "state": event.state,
+                    "checked_in": event.checked_in,
+                    "cancelled": event.cancelled,
+                    "check_in_time": event.check_in_time,
+                    "meeting_end_time": event.meeting_end_time,
                 }
                 all_events.append(current_event)
 

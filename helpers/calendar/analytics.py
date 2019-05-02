@@ -34,7 +34,7 @@ class RoomAnalytics:
                 number_of_meetings.append(0)
             else:
                 for event in all_events:
-                    if event['participants']:
+                    if event.number_of_participants:
                         event_details = CommonAnalytics.get_event_details(
                             self, query, event, room['room_id'])
                         output.append(event_details)
@@ -100,8 +100,8 @@ class RoomAnalytics:
                 self, room['room_id'], start_date, end_date)
             events_duration = []
             for event in events:
-                start = event['event_start_time']
-                end = event['event_end_time']
+                start = event.start_time
+                end = event.end_time
                 duration = CommonAnalytics.get_time_duration_for_event(self, start, end)  # noqa: E501
                 events_duration.append(duration)
 
