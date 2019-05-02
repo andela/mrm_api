@@ -28,7 +28,7 @@ class RoomResource(Base, Utility):
     resource_id = Column(Integer, ForeignKey('resources.id'), primary_key=True)
     quantity = Column(Integer)
     resource = relationship("Resource", back_populates="room")
-    room = relationship("Room", back_populates="resource")
+    room = relationship("Room", back_populates="resources")
 
 
 class Room(Base, Utility):
@@ -60,7 +60,7 @@ class Room(Base, Utility):
     devices = relationship(
         'Devices', cascade="all, delete-orphan",
         order_by="func.lower(Devices.name)")
-    resource = relationship("RoomResource", back_populates='room')
+    resources = relationship("RoomResource", back_populates='room')
 
     __table_args__ = (
             Index(
