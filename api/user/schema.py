@@ -157,8 +157,18 @@ class ChangeUserRole(graphene.Mutation):
         if not new_role:
             raise GraphQLError('invalid role id')
 
+        current_user_role = exact_user.roles[0].role
+        if new_role.role == current_user_role:
+            raise GraphQLError('This role is already assigned to this user')
+
         exact_user.roles[0] = new_role
         exact_user.save()
+
+        if new_role.role == 'Admin':
+            user_name = exact_user.name
+            if not notification.send_admin_invite_email(email, user_name):
+                raise GraphQLError("Role changed but email not sent")
+
         return ChangeUserRole(user=exact_user)
 
 

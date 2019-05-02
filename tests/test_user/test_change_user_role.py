@@ -1,10 +1,12 @@
-from tests.base import BaseTestCase, CommonTestCases
+from tests.base import BaseTestCase, CommonTestCases, change_test_user_role
 from fixtures.user.user_fixture import (
     change_user_role_mutation, change_user_role_mutation_response,
     change_user_role_to_non_existence_role_mutation,
     change_user_role_to_non_existing_role_mutation_response,
     change_role_of_non_existing_user_mutation,
-    assign_role_to_non_existing_user_mutation
+    assign_role_to_non_existing_user_mutation,
+    change_user_role_with_already_assigned_role_mutation,
+    change_user_role_with_already_assigned_role_mutation_response
 )
 
 import sys
@@ -14,11 +16,12 @@ sys.path.append(os.getcwd())
 
 class TestChangeUserRole(BaseTestCase):
 
+    @change_test_user_role
     def test_change_user_role(self):
         """
         Testing change of user role
         """
-        CommonTestCases.admin_token_assert_equal(
+        CommonTestCases.admin_token_assert_in(
             self, change_user_role_mutation, change_user_role_mutation_response
         )
 
@@ -49,4 +52,14 @@ class TestChangeUserRole(BaseTestCase):
             self,
             assign_role_to_non_existing_user_mutation,
             "User not found"
+        )
+
+    def test_change_user_role_with_already_assigned_role(self):
+        """
+        Testing change of user role to an already assigned user
+        """
+        CommonTestCases.admin_token_assert_in(
+            self,
+            change_user_role_with_already_assigned_role_mutation,
+            change_user_role_with_already_assigned_role_mutation_response
         )

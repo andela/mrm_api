@@ -313,3 +313,15 @@ def change_user_role_helper(func):
         db_session().commit()
         return headers
     return func_wrapper
+
+
+def change_test_user_role(func):
+    def func_wrapper(self):
+        user_role = Role(role='Default User')
+        user_role.save()
+        user = User(email='mrmtestuser@andela.com', name='Test user',
+                    location="Lagos", picture='www.andela.com/testuser')
+        user.save()
+        user.roles.append(user_role)
+        db_session().commit()
+    return func_wrapper
