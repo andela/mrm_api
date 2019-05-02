@@ -51,8 +51,36 @@ class CreateOfficeStructure(graphene.Mutation):
         return CreateOfficeStructure(structure=office_structure)
 
 
+class DeleteStructure(graphene.Mutation):
+    """
+        Delete an office_structure
+    """
+
+    class Arguments:
+        structure_id = graphene.String(required=True)
+    structure = graphene.Field(Structure)
+
+    @Auth.user_roles('Admin')
+    def mutate(self, info, structure_id):
+        query_office_structure = Structure.get_query(info)
+        active_structures = query_office_structure.filter(
+            StructureModel.state == "active")
+        office_structures = active_structures.filter(
+            StructureModel.structure_id == structure_id,
+            StructureModel.parent_id == structure_id).all()
+        if not exact_room_resource:
+            raise GraphQLError("Office structure not found")
+        office_structures = []
+        update_entity_fields(exact_office_structure, state="archived")
+        exact_office_structure.save()
+        return DeleteStructure(structure=exact_office_structure)
+
 class Mutation(graphene.ObjectType):
     create_office_structure = CreateOfficeStructure.Field()
+    delete_office_structure = DeleteStructure.Field(
+        description="Deletes an office structure and its children\
+            \n- structure_id: The structure_id of the structure to be deleted"
+    )
 
 
 class Query(graphene.ObjectType):
