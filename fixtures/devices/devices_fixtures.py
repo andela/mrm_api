@@ -20,7 +20,7 @@ expected_response_devices = {
                                             "lastSeen": "2018-06-08T11:17:58.785136",  # noqa: E501
                                             "dateAdded": "2018-06-08T11:17:58.785136",  # noqa: E501
                                             "name": "Samsung",
-                                            "location": "Nairobi"
+                                            "location": "Kampala"
                                             }
                                             ]
                                             }

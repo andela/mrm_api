@@ -7,6 +7,8 @@ from sqlalchemy import func
 from api.devices.models import Devices as DevicesModel
 from helpers.auth.authentication import Auth
 from api.room.models import Room as RoomModel
+from api.location.schema import Location as LocationSchema
+from api.location.models import Location as LocationModel
 from utilities.validations import validate_empty_fields
 from utilities.utility import update_entity_fields
 from helpers.room_filter.room_filter import location_join_room
@@ -96,7 +98,13 @@ class Query(graphene.ObjectType):
 
     def resolve_all_devices(self, info):
         query = Devices.get_query(info)
-        return query.order_by(func.lower(DevicesModel.name)).all()
+        location_id = admin_roles.user_location_for_analytics_view()
+        location_query = LocationSchema.get_query(info)
+        exact_location = location_query.filter(
+            LocationModel.state == "active",
+            LocationModel.id == location_id).first()
+        location_name = exact_location.name.lower()
+        return query.filter(func.lower(DevicesModel.location) == location_name)
 
 
 class Mutation(graphene.ObjectType):
