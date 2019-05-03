@@ -4,7 +4,6 @@ update_assigned_resource_query = '''
             roomResource{
                 roomId
                 resourceId
-                quantity
             }
         }
     }
@@ -15,8 +14,7 @@ update_assigned_resource_query_response = {
     'updateAssignedResource': {
       'roomResource': {
         "roomId": "1",
-        "resourceId": "1",
-        'quantity': 3
+        "resourceId": "1"
       }
     }
   }

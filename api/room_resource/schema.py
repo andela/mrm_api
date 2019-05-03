@@ -55,17 +55,12 @@ class AssignResource(graphene.Mutation):
             id=kwargs['resource_id'], state="active").first()
         if not exact_resource:
             raise GraphQLError('Resource with such id does not exist.')
-        exact_quantity = exact_resource.quantity
+        resource_name = exact_resource.name
         assigned_quantity = kwargs['quantity']
-        if assigned_quantity > exact_quantity:
-            raise GraphQLError(
-                'Assigned resource cannot exceed quantity in database.'
-            )
         if assigned_quantity < 1:
             raise GraphQLError(
                 "Assigned quantity cannot be less than 1."
             )
-        exact_resource.quantity = exact_quantity - assigned_quantity
         resource_query = RoomResource.get_query(info)
         exact_resource_id = resource_query.filter(
             RoomResourceModel.resource_id == kwargs['resource_id'],
@@ -74,7 +69,7 @@ class AssignResource(graphene.Mutation):
             raise GraphQLError(
                 'Resource already exists in the room.'
             )
-        room_resources = RoomResourceModel(**kwargs)
+        room_resources = RoomResourceModel(**kwargs, name=resource_name)
         room_resources.save()
         return AssignResource(room_resource=room_resources)
 
@@ -91,8 +86,6 @@ class UpdateAssignedResource(graphene.Mutation):
 
     @Auth.user_roles('Admin')
     def mutate(self, info, resource_id, room_id, **kwargs):
-        exact_resource = ResourceModel.query.filter_by(
-            id=resource_id).first()
         room_resource_query = RoomResource.get_query(info)
         rooms_with_resource = room_resource_query.filter(
             RoomResourceModel.room_id == room_id).all()
@@ -109,13 +102,6 @@ class UpdateAssignedResource(graphene.Mutation):
             raise GraphQLError(
                 'Assigned quantity cannot be less than zero'
             )
-        available_resources = exact_resource.quantity
-        total_resources = current_resource + available_resources
-        if kwargs['quantity'] > total_resources:
-            raise GraphQLError(
-                'Assigned resource cannot exceed available quantity'
-            )
-        exact_resource.quantity = total_resources - kwargs['quantity']
         update_entity_fields(room_resource, **kwargs)
         room_resource.save()
         return UpdateAssignedResource(room_resource=room_resource)
@@ -155,7 +141,6 @@ class CreateResource(graphene.Mutation):
 
     class Arguments:
         name = graphene.String(required=True)
-        quantity = graphene.Int(required=True)
     resource = graphene.Field(Resource)
 
     @Auth.user_roles('Admin')
@@ -177,7 +162,6 @@ class UpdateRoomResource(graphene.Mutation):
     class Arguments:
         name = graphene.String()
         resource_id = graphene.Int()
-        quantity = graphene.Int()
     resource = graphene.Field(Resource)
 
     @Auth.user_roles('Admin')

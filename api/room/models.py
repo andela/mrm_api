@@ -27,6 +27,7 @@ class RoomResource(Base, Utility):
     room_id = Column(Integer, ForeignKey('rooms.id'), primary_key=True)
     resource_id = Column(Integer, ForeignKey('resources.id'), primary_key=True)
     quantity = Column(Integer)
+    name = Column(String)
     resource = relationship("Resource", back_populates="room")
     room = relationship("Room", back_populates="resources")
 
