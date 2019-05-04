@@ -53,6 +53,7 @@ class Room(Base, Utility):
     next_sync_token = Column(String, nullable=True)
     events = relationship('Events', cascade="all, delete-orphan")
     response = relationship('Response', cascade="all, delete-orphan")
+    structure_id = Column(String, default="place-holder-id")
     room_tags = relationship(
         'Tag',
         secondary="room_tags",

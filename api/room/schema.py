@@ -6,7 +6,11 @@ from graphql import GraphQLError
 from config import Config
 from api.room.models import Room as RoomModel
 from api.tag.models import Tag as TagModel
-from utilities.validations import validate_empty_fields, validate_room_labels
+from utilities.validations import (
+    validate_empty_fields,
+    validate_room_labels,
+    validate_structure_id
+)
 from utilities.utility import update_entity_fields
 from helpers.auth.authentication import Auth
 from helpers.auth.admin_roles import admin_roles
@@ -105,6 +109,7 @@ class CreateRoom(graphene.Mutation):
         calendar_id = graphene.String()
         cancellation_duration = graphene.Int()
         room_tags = graphene.List(graphene.Int)
+        structure_id = graphene.String(required=True)
         room_labels = graphene.List(graphene.String, required=False)
     room = graphene.Field(Room)
 
@@ -114,6 +119,7 @@ class CreateRoom(graphene.Mutation):
         verify_location_id(kwargs)
         query = RoomModel.query
         validate_room_labels(**kwargs, query=query)
+        validate_structure_id(**kwargs)
         admin_roles.create_rooms_update_delete_location(kwargs)
         query = Room.get_query(info)
         active_rooms = query.filter(RoomModel.state == "active")
@@ -176,12 +182,14 @@ class UpdateRoom(graphene.Mutation):
         firebase_token = graphene.String()
         cancellation_duration = graphene.Int()
         room_tags = graphene.List(graphene.Int)
+        structure_id = graphene.String()
         room_labels = graphene.List(graphene.String)
     room = graphene.Field(Room)
 
     @Auth.user_roles('Admin')
     def mutate(self, info, room_id, **kwargs):
         validate_empty_fields(**kwargs)
+        validate_structure_id(**kwargs)
         query_room = Room.get_query(info)
         active_rooms = query_room.filter(RoomModel.state == "active")
         room = active_rooms.filter(RoomModel.id == room_id).first()
@@ -260,6 +268,7 @@ class Mutation(graphene.ObjectType):
             of the calendar\n- office_id: The unique identifier of the office \
             where the room is found[required]\n- cancellation_duration: \
                 The cancellation duration of a booking\
+            \n- structure_id: The office structure id related to the room\
             \n- room_tags: The necessary tags associated with the room")
     update_room = UpdateRoom.Field(
         description="Updates a room taking the arguments \
@@ -271,6 +280,7 @@ class Mutation(graphene.ObjectType):
             \n- calendar_id: The unique identifier of the calendar\
             \n- firebase_token: Field with users firebase token\
             \n- cancellation_duration: The cancellation duration of a booking\
+            \n- structure_id: The office structure id related to the room\
             \n- room_tags: The necessary tags associated with the room")
     delete_room = DeleteRoom.Field(
         description="Mutation to delete a room with arguments\

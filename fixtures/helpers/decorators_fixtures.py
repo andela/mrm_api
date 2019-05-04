@@ -35,6 +35,7 @@ room_mutation_query = '''
           roomType: "Meeting",
           capacity: 1,
           locationId: 1,
+          structureId: "b05fc5f2-b4aa-4f48-a8fb-30bdcc3fc968",
           roomTags: [1],
           imageUrl: "http://url.com",
           roomLabels: ["Epic tower", "1st Floor"]) {
