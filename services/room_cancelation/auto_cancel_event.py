@@ -1,8 +1,10 @@
 from dateutil.relativedelta import relativedelta
+from graphql import GraphQLError
 from api.room.models import Room as RoomModel
 from api.events.models import Events as EventsModel
 from datetime import datetime
 from helpers.calendar.credentials import Credentials
+from helpers.email.email import event_cancellation_notification
 
 
 class UpdateRecurringEvent():
@@ -126,6 +128,15 @@ class UpdateRecurringEvent():
                     eventId=recurring_event_id,
                     body=event,
                     sendUpdates="all").execute()
+                event_in_database = EventsModel.query.filter_by(
+                    id=event.get("id")
+                ).first()
+                room_id = event_in_database.room_id
+                event_reject_reason = "for 3 consecutive meetings"
+                if not event_cancellation_notification(
+                    event, room_id, event_reject_reason
+                ):
+                    raise GraphQLError("Event cancelled but email not sent")
                 for missed_checkin in missed_checkins:
                     missed_checkin.state = "archived"
                     missed_checkin.save()

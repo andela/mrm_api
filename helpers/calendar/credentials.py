@@ -66,3 +66,19 @@ def get_google_api_calendar_list(pageToken=None):
     except Exception as exception:
         raise GraphQLError(exception)
     return calendars_list
+
+
+def get_single_calendar_event(calendar_id, event_id):
+    """
+    Get single event from the google calendar
+    :params
+        - calendar_id: The google calendar id for the event
+        - event_id: Unique identifier for the calendar event
+    """
+    credentials = Credentials()
+    service = credentials.set_api_credentials()
+    event = service.events().get(
+                                calendarId=calendar_id,
+                                eventId=event_id
+                                ).execute()
+    return event

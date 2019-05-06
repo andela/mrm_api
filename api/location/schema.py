@@ -14,7 +14,7 @@ from utilities.validations import (
     validate_country_field,
     validate_timezone_field)
 from utilities.utility import update_entity_fields
-from helpers.email.email import send_email_notification
+from helpers.email.email import notification
 from helpers.auth.error_handler import SaveContextManager
 from helpers.auth.user_details import get_user_from_db
 from helpers.room_filter.room_filter import room_join_location
@@ -57,12 +57,19 @@ class CreateLocation(graphene.Mutation):
         email = admin.email
         username = email.split("@")[0]
         admin_name = username.split(".")[0]
+        subject = 'A new location has been added'
+        template = 'location_success.html'
         payload = {
             'model': LocationModel, 'field': 'name', 'value':  kwargs['name']
             }
         with SaveContextManager(location, 'Location', payload):
-            if not send_email_notification(email, location.name, admin_name):
-                raise GraphQLError("Location created but email not sent")
+            if not notification.send_email_notification(
+                email=email, subject=subject, template=template,
+                location_name=location.name, user_name=admin_name
+            ):
+                raise GraphQLError(
+                    "Location created but email not sent"
+                    )
             return CreateLocation(location=location)
 
 
