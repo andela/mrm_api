@@ -10,7 +10,6 @@ class Resource(Base, Utility):
     __tablename__ = 'resources'
     id = Column(Integer, Sequence('resources_id_seq', start=1, increment=1), primary_key=True) # noqa
     name = Column(String, nullable=False)
-    quantity = Column(Integer, nullable=False)
     state = Column(Enum(StateType), default="active")
     room = relationship("RoomResource", back_populates="resource")
 

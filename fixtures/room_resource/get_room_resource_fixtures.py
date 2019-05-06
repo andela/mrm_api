@@ -146,7 +146,6 @@ query
     roomResources{
       name
       id
-      quantity
     }
   }
 }'''
@@ -157,7 +156,6 @@ get_resource_by_room_id_response_by_admin = {
       "roomResources": [
         {
           "name": "Markers",
-          "quantity": 1,
           "id": "1"
         }
       ]
@@ -172,7 +170,6 @@ query
     roomResources{
       name
       id
-      quantity
     }
   }
 }'''

@@ -8,7 +8,6 @@ from fixtures.room.assign_resource_fixture import (
     assign_resource_mutation_response,
     assign_resource_non_existent_room,
     assign_non_existent_resource_id,
-    assign_excess_quantity,
     assign_quantity_less_than_one,
     query_string
     )
@@ -48,17 +47,6 @@ class TestAssignResource(BaseTestCase):
             self,
             assign_resource_non_existent_room,
             'Room not found'
-        )
-
-    def test_assign_resource_excess_quantity(self):
-        """
-            Test that an admin cannot assign a
-            resource with higher than available quantity
-        """
-        CommonTestCases.admin_token_assert_in(
-            self,
-            assign_excess_quantity,
-            'Assigned resource cannot exceed quantity in database.'
         )
 
     def test_assign_quantity_less_than_one(self):

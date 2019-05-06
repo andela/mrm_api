@@ -37,15 +37,6 @@ mutation{
  }
 }
 '''
-assign_excess_quantity = '''
-mutation{
- assignResource(roomId:1,resourceId:1, quantity:9){
-  roomResource{
-   quantity
- }
- }
-}
-'''
 
 assign_quantity_less_than_one = '''
 mutation{
