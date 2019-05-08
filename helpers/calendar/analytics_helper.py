@@ -11,6 +11,8 @@ from helpers.auth.admin_roles import admin_roles
 from flask import request
 from flask_json import JsonError
 from api.events.models import Events as EventsModel
+from api.room.schema import BookingsAnalyticsCount
+import pandas
 
 
 class EventsDuration(graphene.ObjectType):
@@ -224,3 +226,45 @@ class CommonAnalytics:
         last_month_start_date = datetime.strptime(last_month_start, '%b %d %Y').isoformat() + 'Z'  # noqa E501
         dates.append([last_month_start_date, end_date])
         return dates
+
+    @staticmethod
+    def get_day_month_list(start_date, end_date, date_pattern):
+        """
+        generates a list of days between start_date and end_date if the
+        interval is not more than 30 days or list of months otherwise
+        """
+        number_of_days = (dateutil.parser.parse(end_date) -
+                          dateutil.parser.parse(start_date)).days
+        if number_of_days <= 30:
+            return pandas.date_range(start_date,
+                                     pandas.Timestamp(end_date) -
+                                     pandas.DateOffset(days=1),
+                                     freq="D").strftime(date_pattern).tolist()
+        else:
+            return pandas.date_range(pandas.to_datetime(start_date),
+                                     pandas.to_datetime(end_date) +
+                                     pandas.tseries.offsets.MonthEnd(1),
+                                     freq="M").strftime(date_pattern).tolist()
+
+    @staticmethod
+    def get_bookings_count_from_events(start_date, end_date, events, room_id):
+        number_of_days = (dateutil.parser.parse(end_date) -
+                          dateutil.parser.parse(start_date)).days
+        number_of_event = 0
+        date_pattern = "%b %d %Y" if number_of_days <= 30 else "%b %Y"
+        period_list = CommonAnalytics.get_day_month_list(
+            start_date, end_date, date_pattern)
+        period_to_bookings = {}
+        for period in period_list:
+            period_to_bookings[period] = BookingsAnalyticsCount(
+               period=period, bookings=0,
+               room_name=events[0].room.name if room_id else None)
+
+        while number_of_event < len(events):
+            day_or_month = dateutil.parser.parse(
+                events[number_of_event].start_time[:10]).strftime(date_pattern)
+            while number_of_event < len(events) and dateutil.parser.parse(events[number_of_event].start_time[:10]).strftime(date_pattern) == day_or_month:  # noqa E501
+                period_to_bookings[day_or_month].bookings += 1
+                number_of_event += 1
+
+        return list(period_to_bookings.values())

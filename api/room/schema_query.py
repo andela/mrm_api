@@ -10,6 +10,7 @@ from helpers.calendar.analytics import RoomStatistics  # noqa: E501
 from api.room.models import Room as RoomModel
 from api.room.models import tags
 from api.tag.models import Tag
+from api.events.models import Events as EventModel
 from helpers.auth.user_details import get_user_from_db
 from helpers.remote_rooms.remote_rooms_location import (
     map_remote_room_location_to_filter
@@ -19,6 +20,7 @@ from api.room.schema import (RatioOfCheckinsAndCancellations,
                              BookingsAnalyticsCount)
 from helpers.pagination.paginate import ListPaginate
 from helpers.calendar.analytics_helper import CommonAnalytics
+from sqlalchemy import asc
 
 
 def resolve_booked_rooms_analytics(*args):
@@ -428,10 +430,30 @@ class Query(graphene.ObjectType):
         start_date, end_date, room_id = (kwargs.get('start_date'),
                                          kwargs.get('end_date'),
                                          kwargs.get('room_id'))
-        query = Room.get_query(info)
-        analytics = RoomAnalyticsRatios.get_bookings_analytics_count(
-            self, query, start_date, end_date, room_id=room_id)
-        return analytics
+        start_date, end_date = CommonAnalytics().convert_dates(
+            start_date, end_date
+        )
+        events = []
+        if room_id is None:
+            events = EventModel.query.join(RoomModel).filter(
+                EventModel.end_time < end_date,
+                EventModel.start_time > start_date,
+                EventModel.state == "active",
+                ).filter(RoomModel.state == "active").order_by(
+                    asc(EventModel.start_time)).all()
+        else:
+            exact_room = RoomModel.query.get(room_id)
+            if not exact_room:
+                raise GraphQLError("Room with such id does not exist")
+            events = EventModel.query.join(RoomModel).filter(
+                EventModel.room_id == room_id, EventModel.end_time < end_date,
+                EventModel.start_time > start_date,
+                EventModel.state == "active"
+                ).filter(
+                  RoomModel.state == "active").order_by(
+                asc(EventModel.start_time)).all()
+        return CommonAnalytics.get_bookings_count_from_events(
+            start_date, end_date, events, room_id)
 
     @Auth.user_roles('Admin', 'Default User')
     def resolve_analytics_for_daily_room_events(

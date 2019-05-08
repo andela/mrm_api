@@ -96,7 +96,7 @@ query {
 non_existing_room_id_response = {
   "errors": [
     {
-      "message": "Room Id does not exist",
+      "message": "Room with such id does not exist",
       "locations": [
         {
           "line": 3,
