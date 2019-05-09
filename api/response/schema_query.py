@@ -1,6 +1,6 @@
 import graphene
 from graphql import GraphQLError
-from api.response.schema import Response
+from api.response.schema import Response, ResponseData
 from api.room.schema import Room
 from api.room.models import Room as RoomModel
 from helpers.auth.authentication import Auth
@@ -14,12 +14,14 @@ from helpers.response.query_response import (
     filter_by_dates_and_limits
 )
 
+from helpers.response.create_response import map_response_type
+
 
 class ResponseDetails(graphene.ObjectType):
     response_id = graphene.Int()
-    missing_items = graphene.List(graphene.String)
     created_date = graphene.DateTime()
-    response = graphene.String()
+    response = graphene.Field(ResponseData)
+    question_type = graphene.String()
     resolved = graphene.Boolean()
 
 
@@ -64,34 +66,19 @@ class Query(graphene.ObjectType):
 
     def get_room_response(self, room_response, room_id):
         response_list = []
-        missing_resource = []
         for responses in room_response:
             response_id = responses.id
-            response = responses.response
             created_date = responses.created_date
-
+            question_type = responses.question_type.name
+            response = map_response_type(question_type)(responses.response)
             resolved = responses.resolved
-            if len(responses.missing_resources) > 0:
-                for resources in responses.missing_resources:
-                    resource_name = resources.name
-                    missing_resource.append(resource_name)
-                response_in_room = ResponseDetails(
-                    response_id=response_id,
-                    response=response,
-                    created_date=created_date,
-                    missing_items=missing_resource,
-                    resolved=resolved)
-                missing_resource = []
-                response_list.append(response_in_room)
-            else:
-                missing_items = responses.missing_resources
-                response_in_room = ResponseDetails(
-                    response_id=response_id,
-                    response=response,
-                    created_date=created_date,
-                    missing_items=missing_items,
-                    resolved=resolved)
-                response_list.append(response_in_room)
+            response_in_room = ResponseDetails(
+                response_id=response_id,
+                response=response,
+                created_date=created_date,
+                question_type=question_type,
+                resolved=resolved)
+            response_list.append(response_in_room)
         return (response_list)
 
     @Auth.user_roles('Admin')
@@ -107,6 +94,7 @@ class Query(graphene.ObjectType):
         total_response = room_response.count()
         room_name = room.name
         return RoomResponse(
+            room_id=room_id,
             room_name=room_name,
             total_responses=total_response,
             response=responses)
@@ -155,9 +143,10 @@ class Query(graphene.ObjectType):
         rooms = RoomModel.query.filter(RoomModel.state == "active").all()
         for room in rooms:
             room_name = room.name
-            room_response = Response.get_query(info).filter_by(
-                room_id=room.id)
-            response_count = room_response.count()
+            room_response = Response.get_query(
+                info
+            ).filter_by(room_id=room.id).all()
+            response_count = len(room_response)
             if response_count:
                 all_responses = Query.get_room_response(
                     self, room_response, room.id)
