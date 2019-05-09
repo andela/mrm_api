@@ -21,7 +21,6 @@ from api.devices.models import Devices
 from api.question.models import Question
 from api.response.models import Response
 from api.tag.models import Tag
-from api.office_structure.models import OfficeStructure
 from api.structure.models import Structure
 from fixtures.token.token_fixture import (
     ADMIN_TOKEN, USER_TOKEN, ADMIN_NIGERIA_TOKEN)
@@ -67,22 +66,15 @@ class BaseTestCase(TestCase):
                       color='green',
                       description='The description')
             tag.save()
-            root_node = OfficeStructure(name='location', tag_id=1)
-            root_node.save()
-            leaf_node = OfficeStructure(name='wings', parent_id=1)
-            leaf_node.save()
 
             location = Location(name='Kampala',
-                                abbreviation='KLA',
-                                structure_id=1)
+                                abbreviation='KLA')
             location.save()
             location_two = Location(name='Nairobi',
-                                    abbreviation='NBO',
-                                    structure_id=1)
+                                    abbreviation='NBO')
             location_two.save()
             location_three = Location(name='Lagos',
-                                      abbreviation='LOS',
-                                      structure_id=1)
+                                      abbreviation='LOS')
             location_three.save()
             tag_two = Tag(name='Block-C',
                           color='blue',
