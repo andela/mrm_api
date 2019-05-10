@@ -1,3 +1,4 @@
+from datetime import datetime
 import graphene
 from helpers.auth.authentication import Auth
 from graphene_sqlalchemy import SQLAlchemyObjectType
@@ -67,6 +68,7 @@ class CreateResponse(graphene.Mutation):
         query = Room.get_query(info)
         responses = []
         errors = []
+        present_date = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
         room = query.filter_by(id=kwargs['room_id']).first()
         if not room:
             raise GraphQLError("Non-existent room id")
@@ -77,6 +79,9 @@ class CreateResponse(graphene.Mutation):
                 errors.append(
                     "Response to question {} was not saved because it does not exist".format(each_response.question_id)) # noqa
                 continue
+            if present_date < question.start_date:
+                errors.append(
+                    "The start date for the response to this question is yet to commence. Try on {}".format(question.start_date)) # noqa
             question_type = question.question_type
             each_response['room_id'] = kwargs['room_id']
             responses, errors = create_response(question_type,
