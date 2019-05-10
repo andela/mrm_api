@@ -1,32 +1,49 @@
 null = None
 
 office_structure_mutation_query = '''
-    mutation{
-        createOfficeStructure(
-            data: [
-                {structureId: "a-web-story", name: "Office 1", level: 1,
-                parentId: "1", parentTitle: "parent1", tag: "office",
-                position: 1, locationId: 2},
-                {structureId: "a-web-user", name: "1st Floor", level: 1,
-                parentId: "1", parentTitle: "parent2", tag: "office",
-                position: 2, locationId: 2},
-                {structureId: "a-web-guy", name: "Block A", level: 1,
-                parentId: "1", parentTitle: "parent3", tag: "office",
-                position: 2, locationId: 2}
-            ]){
-            structure
-            {
-                structureId
-                name
-                level
-                parentId
-                parentTitle
-                tag
-                position
-                locationId
-            }
-        }
+    mutation {
+  createOfficeStructure(data: [
+      {structureId: "851ae8b3-48dd-46b5-89bc-ca3f8111ad87", name: "Office 1",
+      level: 1, parentId: "1", tag: "office", position: 1, locationId: 2},
+      {structureId: "fd236595-71aa-407f-b417-f97ebadb94a0", name: "Office 2",
+      level: 1, parentId: "1", tag: "office", position: 2, locationId: 2},
+      {structureId: "27fbc541-6c2f-437a-bb38-be9af64442c3", name: "Office 3",
+      level: 1, parentId: "1", tag: "office", position: 2, locationId: 2}]) {
+    structure {
+      structureId
+      name
+      level
+      parentId
+      tag
+      position
+      locationId
     }
+  }
+}
+
+'''
+
+office_structure_mutation_with_duplicates = '''
+    mutation {
+  createOfficeStructure(data: [
+      {structureId: "851ae8b3-48dd-46b5-89bc-ca3f8111ad87", name: "Office 1",
+      level: 1, parentId: "1", tag: "office", position: 1, locationId: 2},
+      {structureId: "851ae8b3-48dd-46b5-89bc-ca3f8111ad87", name: "Office 2",
+      level: 1, parentId: "1", tag: "office", position: 2, locationId: 2},
+      {structureId: "27fbc541-6c2f-437a-bb38-be9af64442c3", name: "Office 3",
+      level: 1, parentId: "1", tag: "office", position: 2, locationId: 2}]) {
+    structure {
+      structureId
+      name
+      level
+      parentId
+      tag
+      position
+      locationId
+    }
+  }
+}
+
 '''
 
 office_structure_mutation_response = {
@@ -34,31 +51,28 @@ office_structure_mutation_response = {
         "createOfficeStructure": {
             "structure": [
                 {
-                    "structureId": "a-web-story",
+                    "structureId": "851ae8b3-48dd-46b5-89bc-ca3f8111ad87",
                     "name": "Office 1",
                     "level": 1,
                     "parentId": "1",
-                    "parentTitle": "parent1",
                     "tag": "office",
                     "position": 1,
                     "locationId": 2
                 },
                 {
-                    "structureId": "a-web-user",
-                    "name": "1st Floor",
+                    "structureId": "fd236595-71aa-407f-b417-f97ebadb94a0",
+                    "name": "Office 2",
                     "level": 1,
                     "parentId": "1",
-                    "parentTitle": "parent2",
                     "tag": "office",
                     "position": 2,
                     "locationId": 2
                 },
                 {
-                    "structureId": "a-web-guy",
-                    "name": "Block A",
+                    "structureId": "27fbc541-6c2f-437a-bb38-be9af64442c3",
+                    "name": "Office 3",
                     "level": 1,
                     "parentId": "1",
-                    "parentTitle": "parent3",
                     "tag": "office",
                     "position": 2,
                     "locationId": 2

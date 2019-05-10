@@ -5,6 +5,7 @@ from helpers.auth.authentication import Auth
 from helpers.structure.create_structure import create_structure
 from graphql import GraphQLError
 from helpers.auth.admin_roles import admin_roles
+from utilities.validations import validate_structure_id
 
 
 class Structure(SQLAlchemyObjectType):
@@ -44,6 +45,7 @@ class CreateOfficeStructure(graphene.Mutation):
 
     @Auth.user_roles('Admin')
     def mutate(self, info, **kwargs):
+        validate_structure_id(**kwargs)
         office_structure = []
         for each_structure in kwargs['data']:
             node = create_structure(**each_structure)
@@ -60,9 +62,10 @@ class Query(graphene.ObjectType):
       Query for office structures
     """
     all_structures = graphene.List(
-      Structure, description="Returns a list containing all office structures")
+        Structure,
+        description="Returns a list containing all office structures")
     structure_by_structure_id = graphene.Field(
-      Structure, structure_id=graphene.String(), description="Returns the office \
+        Structure, structure_id=graphene.String(), description="Returns the office \
         structure corresponding to the provided structureId")
 
     @Auth.user_roles('Admin')
@@ -70,7 +73,7 @@ class Query(graphene.ObjectType):
         query = Structure.get_query(info)
         location_id = admin_roles.user_location_for_analytics_view()
         all_structures = query.filter(
-          StructureModel.location_id == location_id).all()
+            StructureModel.location_id == location_id).all()
         return all_structures
 
     @Auth.user_roles('Admin')
@@ -80,7 +83,7 @@ class Query(graphene.ObjectType):
         query = Structure.get_query(info)
         location_id = admin_roles.user_location_for_analytics_view()
         structure = query.filter(
-          StructureModel.structure_id == structure_id).first()
+            StructureModel.structure_id == structure_id).first()
         if not structure or location_id != structure.location_id:
             raise GraphQLError("Structure not found")
         return structure

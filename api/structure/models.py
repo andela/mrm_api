@@ -9,7 +9,7 @@ class Structure(Base, Utility):
 
     id = Column(Integer, primary_key=True)
     # structure_id is the id from the client side
-    structure_id = Column(String, nullable=False)
+    structure_id = Column(String, nullable=False, unique=True)
     level = Column(Integer, nullable=False)
     name = Column(String(50), nullable=False)
     parent_id = Column(String, nullable=True)
