@@ -125,3 +125,17 @@ def validate_room_labels(**kwargs):
         if structure is None:
             raise GraphQLError("Structure does not exist")
         break
+
+
+def validate_structure_id(**kwargs):
+    """
+    Function to validate that a structure id exists in structures
+    table
+    :param structure_id
+    """
+    structure_id = kwargs.get('structure_id')
+    structure = StructureModel.query.filter_by(
+        structure_id=structure_id
+    ).first()
+    if structure is None:
+        raise GraphQLError("Structure id does not exist")

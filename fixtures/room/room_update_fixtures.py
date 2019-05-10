@@ -1,7 +1,9 @@
 
 query_update_all_fields = '''mutation{
     updateRoom(roomId: 1, name: "Jinja", capacity: 8,
-    roomType: "board room", roomTags: [1]){
+    roomType: "board room",
+    structureId: "b05fc5f2-b4aa-4f48-a8fb-30bdcc3fc968",
+    roomTags: [1]){
         room{
             name
             capacity
@@ -68,7 +70,13 @@ query_without_room_id = '''mutation{
             '''
 
 query_room_id_non_existant = '''mutation{
-    updateRoom(roomId: 4, name: "Jinja", capacity: 8, roomType: "board room"){ # noqa: E501
+    updateRoom(
+        roomId: 4,
+        name: "Jinja",
+        capacity: 8,
+        roomType: "board room",
+        structureId: "b05fc5f2-b4aa-4f48-a8fb-30bdcc3fc968"
+    ){
         room{
             name
             capacity
