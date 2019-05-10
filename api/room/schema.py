@@ -189,7 +189,8 @@ class UpdateRoom(graphene.Mutation):
     @Auth.user_roles('Admin')
     def mutate(self, info, room_id, **kwargs):
         validate_empty_fields(**kwargs)
-        validate_structure_id(**kwargs)
+        if kwargs.get('structure_id'):
+            validate_structure_id(**kwargs)
         query_room = Room.get_query(info)
         active_rooms = query_room.filter(RoomModel.state == "active")
         room = active_rooms.filter(RoomModel.id == room_id).first()
