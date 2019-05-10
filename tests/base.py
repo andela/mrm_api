@@ -50,8 +50,9 @@ class BaseTestCase(TestCase):
             command.upgrade(self.alembic_configuration, 'head')
 
             admin_user = User(email="peter.walugembe@andela.com",
-                              location="Kampala", name="Peter Walugembe",
+                              name="Peter Walugembe",
                               picture="https://www.andela.com/walugembe")
+            admin_user.location = "Kampala"
             admin_user.save()
             lagos_admin = User(email="peter.adeoye@andela.com",
                                location="Lagos", name="Peter Adeoye",
@@ -103,7 +104,7 @@ class BaseTestCase(TestCase):
                 last_seen="2018-06-08T11:17:58.785136",
                 date_added="2018-06-08T11:17:58.785136",
                 name="Samsung",
-                location="Nairobi",
+                location="Kampala",
                 device_type="External Display"
             )
             device.save()

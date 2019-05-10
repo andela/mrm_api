@@ -198,7 +198,7 @@ send_invitation_to_existent_user_response = {
 
 get_users_by_location = '''
 query{
-    users(page:1, perPage:1, locationId:1){
+    users(page:1, perPage:1, locationId:2){
         users{
             name
             location
@@ -209,7 +209,7 @@ query{
 
 get_users_by_location_and_role = '''
 query{
-    users(page:1, perPage:1, locationId:1, roleId:1){
+    users(page:1, perPage:1, locationId:1, roleId:2){
         users{
             name
             location
