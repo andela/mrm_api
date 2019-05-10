@@ -141,6 +141,9 @@ class CreateRoom(graphene.Mutation):
             room_tags = kwargs.pop('room_tags')
         room = RoomModel(**kwargs)
         save_room_tags(room, room_tags)
+        requests.get(url=Config.MRM_PUSH_URL + "/add_room",
+                     params={"calendar_id": room.calendar_id,
+                             "firebase_token": room.firebase_token})
         return CreateRoom(room=room)
 
 
