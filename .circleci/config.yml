@@ -227,6 +227,12 @@ jobs:
               echo "CELERY_BROKER_URL"=$(echo $IMAGE_CELERY_BROKER_URL_STAGING) >> .env
               echo "CELERY_RESULT_BACKEND"=$(echo $IMAGE_CELERY_RESULT_BACKEND_STAGING) >> .env
               echo "MRM_PUSH_URL"=$(echo $IMAGE_MRM_PUSH_URL_STAGING) >> .env
+            elif [ "$CIRCLE_BRANCH" == qa ]; then
+              echo "DEV_DATABASE_URL"=$(echo $IMAGE_DEV_DATABASE_URL_QA) >> .env
+              echo "DATABASE_URL"=$(echo $IMAGE_DATABASE_URL_QA) >> .env
+              echo "CELERY_BROKER_URL"=$(echo $IMAGE_CELERY_BROKER_URL_QA) >> .env
+              echo "CELERY_RESULT_BACKEND"=$(echo $IMAGE_CELERY_RESULT_BACKEND_QA) >> .env
+              echo "MRM_PUSH_URL"=$(echo $IMAGE_MRM_PUSH_URL_QA) >> .env
             else
               echo "DEV_DATABASE_URL"=$(echo $IMAGE_DEV_DATABASE_URL_SANDBOX) >> .env
               echo "DATABASE_URL"=$(echo $IMAGE_DATABASE_URL_SANDBOX) >> .env
@@ -268,6 +274,21 @@ jobs:
               touch current_version
               echo ${GIT_HASH} > current_version
               gsutil cp current_version gs://${STAGING_BACKEND_IMAGE_VERSION_PATH}
+            elif [ "$CIRCLE_BRANCH" == qa ]; then
+              echo $GOOGLE_CREDENTIALS_QA | base64 --decode > ${HOME}/gcloud-service-key.json
+              gcloud auth activate-service-account --key-file ${HOME}/gcloud-service-key.json
+              gcloud --quiet config set project ${GOOGLE_PROJECT_ID_QA}
+              gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
+              docker login -u _json_key -p "$(echo $GOOGLE_CREDENTIALS_QA | base64 --decode )" https://gcr.io
+              gsutil cp gs://${BACKEND_BASE_IMAGE_VERSION_PATH_QA}current_version .
+              VERSION=$(cat current_version)
+              export IMAGE=$BACKEND_BASE_IMAGE_QA:$VERSION
+              sed -i "s|{{IMAGE}}|$IMAGE|g" docker/prod/Dockerfile
+              docker build -f docker/prod/Dockerfile -t ${QA_BACKEND_IMAGE}:$GIT_HASH .
+              docker push ${QA_BACKEND_IMAGE}:$GIT_HASH
+              touch current_version
+              echo ${GIT_HASH} > current_version
+              gsutil cp current_version gs://${QA_BACKEND_IMAGE_VERSION_PATH}
             else
               echo $GOOGLE_CREDENTIALS_SANDBOX | base64 --decode > ${HOME}/gcloud-service-key.json
               gcloud auth activate-service-account --key-file ${HOME}/gcloud-service-key.json
@@ -305,6 +326,12 @@ jobs:
               gcloud auth activate-service-account --key-file google-service-key.json
               gcloud --quiet config set project ${GOOGLE_PROJECT_ID_STAGING}
               gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
+            elif [ "$CIRCLE_BRANCH" == qa ]; then
+              touch google-service-key.json
+              echo $GOOGLE_CREDENTIALS_QA | base64 --decode >> google-service-key.json 
+              gcloud auth activate-service-account --key-file google-service-key.json
+              gcloud --quiet config set project ${GOOGLE_PROJECT_ID_QA}
+              gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
             else
               touch google-service-key.json
               echo $GOOGLE_CREDENTIALS_SANDBOX | base64 --decode >> google-service-key.json 
@@ -337,6 +364,7 @@ workflows:
                 - v2
                 - develop
                 - master
+                - qa
       - deploy-job:
           requires:
             - build_docker_image
@@ -346,3 +374,4 @@ workflows:
                 - v2
                 - develop
                 - master
+                - qa
