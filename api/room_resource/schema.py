@@ -1,6 +1,6 @@
 import graphene
 from graphene_sqlalchemy import SQLAlchemyObjectType
-from sqlalchemy import func
+from sqlalchemy import func, and_
 from graphql import GraphQLError
 
 from api.room_resource.models import Resource as ResourceModel
@@ -218,17 +218,21 @@ class DeleteResource(graphene.Mutation):
     resource = graphene.Field(Resource)
 
     @Auth.user_roles('Admin')
-    def mutate(self, info, resource_id, **kwargs):
-        query_room_resource = Resource.get_query(info)
-        active_resources = query_room_resource.filter(
-            ResourceModel.state == "active")
-        exact_room_resource = active_resources.filter(
-            ResourceModel.id == resource_id).first()
-        if not exact_room_resource:
+    def mutate(self, info, resource_id):
+        query_resources = Resource.get_query(info)
+        exact_resource = query_resources.filter(and_(
+            ResourceModel.state == "active",
+            ResourceModel.id == resource_id)).first()
+        if not exact_resource:
             raise GraphQLError("Resource not found")
-        update_entity_fields(exact_room_resource, state="archived", **kwargs)
-        exact_room_resource.save()
-        return DeleteResource(resource=exact_room_resource)
+        update_entity_fields(exact_resource, state="archived")
+        query_room_resource = RoomResource.get_query(info)
+        room_resources = query_room_resource.filter(
+            RoomResourceModel.resource_id == resource_id).all()
+        for room_resource in room_resources:
+            room_resource.delete()
+        exact_resource.save()
+        return DeleteResource(resource=exact_resource)
 
 
 class Query(graphene.ObjectType):
