@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from graphql import GraphQLError
 from utilities.validations import validate_date_range
 
@@ -15,39 +15,41 @@ def filter_rooms_by_responses(
     return filtered_responses
 
 
+def filter_by_dates_and_limits(
+    filtered_responses, upper_limit_count, lower_limit_count
+):
+    responses = []
+    for response in filtered_responses:
+        response_count = response.total_responses
+        if lower_limit_count <= response_count <= upper_limit_count:
+            responses.append(response)
+    return responses
+
+
 def filter_response_by_date(Query, info, end_date, start_date):
     all_responses = Query().get_all_responses(info)
+    end_date = datetime.strptime(end_date, '%b %d %Y')
+    start_date = datetime.strptime(start_date, '%b %d %Y')
+    validate_date_range(
+        end_date=end_date, start_date=start_date
+    )
+    end_date = end_date + timedelta(days=1)
     filtered_responses = []
     for responses in all_responses:
         for response in responses.response:
-            validate_response_dates(
-                response,
-                end_date, start_date, filtered_responses
-            )
-        setattr(responses, 'response', filtered_responses)
+            if (response.created_date >= start_date and
+                    response.created_date <= end_date):
+                filtered_responses.append(response)
+            setattr(responses, 'response', filtered_responses)
         filtered_responses = []
     return all_responses
 
 
-def validate_response_dates(
-    response, end_date, start_date, filtered_responses
-):
-    end_date = datetime.strptime(end_date, '%Y %b %d')
-    start_date = datetime.strptime(start_date, '%Y %b %d')
-    validate_date_range(
-        end_date=end_date, start_date=start_date
-    )
-    if (response.created_date < end_date and
-            response.created_date > start_date):
-        filtered_responses.append(response)
-    return filtered_responses
-
-
 def check_limits_are_provided(lower_limit, upper_limit, data_type):
     if (
-      (isinstance(lower_limit, data_type)
-          and not isinstance(upper_limit, data_type))
-      or (isinstance(upper_limit, data_type)
+        (isinstance(lower_limit, data_type)
+         and not isinstance(upper_limit, data_type))
+        or (isinstance(upper_limit, data_type)
             and not isinstance(lower_limit, data_type))):
         raise GraphQLError(
             "Provide upper and lower limits to filter")
