@@ -1,6 +1,6 @@
-from sqlalchemy import Column, String, Integer
+from sqlalchemy import Column, String, Integer, Enum
 
-from utilities.utility import Utility
+from utilities.utility import Utility, StateType
 from helpers.database import Base
 
 
@@ -17,3 +17,4 @@ class Structure(Base, Utility):
     tag = Column(String(50), nullable=False)
     location_id = Column(Integer, nullable=False)
     position = Column(Integer, nullable=False)
+    state = Column(Enum(StateType), default="active")

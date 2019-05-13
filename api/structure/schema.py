@@ -6,6 +6,9 @@ from helpers.structure.create_structure import create_structure
 from graphql import GraphQLError
 from helpers.auth.admin_roles import admin_roles
 from utilities.validations import validate_structure_id
+from api.room.schema import Room
+from api.room.models import Room as RoomModel
+from utilities.utility import update_entity_fields
 
 
 class Structure(SQLAlchemyObjectType):
@@ -53,8 +56,48 @@ class CreateOfficeStructure(graphene.Mutation):
         return CreateOfficeStructure(structure=office_structure)
 
 
+class DeleteOfficeStructure(graphene.Mutation):
+    """
+        Delete an office_structure
+    """
+
+    class Arguments:
+        structure_ids = graphene.List(graphene.String, required=True)
+    structure = graphene.List(Structure)
+
+    @Auth.user_roles('Admin')
+    def mutate(self, info, structure_ids):
+        office_structure_query = Structure.get_query(info)
+        room_query = Room.get_query(info)
+        active_structures = office_structure_query.filter(
+            StructureModel.state == "active")
+        active_rooms = room_query.filter(
+            RoomModel.state == "active")
+        structures = []
+        for structure_id in structure_ids:
+            office_structure = active_structures.filter(
+                StructureModel.structure_id == structure_id).first()
+            if not office_structure:
+                message = 'The structure {} does not exist'.format(structure_id)
+                raise GraphQLError(message)
+            rooms = active_rooms.filter(
+                RoomModel.structure_id == structure_id).all()
+            if len(rooms) > 0:
+                for room in rooms:
+                    update_entity_fields(room, state="archived")
+                    room.save()
+            update_entity_fields(office_structure, state="archived")
+            office_structure.save()
+            structures.append(office_structure)
+        return DeleteOfficeStructure(structure=structures)
+
+
 class Mutation(graphene.ObjectType):
     create_office_structure = CreateOfficeStructure.Field()
+    delete_office_structure = DeleteOfficeStructure.Field(
+        description="Deletes office structures and the rooms associated\
+        \n- structure_ids: The structure_id of the structure(s)"
+    )
 
 
 class Query(graphene.ObjectType):
