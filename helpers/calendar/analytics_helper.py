@@ -111,12 +111,10 @@ class CommonAnalytics:
             - room_id - for specific room
             - event_start_time, event_end_time(Time range)
         """
-        events = EventsModel.query.filter(
-            EventsModel.room_id == room_id,
-            EventsModel.state == 'active',
+        events = EventsModel.query.filter_by(room_id= room_id,state= 'active').filter(
             EventsModel.end_time < event_end_time,
-            EventsModel.start_time > event_start_time
-        ).all()
+            EventsModel.start_time > event_start_time)
+        
         return events
 
     def get_event_details(self, query, event, room_id):

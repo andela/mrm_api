@@ -56,7 +56,7 @@ class RoomSchedules(Credentials):
                     if match:
                         all_attendees.append(attendee.get('email'))
         return [all_attendees, output]
-
+    
     def get_all_room_schedules(self, query, start_date, end_date, location_id):
         """
             Get all room schedules. This method is responsible for getting
@@ -99,8 +99,7 @@ class RoomSchedules(Credentials):
                     "check_in_time": event.check_in_time,
                     "meeting_end_time": event.meeting_end_time,
                 }
-                all_events.append(current_event)
-
+                all_events.append(current_event)      
         return all_events, all_dates
 
     def check_event_status(self, info, **kwargs):

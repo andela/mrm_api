@@ -19,7 +19,7 @@ from api.room.schema import (RatioOfCheckinsAndCancellations,
                              BookingsAnalyticsCount)
 from helpers.pagination.paginate import ListPaginate
 from helpers.calendar.analytics_helper import CommonAnalytics
-
+import app
 
 def resolve_booked_rooms_analytics(*args):
     instance, info, start_date, end_date, criteria, limit = args
@@ -437,41 +437,46 @@ class Query(graphene.ObjectType):
     def resolve_analytics_for_daily_room_events(
         self, info, **kwargs
     ):
-        start_date = kwargs.get('start_date')
-        end_date = kwargs.get('end_date')
-        location_id = admin_roles.user_location_for_analytics_view()
-        start_date, end_date = CommonAnalytics().convert_dates(
-            start_date, end_date
-        )
-        query = Room.get_query(info)
-        all_events, all_dates = RoomSchedules().get_all_room_schedules(
-            query, start_date, end_date, location_id
-        )
-        all_days_events = []
-        for date in set(all_dates):
-            daily_events = []
-            for event in all_events:
-                if date == event["date_of_event"]:
-                    current_event = CalendarEvent(
-                        no_of_participants=event["no_of_participants"],
-                        event_summary=event["event_summary"],
-                        start_time=event["start_time"],
-                        end_time=event["end_time"],
-                        room_name=event["room_name"],
-                        event_id=event["event_id"],
-                        cancelled=event["cancelled"],
-                        state=event["state"],
-                        checked_in=event["checked_in"],
-                        check_in_time=event["check_in_time"],
-                        meeting_end_time=event["meeting_end_time"]
-                    )
-                    daily_events.append(current_event)
-            all_days_events.append(
-                DailyEvents(
-                    day=date,
-                    events=daily_events
-                )
+        cache = app.cache
+        all_days_events = cache.get('all_days_events')
+        if not all_days_events:
+            start_date = kwargs.get('start_date')
+            end_date = kwargs.get('end_date')
+            location_id = admin_roles.user_location_for_analytics_view()
+            start_date, end_date = CommonAnalytics().convert_dates(
+                start_date, end_date
             )
+            query = Room.get_query(info)
+            all_events, all_dates = RoomSchedules().get_all_room_schedules(
+                query, start_date, end_date, location_id
+            )
+            all_days_events = []
+            for date in set(all_dates):
+                daily_events = []
+                for event in all_events:
+                    if date == event["date_of_event"]:
+                        current_event = CalendarEvent(
+                            no_of_participants=event["no_of_participants"],
+                            event_summary=event["event_summary"],
+                            start_time=event["start_time"],
+                            end_time=event["end_time"],
+                            room_name=event["room_name"],
+                            event_id=event["event_id"],
+                            cancelled=event["cancelled"],
+                            state=event["state"],
+                            checked_in=event["checked_in"],
+                            check_in_time=event["check_in_time"],
+                            meeting_end_time=event["meeting_end_time"]
+                        )
+                        daily_events.append(current_event)
+                all_days_events.append(
+                    DailyEvents(
+                        day=date,
+                        events=daily_events
+                    )
+                )
+            cache_timeout = 24 * 3600 # set time out to 24 hours
+            cache.set('all_days_events', all_days_events, timeout=cache_timeout)
         page = kwargs.get('page')
         per_page = kwargs.get('per_page')
         if page and per_page:

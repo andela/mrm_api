@@ -11,9 +11,10 @@ from schema import schema
 from healthcheck_schema import healthcheck_schema
 from helpers.auth.authentication import Auth
 from api.analytics.analytics_request import AnalyticsRequest
+from flask_caching import Cache
 
 mail = Mail()
-
+cache = Cache(config={'CACHE_TYPE': 'simple'})
 
 def create_app(config_name):
     app = Flask(__name__)
@@ -22,6 +23,7 @@ def create_app(config_name):
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
     mail.init_app(app)
+    cache.init_app(app, config={'CACHE_TYPE': 'simple'})
 
     @app.route("/", methods=['GET'])
     def index():
