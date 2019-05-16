@@ -13,7 +13,9 @@ from fixtures.response.user_response_check import (
     filter_question_by_room,
     filter_question_by_room_response,
     filter_question_by_invalid_room,
-    filter_question_by_invalid_room_response
+    filter_question_by_invalid_room_response,
+    filter_response_by_room_with_pagination,
+    filter_response_by_room_with_pagination_response
 )
 from fixtures.response.user_response_suggestions import (
     create_suggestion_question,
@@ -124,4 +126,15 @@ class TestCreateResponse(BaseTestCase):
             self,
             filter_question_by_invalid_room,
             filter_question_by_invalid_room_response
+        )
+
+    def test_filter_response_by_room_id_with_pagination(self):
+        """
+        Testing filter response by roomid with pagination
+
+        """
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            filter_response_by_room_with_pagination,
+            filter_response_by_room_with_pagination_response
         )
