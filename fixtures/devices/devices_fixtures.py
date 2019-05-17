@@ -26,6 +26,61 @@ expected_response_devices = {
                                             }
                                             }
 
+query_device = '''
+        {
+        specificDevice(deviceId: 1){
+            id
+            lastSeen
+            dateAdded
+            name
+            location
+        }
+        }
+        '''
+
+expected_response_device = {
+    "data": {
+        "specificDevice": {
+            "id": "1",
+            "lastSeen": "2018-06-08T11:17:58.785136",  # noqa: E501
+            "dateAdded": "2018-06-08T11:17:58.785136",  # noqa: E501
+            "name": "Samsung",
+            "location": "Kampala"
+            }
+        }
+    }
+
+query_non_existent_device = '''
+        {
+        specificDevice(deviceId: 10000){
+            id
+            lastSeen
+            dateAdded
+            name
+            location
+        }
+        }
+        '''
+
+expected_error_non_existent_device_id = {
+    "errors": [
+        {
+            "message": "Device not found",
+            "locations": [
+                {
+                    "line": 3,
+                    "column": 9
+                }
+            ],
+            "path": [
+                "specificDevice"
+            ]
+        }
+    ],
+    "data": {
+        "specificDevice": null
+    }
+    }
 
 create_devices_query = '''
             mutation{

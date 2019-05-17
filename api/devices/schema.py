@@ -96,6 +96,13 @@ class Query(graphene.ObjectType):
         Devices,
         description="Query that returns a list of all devices")
 
+    specific_device = graphene.Field(
+        Devices,
+        device_id=graphene.Int(),
+        description="Returns device details and accepts the argument\
+            \n- device_id: A unique identifier of the device"
+    )
+
     def resolve_all_devices(self, info):
         query = Devices.get_query(info)
         location_id = admin_roles.user_location_for_analytics_view()
@@ -105,6 +112,16 @@ class Query(graphene.ObjectType):
             LocationModel.id == location_id).first()
         location_name = exact_location.name.lower()
         return query.filter(func.lower(DevicesModel.location) == location_name)
+
+    @Auth.user_roles('Admin')
+    def resolve_specific_device(self, info, device_id):
+        query = Devices.get_query(info)
+        device = query.filter(DevicesModel.id == device_id).first()
+
+        if not device:
+            raise GraphQLError("Device not found")
+
+        return device
 
 
 class Mutation(graphene.ObjectType):
