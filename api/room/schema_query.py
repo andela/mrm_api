@@ -200,23 +200,6 @@ class Query(graphene.ObjectType):
             \n- per_page: Lower limit responses per page"
     )
 
-    analytics_for_least_used_rooms = graphene.Field(
-        Analytics,
-        start_date=graphene.String(required=True),
-        end_date=graphene.String(),
-        description="Returns the analytics for the least used rooms and accepts the arguments\
-            \n- start_date: Start date when you want to get analytics from\
-            [required]\n- end_date: The end date to take the analytics upto"
-    )
-    analytics_for_most_used_rooms = graphene.Field(
-        Analytics,
-        start_date=graphene.String(required=True),
-        end_date=graphene.String(),
-        description="Returns the analytics for the most used rooms and accepts the arguments\
-            \n- start_date: Start date when you want to get analytics from\
-            [required]\n- end_date: The end date to take the analytics upto"
-    )
-
     analytics_for_booked_rooms = graphene.Field(
         Analytics,
         start_date=graphene.String(required=True),

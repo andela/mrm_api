@@ -3,7 +3,6 @@ from datetime import datetime, timedelta
 import dateutil.parser
 from dateutil.relativedelta import relativedelta
 from graphql import GraphQLError
-from collections import Counter
 from api.room.models import Room as RoomModel
 from api.location.models import Location as LocationModel
 from helpers.room_filter.room_filter import room_join_location
@@ -143,36 +142,6 @@ class CommonAnalytics:
             event_details["roomName"] = room['name']
             event_details["summary"] = event.event_title
         return event_details
-
-    def get_room_statistics(self, number_of_events_in_room, all_details):
-        """ Get summary statistics for room
-        :params
-            - number_of_events_in_room
-            - all_details(List of list of events in a room)
-        """
-        result = []
-        for room_details in all_details:
-            if number_of_events_in_room == 0:   # pragma: no cover
-                for detail in room_details:
-                    output = RoomStatistics(
-                        room_name=detail['roomName'],
-                        count=0)
-                    result.append(output)
-            elif len(room_details) == number_of_events_in_room:
-                events_count = Counter(
-                    detail['minutes'] for detail in room_details if detail)
-                duration_of_events_in_room = [
-                    EventsDuration(
-                        duration_in_minutes=event_duration,
-                        number_of_meetings=events_count[event_duration])
-                    for index, event_duration in enumerate(events_count)
-                ]
-                output = RoomStatistics(room_name=room_details[0]['roomName'],
-                                        count=number_of_events_in_room,
-                                        events=duration_of_events_in_room
-                                        )
-                result.append(output)
-        return result
 
     @staticmethod
     def get_total_bookings(instance, query, start_date, end_date, room_id=None):

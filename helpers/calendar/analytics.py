@@ -8,8 +8,6 @@ class RoomAnalytics:
     """Get room analytics
        :methods
            get_events_number_meetings_room_analytics
-           get_least_used_rooms_analytics
-           get_most_used_rooms_analytics
            get_meetings_per_room_analytics
            get_meetings_duration_analytics
     """
@@ -41,30 +39,6 @@ class RoomAnalytics:
                 number_of_meetings.append(len(output))
             result.append(output)
         return (result, number_of_meetings)
-
-    def get_least_used_rooms_analytics(self, query, start_date, end_date):  # noqa: E501
-        """ Get analytics for least used rooms
-         :params
-            - query
-            - start_date, end_date(Time range)
-        """
-        events_in_rooms, number_of_meetings = RoomAnalytics.get_events_number_meetings_room_analytics(  # noqa: E501
-            self, query, start_date, end_date)
-        analytics = CommonAnalytics.get_room_statistics(
-            self, min(number_of_meetings), events_in_rooms)
-        return analytics
-
-    def get_most_used_rooms_analytics(self, query, start_date, end_date):  # noqa: E501
-        """ Get analytics for most used room
-         :params
-            - query
-            - start_date, end_date(Time range)
-        """
-        events_in_rooms, number_of_meetings = RoomAnalytics.get_events_number_meetings_room_analytics(  # noqa: E501
-            self, query, start_date, end_date)
-        analytics = CommonAnalytics.get_room_statistics(
-            self, max(number_of_meetings), events_in_rooms)
-        return analytics
 
     def get_meetings_per_room_analytics(self, query, start_date, end_date):
         """ Get analytics for meetings per room
