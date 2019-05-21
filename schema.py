@@ -16,6 +16,7 @@ import api.tag.schema
 import api.office_structure.schema
 import api.response.schema_query
 import api.structure.schema
+import api.analytics.all_analytics_query
 
 
 class Query(
@@ -30,7 +31,8 @@ class Query(
         api.response.schema.Query,
         api.response.schema_query.Query,
         api.question.schema.Query,
-        api.structure.schema.Query
+        api.structure.schema.Query,
+        api.analytics.all_analytics_query.Query,
 ):
     """Root for converge Graphql queries"""
     pass
