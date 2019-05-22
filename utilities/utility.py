@@ -51,6 +51,18 @@ def listen_for_after_flush_event(target, child, parent_id):
         pass
 
 
+def percentage_formater(portion, total):
+    """ Calculates the percentage of the entered portion to the total and returns it
+        :params
+        - portion, total
+    """
+    try:
+        percentage = (portion/total) * 100
+        return percentage
+    except ZeroDivisionError:
+        return 0
+
+
 class Utility(object):
 
     def save(self):

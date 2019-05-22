@@ -41,6 +41,17 @@ class CommonAnalytics:
         end_date = (datetime.strptime(end_date, "%b %d %Y") + relativedelta(days=1)).isoformat() + 'Z'  # noqa: E501
         return(start_date, end_date)
 
+    def all_analytics_date_validation(self, start_date, end_date):
+        """
+        Checks that the start date is not greater than end date
+        """
+        start_date, end_date = CommonAnalytics.convert_dates(
+            self, start_date, end_date
+        )
+        if start_date > end_date:
+            raise GraphQLError('Earlier date should be lower than later date')
+        return (start_date, end_date)
+
     def validate_current_date(self, start_date, end_date):
         """
         Checks for today's date
