@@ -22,3 +22,5 @@ class Events(Base, Utility):
     number_of_participants = Column(Integer, nullable=False)
     check_in_time = Column(String, nullable=True)
     meeting_end_time = Column(String, nullable=True)
+    auto_cancelled = Column(Boolean, nullable=True, default=False)
+    app_booking = Column(Boolean, nullable=True, default=False)
