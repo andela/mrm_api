@@ -62,7 +62,8 @@ def validate_responses_by_room(data_type, function, **kwargs):
             kwargs['Query'], kwargs['info'], kwargs['upper_limit'],
             kwargs['lower_limit'])
         for room_response in filtered_response:
-            if room_response.room_name.lower() == kwargs['room'].lower():
+            if (room_response.room_name.lower() == kwargs['room'].lower()
+                    and room_response.response):
                 kwargs['filtered_search'].append(room_response)
         if kwargs['filtered_search']:
             return kwargs['filtered_search']
