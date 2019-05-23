@@ -1,7 +1,6 @@
 import graphene
 from graphql import GraphQLError
 from helpers.calendar.analytics import RoomAnalytics  # noqa: E501
-from helpers.calendar.ratios_and_utilization import RoomAnalyticsRatios
 from helpers.auth.authentication import Auth
 from helpers.auth.admin_roles import admin_roles
 from api.room.schema import (PaginatedRooms, Calendar, Room)
@@ -17,8 +16,6 @@ from helpers.remote_rooms.remote_rooms_location import (
 from helpers.calendar.credentials import get_google_api_calendar_list
 from api.room.schema import (RatioOfCheckinsAndCancellations,
                              BookingsAnalyticsCount)
-from helpers.pagination.paginate import ListPaginate
-from helpers.calendar.analytics_helper import CommonAnalytics
 
 
 def resolve_booked_rooms_analytics(*args):
@@ -355,150 +352,3 @@ class Query(graphene.ObjectType):
         return Calendar(
             events=resource[1]
         )
-
-    @Auth.user_roles('Admin', 'Default User')
-    def resolve_analytics_for_least_used_rooms(self, info, start_date, end_date=None):  # noqa: E501
-        query = Room.get_query(info)
-        room_analytics = RoomAnalytics.get_least_used_rooms_analytics(
-            self, query, start_date, end_date
-        )
-        return Analytics(
-            analytics=room_analytics
-        )
-
-    @Auth.user_roles('Admin', 'Default User')
-    def resolve_analytics_for_most_used_rooms(self, info, start_date, end_date=None):  # noqa: E501
-        query = Room.get_query(info)
-        room_analytics = RoomAnalytics.get_most_used_rooms_analytics(
-            self, query, start_date, end_date
-        )
-        room_most_used_per_week = Analytics(
-            analytics=room_analytics
-        )
-        return room_most_used_per_week
-
-    @Auth.user_roles('Admin', 'Default User')
-    def resolve_analytics_for_meetings_per_room(self, info, start_date, end_date=None):  # noqa: E501
-        query = Room.get_query(info)
-        meeting_summary = RoomAnalytics.get_meetings_per_room_analytics(
-            self, query, start_date, end_date
-        )
-        return Analytics(
-            analytics=meeting_summary
-        )
-
-    @Auth.user_roles('Admin', 'Default User')
-    def resolve_analytics_for_meetings_durations(self, info, start_date, end_date=None, per_page=None, page=None):  # noqa: E501
-        query = Room.get_query(info)
-        results = RoomAnalytics.get_meetings_duration_analytics(self, query, start_date, end_date)  # noqa: E501
-        if page and per_page:
-            paginated_results = ListPaginate(iterable=results, per_page=per_page, page=page)  # noqa: E501
-            current_page = paginated_results.current_page
-            has_previous = paginated_results.has_previous
-            has_next = paginated_results.has_next
-            pages = paginated_results.pages
-            return Analytics(MeetingsDurationaAnalytics=current_page, has_previous=has_previous, has_next=has_next, pages=pages)  # noqa: E501
-        return Analytics(MeetingsDurationaAnalytics=results)
-
-    @Auth.user_roles('Admin', 'Default User')
-    def resolve_analytics_ratios(
-            self, info, start_date, end_date=None):
-        query = Room.get_query(info)
-        ratio = RoomAnalyticsRatios.get_analytics_ratios(
-            self, query, start_date, end_date)
-        return ratio
-
-    @Auth.user_roles('Admin', 'Default User')
-    def resolve_analytics_ratios_per_room(self, info, **kwargs):
-        room_id = kwargs.get('room_id')
-        query = Room.get_query(info)
-        ratio = RoomAnalyticsRatios.get_analytics_ratios_per_room(
-            self, query, kwargs.get('start_date'), kwargs.get('end_date'),
-            **kwargs)
-        if room_id:
-            exact_room = query.filter(RoomModel.id == room_id).first()
-            if not exact_room:
-                raise GraphQLError("Room not found")
-            return RatiosPerRoom(ratios=[], ratio=ratio)
-        return RatiosPerRoom(ratios=ratio, ratio={})
-
-    @Auth.user_roles('Admin', 'Default User')
-    def resolve_bookings_analytics_count(
-            self, info, **kwargs):
-        start_date, end_date, room_id = (kwargs.get('start_date'),
-                                         kwargs.get('end_date'),
-                                         kwargs.get('room_id'))
-        query = Room.get_query(info)
-        analytics = RoomAnalyticsRatios.get_bookings_analytics_count(
-            self, query, start_date, end_date, room_id=room_id)
-        return analytics
-
-    @Auth.user_roles('Admin', 'Default User')
-    def resolve_analytics_for_daily_room_events(
-        self, info, **kwargs
-    ):
-        start_date = kwargs.get('start_date')
-        end_date = kwargs.get('end_date')
-        location_id = admin_roles.user_location_for_analytics_view()
-        start_date, end_date = CommonAnalytics().convert_dates(
-            start_date, end_date
-        )
-        query = Room.get_query(info)
-        all_events, all_dates = RoomSchedules().get_all_room_schedules(
-            query, start_date, end_date, location_id
-        )
-        all_days_events = []
-        for date in set(all_dates):
-            daily_events = []
-            for event in all_events:
-                if date == event["date_of_event"]:
-                    current_event = CalendarEvent(
-                        no_of_participants=event["no_of_participants"],
-                        event_summary=event["event_summary"],
-                        start_time=event["start_time"],
-                        end_time=event["end_time"],
-                        room_name=event["room_name"],
-                        event_id=event["event_id"],
-                        cancelled=event["cancelled"],
-                        state=event["state"],
-                        checked_in=event["checked_in"],
-                        check_in_time=event["check_in_time"],
-                        meeting_end_time=event["meeting_end_time"]
-                    )
-                    daily_events.append(current_event)
-            all_days_events.append(
-                DailyEvents(
-                    day=date,
-                    events=daily_events
-                )
-            )
-        page = kwargs.get('page')
-        per_page = kwargs.get('per_page')
-        if page and per_page:
-            paginated_results = ListPaginate(
-                iterable=all_days_events, per_page=per_page, page=page
-            )
-            current_page = paginated_results.current_page
-            has_previous = paginated_results.has_previous
-            has_next = paginated_results.has_next
-            pages = paginated_results.pages
-            return PaginatedEvents(
-                DailyRoomEvents=current_page,
-                has_next=has_next,
-                has_previous=has_previous,
-                pages=pages
-            )
-        return PaginatedEvents(
-            DailyRoomEvents=all_days_events
-        )
-
-    @Auth.user_roles('Admin', 'Default User')
-    def resolve_analytics_for_booked_rooms(self, info, **kwargs):
-        start_date, criteria, end_date, limit = (
-            kwargs.get('start_date', ''),
-            kwargs.get('criteria', None),
-            kwargs.get('end_date', None),
-            kwargs.get('limit', None)
-        )
-        return resolve_booked_rooms_analytics(
-            self, info, start_date, end_date, limit, criteria)

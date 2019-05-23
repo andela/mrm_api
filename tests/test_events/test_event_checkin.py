@@ -11,9 +11,6 @@ from fixtures.events.event_checkin_fixtures import (
     checkin_mutation_for_event_existing_in_db,
     response_for_event_existing_in_db_checkin
 )
-from fixtures.events.events_ratios_fixtures import (
-    event_ratio_percentage_cancellation_query,
-    event_ratio_percentage_cancellation_response)
 from helpers.calendar.calendar import get_events_mock_data
 
 sys.path.append(os.getcwd())
@@ -83,12 +80,6 @@ class TestEventCheckin(BaseTestCase):
             self,
             cancel_event_mutation,
             "Event already cancelled"
-        )
-        # Test for successful try in percentage_formater function
-        CommonTestCases.admin_token_assert_equal(
-            self,
-            event_ratio_percentage_cancellation_query,
-            event_ratio_percentage_cancellation_response
         )
 
     @patch("api.events.schema.get_single_calendar_event", spec=True)
