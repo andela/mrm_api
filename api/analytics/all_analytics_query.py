@@ -6,30 +6,34 @@ from helpers.calendar.all_analytics_helper import (
 from helpers.calendar.analytics_helper import CommonAnalytics
 from helpers.auth.authentication import Auth
 from api.room.schema import Room
+from utilities.utility import percentage_formater
 
 
 class ConsolidatedAnalytics(graphene.ObjectType):
     room_name = graphene.String()
-    number_of_meetings = graphene.Int()
-    bookings_count = graphene.List(BookingsCount)
+    number_of_bookings = graphene.Int()
+    bookings_percentage_share = graphene.Float()
+    events = graphene.List(
+        Event,
+        description='Returns all the events in that room'
+    )
     cancellations = graphene.Int()
     cancellations_percentage = graphene.Float()
     checkins_percentage = graphene.Float()
     checkins = graphene.Int()
     app_bookings = graphene.Int()
     app_bookings_percentage = graphene.Float()
-    percentage_share = graphene.Float()
-    period = graphene.Int()
-    events = graphene.List(
-        Event,
-        description='Returns all the events in that room'
-    )
     auto_cancellations = graphene.Int()
 
 
 class AllAnalytics(graphene.ObjectType):
     analytics = graphene.List(ConsolidatedAnalytics)
     bookings = graphene.Int()
+    checkins_percentage = graphene.Float()
+    auto_cancellations_percentage = graphene.Float()
+    cancellations_percentage = graphene.Float()
+    app_bookings_percentage = graphene.Float()
+    bookings_count = graphene.List(BookingsCount)
 
 
 class Query(graphene.ObjectType):
@@ -52,23 +56,44 @@ class Query(graphene.ObjectType):
             self, start_date, end_date
         )
         query = Room.get_query(info)
-        room_analytics, bookings = AllAnalyticsHelper.get_all_analytics(
+        room_analytics, bookings, percentages_dict, bookings_count = AllAnalyticsHelper.get_all_analytics( # noqa
             self, query, start_date, end_date, location_id, unconverted_dates)
         analytics = []
         for analytic in room_analytics:
             current_analytic = ConsolidatedAnalytics(
                 room_name=analytic['room_name'],
-                number_of_meetings=analytic['number_of_meetings'],
-                checkins_percentage=analytic['checkins_percentage'],
-                bookings_count=analytic['bookings_count'],
                 cancellations=analytic['cancellations'],
-                checkins=analytic['checkins'],
                 cancellations_percentage=analytic['cancellations_percentage'],
+                auto_cancellations=analytic['auto_cancellations'],
+                number_of_bookings=analytic['number_of_meetings'],
+                checkins=analytic['checkins'],
+                checkins_percentage=analytic['checkins_percentage'],
+                bookings_percentage_share=percentage_formater(
+                    analytic['num_of_events'],
+                    bookings
+                ),
                 app_bookings=analytic['app_bookings'],
                 app_bookings_percentage=analytic['app_bookings_percentage'],
-                percentage_share=analytic['percentage_share'],
                 events=analytic['room_events'],
-                auto_cancellations=analytic['auto_cancellations']
             )
             analytics.append(current_analytic)
-        return AllAnalytics(bookings=bookings, analytics=analytics)
+        return AllAnalytics(
+            bookings=bookings,
+            checkins_percentage=percentage_formater(
+                percentages_dict['total_checkins'],
+                bookings
+            ),
+            auto_cancellations_percentage=percentage_formater(
+                percentages_dict['total_auto_cancellations'],
+                bookings
+            ),
+            cancellations_percentage=percentage_formater(
+                percentages_dict['total_cancellations'],
+                bookings
+            ),
+            app_bookings_percentage=percentage_formater(
+                percentages_dict['total_app_bookings'],
+                bookings
+            ),
+            bookings_count=bookings_count,
+            analytics=analytics)
