@@ -1,7 +1,6 @@
 from flask import Flask, render_template
 
 from flask_graphql import GraphQLView
-from flask_cors import CORS
 from flask_json import FlaskJSON
 
 from flask_mail import Mail
@@ -17,7 +16,6 @@ mail = Mail()
 
 def create_app(config_name):
     app = Flask(__name__)
-    CORS(app)
     FlaskJSON(app)
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
@@ -35,6 +33,7 @@ def create_app(config_name):
             graphiql=True   # for having the GraphiQL interface
         )
     )
+
     app.add_url_rule(
         '/_healthcheck',
         view_func=GraphQLView.as_view(
