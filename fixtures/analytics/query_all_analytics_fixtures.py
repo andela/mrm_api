@@ -58,14 +58,17 @@ all_analytics_query_response = {
       ],
       "bookingsCount": [
         {
-          "period": "Jul 11 2018",
-          "totalBookings": 1
+          "totalBookings": 1,
+          "period": "Jul 11 2018"
+        },
+        {
+          'totalBookings': 0,
+          'period': 'Jul 12 2018'
         }
       ]
     }
   }
 }
-
 analytics_query_for_date_ranges = '''
     query {
       allAnalytics(startDate:"jul 11 2020", endDate:"jul 12 2018") {
