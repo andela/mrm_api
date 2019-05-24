@@ -1,85 +1,98 @@
-null = None
-
 all_analytics_query = '''
     query {
-        allAnalytics(startDate:"jul 11 2018", endDate:"jul 12 2018") {
-            bookings
-            analytics{
-                roomName
-                cancellations
-                autoCancellations
-                numberOfMeetings
-                checkins
-                checkinsPercentage
-                percentageShare
-                appBookings
-                appBookingsPercentage
-                bookingsCount{
-                    period
-                    bookings
-                }
-                events{
-                    durationInMinutes
-                }
-            }
+      allAnalytics(startDate:"jul 11 2018", endDate:"jul 12 2018") {
+          checkinsPercentage
+          appBookingsPercentage
+          autoCancellationsPercentage
+          cancellationsPercentage
+          bookings
+          analytics{
+            roomName
+            cancellations
+            cancellationsPercentage
+            autoCancellations
+            numberOfBookings
+            checkins
+            checkinsPercentage
+            bookingsPercentageShare
+            appBookings
+            appBookingsPercentage
+            events{
+              durationInMinutes
+              }
+          }
+          bookingsCount{
+            totalBookings
+            period
+          }
         }
-    }
+  }
 '''
 
 all_analytics_query_response = {
-    "data": {
-        "allAnalytics": {
-            "bookings": 1,
-            "analytics": [
-                {
-                    "roomName": "Entebbe",
-                    "cancellations": 0,
-                    "autoCancellations": 0,
-                    "numberOfMeetings": 1,
-                    "checkins": 0,
-                    "checkinsPercentage": 0.0,
-                    "percentageShare": 100.0,
-                    "appBookings": 0,
-                    "appBookingsPercentage": 0.0,
-                    "bookingsCount": [
-                        {
-                            "period": "Jul 11 2018",
-                            "bookings": 1
-                        }
-                    ],
-                    "events": [
-                        {
-                            "durationInMinutes": 45
-                        }
-                    ]
-                },
-            ]
+  "data": {
+    "allAnalytics": {
+      "checkinsPercentage": 0.0,
+      "appBookingsPercentage": 0.0,
+      "autoCancellationsPercentage": 0.0,
+      "cancellationsPercentage": 0.0,
+      "bookings": 1,
+      "analytics": [
+        {
+          "roomName": "Entebbe",
+          "cancellations": 0,
+          "cancellationsPercentage": 0.0,
+          "autoCancellations": 0,
+          "numberOfBookings": 1,
+          "checkins": 0,
+          "checkinsPercentage": 0.0,
+          "bookingsPercentageShare": 100.0,
+          "appBookings": 0,
+          "appBookingsPercentage": 0.0,
+          "events": [
+            {
+              "durationInMinutes": 45
+            }
+          ]
         }
+      ],
+      "bookingsCount": [
+        {
+          "period": "Jul 11 2018",
+          "totalBookings": 1
+        }
+      ]
     }
+  }
 }
 
 analytics_query_for_date_ranges = '''
     query {
-        allAnalytics(startDate:"jul 11 2019", endDate:"jul 12 2018") {
-            bookings
-            analytics{
-                roomName
-                cancellations
-                autoCancellations
-                numberOfMeetings
-                checkins
-                checkinsPercentage
-                percentageShare
-                appBookings
-                appBookingsPercentage
-                bookingsCount{
-                    period
-                    bookings
-                }
-                events{
-                    durationInMinutes
-                }
-            }
+      allAnalytics(startDate:"jul 11 2020", endDate:"jul 12 2018") {
+          checkinsPercentage
+          appBookingsPercentage
+          autoCancellationsPercentage
+          cancellationsPercentage
+          bookings
+          analytics{
+            roomName
+            cancellations
+            cancellationsPercentage
+            autoCancellations
+            numberOfBookings
+            checkins
+            checkinsPercentage
+            bookingsPercentageShare
+            appBookings
+            appBookingsPercentage
+            events{
+              durationInMinutes
+              }
+          }
+          bookingsCount{
+            totalBookings
+            period
+          }
         }
-    }
+  }
 '''
