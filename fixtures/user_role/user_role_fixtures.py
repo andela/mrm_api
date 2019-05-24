@@ -99,7 +99,7 @@ query_user_by_user_email_response = {
 
 change_user_role_mutation_query = '''
 mutation{
-  changeUserRole(email:"mrm@andela.com", roleId:1){
+  changeUserRole(email:"mrmtestuser@andela.com", roleId:1){
     user{
       email
       roles{
@@ -110,20 +110,7 @@ mutation{
 }
 '''
 
-change_user_role_mutation_response = {
-    "data": {
-        "changeUserRole": {
-            "user": {
-                "email": "mrm@andela.com",
-                "roles": [
-                    {
-                        "id": "1"
-                    }
-                ]
-            }
-        }
-    }
-}
+change_user_role_mutation_response = "Role changed but email not sent"
 
 change_unavailable_user_role_mutation_query = '''
 mutation{

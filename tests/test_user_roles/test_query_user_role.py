@@ -1,4 +1,9 @@
-from tests.base import BaseTestCase, CommonTestCases, change_user_role_helper
+from tests.base import (
+    BaseTestCase,
+    CommonTestCases,
+    change_user_role_helper,
+    change_test_user_role
+)
 from fixtures.user_role.user_role_fixtures import (
     change_user_role_mutation_query,
     change_unavailable_user_role_mutation_query,
@@ -65,9 +70,9 @@ class TestQueryUserRole(BaseTestCase):
         expected_response = query_user_by_user_email_response
         self.assertEqual(execute_query, expected_response)
 
+    @change_test_user_role
     def test_change_user_role(self):
-        create_user()
-        CommonTestCases.admin_token_assert_equal(
+        CommonTestCases.admin_token_assert_in(
             self,
             change_user_role_mutation_query,
             change_user_role_mutation_response

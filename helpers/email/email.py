@@ -63,5 +63,23 @@ class EmailNotification:
             event_reject_reason=event_reject_reason
         )
 
+    def send_admin_invite_email(self, user_email, user_name):
+        """
+        send email notification when an admin is added
+            :params
+                - user_email: the email of the user being added as an admin
+                - user_name: the name of the user being added as an admin
+        """
+        subject = 'Converge - You have been added as an admin'
+        template = 'admin_invite.html'
+
+        return EmailNotification.send_email_notification(
+            self,
+            email=user_email,
+            subject=subject,
+            user_name=user_name,
+            template=template
+        )
+
 
 notification = EmailNotification()

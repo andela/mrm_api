@@ -112,6 +112,21 @@ query_user_email_response = {
 
 change_user_role_mutation = '''
 mutation{
+    changeUserRole(email:"mrmtestuser@andela.com", roleId: 1){
+        user{
+            name
+            roles{
+                role
+            }
+        }
+    }
+}
+'''
+
+change_user_role_mutation_response = "Role changed but email not sent"
+
+change_user_role_with_already_assigned_role_mutation = '''
+mutation{
     changeUserRole(email:"peter.walugembe@andela.com", roleId: 1){
         user{
             name
@@ -123,18 +138,7 @@ mutation{
 }
 '''
 
-change_user_role_mutation_response = {
-    "data": {
-        "changeUserRole": {
-            "user": {
-                "name": "Peter Walugembe",
-                "roles": [{
-                    "role": "Admin"
-                }]
-            }
-        }
-    }
-}
+change_user_role_with_already_assigned_role_mutation_response = "This role is already assigned to this user"  # noqa: E501
 
 change_user_role_to_non_existence_role_mutation = '''
 mutation{
