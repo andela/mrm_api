@@ -20,7 +20,8 @@ from fixtures.response.user_response_check import (
 from fixtures.response.user_response_suggestions import (
     create_suggestion_question,
     create_suggestion_question_response,
-    make_suggestion_in_non_existent_room
+    make_suggestion_in_non_existent_room,
+    choose_wrong_question
 )
 
 
@@ -136,5 +137,15 @@ class TestCreateResponse(BaseTestCase):
         CommonTestCases.admin_token_assert_equal(
             self,
             filter_response_by_room_with_pagination,
-            filter_response_by_room_with_pagination_response
+            filter_response_by_room_with_pagination_response)
+
+    def test_response_for_wrong_question_type(self):
+        """
+        Test that a user cannot respond to a question
+        with the wrong question type
+        """
+        CommonTestCases.user_token_assert_in(
+            self,
+            choose_wrong_question,
+            "Kindly respond to the right question type"
         )
