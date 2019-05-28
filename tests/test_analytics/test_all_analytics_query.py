@@ -23,6 +23,7 @@ class TestAllAnalytics(BaseTestCase):
         """
         Tests the date range to ensure start
         date is smaller than end date
+
         """
 
         CommonTestCases.admin_token_assert_in(
