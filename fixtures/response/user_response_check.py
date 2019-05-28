@@ -74,44 +74,82 @@ create_check_response = {
 
 filter_question_by_room = '''
 {
-  getRoomResponse(roomId: 1) {
-    room {
-      capacity
-      name
-      roomType
+  getRoomResponse(roomId: 1, perPage: 1, page: 1) {
+    responses {
+      roomName
+      roomId
+      response {
+        rating
+        suggestion
+      }
     }
   }
 }
 '''
 
 filter_question_by_room_response = {
-    "data": {
-        "getRoomResponse": [
-          {
-            "room": {
-              "capacity": 6,
-              "name": "Entebbe",
-              "roomType": "meeting"
+  "data": {
+    "getRoomResponse": {
+      "responses": [
+        {
+          "roomName": "Entebbe",
+          "roomId": 1,
+          "response": [
+            {
+              "rating": 2,
+              "suggestion": None
             }
-          },
-          {
-            "room": {
-              "capacity": 6,
-              "name": "Entebbe",
-              "roomType": "meeting"
-            }
-          }
-        ]
+          ]
+        }
+      ]
     }
+  }
+}
+
+filter_response_by_room_with_pagination = '''
+{
+  getRoomResponse(roomId: 1, perPage: 1, page: 1) {
+    responses {
+      roomName
+      roomId
+      response {
+        rating
+        suggestion
+      }
+    }
+  }
+}
+'''
+
+filter_response_by_room_with_pagination_response = {
+  "data": {
+    "getRoomResponse": {
+      "responses": [
+        {
+          "roomName": "Entebbe",
+          "roomId": 1,
+          "response": [
+            {
+              "rating": 2,
+              "suggestion": None
+            }
+          ]
+        }
+      ]
+    }
+  }
 }
 
 filter_question_by_invalid_room = '''
 {
-  getRoomResponse(roomId: 100) {
-    room {
-      id
-      name
-      roomType
+  getRoomResponse(roomId: 100, perPage: 1, page: 1) {
+    responses {
+      roomName
+      roomId
+      response {
+        rating
+        suggestion
+      }
     }
   }
 }
@@ -120,7 +158,7 @@ filter_question_by_invalid_room = '''
 
 filter_question_by_invalid_room_response = {
     "errors": [{
-        "message": "No Feedback Found",
+        "message": "This room doesn't exist or doesn't have feedback.",
         "locations": [{
             "line": 3,
             "column": 3
