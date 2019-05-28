@@ -6,7 +6,8 @@ from fixtures.room.room_update_fixtures import (
     query_update_all_fields,
     query_without_room_id,
     query_room_id_non_existant,
-    update_with_empty_field
+    update_with_empty_field,
+    query_update_without_structure_id
 )
 
 
@@ -41,3 +42,13 @@ class TestUpdateRoom(BaseTestCase):
             self,
             update_with_empty_field,
             "name is required field")
+
+    def test_update_without_structure_id(self):
+        """
+        Tests one can update a room without
+        providing structure id
+        """
+        CommonTestCases.admin_token_assert_in(
+            self,
+            query_update_without_structure_id,
+            "Jinja")

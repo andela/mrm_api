@@ -12,7 +12,18 @@ query_update_all_fields = '''mutation{
     }
 }
 '''
-
+query_update_without_structure_id = '''mutation{
+    updateRoom(roomId: 1, name: "Jinja", capacity: 8,
+    roomType: "board room",
+    roomTags: [1]){
+        room{
+            name
+            capacity
+            roomType
+        }
+    }
+}
+'''
 expected_query_update_all_fields = {
     "data": {
         "updateRoom": {
