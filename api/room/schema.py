@@ -229,6 +229,8 @@ class DeleteRoom(graphene.Mutation):
         admin_roles.update_delete_rooms_create_resource(room_id)
         update_entity_fields(exact_room, state="archived", **kwargs)
         exact_room.save()
+        requests.delete(url=Config.MRM_PUSH_URL + "/delete_room",
+                        params={"calendar_id": exact_room.calendar_id})
         return DeleteRoom(room=exact_room)
 
 
