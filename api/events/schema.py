@@ -7,6 +7,8 @@ from api.room.models import Room as RoomModel
 from helpers.calendar.events import RoomSchedules, CalendarEvents
 from helpers.email.email import notification
 from helpers.calendar.credentials import get_single_calendar_event
+from helpers.auth.authentication import Auth
+from helpers.calendar.analytics_helper import CommonAnalytics
 
 
 class Events(SQLAlchemyObjectType):
@@ -200,3 +202,24 @@ class Mutation(graphene.ObjectType):
             [required]\n- start_time: The start time of the calendar event\
             [required]\n- end_time: The field with the end time of the calendar\
              event[required]")
+
+
+class Query(graphene.ObjectType):
+    all_events = graphene.List(
+        Events,
+        start_date=graphene.String(),
+        end_date=graphene.String(),
+        description="Query that returns a list of all events")
+
+    @Auth.user_roles('Admin', 'Default User')
+    def resolve_all_events(self, info, **kwargs):
+        start_date, end_date = CommonAnalytics.all_analytics_date_validation(
+            self, kwargs['start_date'], kwargs['end_date']
+        )
+        query = Events.get_query(info)
+        all_events = query.filter(
+            EventsModel.state == 'active',
+            EventsModel.end_time < end_date,
+            EventsModel.start_time > start_date
+            ).all()
+        return all_events

@@ -33,6 +33,7 @@ class Query(
         api.question.schema.Query,
         api.structure.schema.Query,
         api.analytics.all_analytics_query.Query,
+        api.events.schema.Query,
 ):
     """Root for converge Graphql queries"""
     pass
