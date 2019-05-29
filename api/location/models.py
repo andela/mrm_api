@@ -1,4 +1,4 @@
-from sqlalchemy import (Column, String, Integer, Enum, Index, ForeignKey)
+from sqlalchemy import (Column, String, Integer, Enum, Index)
 from sqlalchemy.orm import relationship
 from sqlalchemy.schema import Sequence
 
@@ -28,10 +28,6 @@ class Location(Base, Utility):
     time_zone = Column(Enum(TimeZoneType))
     image_url = Column(String)
     state = Column(Enum(StateType), default="active")
-    structure_id = Column(
-        Integer,
-        ForeignKey('structure.id', ondelete="CASCADE"),
-    )
     structure = Column(String, nullable=True)
     rooms = relationship(
         'Room', cascade="all, delete-orphan",

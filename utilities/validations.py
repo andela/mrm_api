@@ -4,7 +4,6 @@ import re
 
 from api.location.models import CountryType, TimeZoneType
 from graphql import GraphQLError
-from api.office_structure.models import OfficeStructure as OfficeStructureModel
 from api.structure.models import Structure as StructureModel
 
 
@@ -72,16 +71,6 @@ def validate_timezone_field(**kwargs):
     time_zone = kwargs['time_zone']
     if time_zone not in timezones:
         raise AttributeError("Not a valid time zone")
-
-
-def validate_parent_node_id(parent_id):
-    """
-    Function to validate Parent node ID
-    when creating child node
-    """
-    parent_node = OfficeStructureModel.query.filter_by(id=parent_id).first()
-    if not parent_node:
-        raise GraphQLError("Parent node ID Provided does not exist")
 
 
 def validate_question_type(**kwargs):

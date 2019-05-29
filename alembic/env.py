@@ -44,7 +44,6 @@ from api.events.models import Events
 from api.question.models import Question
 from api.response.models import Response
 from api.tag.models import Tag
-from api.office_structure.models import OfficeStructure
 from api.structure.models import Structure
 
 
