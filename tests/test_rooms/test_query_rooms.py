@@ -50,9 +50,9 @@ class QueryRooms(BaseTestCase):
         assert mocked_method.called
 
     def test_query_room_with_id(self):
-        query = self.client.execute(room_query_by_id)
-
-        self.assertEquals(query, room_query_by_id_response)
+        response = self.app_test.post('/mrm?query='+room_query_by_id)
+        actual_response = json.loads(response.data)
+        self.assertEquals(actual_response, room_query_by_id_response)
 
     def test_query_room_with_non_existant_id(self):
         response = self.app_test.post('/mrm?query='+room_with_non_existant_id)

@@ -84,6 +84,7 @@ class BaseTestCase(TestCase):
                         room_type='meeting',
                         capacity=6,
                         location_id=location.id,
+                        structure_id='851ae8b3-48dd-46b5-89bc-ca3f8111ad87',
                         calendar_id='andela.com_3630363835303531343031@resource.calendar.google.com',  # noqa: E501
                         image_url="https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg",  # noqa: E501
                         room_labels=["1st Floor", "Wing A"])

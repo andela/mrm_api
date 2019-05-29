@@ -310,7 +310,9 @@ class Query(graphene.ObjectType):
 
     def resolve_get_room_by_id(self, info, room_id):
         query = Room.get_query(info)
-        check_room = query.filter(RoomModel.id == room_id).first()
+        check_room = query.filter(
+            RoomModel.id == room_id,
+            RoomModel.state == "active").first()
         if not check_room:
             raise GraphQLError("Room not found")
         return check_room
