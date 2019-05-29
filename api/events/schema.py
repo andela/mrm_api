@@ -9,6 +9,9 @@ from helpers.email.email import notification
 from helpers.calendar.credentials import get_single_calendar_event
 from helpers.auth.authentication import Auth
 from helpers.calendar.analytics_helper import CommonAnalytics
+import pytz
+from dateutil import parser
+from datetime import datetime
 
 
 class Events(SQLAlchemyObjectType):
@@ -17,6 +20,14 @@ class Events(SQLAlchemyObjectType):
     """
     class Meta:
         model = EventsModel
+
+
+class DailyRoomEvents(graphene.ObjectType):
+    """
+    Returns days with their events
+    """
+    day = graphene.String()
+    events = graphene.List(Events)
 
 
 class EventCheckin(graphene.Mutation):
@@ -208,10 +219,10 @@ class Mutation(graphene.ObjectType):
 
 class Query(graphene.ObjectType):
     all_events = graphene.List(
-        Events,
+        DailyRoomEvents,
         start_date=graphene.String(),
         end_date=graphene.String(),
-        description="Query that returns a list of all events")
+        description="Query that returns daily room events")
 
     @Auth.user_roles('Admin', 'Default User')
     def resolve_all_events(self, info, **kwargs):
@@ -219,9 +230,24 @@ class Query(graphene.ObjectType):
             self, kwargs['start_date'], kwargs['end_date']
         )
         query = Events.get_query(info)
-        all_events = query.filter(
-            EventsModel.state == 'active',
-            EventsModel.end_time < end_date,
-            EventsModel.start_time > start_date
-            ).all()
-        return all_events
+        all_events, all_dates = CommonAnalytics.get_all_events_and_dates(
+            query, start_date, end_date
+        )
+        all_days_events = []
+        for date in set(all_dates):
+            daily_events = []
+            for event in all_events:
+                CommonAnalytics.format_date(event.start_time)
+                event_start_date = parser.parse(
+                    event.start_time).astimezone(pytz.utc)
+                day_of_event = event_start_date.strftime("%a %b %d %Y")
+                if date == day_of_event:
+                    daily_events.append(event)
+            all_days_events.append(
+                DailyRoomEvents(
+                    day=date,
+                    events=daily_events
+                )
+            )
+            all_days_events.sort(key=lambda x: datetime.strptime(x.day, "%a %b %d %Y"), reverse=True) # noqa
+        return all_days_events
