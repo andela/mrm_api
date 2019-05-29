@@ -161,14 +161,15 @@ class Query(graphene.ObjectType):
             room_response = Response.get_query(info).filter_by(
                 room_id=room.id)
             response_count = room_response.count()
-            all_responses = Query.get_room_response(
-                self, room_response, room.id)
-            responses = RoomResponse(
-                room_id=room.id,
-                room_name=room_name,
-                total_responses=response_count,
-                response=all_responses)
-            response.append(responses)
+            if response_count:
+                all_responses = Query.get_room_response(
+                    self, room_response, room.id)
+                responses = RoomResponse(
+                    room_id=room.id,
+                    room_name=room_name,
+                    total_responses=response_count,
+                    response=all_responses)
+                response.append(responses)
         return response
 
     @Auth.user_roles('Admin')
