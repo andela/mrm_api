@@ -3,6 +3,7 @@ import dateutil.parser
 from graphql import GraphQLError
 from helpers.calendar.analytics_helper import CommonAnalytics
 from utilities.utility import percentage_formater
+from dateutil.relativedelta import relativedelta
 
 
 class Event(graphene.ObjectType):
@@ -24,7 +25,8 @@ class AllAnalyticsHelper:
         day_after_end_date = unconverted_dates['end']
         parsed_start_date = dateutil.parser.parse(start_date)
         parsed_end_date = dateutil.parser.parse(day_after_end_date)
-        number_of_days = (parsed_end_date - parsed_start_date).days
+        parsed_day_after_end_date = parsed_end_date + relativedelta(days=1)
+        number_of_days = (parsed_day_after_end_date - parsed_start_date).days
         bookings_count = []
         if number_of_days <= 30:
             dates = CommonAnalytics.get_list_of_dates(
@@ -45,7 +47,7 @@ class AllAnalyticsHelper:
                 start_date,
                 parsed_start_date,
                 day_after_end_date,
-                parsed_end_date)
+                parsed_day_after_end_date)
             for date in dates:
                 string_month = dateutil.parser.parse(date[0]).strftime("%b %Y")
                 output = BookingsCount(
