@@ -80,3 +80,9 @@ class StateType(enum.Enum):
     active = "active"
     archived = "archived"
     deleted = "deleted"
+
+
+class QuestionType(enum.Enum):
+    rate = "rate"
+    check = "check"
+    textarea = "textarea"

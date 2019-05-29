@@ -1,8 +1,9 @@
-from sqlalchemy import (Table, Column, String, ForeignKey, Integer, DateTime,
-                        Boolean)
+from sqlalchemy import (
+    Table, Column, String, ForeignKey, Integer, DateTime, Enum, Boolean
+)
 from sqlalchemy.orm import relationship
 from helpers.database import Base
-from utilities.utility import Utility
+from utilities.utility import Utility, QuestionType
 import api.question.models
 from api.room_resource.models import Resource  # noqa: F401
 
@@ -21,9 +22,8 @@ class Response(Base, Utility):
     room_id = Column(Integer, ForeignKey('rooms.id', ondelete="CASCADE"))
     question_id = Column(Integer, ForeignKey(
         'questions.id', ondelete="CASCADE"))
-    rate = Column(Integer, nullable=True)
-    check = Column(Boolean, nullable=True)
-    text_area = Column(String, nullable=True)
+    question_type = Column(Enum(QuestionType), default="rate")
+    response = Column(String)
     created_date = Column(DateTime, nullable=False)
     resolved = Column(Boolean, default=False)
     question = relationship('Question')

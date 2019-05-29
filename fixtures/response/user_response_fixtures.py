@@ -7,7 +7,7 @@ mutation{
       id
       questionId
       roomId
-      rate
+      response
       }
   }
 }
@@ -21,7 +21,7 @@ create_rate_response = {
                     "id": "3",
                     "questionId": 1,
                     "roomId": 1,
-                    "rate": 2
+                    "response": "2"
                 }
             ]
         }
@@ -35,7 +35,7 @@ mutation{
       id
       questionId
       roomId
-      rate
+      response
       }
   }
 }
@@ -68,7 +68,7 @@ mutation{
       id
       questionId
       roomId
-      rate
+      response
       }
   }
 }
@@ -101,7 +101,7 @@ mutation{
       id
       questionId
       roomId
-      rate
+      response
       }
   }
 }

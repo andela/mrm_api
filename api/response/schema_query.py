@@ -17,10 +17,9 @@ from helpers.response.query_response import (
 
 class ResponseDetails(graphene.ObjectType):
     response_id = graphene.Int()
-    suggestion = graphene.String()
     missing_items = graphene.List(graphene.String)
     created_date = graphene.DateTime()
-    rating = graphene.Int()
+    response = graphene.String()
     resolved = graphene.Boolean()
 
 
@@ -64,13 +63,13 @@ class Query(graphene.ObjectType):
     )
 
     def get_room_response(self, room_response, room_id):
-        response = []
+        response_list = []
         missing_resource = []
         for responses in room_response:
             response_id = responses.id
-            suggestion = responses.text_area
+            response = responses.response
             created_date = responses.created_date
-            rating = responses.rate
+
             resolved = responses.resolved
             if len(responses.missing_resources) > 0:
                 for resources in responses.missing_resources:
@@ -78,24 +77,22 @@ class Query(graphene.ObjectType):
                     missing_resource.append(resource_name)
                 response_in_room = ResponseDetails(
                     response_id=response_id,
-                    suggestion=suggestion,
+                    response=response,
                     created_date=created_date,
-                    rating=rating,
                     missing_items=missing_resource,
                     resolved=resolved)
                 missing_resource = []
-                response.append(response_in_room)
+                response_list.append(response_in_room)
             else:
                 missing_items = responses.missing_resources
                 response_in_room = ResponseDetails(
                     response_id=response_id,
-                    suggestion=suggestion,
+                    response=response,
                     created_date=created_date,
-                    rating=rating,
                     missing_items=missing_items,
                     resolved=resolved)
-                response.append(response_in_room)
-        return (response)
+                response_list.append(response_in_room)
+        return (response_list)
 
     @Auth.user_roles('Admin')
     def resolve_room_response(self, info, room_id):
@@ -187,7 +184,7 @@ class Query(graphene.ObjectType):
             int, info, kwargs.get('room'), kwargs.get('upper_limit_count'),
             kwargs.get('lower_limit_count'), responses, Query
         )
-        if 'upper_limit_count' and 'lower_limit_count' not in kwargs and kwargs.get('room'): # noqa
+        if 'upper_limit_count' and 'lower_limit_count' not in kwargs and kwargs.get('room'):  # noqa
             upper_limit, lower_limit = (kwargs.get('upper_limit'),
                                         kwargs.get('lower_limit'))
             responses = Query().search_response_by_room(info,

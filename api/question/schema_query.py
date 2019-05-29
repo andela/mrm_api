@@ -54,7 +54,7 @@ class Query(graphene.ObjectType):
             responses_in_room = ResponseModel.query.filter_by(room_id=room.room_id, question_id=question_id)  # noqa: E501
             response_count = ResponseModel.query.filter_by(room_id=room.room_id).count()  # noqa: E501
             if question_type == "rate":
-                average_rating = sum([response.rate for response in responses_in_room]) / responses_in_room.count()  # noqa: E501
+                average_rating = sum([response.response for response in responses_in_room]) / responses_in_room.count()  # noqa: E501
                 room_response = ResponsePerRoom(room_name=room_name, response_count=response_count, cleanliness_rating=average_rating)  # noqa: E501
 
             response.append(room_response)
