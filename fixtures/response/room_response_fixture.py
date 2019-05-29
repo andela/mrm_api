@@ -1,4 +1,14 @@
+import datetime
+
 null = None
+
+start_date = (datetime.date.today() - datetime.timedelta(
+    days=2)).strftime('%b %d %Y')
+end_date = datetime.date.today().strftime('%b %d %Y')
+invalid_start_date = (datetime.date.today() + datetime.timedelta(
+    days=10)).strftime('%b %d %Y')
+invalid_end_date = (datetime.date.today() + datetime.timedelta(
+    days=20)).strftime('%b %d %Y')
 
 room_response_query_sample = '''{
     roomResponse(roomId:1) {
@@ -32,59 +42,74 @@ get_room_response_query_data = {
 }
 
 get_room_response_query_by_date = '''
-query{
-    allRoomResponses(startDate: "2019 feb 20",
-     endDate: "2019 feb 25" ){
-        responses{
+query{{
+    allRoomResponses(startDate: "{}",
+     endDate: "{}" ){{
+        responses{{
             totalResponses
             roomName
-            response{
+            response{{
                 responseId
                 missingItems
-            }
-        }
-    }
-}
-'''
+            }}
+        }}
+    }}
+}}
+'''.format(start_date, end_date)
+
 get_room_response_query_with_invalid_date = '''
-query{
-    allRoomResponses(startDate: "2019 Dec 20",
-     endDate: "2019 Dec 25" ){
-        responses{
+query{{
+    allRoomResponses(startDate: "{}",
+     endDate: "{}" ){{
+        responses{{
             totalResponses
             roomName
-            response{
+            response{{
                 responseId
                 missingItems
-            }
-        }
-    }
-}
-'''
+            }}
+        }}
+    }}
+}}
+'''.format(invalid_start_date, invalid_end_date)
+
 get_room_response_query_with_higher_lower_limit = '''
-query{
-    allRoomResponses(startDate: "2019 feb 20",
-     endDate: "2019 feb 1" ){
-        responses{
+query{{
+allRoomResponses(startDate: "{}",
+     endDate: "{}" ){{
+        responses{{
             totalResponses
             roomName
-            response{
+            response{{
                 responseId
                 missingItems
-            }
-        }
-    }
-}
-'''
+            }}
+        }}
+    }}
+}}
+'''.format(end_date, start_date)
 
 get_room_response_query_by_date_query = {
-  "data": {
-    "allRoomResponses": {
-      "responses": [
+  'data': {
+    'allRoomResponses': {
+      'responses': [
         {
-          "totalResponses": 2,
-          "roomName": "Entebbe",
-          "response": []
+          'totalResponses': 2,
+          'roomName': 'Entebbe',
+          'response': [
+            {
+              'responseId': 2,
+              'missingItems': [
+                'Markers'
+              ]
+            },
+            {
+              'responseId': 1,
+              'missingItems':   [
+
+              ]
+            }
+          ]
         }
       ]
     }

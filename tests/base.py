@@ -5,7 +5,7 @@ import jwt
 
 from flask_testing import TestCase
 from graphene.test import Client
-from datetime import datetime
+from datetime import datetime, timedelta
 from alembic import command, config
 
 from app import create_app
@@ -148,15 +148,18 @@ class BaseTestCase(TestCase):
                 question_id=1,
                 room_id=1,
                 rate=2,
-                created_date=datetime.now(),
+                created_date=datetime.now() - timedelta(
+                    days=1),
                 resolved=False,
             )
             response_1.save()
+
             response_2 = Response(
                 question_id=question_2.id,
                 room_id=room.id,
                 check=True,
-                created_date=datetime.now(),
+                created_date=datetime.now() - timedelta(
+                    days=1),
                 resolved=True,
             )
             response_2.save()
