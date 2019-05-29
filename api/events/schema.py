@@ -74,7 +74,8 @@ class CancelEvent(graphene.Mutation):
                 end_time=kwargs['end_time'],
                 number_of_participants=kwargs['number_of_participants'],
                 checked_in=False,
-                cancelled=True)
+                cancelled=True,
+                auto_cancelled=True)
             event.save()
         calendar_event = get_single_calendar_event(
                                                     kwargs['calendar_id'],
@@ -150,6 +151,7 @@ def check_event_in_db(instance, info, event_check, **kwargs):
         event_id=kwargs['event_id']).scalar()
     if event and event_check == 'cancelled':
         event.cancelled = True
+        event.auto_cancelled = True
         event.save()
         return room_id, event
     elif event and event_check == 'checked_in':

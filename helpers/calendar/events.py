@@ -1,3 +1,4 @@
+import os
 import datetime
 import re
 
@@ -177,6 +178,11 @@ class CalendarEvents:
                     existing_event.save()
 
                 elif not event.get("status") == "cancelled":
+                    app_booking = False
+                    devices_email = os.getenv('MAIL_USERNAME')
+                    organizer = event.get("organizer")
+                    if organizer and organizer.get('email') == devices_email:
+                        app_booking = True
                     new_event = EventsModel(
                         event_id=event.get("id"),
                         recurring_event_id=event.get("recurringEventId"),
@@ -187,6 +193,7 @@ class CalendarEvents:
                         end_time=event["end"].get(
                             "dateTime") or event["end"].get("date"),
                         number_of_participants=number_of_attendees,
+                        app_booking=app_booking,
                         checked_in=False,
                         cancelled=False
                     )
