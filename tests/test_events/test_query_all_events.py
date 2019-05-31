@@ -11,7 +11,7 @@ class TestEventsQuery(BaseTestCase):
         """
         Test a user can query for all events
         """
-        CommonTestCases.user_token_assert_equal(
+        CommonTestCases.admin_token_assert_equal(
             self,
             query_events,
             event_query_response
