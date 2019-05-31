@@ -9,6 +9,7 @@ from helpers.email.email import notification
 from helpers.calendar.credentials import get_single_calendar_event
 from helpers.auth.authentication import Auth
 from helpers.calendar.analytics_helper import CommonAnalytics
+from helpers.auth.user_details import get_user_from_db
 import pytz
 from dateutil import parser
 from datetime import datetime
@@ -226,6 +227,7 @@ class Query(graphene.ObjectType):
 
     @Auth.user_roles('Admin', 'Default User')
     def resolve_all_events(self, info, **kwargs):
+        user = get_user_from_db()
         start_date, end_date = CommonAnalytics.all_analytics_date_validation(
             self, kwargs['start_date'], kwargs['end_date']
         )
@@ -233,10 +235,12 @@ class Query(graphene.ObjectType):
         all_events, all_dates = CommonAnalytics.get_all_events_and_dates(
             query, start_date, end_date
         )
+        events_in_location = CalendarEvents().get_events_in_location(
+            user, all_events)
         all_days_events = []
         for date in set(all_dates):
             daily_events = []
-            for event in all_events:
+            for event in events_in_location:
                 CommonAnalytics.format_date(event.start_time)
                 event_start_date = parser.parse(
                     event.start_time).astimezone(pytz.utc)
