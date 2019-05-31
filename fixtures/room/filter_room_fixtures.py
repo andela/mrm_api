@@ -179,3 +179,32 @@ filter_rooms_by_invalid_tag_error_response = {
         "filterRoomsByTag": None
     }
 }
+
+filter_rooms_by_location_room_labels = '''query {
+  allRooms(location:"Kampala", roomLabels:""){
+   rooms{
+      name
+      capacity
+      roomType
+      imageUrl
+      roomLabels
+        }
+    }
+}
+    '''
+
+filter_rooms_by_location_room_labels_response = {
+    "data": {
+        "allRooms": {
+            "rooms": [
+                {
+                    "name": "Entebbe",
+                    "capacity": 6,
+                    "roomType": "meeting",
+                    "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg",  # noqa: E501
+                    "roomLabels": ["1st Floor", "Wing A"]
+                }
+            ]
+        }
+    }
+}

@@ -157,9 +157,10 @@ class PaginatedRooms(Paginate):
         page = self.page
         per_page = self.per_page
         filter_data = self.filter_data
+        location_id = admin_roles.user_location_for_analytics_view()
         query = Room.get_query(info)
         exact_query = room_filter(query, filter_data)
-        active_rooms = exact_query.filter(RoomModel.state == "active")
+        active_rooms = exact_query.filter(RoomModel.state == "active", RoomModel.location_id==location_id)
         if not page:
             return active_rooms.order_by(func.lower(RoomModel.name)).all()
         page = validate_page(page)

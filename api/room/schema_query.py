@@ -118,7 +118,6 @@ class Query(graphene.ObjectType):
         per_page=graphene.Int(),
         capacity=graphene.Int(),
         resources=graphene.String(),
-        location=graphene.String(),
         office=graphene.String(),
         devices=graphene.String(),
         description="Returns a list of paginated rooms. Accepts the arguments\
