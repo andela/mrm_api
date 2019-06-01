@@ -218,3 +218,34 @@ create_device_query_invalid_room = '''
 non_existant_id_response = "DeviceId not found"
 devices_query = '/mrm?query='+create_devices_query
 devices_query_response = b'{"data":{"createDevice":{"device":{"name":"Apple tablet","location":"Kenya","deviceType":"External Display"}}}}'  # noqaE501
+
+search_device_by_name = '''
+    query{
+        deviceByName(deviceName:"Samsung"){
+            id
+            name
+            deviceType
+        }
+    }
+'''
+
+search_non_existing_device = '''
+    query{
+        deviceByName(deviceName:"Apple"){
+            id
+            name
+            deviceType
+        }
+    }
+'''
+search_non_existing_device_response = {'data': {'deviceByName': []}}
+
+search_device_by_name_expected_response = {
+    'data': {
+        'deviceByName': [{
+            'id': '1',
+            'name': 'Samsung',
+            'deviceType': 'External Display'
+            }]
+        }
+    }
