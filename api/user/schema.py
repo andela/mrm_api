@@ -95,6 +95,13 @@ class Query(graphene.ObjectType):
         description="Query to get a specific user using the user's email\
             accepts the argument\n- email: Email of a user")
 
+    user_by_name = graphene.List(
+        User,
+        user_name=graphene.String(),
+        description="Returns user details and accepts the argument\
+            \n- user_name: The name of the user"
+    )
+
     def resolve_users(self, info, **kwargs):
         # Returns all users
         response = PaginatedUsers(**kwargs)
@@ -104,6 +111,22 @@ class Query(graphene.ObjectType):
         # Returns a specific user.
         query = User.get_query(info)
         return query.filter(UserModel.email == email).first()
+
+    @Auth.user_roles('Admin')
+    def resolve_user_by_name(self, info, user_name):
+        user_list = []
+        user_name = ''.join(user_name.split()).lower()
+        if not user_name:
+            raise GraphQLError("Please provide the user name")
+        active_users = User.get_query(info).filter_by(state="active")
+        for user in active_users:
+            exact_user_name = user.name.lower().replace(" ", "")
+            if user_name in exact_user_name:
+                user_list.append(user)
+        if not user_list:
+            raise GraphQLError("User not found")
+
+        return user_list
 
 
 class DeleteUser(graphene.Mutation):

@@ -278,3 +278,50 @@ query {
     }
 }
 '''
+
+query_user_by_name = '''
+    query{
+        userByName(userName:"Peter Adeoye"){
+            name
+            email
+        }
+    }
+'''
+
+query_user_by_name_response = {
+    'data': {
+        'userByName': [{
+            'name': 'Peter Adeoye',
+            'email': 'peter.adeoye@andela.com'
+        }]
+    }
+}
+
+query_non_existing_user_by_name = '''
+    query{
+        userByName(userName:"unknown user"){
+            name
+            email
+        }
+    }
+'''
+
+query_non_existing_user_by_name_response = {
+    "errors": [
+        {
+            "message": "User not found",
+            "locations": [
+                {
+                    "line": 3,
+                    "column": 9
+                }
+            ],
+            "path": [
+                "userByName"
+            ]
+        }
+    ],
+    "data": {
+        "userByName": null
+    }
+}
