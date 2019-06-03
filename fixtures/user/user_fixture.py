@@ -140,6 +140,47 @@ mutation{
 
 change_user_role_with_already_assigned_role_mutation_response = "This role is already assigned to this user"  # noqa: E501
 
+update_user_role_to_admin_mutation = '''
+mutation{
+    updateUserRoleToAdmin(email:"peter.walugembe@andela.com"){
+        user{
+            name
+            roles{
+                role
+            }
+        }
+    }
+}
+'''
+
+update_user_role_to_admin_mutation_response = {
+    "data": {
+        "updateUserRoleToAdmin": {
+            "user": {
+                "name": "Peter Walugembe",
+                "roles": [
+                    {
+                        "role": "Admin"
+                    }
+                ]
+            }
+        }
+    }
+}
+
+update_role_of_non_existing_user_mutation = '''
+mutation{
+  updateUserRoleToAdmin(email:"someuser@andela.com"){
+    user{
+      email
+      roles{
+        role
+      }
+    }
+  }
+}
+'''
+
 change_user_role_to_non_existence_role_mutation = '''
 mutation{
   createUserRole(userId: 1, roleId: 10){

@@ -24,7 +24,8 @@ class EmailNotification:
                 user_name=kwargs.get('user_name'),
                 room_name=kwargs.get('room_name'),
                 event_title=kwargs.get('event_title'),
-                event_reject_reason=kwargs.get('event_reject_reason')
+                event_reject_reason=kwargs.get('event_reject_reason'),
+                token=kwargs.get('token')
             ))
 
         return email.send()
@@ -63,7 +64,7 @@ class EmailNotification:
             event_reject_reason=event_reject_reason
         )
 
-    def send_admin_invite_email(self, user_email, user_name):
+    def send_admin_invite_email(self, user_email, user_name, token):
         """
         send email notification when an admin is added
             :params
@@ -78,7 +79,8 @@ class EmailNotification:
             email=user_email,
             subject=subject,
             user_name=user_name,
-            template=template
+            template=template,
+            token=token
         )
 
 

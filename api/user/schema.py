@@ -1,4 +1,7 @@
 import graphene
+import jwt
+import os
+import datetime
 from graphene_sqlalchemy import (SQLAlchemyObjectType)
 from sqlalchemy import func, exc
 from graphql import GraphQLError
@@ -15,6 +18,9 @@ from helpers.user_filter.user_filter import user_filter
 from utilities.utility import update_entity_fields
 from api.role.schema import Role
 from api.role.models import Role as RoleModel
+
+
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 
 class User(SQLAlchemyObjectType):
@@ -146,7 +152,8 @@ class ChangeUserRole(graphene.Mutation):
     user = graphene.Field(User)
 
     @Auth.user_roles('Admin')
-    def mutate(self, info, email, **kwargs):
+    def mutate(self, info, **kwargs):
+        email = kwargs.get('email')
         query_user = User.get_query(info)
         active_user = query_user.filter(UserModel.state == "active")
         exact_user = active_user.filter(UserModel.email == email).first()
@@ -161,15 +168,49 @@ class ChangeUserRole(graphene.Mutation):
         if new_role.role == current_user_role:
             raise GraphQLError('This role is already assigned to this user')
 
-        exact_user.roles[0] = new_role
-        exact_user.save()
-
         if new_role.role == 'Admin':
             user_name = exact_user.name
-            if not notification.send_admin_invite_email(email, user_name):
+            payload = {
+                "email": exact_user.email,
+                "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=2)
+            }
+            token = jwt.encode(payload, SECRET_KEY)
+
+            if not notification.send_admin_invite_email(
+                email, user_name, token
+            ):
                 raise GraphQLError("Role changed but email not sent")
+        else:
+            exact_user.roles[0] = new_role
+            exact_user.save()
 
         return ChangeUserRole(user=exact_user)
+
+
+class UpdateUserRoleToAdmin(graphene.Mutation):
+    """
+        Returns payload on updating a user role
+    """
+    class Arguments:
+
+        email = graphene.String(required=True)
+
+    user = graphene.Field(User)
+
+    def mutate(self, info, **kwargs):
+        email = kwargs.get('email')
+        query_user = User.get_query(info)
+        active_user = query_user.filter(UserModel.state == "active")
+        exact_user = active_user.filter(UserModel.email == email).first()
+        if not exact_user:
+            raise GraphQLError("User not found")
+
+        admin_role = RoleModel.query.filter_by(role='Admin').first()
+
+        exact_user.roles[0] = admin_role
+        exact_user.save()
+
+        return UpdateUserRoleToAdmin(user=exact_user)
 
 
 class CreateUserRole(graphene.Mutation):
@@ -245,6 +286,9 @@ class Mutation(graphene.ObjectType):
         description="Changes the role of a user and takes arguments\
             \n- email: The email field of a user[required]\
             \n- role_id: unique identifier of a user role")
+    update_user_role_to_admin = UpdateUserRoleToAdmin.Field(
+        description="Updates a user role to admin role\
+            \n- email: The email field of a user[required]")
     invite_to_converge = InviteToConverge.Field(
         description="Invites a new user to converge \
             \n- email: The email field of a user[required]")
