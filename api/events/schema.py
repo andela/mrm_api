@@ -10,6 +10,7 @@ from helpers.calendar.credentials import get_single_calendar_event
 from helpers.auth.authentication import Auth
 from helpers.calendar.analytics_helper import CommonAnalytics
 from helpers.auth.user_details import get_user_from_db
+from helpers.pagination.paginate import ListPaginate
 import pytz
 from dateutil import parser
 from datetime import datetime
@@ -218,15 +219,38 @@ class Mutation(graphene.ObjectType):
              event[required]")
 
 
+class PaginatedDailyRoomEvents(graphene.ObjectType):
+    """
+    Paginated result for daily room events
+    """
+    DailyRoomEvents = graphene.List(DailyRoomEvents)
+    has_previous = graphene.Boolean()
+    has_next = graphene.Boolean()
+    pages = graphene.Int()
+    query_total = graphene.Int()
+
+
 class Query(graphene.ObjectType):
-    all_events = graphene.List(
-        DailyRoomEvents,
+    all_events = graphene.Field(
+        PaginatedDailyRoomEvents,
         start_date=graphene.String(),
         end_date=graphene.String(),
-        description="Query that returns daily room events")
+        page=graphene.Int(),
+        per_page=graphene.Int(),
+        description="Query that returns paginated daily room events")
 
     @Auth.user_roles('Admin', 'Default User')
     def resolve_all_events(self, info, **kwargs):
+        page = kwargs.get('page')
+        per_page = kwargs.get('per_page')
+        if page is not None and page < 1:
+            raise GraphQLError("page must be at least 1")
+        if per_page is not None and per_page < 1:
+            raise GraphQLError("perPage must be at least 1")
+        if page and not per_page:
+            raise GraphQLError("perPage argument missing")
+        if per_page and not page:
+            raise GraphQLError("page argument missing")
         user = get_user_from_db()
         start_date, end_date = CommonAnalytics.all_analytics_date_validation(
             self, kwargs['start_date'], kwargs['end_date']
@@ -254,4 +278,21 @@ class Query(graphene.ObjectType):
                 )
             )
             all_days_events.sort(key=lambda x: datetime.strptime(x.day, "%a %b %d %Y"), reverse=True) # noqa
-        return all_days_events
+        if page and per_page:
+            paginated_events = ListPaginate(
+                iterable=all_days_events,
+                per_page=per_page,
+                page=page)
+            has_previous = paginated_events.has_previous
+            has_next = paginated_events.has_next
+            current_page = paginated_events.current_page
+            pages = paginated_events.pages
+            query_total = paginated_events.query_total
+            return PaginatedDailyRoomEvents(
+                                     DailyRoomEvents=current_page,
+                                     has_previous=has_previous,
+                                     has_next=has_next,
+                                     query_total=query_total,
+                                     pages=pages)
+
+        return PaginatedDailyRoomEvents(DailyRoomEvents=all_days_events)
