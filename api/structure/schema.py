@@ -116,6 +116,7 @@ class Query(graphene.ObjectType):
         query = Structure.get_query(info)
         location_id = admin_roles.user_location_for_analytics_view()
         all_structures = query.filter(
+            StructureModel.state == "active",
             StructureModel.location_id == location_id).all()
         return all_structures
 
