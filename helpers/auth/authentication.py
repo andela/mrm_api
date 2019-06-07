@@ -28,7 +28,10 @@ class Authentication:
     """
 
     def get_token(self):
-        token = request.headers['Authorization'].split()[1]
+        try:
+            token = request.headers['Authorization'].split()[1]
+        except BaseException:
+            token = None
         return token
 
     def decode_token(self):

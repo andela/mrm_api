@@ -26,10 +26,11 @@ class QueryRooms(BaseTestCase):
         self.assertEqual(execute_query, expected_response)
 
     def test_paginate_room_query(self):
-        response = self.app_test.post('/mrm?query='+paginated_rooms_query)
-        paginate_query = json.loads(response.data)
-        expected_response = paginated_rooms_response
-        self.assertEqual(paginate_query, expected_response)
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            paginated_rooms_query,
+            paginated_rooms_response
+        )
 
     @patch("api.room.schema_query.get_google_api_calendar_list", spec=True,
            return_value=get_calendar_list_mock_data())
