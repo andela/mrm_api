@@ -2,7 +2,7 @@ import graphene
 from graphql import GraphQLError
 from datetime import datetime
 from graphene_sqlalchemy import SQLAlchemyObjectType
-from sqlalchemy import func
+from sqlalchemy import func, String, cast
 
 from api.devices.models import Devices as DevicesModel
 from helpers.auth.authentication import Auth
@@ -94,7 +94,10 @@ class Query(graphene.ObjectType):
     """
     all_devices = graphene.List(
         Devices,
-        description="Query that returns a list of all devices")
+        device_labels=graphene.String(),
+        description="Query that returns a list of all devices,\
+        if device_labels is passed, it filters devices with the device labels\
+        \n- device_labels: A string of labels to filter with")
 
     specific_device = graphene.Field(
         Devices,
@@ -110,7 +113,8 @@ class Query(graphene.ObjectType):
             \n- device_name: The name of the device"
     )
 
-    def resolve_all_devices(self, info):
+    def resolve_all_devices(self, info, **kwargs):
+        device_labels = kwargs.get('device_labels')
         query = Devices.get_query(info)
         location_id = admin_roles.user_location_for_analytics_view()
         location_query = LocationSchema.get_query(info)
@@ -118,7 +122,16 @@ class Query(graphene.ObjectType):
             LocationModel.state == "active",
             LocationModel.id == location_id).first()
         location_name = exact_location.name.lower()
-        return query.filter(func.lower(DevicesModel.location) == location_name)
+        all_devices = query.filter(
+            func.lower(DevicesModel.location) == location_name)
+
+        if device_labels:
+            all_devices = all_devices.join(RoomModel)
+            for device_label in device_labels.split(','):
+                all_devices = all_devices.filter(
+                    cast(RoomModel.room_labels, String)
+                    .ilike(f'%{device_label.strip()}%'))
+        return all_devices
 
     @Auth.user_roles('Admin')
     def resolve_specific_device(self, info, device_id):
