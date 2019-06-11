@@ -12,6 +12,7 @@ from api.location.models import Location as LocationModel
 from utilities.validations import validate_empty_fields
 from utilities.utility import update_entity_fields
 from helpers.room_filter.room_filter import location_join_room
+from helpers.auth.user_details import get_user_from_db
 from helpers.auth.admin_roles import admin_roles
 
 
@@ -19,8 +20,7 @@ class Devices(SQLAlchemyObjectType):
     """
         Returns the device payload with the fields
         [id: ID!, name: String!, deviceType: String!,
-         dateAdded: DateTime!, lastSeen: DateTime!,
-         location: String!, roomId: Int and room: Room)
+         dateAdded: DateTime!, lastSeen: DateTime!
     """
     class Meta:
         model = DevicesModel
@@ -34,7 +34,6 @@ class CreateDevice(graphene.Mutation):
         name = graphene.String(required=True)
         room_id = graphene.Int(required=True)
         device_type = graphene.String(required=True)
-        location = graphene.String()
     device = graphene.Field(Devices)
 
     @Auth.user_roles('Admin')
@@ -45,13 +44,12 @@ class CreateDevice(graphene.Mutation):
             ).first()
         if not room_location:
             raise GraphQLError("Room not found")
-        admin_roles.update_delete_rooms_create_resource(
-            room_id=kwargs['room_id']
-        )
+        user = get_user_from_db()
         device = DevicesModel(
             **kwargs,
             date_added=datetime.now(),
-            last_seen=datetime.now()
+            last_seen=datetime.now(),
+            location=user.location
         )
         device.save()
 
@@ -149,8 +147,7 @@ class Mutation(graphene.ObjectType):
         description="Creates a new device with the arguments\
             \n- device_name: The name field of the device[required]\
             \n- room_id: Unique identifier of a room where the device is found\
-            [required]\n- device_type: The type field of the device[required]\
-            \n- location: The location of the device")
+            [required]\n- device_type: The type field of the device[required]")
     update_device = UpdateDevice.Field(
         description="Updates a given device details given the arguments\
             \n- device_id: Unique identifier of the tag\
