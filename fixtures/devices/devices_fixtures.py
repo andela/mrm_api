@@ -203,7 +203,6 @@ expected_update_device_response = {
     }
 }
 
-
 query_with_non_existant_id = '''
             mutation{
             updateDevice(
@@ -221,6 +220,28 @@ query_with_non_existant_id = '''
             }
             }
 '''
+
+delete_device_mutation = '''
+            mutation{
+            deleteDevice(
+                deviceId:1
+            ){
+                device{
+                id
+                }
+            }
+            }
+'''
+
+delete_device_response = {
+  "data": {
+    "deleteDevice": {
+      "device": {
+        "id": "1"
+      }
+    }
+  }
+}
 
 create_device_query_invalid_room = '''
             mutation{
@@ -240,7 +261,6 @@ create_device_query_invalid_room = '''
 
 non_existant_id_response = "DeviceId not found"
 devices_query = '/mrm?query='+create_devices_query
-devices_query_response = b'{"data":{"createDevice":{"device":{"name":"Apple tablet","location":"Kenya","deviceType":"External Display"}}}}'  # noqaE501
 
 search_device_by_name = '''
     query{
