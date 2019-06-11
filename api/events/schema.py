@@ -11,9 +11,10 @@ from helpers.auth.authentication import Auth
 from helpers.calendar.analytics_helper import CommonAnalytics
 from helpers.auth.user_details import get_user_from_db
 from helpers.pagination.paginate import ListPaginate
+from helpers.devices.devices import update_device_last_seen
 import pytz
 from dateutil import parser
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 class Events(SQLAlchemyObjectType):
@@ -48,6 +49,8 @@ class EventCheckin(graphene.Mutation):
 
     def mutate(self, info, **kwargs):
         room_id, event = check_event_in_db(self, info, "checked_in", **kwargs)
+        if kwargs.get('check_in_time'):
+            update_device_last_seen(info, room_id, kwargs['check_in_time'])
         if not event:
             event = EventsModel(
                 event_id=kwargs['event_id'],
@@ -78,6 +81,12 @@ class CancelEvent(graphene.Mutation):
     def mutate(self, info, **kwargs):
         # mutation to create an event
         room_id, event = check_event_in_db(self, info, "cancelled", **kwargs)
+        try:
+            device_last_seen = parser.parse(
+                    kwargs['start_time']) + timedelta(minutes=10)
+        except ValueError:
+            raise GraphQLError("Invalid start time")
+        update_device_last_seen(info, room_id, device_last_seen)
         if not event:
             event = EventsModel(
                 event_id=kwargs['event_id'],

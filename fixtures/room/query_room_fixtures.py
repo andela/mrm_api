@@ -32,9 +32,9 @@ paginated_rooms_response = {
                     "name": "Entebbe"
                 }
             ],
-            "hasNext": False,
+            "hasNext": True,
             "hasPrevious": False,
-            "pages": 1
+            "pages": 2
         }
     }
 }

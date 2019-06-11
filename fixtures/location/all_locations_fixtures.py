@@ -35,6 +35,18 @@ expected_query_all_locations = {
                                 "description": "The description"
                             }
                         ]
+                    },
+                    {
+                        "name": "Tana",
+                        "roomType": "meeting",
+                        "capacity": 14,
+                        "roomTags": [
+                            {
+                                "name": "Block-B",
+                                "color": "green",
+                                "description": "The description"
+                            }
+                        ]
                     }
                 ]
             },
@@ -87,10 +99,18 @@ all_location_no_hierachy = '''{
 
 expected_all_location_no_hierachy = {
     'data': {'allLocations': [
-        {'rooms': [{'name': 'Entebbe',
+        {'rooms': [
+                {
+                    'name': 'Entebbe',
                     'roomType': 'meeting',
-                    'capacity': 6}
-                   ]},
+                    'capacity': 6
+                },
+                {
+                    'name': 'Tana',
+                    'roomType': 'meeting',
+                    'capacity': 14
+                },
+            ]},
         {'rooms': []},
         {'rooms': []}
     ]
