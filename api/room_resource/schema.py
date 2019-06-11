@@ -254,6 +254,13 @@ class Query(graphene.ObjectType):
         room_id=graphene.Int(),
         description="Returns a list of room's resources. Accepts the argument\
             \n- room_id: Unique identifier of a room")
+
+    resource_by_name = graphene.List(
+        Resource,
+        search_name=graphene.String(),
+        description="Returns resources that match search name. Accepts the argument\
+            \n- search_name: Unique name of a resource")
+
     rooms_containing_resource = graphene.List(
         RoomResource,
         resource_id=graphene.Int(),
@@ -289,6 +296,21 @@ class Query(graphene.ObjectType):
             room_resource.quantity = resource.quantity
             resources.append(room_resource)
         return RoomResources(roomResources=resources)
+
+    @Auth.user_roles('Admin')
+    def resolve_resource_by_name(self, info, search_name):
+        matching_resources = []
+        resource_name = search_name.lower().replace(" ", "")
+        if not resource_name:
+            raise GraphQLError("Please input Resource Name")
+        all_resources = Resource.get_query(info).filter_by(state="active")
+        for each_resource in all_resources:
+            striped_resource = each_resource.name.lower().replace(" ", "")
+            if resource_name in striped_resource:
+                matching_resources.append(each_resource)
+        if not matching_resources:
+            raise GraphQLError('No Matching Resource')
+        return matching_resources
 
     @Auth.user_roles('Admin')
     def resolve_rooms_containing_resource(self, info, resource_id):
