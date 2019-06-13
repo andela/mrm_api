@@ -43,6 +43,12 @@ filter_rooms_by_location_response = {
                     "capacity": 6,
                     "roomType": "meeting",
                     "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg"  # noqa: E501
+                },
+                {
+                    "name": "Tana",
+                    "capacity": 14,
+                    "roomType": "meeting",
+                    "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg"  # noqa: E501
                 }
             ]
         }
@@ -181,7 +187,7 @@ filter_rooms_by_invalid_tag_error_response = {
 }
 
 filter_rooms_by_room_labels = '''query {
-  allRooms(roomLabels:"Wing"){
+  allRooms(roomLabels:"Wing A"){
    rooms{
       name
       capacity
@@ -209,7 +215,7 @@ filter_rooms_by_room_labels_response = {
     }
 }
 filter_rooms_by_location_room_labels = '''query {
-  allRooms(roomLabels:"Wing", location:"Kampala"){
+  allRooms(roomLabels:"Wing A", location:"Kampala"){
    rooms{
       name
       capacity

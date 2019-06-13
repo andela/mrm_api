@@ -90,6 +90,16 @@ class BaseTestCase(TestCase):
                         room_labels=["1st Floor", "Wing A"])
             room.save()
             room.room_tags.append(tag)
+            room_2 = Room(name='Tana',
+                        room_type='meeting',
+                        capacity=14,
+                        location_id=location.id,
+                        structure_id='851ae8b3-48dd-46b5-89bc-ca3f8111ad87',
+                        calendar_id='andela.com_3730313534393638323232@resource.calendar.google.com',  # noqa: E501
+                        image_url="https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg",  # noqa: E501
+                        room_labels=["1st Floor", "Wing B"])
+            room_2.save()
+            room_2.room_tags.append(tag)
             resource = Resource(name='Markers',
                                 quantity=3)
             resource.save()
@@ -98,7 +108,8 @@ class BaseTestCase(TestCase):
                 date_added="2018-06-08T11:17:58.785136",
                 name="Samsung",
                 location="Kampala",
-                device_type="External Display"
+                device_type="External Display",
+                room_id=1
             )
             device.save()
             question_1 = Question(

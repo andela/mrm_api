@@ -4,10 +4,12 @@ from unittest.mock import patch
 from tests.base import BaseTestCase, CommonTestCases
 from fixtures.events.event_checkin_fixtures import (
     event_checkin_mutation,
+    event_2_checkin_mutation,
     event_checkin_response,
     wrong_calendar_id_checkin_mutation,
     cancel_event_mutation,
     cancel_event_respone,
+    cancel_event_invalid_start_time,
     checkin_mutation_for_event_existing_in_db,
     response_for_event_existing_in_db_checkin
 )
@@ -53,6 +55,17 @@ class TestEventCheckin(BaseTestCase):
             "This Calendar ID is invalid"
         )
 
+    def test_checkin_room_with_no_device(self):
+        """
+        Test that user can not checkin to a room
+        without a device assigned to the room
+        """
+        CommonTestCases.user_token_assert_in(
+            self,
+            event_2_checkin_mutation,
+            "Room device not found"
+        )
+
     @patch("api.events.schema.get_single_calendar_event", spec=True)
     def test_cancel_event(self, mocked_method):
         '''
@@ -63,6 +76,18 @@ class TestEventCheckin(BaseTestCase):
             self,
             cancel_event_mutation,
             cancel_event_respone
+        )
+
+    @patch("api.events.schema.get_single_calendar_event", spec=True)
+    def test_cancel_event_with_invalid_start_time(self, mocked_method):
+        '''
+        Test that user can not cancel event with invalid start time
+        '''
+        mocked_method.return_value = get_events_mock_data()['items'][0]
+        CommonTestCases.user_token_assert_in(
+            self,
+            cancel_event_invalid_start_time,
+            'Invalid start time'
         )
 
     @patch("api.events.schema.get_single_calendar_event", spec=True)
