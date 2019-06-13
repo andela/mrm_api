@@ -78,8 +78,6 @@ class UpdateDevice(graphene.Mutation):
         ).first()
         if not exact_device:
             raise GraphQLError("DeviceId not found")
-        exact_device.date_added = datetime.now()
-        exact_device.last_seen = datetime.now()
         update_entity_fields(exact_device, **kwargs)
 
         exact_device.save()
