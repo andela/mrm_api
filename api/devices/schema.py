@@ -77,7 +77,7 @@ class UpdateDevice(graphene.Mutation):
             DevicesModel.id == device_id
         ).first()
         if not exact_device:
-            raise GraphQLError("DeviceId not found")
+            raise GraphQLError("Device ID not found")
         update_entity_fields(exact_device, **kwargs)
 
         exact_device.save()
