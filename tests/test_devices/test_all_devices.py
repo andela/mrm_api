@@ -1,7 +1,9 @@
 from tests.base import BaseTestCase, CommonTestCases
 from fixtures.devices.devices_fixtures import (
     query_devices,
-    expected_response_devices
+    query_devices_with_filter,
+    expected_response_devices,
+    expected_response_devices_with_filter
 )
 
 import sys
@@ -19,4 +21,11 @@ class TestAllDevices(BaseTestCase):
             self,
             query_devices,
             expected_response_devices
+        )
+
+    def test_all_devices_with_filter(self):
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            query_devices_with_filter,
+            expected_response_devices_with_filter
         )

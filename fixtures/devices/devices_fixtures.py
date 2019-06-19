@@ -26,6 +26,24 @@ expected_response_devices = {
                                             }
                                             }
 
+query_devices_with_filter = '''
+        {
+        allDevices(deviceLabels: "1st Floor"){
+            id
+            lastSeen
+            dateAdded
+            name
+            location
+        }
+        }
+        '''
+
+expected_response_devices_with_filter = {
+                                "data": {
+                                    "allDevices": []
+                                    }
+                                }
+
 query_device = '''
         {
         specificDevice(deviceId: 1){
