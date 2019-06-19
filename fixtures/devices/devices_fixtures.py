@@ -39,10 +39,18 @@ query_devices_with_filter = '''
         '''
 
 expected_response_devices_with_filter = {
-                                "data": {
-                                    "allDevices": []
-                                    }
-                                }
+    "data": {
+        "allDevices": [
+            {
+                "dateAdded": "2018-06-08T11:17:58.785136",
+                "id": "1",
+                "lastSeen": "2018-06-08T11:17:58.785136",
+                "location": "Kampala",
+                "name": "Samsung"
+            }
+        ]
+        }
+    }
 
 query_device = '''
         {
