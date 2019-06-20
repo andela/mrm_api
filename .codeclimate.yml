@@ -3,3 +3,6 @@ exclude_patterns:
   - "helpers/auth/authentication.py"
   - "helpers/calendar/events.py"
   - "alembic/"
+  - "admin_notifications/__init__.py"
+  - "admin_notifications/helpers/__init__.py"
+  - "admin_notifications/helpers/notification_templates.py"
