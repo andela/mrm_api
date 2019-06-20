@@ -9,6 +9,7 @@ Flask-JSON==0.3.2
 Flask-Script==2.0.6
 Flask-GraphQL==1.4.1
 Flask-Mail==0.9.1
+Flask-SocketIO==4.1.0
 google-api-python-client==1.6.7
 graphene-sqlalchemy==2.0.0
 graphene==2.1

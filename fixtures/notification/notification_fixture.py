@@ -11,7 +11,8 @@ getUserNotificationSettings{
     id,
     userId,
     deviceHealthNotification,
-    meetingUpdateNotification
+    meetingUpdateNotification,
+
 }
 }
 '''
@@ -36,12 +37,14 @@ update_user_notification_settings_query = '''
  mutation {
     updateNotification(
         deviceHealthNotification: true,
-        meetingUpdateNotification: false) {
+        meetingUpdateNotification: false,
+        setNotificationsSettings: true) {
         notification {
             id
             userId
             deviceHealthNotification
             meetingUpdateNotification
+            setNotificationsSettings
         }
     }
 }
@@ -54,7 +57,8 @@ update_user_notification_settings_response = {
                 "id": "1",
                 "userId": 1,
                 "deviceHealthNotification": true,
-                "meetingUpdateNotification": false
+                "meetingUpdateNotification": false,
+                "setNotificationsSettings": true
             }
         }
     }
