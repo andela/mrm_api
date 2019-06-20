@@ -11,6 +11,7 @@ class TestAllAnalytics(BaseTestCase):
     def test_all_analytics_query(self):
         """
         Tests a user can query for analytics
+
         """
 
         CommonTestCases.admin_token_assert_equal(

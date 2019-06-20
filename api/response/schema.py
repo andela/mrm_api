@@ -21,10 +21,9 @@ class Response(SQLAlchemyObjectType):
 
 class ResponseDetail(graphene.ObjectType):
     response_id = graphene.Int()
-    suggestion = graphene.String()
     missing_items = graphene.List(graphene.String)
     created_date = graphene.DateTime()
-    rating = graphene.Int()
+    response = graphene.String()
     resolved = graphene.Boolean()
 
 
@@ -66,7 +65,6 @@ class CreateResponse(graphene.Mutation):
     def mutate(self, info, **kwargs):
         validate_empty_fields(**kwargs)
         query = Room.get_query(info)
-        responses = []
         errors = []
         present_date = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
         room = query.filter_by(id=kwargs['room_id']).first()
@@ -77,22 +75,21 @@ class CreateResponse(graphene.Mutation):
                 id=each_response.question_id).first()
             if not question:
                 errors.append(
-                    "Response to question {} was not saved because it does not exist".format(each_response.question_id)) # noqa
+                    "Response to question {} was not saved because it does not exist".format(each_response.question_id))  # noqa
                 continue
             if present_date < question.start_date:
                 errors.append(
-                    "The start date for the response to this question is yet to commence. Try on {}".format(question.start_date)) # noqa
+                    "The start date for the response to this question is yet to commence. Try on {}".format(question.start_date))  # noqa
             question_type = question.question_type
             each_response['room_id'] = kwargs['room_id']
             responses, errors = create_response(question_type,
                                                 errors,
-                                                responses,
                                                 **each_response)
         if errors:
             raise GraphQLError(
                 ('The following errors occured: {}').format(
                     str(errors).strip('[]'))
-                )
+            )
         return CreateResponse(response=responses)
 
 
@@ -113,31 +110,31 @@ class Query(graphene.ObjectType):
     def map_room_responses(self, responses):
         mapped_response = []
         missing_resource = []
-        for response in responses:
-            response_id = response.id
-            suggestion = response.text_area
-            created_date = response.created_date
-            rating = response.rate
-            resolved = response.resolved
-            if len(response.missing_resources) > 0:
-                for resource in response.missing_resources:
+        for current_response in responses:
+            response_id = current_response.id
+            created_date = current_response.created_date
+            response = current_response.response
+            resolved = current_response.resolved
+
+            if len(current_response.missing_resources) > 0:
+                for resource in current_response.missing_resources:
                     resource_name = resource.name
                     missing_resource.append(resource_name)
                 response_in_room = ResponseDetail(
                     response_id=response_id,
-                    suggestion=suggestion,
+                    response=response,
                     created_date=created_date,
-                    rating=rating,
+
                     missing_items=missing_resource,
                     resolved=resolved)
                 mapped_response.append(response_in_room)
             else:
-                missing_items = response.missing_resources
+                missing_items = current_response.missing_resources
                 response_in_room = ResponseDetail(
                     response_id=response_id,
-                    suggestion=suggestion,
+                    response=response,
                     created_date=created_date,
-                    rating=rating,
+
                     missing_items=missing_items,
                     resolved=resolved)
                 mapped_response.append(response_in_room)
@@ -166,7 +163,6 @@ class Query(graphene.ObjectType):
             current_page = paginated_response.page
             pages = paginated_response.pages
             query_total = paginated_response.query_total
-
             mapped_responses = Query.map_room_responses(self, responses)
             all_room_responses = []
             room_response = RoomResponses(response=mapped_responses,

@@ -8,25 +8,25 @@ mutation{
       id
       questionId
       roomId
-      textArea
+      response
       }
   }
 }
 '''
 
 create_suggestion_question_response = {
-  "data": {
-    "createResponse": {
-      "response": [
-        {
-          "id": "3",
-          "questionId": 3,
-          "roomId": 1,
-          "textArea": "Any other suggestion"
+    "data": {
+        "createResponse": {
+            "response": [
+                {
+                    "id": "3",
+                    "questionId": 3,
+                    "roomId": 1,
+                    "response": "Any other suggestion"
+                }
+            ]
         }
-      ]
     }
-  }
 }
 
 make_suggestion_in_non_existent_room = '''
@@ -37,7 +37,7 @@ mutation{
       id
       questionId
       roomId
-      textArea
+      response
       }
   }
 }
@@ -51,7 +51,7 @@ mutation{
       id
       questionId
       roomId
-      textArea
+      response
       }
   }
 }

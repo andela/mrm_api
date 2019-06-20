@@ -21,10 +21,10 @@ expected_response_devices = {
                                             "dateAdded": "2018-06-08T11:17:58.785136",  # noqa: E501
                                             "name": "Samsung",
                                             "location": "Kampala"
-                                            }
-                                            ]
-                                            }
-                                            }
+                                        }
+                                    ]
+                                }
+                             }
 
 query_devices_with_filter = '''
         {
@@ -106,7 +106,7 @@ expected_error_non_existent_device_id = {
     "data": {
         "specificDevice": null
     }
-    }
+}
 
 create_devices_query = '''
             mutation{

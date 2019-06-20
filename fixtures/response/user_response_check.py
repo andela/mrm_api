@@ -7,30 +7,30 @@ mutation{
       id
       questionId
       roomId
-      check
+      response
       }
   }
 }
 '''
 
 check_non_existing_question_response = {
-  "errors": [
-    {
-      "message": "Response to question",
-      "locations": [
+    "errors": [
         {
-          "line": 2,
-          "column": 3
+            "message": "Response to question",
+            "locations": [
+                {
+                    "line": 2,
+                    "column": 3
+                }
+            ],
+            "path": [
+                "createResponse"
+            ]
         }
-      ],
-      "path": [
-        "createResponse"
-      ]
+    ],
+    "data": {
+        "createResponse": null
     }
-  ],
-  "data": {
-    "createResponse": null
-  }
 }
 
 check_with_non_existent_room = '''
@@ -40,7 +40,7 @@ mutation{
       id
       questionId
       roomId
-      check
+      response
       }
   }
 }
@@ -59,17 +59,17 @@ mutation{
 '''
 
 create_check_response = {
-  "data": {
-    "createResponse": {
-      "response": [
-        {
-          "id": "3",
-          "questionId": 2,
-          "roomId": 1
+    "data": {
+        "createResponse": {
+            "response": [
+                {
+                    "id": "3",
+                    "questionId": 2,
+                    "roomId": 1
+                }
+            ]
         }
-      ]
     }
-  }
 }
 
 filter_question_by_room = '''
@@ -79,8 +79,7 @@ filter_question_by_room = '''
       roomName
       roomId
       response {
-        rating
-        suggestion
+        response
       }
     }
   }
@@ -88,22 +87,21 @@ filter_question_by_room = '''
 '''
 
 filter_question_by_room_response = {
-  "data": {
-    "getRoomResponse": {
-      "responses": [
-        {
-          "roomName": "Entebbe",
-          "roomId": 1,
-          "response": [
-            {
-              "rating": 2,
-              "suggestion": None
-            }
-          ]
+    "data": {
+        "getRoomResponse": {
+            "responses": [
+                {
+                    "roomName": "Entebbe",
+                    "roomId": 1,
+                    "response": [
+                        {
+                            'response': '1'
+                        }
+                    ]
+                }
+            ]
         }
-      ]
     }
-  }
 }
 
 filter_response_by_room_with_pagination = '''
@@ -113,8 +111,7 @@ filter_response_by_room_with_pagination = '''
       roomName
       roomId
       response {
-        rating
-        suggestion
+        response
       }
     }
   }
@@ -122,22 +119,21 @@ filter_response_by_room_with_pagination = '''
 '''
 
 filter_response_by_room_with_pagination_response = {
-  "data": {
-    "getRoomResponse": {
-      "responses": [
-        {
-          "roomName": "Entebbe",
-          "roomId": 1,
-          "response": [
-            {
-              "rating": 2,
-              "suggestion": None
-            }
-          ]
+    "data": {
+        "getRoomResponse": {
+            "responses": [
+                {
+                    "roomName": "Entebbe",
+                    "roomId": 1,
+                    "response": [
+                        {
+                            'response': '1'
+                        }
+                    ]
+                }
+            ]
         }
-      ]
     }
-  }
 }
 
 filter_question_by_invalid_room = '''
@@ -147,8 +143,7 @@ filter_question_by_invalid_room = '''
       roomName
       roomId
       response {
-        rating
-        suggestion
+       response
       }
     }
   }

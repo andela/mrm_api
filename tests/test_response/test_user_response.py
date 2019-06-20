@@ -33,7 +33,6 @@ class TestCreateResponse(BaseTestCase):
     def test_create_rate(self):
         """
         Testing for creating rates
-
         """
         CommonTestCases.user_token_assert_equal(
             self,

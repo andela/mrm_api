@@ -90,30 +90,28 @@ allRoomResponses(startDate: "{}",
 '''.format(end_date, start_date)
 
 get_room_response_query_by_date_query = {
-  'data': {
-    'allRoomResponses': {
-      'responses': [
-        {
-          'totalResponses': 2,
-          'roomName': 'Entebbe',
-          'response': [
-            {
-              'responseId': 2,
-              'missingItems': [
-                'Markers'
-              ]
-            },
-            {
-              'responseId': 1,
-              'missingItems':   [
 
-              ]
-            }
-          ]
+    'data': {
+        'allRoomResponses': {
+            'responses': [
+                {
+                    'totalResponses': 2,
+                    'roomName': 'Entebbe',
+                    'response': [
+                        {
+                            'responseId': 2,
+                            'missingItems': ['Markers']
+                        },
+                        {
+                            'responseId': 1,
+                            'missingItems':   []
+
+                        }
+                    ]
+                }
+            ]
         }
-      ]
     }
-  }
 }
 
 
@@ -123,8 +121,7 @@ get_room_response_non_existence_room_id = '''{
         totalResponses,
         response{
             responseId,
-            suggestion,
-            rating
+            response
         }
     }
 }
@@ -137,8 +134,7 @@ summary_room_response_query = '''{
         totalResponses,
         response {
           responseId,
-          rating,
-          suggestion
+          response
         }
       }
     }
@@ -155,14 +151,11 @@ summary_room_response_data = {
                     "response": [
                         {
                             "responseId": 2,
-                            "rating": None,
-                            "suggestion": None
+                            "response": 'True'
                         },
-                        {
-                            "responseId": 1,
-                            "rating": 2,
-                            "suggestion": None,
-                        }
+                        {"responseId": 1,
+                         "response": "1"
+                         }
                     ]
                 }
             ]
@@ -313,8 +306,7 @@ query_paginated_responses = '''
         totalResponses,
         response {
           responseId,
-          rating,
-          suggestion
+          response
         }
       }
    hasNext
@@ -334,13 +326,11 @@ query_paginated_responses_response = {
                     "response": [
                         {
                             "responseId": 2,
-                            "rating": None,
-                            "suggestion": None
+                            "response": "True"
                         },
                         {
                             "responseId": 1,
-                            "rating": 2,
-                            "suggestion": None
+                            'response': "1"
                         }
                     ]
                 }
@@ -360,8 +350,7 @@ query_paginated_responses_empty_page = '''
         totalResponses,
         response {
           responseId,
-          rating,
-          suggestion
+          response
         }
       }
    hasNext
@@ -377,7 +366,7 @@ mark_response_as_resolved_mutation = '''
     roomResponse{
       resolved
       id
-      rate
+      response
       roomId
     }
   }
@@ -385,16 +374,16 @@ mark_response_as_resolved_mutation = '''
 '''
 
 mark_user_response_as_resolved_mutation_response = {
-  "data": {
-    "resolveRoomResponse": {
-      "roomResponse": {
-        "resolved": True,
-        "id": "1",
-        "rate": 2,
-        "roomId": 1,
-      }
+    "data": {
+        "resolveRoomResponse": {
+            "roomResponse": {
+                "resolved": True,
+                "id": "1",
+                "roomId": 1,
+                "response": "1"
+            }
+        }
     }
-  }
 }
 mark_response_as_resolved_mutation_with_an_invalid_response_id = '''
     mutation{
@@ -402,9 +391,9 @@ mark_response_as_resolved_mutation_with_an_invalid_response_id = '''
         roomResponse{
         resolved
         id
-        rate
+        response
         roomId
-        textArea
+        response
         }
     }
 }
@@ -423,13 +412,13 @@ mark_a_user_response_as_unresolved_mutation = '''
 '''
 
 mark_a_user_response_as_unresolved_mutation_response = {
-  "data": {
-    "resolveRoomResponse": {
-      "roomResponse": {
-        "resolved": False,
-        "id": "2",
-        "roomId": 1,
-      }
+    "data": {
+        "resolveRoomResponse": {
+            "roomResponse": {
+                "resolved": False,
+                "id": "2",
+                "roomId": 1,
+            }
+        }
     }
-  }
 }
