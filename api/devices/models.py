@@ -9,7 +9,7 @@ from utilities.utility import Utility, StateType
 
 class Devices(Base, Utility):
     __tablename__ = 'devices'
-    id = Column(Integer, Sequence('devices_id_seq', start=1, increment=1), primary_key=True) # noqa
+    id = Column(Integer, Sequence('devices_id_seq', start=1, increment=1), primary_key=True)  # noqa
     name = Column(String, nullable=False)
     device_type = Column(String, nullable=False)
     date_added = Column(DateTime, nullable=False)
