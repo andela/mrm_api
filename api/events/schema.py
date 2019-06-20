@@ -3,8 +3,7 @@ from graphene_sqlalchemy import SQLAlchemyObjectType
 from graphql import GraphQLError
 import pytz
 from dateutil import parser
-from datetime import timedelta
-
+from datetime import datetime, timedelta
 from api.events.models import Events as EventsModel
 from api.room.models import Room as RoomModel
 from helpers.calendar.events import RoomSchedules, CalendarEvents
@@ -13,12 +12,9 @@ from helpers.calendar.credentials import get_single_calendar_event
 from helpers.auth.authentication import Auth
 from helpers.pagination.paginate import ListPaginate
 from helpers.devices.devices import update_device_last_seen
-from helpers.events_filter.events_filter import (
-    filter_events_by_date_range,
-    validate_page_and_per_page
-)
-
-utc = pytz.utc
+from admin_notifications.helpers.create_notification import create_notification
+from admin_notifications.helpers.notification_templates import (
+    event_auto_cancelled_notification)
 
 
 class Events(SQLAlchemyObjectType):
@@ -100,6 +96,15 @@ class CancelEvent(graphene.Mutation):
                                                     kwargs['event_id']
                                                 )
         event_reject_reason = 'after 10 minutes'
+        notification_payload = event_auto_cancelled_notification(
+            event_name=event.event_title,
+            room_name=event.room.name
+        )
+        create_notification(
+            title=notification_payload['title'],
+            message=notification_payload['message'],
+            location_id=event.room.location_id
+        )
         if not notification.event_cancellation_notification(
                                                             calendar_event,
                                                             room_id,
