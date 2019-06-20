@@ -37,8 +37,10 @@ class TestRoomResponse(BaseTestCase):
         """
         Testing for room response
         """
-        CommonTestCases.admin_token_assert_equal(self, get_room_response_query,
-                                                 get_room_response_query_data)
+        CommonTestCases.admin_token_assert_equal(
+            self, get_room_response_query,
+            get_room_response_query_data
+        )
 
     def test_room_response_non_existence_room_id(self):
         """

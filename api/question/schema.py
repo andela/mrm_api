@@ -41,6 +41,7 @@ class CreateQuestion(graphene.Mutation):
         question = graphene.String(required=True)
         start_date = graphene.DateTime(required=True)
         end_date = graphene.DateTime(required=True)
+        check_options = graphene.List(graphene.String, required=False)
     question = graphene.Field(Question)
 
     @Auth.user_roles('Admin')
@@ -48,11 +49,19 @@ class CreateQuestion(graphene.Mutation):
         validate_empty_fields(**kwargs)
         validate_question_type(**kwargs)
         validate_date_time_range(**kwargs)
-        question = QuestionModel(**kwargs)
+        question_type = kwargs['question_type']
+        fields = kwargs
+        if question_type == "check" and not kwargs.get('check_options'):
+            return GraphQLError(
+                "No check options supplied for question type check"
+            )
+        if question_type != "check":
+            fields['check_options'] = None
         payload = {
             'model': QuestionModel, 'field': 'question',
             'value':  kwargs['question']
             }
+        question = QuestionModel(**fields)
         with SaveContextManager(question, 'Question', payload):
             return CreateQuestion(question=question)
 

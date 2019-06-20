@@ -23,9 +23,10 @@ def upgrade():
         'check', 'text_area', 'rate', name='questiontype')
     questiontype.create(op.get_bind())
     op.add_column('responses', sa.Column('question_type', sa.Enum(
-        'rate', 'check', 'text_area', name='questiontype'), nullable=True))
+        'rate', 'check', 'text_area', 'missing_items', name='questiontype'),
+         nullable=True))
     op.add_column('responses', sa.Column(
-        'response', sa.String(), nullable=True))
+        'response', postgresql.ARRAY(sa.String()), nullable=True))
     op.drop_column('responses', 'text_area')
     op.drop_column('responses', 'check')
     op.drop_column('responses', 'rate')

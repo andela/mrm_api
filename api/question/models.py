@@ -1,6 +1,6 @@
 from sqlalchemy import (Column, String, Integer, Boolean, Enum, Index)
 from sqlalchemy.orm import relationship, validates
-
+from sqlalchemy.dialects import postgresql
 from helpers.database import Base
 from utilities.utility import Utility, StateType
 import api.response.models
@@ -13,6 +13,7 @@ class Question(Base, Utility):
     question_type = Column(String, nullable=False)
     question = Column(String, nullable=False)
     start_date = Column(String, nullable=False)
+    check_options = Column(postgresql.ARRAY(String))
     end_date = Column(String, nullable=False)
     total_views = Column(Integer, default=0)
     response = relationship('Response', cascade="all, delete-orphan")

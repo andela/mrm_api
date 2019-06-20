@@ -8,25 +8,42 @@ mutation{
       id
       questionId
       roomId
-      response
+      response{
+        ... on Rate{
+          rate
+        }
+        ... on SelectedOptions{
+          options
+        }
+        ... on TextArea{
+          suggestion
+        }
+        ... on MissingItems{
+          missingItems{
+            name
+          }
+        }
+      }
       }
   }
 }
 '''
 
 create_suggestion_question_response = {
-    "data": {
-        "createResponse": {
-            "response": [
-                {
-                    "id": "3",
-                    "questionId": 3,
-                    "roomId": 1,
-                    "response": "Any other suggestion"
-                }
-            ]
+  "data": {
+    "createResponse": {
+      "response": [
+        {
+          "id": "3",
+          "questionId": 3,
+          "roomId": 1,
+          "response": {
+            "suggestion": "Any other suggestion"
+          }
         }
+      ]
     }
+  }
 }
 
 make_suggestion_in_non_existent_room = '''
@@ -37,7 +54,23 @@ mutation{
       id
       questionId
       roomId
-      response
+      response {
+            ... on Rate{
+              rate
+            }
+            ... on SelectedOptions{
+              options
+            }
+            ... on TextArea{
+              suggestion
+            }
+            ... on MissingItems{
+              missingItems{
+                name
+                id
+              }
+            }
+          }
       }
   }
 }
@@ -51,7 +84,23 @@ mutation{
       id
       questionId
       roomId
-      response
+      response {
+            ... on Rate{
+              rate
+            }
+            ... on SelectedOptions{
+              options
+            }
+            ... on TextArea{
+              suggestion
+            }
+            ... on MissingItems{
+              missingItems{
+                name
+                id
+              }
+            }
+          }
       }
   }
 }
