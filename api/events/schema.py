@@ -15,6 +15,9 @@ from helpers.devices.devices import update_device_last_seen
 import pytz
 from dateutil import parser
 from datetime import datetime, timedelta
+from admin_notifications.helpers.create_notification import create_notification
+from admin_notifications.helpers.notification_templates import (
+    event_auto_cancelled_notification)
 
 
 class Events(SQLAlchemyObjectType):
@@ -104,6 +107,15 @@ class CancelEvent(graphene.Mutation):
                                                     kwargs['event_id']
                                                 )
         event_reject_reason = 'after 10 minutes'
+        notification_payload = event_auto_cancelled_notification(
+            event_name=event.event_title,
+            room_name=event.room.name
+        )
+        create_notification(
+            title=notification_payload['title'],
+            message=notification_payload['message'],
+            location_id=event.room.location_id
+        )
         if not notification.event_cancellation_notification(
                                                             calendar_event,
                                                             room_id,

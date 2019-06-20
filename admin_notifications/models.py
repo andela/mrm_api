@@ -15,4 +15,5 @@ class AdminNotification(Base, Utility):
     location_id = Column(
         Integer,
         ForeignKey('locations.id', ondelete="CASCADE"),
-        nullable=True)
+        nullable=True
+    )
