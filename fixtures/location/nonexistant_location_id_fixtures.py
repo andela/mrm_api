@@ -1,3 +1,4 @@
+from collections import OrderedDict
 query_nonexistant_location_id = '''{
 getRoomsInALocation(locationId:4){
     name
@@ -9,7 +10,4 @@ getRoomsInALocation(locationId:4){
 '''
 
 expected_query_with_nonexistant_id = {
-    "data": {
-        "getRoomsInALocation": []
-    }
-}
+    'data': OrderedDict([('getRoomsInALocation', [])])}

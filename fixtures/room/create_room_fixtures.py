@@ -1,3 +1,4 @@
+from collections import OrderedDict
 null = None
 
 room_mutation_query = '''
@@ -249,43 +250,19 @@ db_rooms_query_response = {
                 "capacity": 14,
                 "roomType": "meeting",
                 "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg"  # noqa: E501
+            },
+             {
+                "name": "Buluma",
+                "capacity": 10,
+                "roomType": "meeting",
+                "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg"  # noqa: E501
             }
         ]
     }
 }
 
-query_rooms_response = {
-    "data": {
-        "allRooms": {
-            "rooms": [
-                {
-                    "name": "Entebbe",
-                    "capacity": 6,
-                    "roomType": "meeting",
-                    "roomTags": [
-                        {
-                            "name": "Block-B",
-                            "color": "green"
-                        }
-                    ],
-                    "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg"  # noqa: E501
-                },
-                {
-                    "name": "Tana",
-                    "capacity": 14,
-                    "roomType": "meeting",
-                    "roomTags": [
-                        {
-                            "name": "Block-B",
-                            "color": "green"
-                        }
-                    ],
-                    "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg"  # noqa: E501
-                }
-            ]
-        }
-    }
-}
+query_rooms_response = {'data': OrderedDict([('allRooms', OrderedDict([('rooms', [OrderedDict([('name', 'Buluma'), ('capacity', 10), ('roomType', 'meeting'), ('imageUrl', 'https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg'), ('roomTags', [])]), OrderedDict([('name', 'Entebbe'), ('capacity', 6), ('roomType', 'meeting'), ('imageUrl', # noqa 501
+                                                                                                                                                                                                                                                                                                                                                                'https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg'), ('roomTags', [OrderedDict([('name', 'Block-B'), ('color', 'green')])])]), OrderedDict([('name', 'Tana'), ('capacity', 14), ('roomType', 'meeting'), ('imageUrl', 'https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg'), ('roomTags', [OrderedDict([('name', 'Block-B'), ('color', 'green')])])])])]))])} # noqa 501
 
 room_mutation_query_duplicate_name = '''
     mutation {
