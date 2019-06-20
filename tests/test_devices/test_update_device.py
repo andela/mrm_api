@@ -17,5 +17,5 @@ class TestUpdateDevices(BaseTestCase):
         CommonTestCases.admin_token_assert_in(
             self,
             query_with_non_existant_id,
-            "DeviceId not found"
+            "Device ID not found"
         )
