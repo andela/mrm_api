@@ -1,7 +1,7 @@
 """add state column to devices table
 
 Revision ID: af8e4f84b552
-Revises: 1f5e47273894
+Revises: 50173cb0491f
 Create Date: 2019-06-21 12:01:57.913494
 
 """
@@ -11,7 +11,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = 'af8e4f84b552'
-down_revision = '1f5e47273894'
+down_revision = '50173cb0491f'
 branch_labels = None
 depends_on = None
 
