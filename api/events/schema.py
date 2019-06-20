@@ -246,7 +246,13 @@ class Query(graphene.ObjectType):
         end_date=graphene.String(),
         page=graphene.Int(),
         per_page=graphene.Int(),
-        description="Query that returns paginated daily room events")
+        description="Query that returns a list of events given the arguments\
+            \n- start_date: The date and time to start selection \
+                            when filtering by time period\
+            \n- end_date: The date and time to end selection \
+                            when filtering by time period\
+            \n- page: Page number to select when paginating\
+            \n- per_page: The maximum number of pages per page when paginating")
 
     @Auth.user_roles('Admin', 'Default User')
     def resolve_all_events(self, info, **kwargs):
@@ -280,17 +286,22 @@ class Query(graphene.ObjectType):
                 day_of_event = event_start_date.strftime("%a %b %d %Y")
                 if date == day_of_event:
                     daily_events.append(event)
-            all_days_events.append(
-                DailyRoomEvents(
-                    day=date,
-                    events=daily_events
+            if page and per_page:
+                events = divide_daily_events_per_page(
+                    self, date, per_page, daily_events)
+                all_days_events = all_days_events + events
+            else:
+                all_days_events.append(
+                    DailyRoomEvents(
+                        day=date,
+                        events=daily_events
+                    )
                 )
-            )
             all_days_events.sort(key=lambda x: datetime.strptime(x.day, "%a %b %d %Y"), reverse=True) # noqa
         if page and per_page:
             paginated_events = ListPaginate(
                 iterable=all_days_events,
-                per_page=per_page,
+                per_page=1,
                 page=page)
             has_previous = paginated_events.has_previous
             has_next = paginated_events.has_next
@@ -305,3 +316,23 @@ class Query(graphene.ObjectType):
                                      pages=pages)
 
         return PaginatedDailyRoomEvents(DailyRoomEvents=all_days_events)
+
+
+def divide_daily_events_per_page(self, date, max_per_page, daily_events):
+    events = []
+    max_daily_events = max_per_page
+    events_per_page = []
+    for event_index, day_event in enumerate(daily_events):
+        event_number = event_index + 1
+        events_per_page.append(day_event)
+        if (event_number == max_daily_events or
+                len(daily_events) == event_number):
+            events.append(
+                DailyRoomEvents(
+                    day=date,
+                    events=events_per_page
+                )
+            )
+            events_per_page = []
+            max_daily_events += max_per_page
+    return events
