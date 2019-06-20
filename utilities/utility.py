@@ -88,6 +88,7 @@ class QuestionType(enum.Enum):
     textarea = "textarea"
     missingitem = "missing_items"
 
+
 class StatusType(enum.Enum):
     read = "read"
     unread = "unread"
