@@ -49,8 +49,8 @@ expected_response_devices_with_filter = {
                 "name": "Samsung"
             }
         ]
-        }
     }
+}
 
 query_device = '''
         {
@@ -269,7 +269,7 @@ search_device_by_name_expected_response = {
             'id': '1',
             'name': 'Samsung',
             'deviceType': 'External Display'
-            }]
-        }
+        }]
     }
+}
 devices_query_response = b'{"data":{"createDevice":{"device":{"name":"Apple tablet","location":"Kampala","deviceType":"External Display"}}}}'  # noqaE501

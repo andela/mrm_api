@@ -36,9 +36,9 @@ gcloud_setup: &gcloud_setup
   run:
     name: setup gcloud
     command: |
-      # install 
+      # install
       sudo curl https://dl.google.com/dl/cloudsdk/release/google-cloud-sdk.tar.gz > /tmp/google-cloud-sdk.tar.gz
-      sudo mkdir -p /usr/local/gcloud 
+      sudo mkdir -p /usr/local/gcloud
       sudo tar -C /usr/local/gcloud -xvf /tmp/google-cloud-sdk.tar.gz
       sudo /usr/local/gcloud/google-cloud-sdk/install.sh --quiet
       echo PATH=$PATH:/usr/local/gcloud/google-cloud-sdk/bin >> ~/.bashrc
@@ -190,8 +190,8 @@ jobs:
           command: |
             ./cc-test-reporter before-build
             . venv/bin/activate
-            coverage combine parallel-coverage/ 
-            coverage xml
+            coverage combine parallel-coverage/
+            coverage xml -i
             coverage report
             ./cc-test-reporter format-coverage -o ./.coverage -t coverage.py
             ./cc-test-reporter upload-coverage -i .coverage
@@ -301,13 +301,13 @@ jobs:
           command: |
             if [ "$CIRCLE_BRANCH" == master ] || [ "$CIRCLE_BRANCH" == develop ]; then
               touch google-service-key.json
-              echo $GOOGLE_CREDENTIALS_STAGING | base64 --decode >> google-service-key.json 
+              echo $GOOGLE_CREDENTIALS_STAGING | base64 --decode >> google-service-key.json
               gcloud auth activate-service-account --key-file google-service-key.json
               gcloud --quiet config set project ${GOOGLE_PROJECT_ID_STAGING}
               gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
             else
               touch google-service-key.json
-              echo $GOOGLE_CREDENTIALS_SANDBOX | base64 --decode >> google-service-key.json 
+              echo $GOOGLE_CREDENTIALS_SANDBOX | base64 --decode >> google-service-key.json
               gcloud auth activate-service-account --key-file google-service-key.json
               gcloud --quiet config set project ${GOOGLE_PROJECT_ID_SANDBOX}
               gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}

@@ -41,7 +41,7 @@ class CreateDevice(graphene.Mutation):
         room_location = location_join_room().filter(
             RoomModel.id == kwargs['room_id'],
             RoomModel.state == 'active'
-            ).first()
+        ).first()
         if not room_location:
             raise GraphQLError("Room not found")
         user = get_user_from_db()
