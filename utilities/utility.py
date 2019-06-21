@@ -89,6 +89,12 @@ class QuestionType(enum.Enum):
     missingitem = "missing_items"
 
 
+
 class StatusType(enum.Enum):
     read = "read"
     unread = "unread"
+
+
+class ActivityType(enum.Enum):
+    online = "online"
+    offline = "offline"

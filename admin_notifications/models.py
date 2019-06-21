@@ -1,6 +1,4 @@
 from sqlalchemy import (Column, String, Enum, Integer, ForeignKey)
-from sqlalchemy.schema import Sequence
-from utilities.validations import validate_empty_fields
 from helpers.database import Base
 from utilities.utility import Utility, StatusType
 
@@ -17,6 +15,4 @@ class AdminNotification(Base, Utility):
     location_id = Column(
         Integer,
         ForeignKey('locations.id', ondelete="CASCADE"),
-        nullable=True
-    )
-    
+        nullable=True)
