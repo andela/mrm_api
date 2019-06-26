@@ -42,9 +42,13 @@ class PaginatedResponses(graphene.ObjectType):
 
 class Query(graphene.ObjectType):
     room_response = graphene.Field(
-        RoomResponse, room_id=graphene.Int(),
+        RoomResponse,
+        room_id=graphene.Int(),
+        resolved=graphene.Boolean(),
         description="Returns a list of paginated room responses. Accepts the arguments\
-            \n- room_id: Unique identifier of a room")
+            \n- room_id: Unique identifier of a room\
+            \n- resolved: Boolean field to fetch only resolved responses\
+                        if true")
     all_room_responses = graphene.Field(
         PaginatedResponses,
         page=graphene.Int(),
@@ -54,14 +58,17 @@ class Query(graphene.ObjectType):
         end_date=graphene.String(),
         start_date=graphene.String(),
         room=graphene.String(),
+        resolved=graphene.Boolean(),
         description="Returns a list of room responses. Accepts the arguments\
             \n- page: Page number of responses\
             \n- per_page: Number of room responses per page\
             \n- upper_limit_count: Highest number of room responses\
             \n- lower_limit_count: Lowest number of room responses\
-             \n- end_date: Latest date range given\
+            \n- end_date: Latest date range given\
             \n- start_date: Earliest date range given\
-            \n- room: Room name where the response is sent to"
+            \n- room: Room name where the response is sent to\
+            \n- resolved: Boolean field to fetch only resolved responses\
+                        if true"
     )
 
     def get_room_response(self, room_response, room_id):
@@ -69,8 +76,10 @@ class Query(graphene.ObjectType):
         for responses in room_response:
             response_id = responses.id
             created_date = responses.created_date
-            question_type = responses.question_type.name
-            response = map_response_type(question_type)(responses.response)
+            question_type = responses.question_type
+            response = map_response_type(
+                question_type.value
+            )(responses.response)
             resolved = responses.resolved
             response_in_room = ResponseDetails(
                 response_id=response_id,
@@ -82,13 +91,15 @@ class Query(graphene.ObjectType):
         return (response_list)
 
     @Auth.user_roles('Admin')
-    def resolve_room_response(self, info, room_id):
+    def resolve_room_response(self, info, room_id, resolved=False):
         query = Room.get_query(info)
         query_response = Response.get_query(info)
         room = query.filter_by(id=room_id).first()
         if not room:
             raise GraphQLError("Non-existent room id")
         room_response = query_response.filter_by(room_id=room_id)
+        if resolved:
+            room_response = room_response.filter_by(resolved=True)
         responses = Query.get_room_response(
             self, room_response, room_id)
         total_response = room_response.count()
@@ -125,6 +136,8 @@ class Query(graphene.ObjectType):
                 "No response for this room, enter a valid room name")
         room_response = Response.get_query(info).filter_by(
             room_id=exact_room.id)
+        if kwargs.get('resolved'):
+            room_response = room_response.filter_by(resolved=True)
         if not room_response:
             raise GraphQLError("No response for this room at the moment")
         total_response = room_response.count()
@@ -138,15 +151,17 @@ class Query(graphene.ObjectType):
         search_result.append(responses)
         return search_result
 
-    def get_all_responses(self, info):
+    def get_all_responses(self, info, resolved=False):
         response = []
         rooms = RoomModel.query.filter(RoomModel.state == "active").all()
         for room in rooms:
             room_name = room.name
             room_response = Response.get_query(
                 info
-            ).filter_by(room_id=room.id).all()
-            response_count = len(room_response)
+            ).filter_by(room_id=room.id)
+            if resolved:
+                room_response = room_response.filter_by(resolved=True)
+            response_count = room_response.count()
             if response_count:
                 all_responses = Query.get_room_response(
                     self, room_response, room.id)
@@ -160,7 +175,7 @@ class Query(graphene.ObjectType):
 
     @Auth.user_roles('Admin')
     def resolve_all_room_responses(self, info, **kwargs):
-        responses = Query.get_all_responses(self, info)
+        responses = Query.get_all_responses(self, info, kwargs.get('resolved'))
         check_limits_are_provided(
             kwargs.get('lower_limit_count'),
             kwargs.get('upper_limit_count'), int
