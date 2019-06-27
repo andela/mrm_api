@@ -139,3 +139,6 @@ converge_db/
 # google calendar data
 events.json
 calendar_list.json
+
+#jenkins
+jenkins/scripts/env_variables.groovy

@@ -1,4 +1,4 @@
-# Python CircleCI 2.0 configuration file
+     # Python CircleCI 2.0 configuration file
 #
 # Check https://circleci.com/docs/2.0/language-python/ for more details
 #
@@ -322,8 +322,10 @@ workflows:
   version: 2
   build-then-deploy:
     jobs:
-      - test-3.5
-      - test-3.6-flake
+      - test-3.5:
+          type: approval
+      - test-3.6-flake:
+          type: approval
       - code-climate:
           requires:
             - test-3.5
