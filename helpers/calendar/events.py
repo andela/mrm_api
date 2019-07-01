@@ -8,7 +8,6 @@ from graphql import GraphQLError
 
 from api.events.models import Events as EventsModel
 from api.room.models import Room as RoomModel
-from api.location.models import Location as LocationModel
 from .analytics_helper import CommonAnalytics
 from .credentials import Credentials, get_google_calendar_events
 
@@ -214,14 +213,3 @@ class CalendarEvents:
         rooms = RoomModel.query.filter_by(state='active')
         for room in rooms:
             self.sync_single_room_events(room)
-
-    def get_events_in_location(self, user, events):
-        events_in_location = []
-        location = LocationModel.query.filter_by(
-            name=user.location).first()
-        for event in events:
-            room = RoomModel.query.filter_by(
-                calendar_id=event.room.calendar_id).first()
-            if room.location_id == location.id:
-                events_in_location.append(event)
-        return events_in_location
