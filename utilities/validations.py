@@ -79,7 +79,7 @@ def validate_question_type(**kwargs):
     should allow only check, input and rate
     :params kwargs
     """
-    question_types = ['check', 'input', 'rate', 'missingitem']
+    question_types = ['check', 'input', 'rate', 'missing_items']
     if 'question_type' in kwargs:
         type = kwargs['question_type']
         if type.lower() not in question_types:

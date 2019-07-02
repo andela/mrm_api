@@ -72,6 +72,39 @@ query{{
 }}
 '''.format(start_date, end_date)
 
+get_room_response_query_by_date_and_limits = '''
+query{{
+    allRoomResponses(startDate: "{}",
+     endDate: "{}",
+     upperLimitCount: 3, lowerLimitCount: 0,
+     room:"Entebbe" ){{
+        responses{{
+            totalResponses
+            roomName
+            response{{
+                responseId
+                response{{
+                  ... on Rate{{
+                    rate
+                  }}
+                  ... on SelectedOptions{{
+                    options
+                  }}
+                  ... on TextArea{{
+                    suggestion
+                  }}
+                  ... on MissingItems{{
+                    missingItems{{
+                      name
+                    }}
+                  }}
+                  }}
+            }}
+        }}
+    }}
+}}
+'''.format(start_date, end_date)
+
 get_room_response_query_with_invalid_date = '''
 query{{
     allRoomResponses(startDate: "{}",
@@ -103,7 +136,7 @@ query{{
 }}
 '''.format(invalid_start_date, invalid_end_date)
 
-get_room_response_query_with_higher_lower_limit = '''
+get_room_response_query_with_higher_start_date = '''
 query{{
     allRoomResponses(startDate: "{}",
      endDate: "{}" ){{
@@ -134,7 +167,7 @@ query{{
 }}
 '''.format(end_date, start_date)
 
-get_room_response_query_by_date_query = {
+get_room_response_query_by_date_data = {
   "data": {
     "allRoomResponses": {
       "responses": [
