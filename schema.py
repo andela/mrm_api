@@ -16,6 +16,7 @@ import api.tag.schema
 import api.response.schema_query
 import api.structure.schema
 import api.analytics.all_analytics_query
+import admin_notifications.schema
 
 
 class Query(
@@ -33,6 +34,7 @@ class Query(
         api.structure.schema.Query,
         api.analytics.all_analytics_query.Query,
         api.events.schema.Query,
+        admin_notifications.schema.Query
 ):
     """Root for converge Graphql queries"""
     pass
@@ -51,6 +53,7 @@ class Mutation(
         api.response.schema.Mutation,
         api.tag.schema.Mutation,
         api.structure.schema.Mutation,
+        admin_notifications.schema.Mutation
 ):
     """The root query for implementing GraphQL mutations."""
     pass

@@ -191,7 +191,7 @@ jobs:
             ./cc-test-reporter before-build
             . venv/bin/activate
             coverage combine parallel-coverage/ 
-            coverage xml
+            coverage xml -i
             coverage report
             ./cc-test-reporter format-coverage -o ./.coverage -t coverage.py
             ./cc-test-reporter upload-coverage -i .coverage

@@ -8,7 +8,19 @@ from graphql import GraphQLError
 from api.room.schema import Room
 from api.question.models import Question as QuestionModel
 from helpers.pagination.paginate import ListPaginate
-from helpers.response.create_response import create_response
+from helpers.response.create_response import (
+    create_response, Rate, SelectedOptions, TextArea, MissingItems
+)
+from helpers.response.create_response import map_response_type
+
+
+class ResponseData(graphene.Union):
+    class Meta:
+        types = (Rate, SelectedOptions, TextArea, MissingItems)
+
+    @classmethod
+    def resolve_type(cls, instance, info):
+        return type(instance)
 
 
 class Response(SQLAlchemyObjectType):
@@ -17,13 +29,17 @@ class Response(SQLAlchemyObjectType):
     """
     class Meta:
         model = ResponseModel
+        exclude_fields = ('response', 'missing_resources')
+
+    response = graphene.Field(ResponseData)
 
 
 class ResponseDetail(graphene.ObjectType):
-    response_id = graphene.Int()
-    missing_items = graphene.List(graphene.String)
+    id = graphene.Int()
+    room_id = graphene.Int()
     created_date = graphene.DateTime()
-    response = graphene.String()
+    response = graphene.Field(ResponseData)
+    question_type = graphene.String()
     resolved = graphene.Boolean()
 
 
@@ -50,6 +66,9 @@ class ResponseInputs(graphene.InputObjectType):
     text_area = graphene.String(description="The rate field of response inputs")
     missing_items = graphene.List(
         graphene.Int, description="Number field of the missing items")
+    selected_options = graphene.List(
+        graphene.String, description="Selected options from the check options"
+    )
 
 
 class CreateResponse(graphene.Mutation):
@@ -66,6 +85,7 @@ class CreateResponse(graphene.Mutation):
         validate_empty_fields(**kwargs)
         query = Room.get_query(info)
         errors = []
+        responses = []
         present_date = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
         room = query.filter_by(id=kwargs['room_id']).first()
         if not room:
@@ -82,9 +102,11 @@ class CreateResponse(graphene.Mutation):
                     "The start date for the response to this question is yet to commence. Try on {}".format(question.start_date))  # noqa
             question_type = question.question_type
             each_response['room_id'] = kwargs['room_id']
-            responses, errors = create_response(question_type,
-                                                errors,
-                                                **each_response)
+            responses, errors = create_response(
+                info, question_type,
+                errors, responses,
+                **each_response
+            )
         if errors:
             raise GraphQLError(
                 ('The following errors occured: {}').format(
@@ -109,35 +131,19 @@ class Query(graphene.ObjectType):
 
     def map_room_responses(self, responses):
         mapped_response = []
-        missing_resource = []
         for current_response in responses:
             response_id = current_response.id
             created_date = current_response.created_date
             response = current_response.response
             resolved = current_response.resolved
-
-            if len(current_response.missing_resources) > 0:
-                for resource in current_response.missing_resources:
-                    resource_name = resource.name
-                    missing_resource.append(resource_name)
-                response_in_room = ResponseDetail(
-                    response_id=response_id,
-                    response=response,
-                    created_date=created_date,
-
-                    missing_items=missing_resource,
-                    resolved=resolved)
-                mapped_response.append(response_in_room)
-            else:
-                missing_items = current_response.missing_resources
-                response_in_room = ResponseDetail(
-                    response_id=response_id,
-                    response=response,
-                    created_date=created_date,
-
-                    missing_items=missing_items,
-                    resolved=resolved)
-                mapped_response.append(response_in_room)
+            response_in_room = ResponseDetail(
+                id=response_id,
+                response=map_response_type(
+                    current_response.question_type.name
+                )(response),
+                created_date=created_date,
+                resolved=resolved)
+            mapped_response.append(response_in_room)
         return mapped_response
 
     @Auth.user_roles('Admin')
@@ -195,7 +201,7 @@ class HandleRoomResponse(graphene.Mutation):
     class Arguments:
         response_id = graphene.Int()
 
-    room_response = graphene.Field(Response)
+    room_response = graphene.Field(ResponseDetail)
 
     @Auth.user_roles('Admin')
     def mutate(self, info, response_id, **kwargs):
@@ -210,7 +216,19 @@ class HandleRoomResponse(graphene.Mutation):
         else:
             room_response.resolved = True
             room_response.save()
-        return HandleRoomResponse(room_response=room_response)
+        response = map_response_type(
+            room_response.question_type.name
+        )(room_response.response)
+        return HandleRoomResponse(
+            room_response=ResponseDetail(
+                id=room_response.id,
+                created_date=room_response.created_date,
+                response=response,
+                room_id=room_response.room_id,
+                question_type=room_response.question_type.name,
+                resolved=room_response.resolved
+            )
+        )
 
 
 class Mutation(graphene.ObjectType):

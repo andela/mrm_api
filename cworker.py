@@ -1,22 +1,20 @@
 import os
 from celery import Celery
 from app import create_app
-from admin_notifications.helpers.queue_manager import beat_schedule
 
 app = create_app(os.getenv('APP_SETTINGS') or 'default')
 app.app_context().push()
 
 
 app.config.update(
-    CELERY_BROKER_URL='redis://localhost:6379',
-    CELERY_RESULT_BACKEND='redis://localhost:6379',
-    CELERY_ACCEPT_CONTENT=['pickle'],
-    CELERYBEAT_SCHEDULE=beat_schedule
+    CELERY_BROKER_URL=os.getenv('CELERY_BROKER_URL'),
+    CELERY_RESULT_BACKEND=os.getenv('CELERY_RESULT_BACKEND'),
+    CELERY_ACCEPT_CONTENT=['pickle']
 )
 
 
 def make_celery(app):
-    celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'], include=['admin_notifications.helpers.device_last_seen'], # noqa 501
+    celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'], include=['admin_notifications.helpers.create_notification'], # noqa 501
                     backend=app.config['CELERY_BROKER_URL'])
 
     celery.conf.update(app.config)

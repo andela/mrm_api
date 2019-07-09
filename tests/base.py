@@ -125,6 +125,7 @@ class BaseTestCase(TestCase):
                 question_type="check",
                 question_title="check Feedback",
                 question="Is there anything missing in the room",
+                check_options=['apple tv', 'whiteboard', 'maker pen'],
                 start_date="20 Nov 2018",
                 end_date="30 Nov 2018",
                 is_active=True
@@ -163,7 +164,7 @@ class BaseTestCase(TestCase):
                 room_id=room.id,
                 question_type="check",
                 created_date=datetime.now(),
-                response="True",
+                response=['marker pen', 'apple tv'],
                 resolved=True,
             )
             response_2.save()

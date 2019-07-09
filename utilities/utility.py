@@ -85,16 +85,10 @@ class StateType(enum.Enum):
 class QuestionType(enum.Enum):
     rate = "rate"
     check = "check"
-    textarea = "textarea"
-    missingitem = "missing_items"
-
+    text_area = "text_area"
+    missing_items = "missing_items"
 
 
 class StatusType(enum.Enum):
     read = "read"
     unread = "unread"
-
-
-class ActivityType(enum.Enum):
-    online = "online"
-    offline = "offline"

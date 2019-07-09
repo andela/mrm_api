@@ -7,7 +7,23 @@ mutation{
       id
       questionId
       roomId
-      response
+      response {
+            ... on Rate{
+              rate
+            }
+            ... on SelectedOptions{
+              options
+            }
+            ... on TextArea{
+              suggestion
+            }
+            ... on MissingItems{
+              missingItems{
+                name
+                id
+              }
+            }
+          }
       }
   }
 }
@@ -40,7 +56,23 @@ mutation{
       id
       questionId
       roomId
-      response
+      response {
+            ... on Rate{
+              rate
+            }
+            ... on SelectedOptions{
+              options
+            }
+            ... on TextArea{
+              suggestion
+            }
+            ... on MissingItems{
+              missingItems{
+                name
+                id
+              }
+            }
+          }
       }
   }
 }
@@ -79,7 +111,23 @@ filter_question_by_room = '''
       roomName
       roomId
       response {
-        response
+        response{
+            ... on Rate{
+              rate
+            }
+            ... on SelectedOptions{
+              options
+            }
+            ... on TextArea{
+              suggestion
+            }
+            ... on MissingItems{
+              missingItems{
+                name
+                id
+              }
+            }
+          }
       }
     }
   }
@@ -87,21 +135,23 @@ filter_question_by_room = '''
 '''
 
 filter_question_by_room_response = {
-    "data": {
-        "getRoomResponse": {
-            "responses": [
-                {
-                    "roomName": "Entebbe",
-                    "roomId": 1,
-                    "response": [
-                        {
-                            'response': '1'
-                        }
-                    ]
-                }
-            ]
+  "data": {
+    "getRoomResponse": {
+      "responses": [
+        {
+          "roomName": "Entebbe",
+          "roomId": 1,
+          "response": [
+            {
+              "response": {
+                "rate": 1
+              }
+            }
+          ]
         }
+      ]
     }
+  }
 }
 
 filter_response_by_room_with_pagination = '''
@@ -111,7 +161,23 @@ filter_response_by_room_with_pagination = '''
       roomName
       roomId
       response {
-        response
+        response{
+            ... on Rate{
+              rate
+            }
+            ... on SelectedOptions{
+              options
+            }
+            ... on TextArea{
+              suggestion
+            }
+            ... on MissingItems{
+              missingItems{
+                name
+                id
+              }
+            }
+          }
       }
     }
   }
@@ -119,21 +185,23 @@ filter_response_by_room_with_pagination = '''
 '''
 
 filter_response_by_room_with_pagination_response = {
-    "data": {
-        "getRoomResponse": {
-            "responses": [
-                {
-                    "roomName": "Entebbe",
-                    "roomId": 1,
-                    "response": [
-                        {
-                            'response': '1'
-                        }
-                    ]
-                }
-            ]
+  "data": {
+    "getRoomResponse": {
+      "responses": [
+        {
+          "roomName": "Entebbe",
+          "roomId": 1,
+          "response": [
+            {
+              "response": {
+                "rate": 1
+              }
+            }
+          ]
         }
+      ]
     }
+  }
 }
 
 filter_question_by_invalid_room = '''
@@ -143,7 +211,23 @@ filter_question_by_invalid_room = '''
       roomName
       roomId
       response {
-       response
+       response{
+            ... on Rate{
+              rate
+            }
+            ... on SelectedOptions{
+              options
+            }
+            ... on TextArea{
+              suggestion
+            }
+            ... on MissingItems{
+              missingItems{
+                name
+                id
+              }
+            }
+          }
       }
     }
   }

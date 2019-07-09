@@ -1,10 +1,10 @@
-from sqlalchemy import (Column, String, Integer, DateTime, ForeignKey, Enum)
+from sqlalchemy import (Column, String, Integer, DateTime, ForeignKey)
 from sqlalchemy.schema import Sequence
 from sqlalchemy.orm import relationship
 
 from helpers.database import Base
 from utilities.validations import validate_empty_fields
-from utilities.utility import Utility, ActivityType
+from utilities.utility import Utility
 
 
 class Devices(Base, Utility):
@@ -17,7 +17,6 @@ class Devices(Base, Utility):
     location = Column(String, nullable=False)
     room_id = Column(Integer, ForeignKey('rooms.id', ondelete="CASCADE"))
     room = relationship('Room')
-    activity = Column(Enum(ActivityType), default="active")
 
     def __init__(self, **kwargs):
         validate_empty_fields(**kwargs)
