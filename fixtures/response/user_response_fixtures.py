@@ -7,25 +7,42 @@ mutation{
       id
       questionId
       roomId
-      response
+      response{
+        ... on Rate{
+          rate
+        }
+        ... on SelectedOptions{
+          options
+        }
+        ... on TextArea{
+          suggestion
+        }
+        ... on MissingItems{
+          missingItems{
+            name
+          }
+        }
+      }
       }
   }
 }
 '''
 
 create_rate_response = {
-    "data": {
-        "createResponse": {
-            "response": [
-                {
-                    "id": "3",
-                    "questionId": 1,
-                    "roomId": 1,
-                    "response": "2"
-                }
-            ]
+  "data": {
+    "createResponse": {
+      "response": [
+        {
+          "id": "3",
+          "questionId": 1,
+          "roomId": 1,
+          "response": {
+            "rate": 2
+          }
         }
+      ]
     }
+  }
 }
 
 rate_non_existing_question = '''
@@ -68,7 +85,23 @@ mutation{
       id
       questionId
       roomId
-      response
+      response {
+            ... on Rate{
+              rate
+            }
+            ... on SelectedOptions{
+              options
+            }
+            ... on TextArea{
+              suggestion
+            }
+            ... on MissingItems{
+              missingItems{
+                name
+                id
+              }
+            }
+          }
       }
   }
 }
@@ -101,7 +134,23 @@ mutation{
       id
       questionId
       roomId
-      response
+      response {
+            ... on Rate{
+              rate
+            }
+            ... on SelectedOptions{
+              options
+            }
+            ... on TextArea{
+              suggestion
+            }
+            ... on MissingItems{
+              missingItems{
+                name
+                id
+              }
+            }
+          }
       }
   }
 }

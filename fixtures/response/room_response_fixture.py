@@ -50,7 +50,22 @@ query{{
             roomName
             response{{
                 responseId
-                missingItems
+                response{{
+                  ... on Rate{{
+                    rate
+                  }}
+                  ... on SelectedOptions{{
+                    options
+                  }}
+                  ... on TextArea{{
+                    suggestion
+                  }}
+                  ... on MissingItems{{
+                    missingItems{{
+                      name
+                    }}
+                  }}
+                  }}
             }}
         }}
     }}
@@ -66,7 +81,22 @@ query{{
             roomName
             response{{
                 responseId
-                missingItems
+                response{{
+                  ... on Rate{{
+                    rate
+                  }}
+                  ... on SelectedOptions{{
+                    options
+                  }}
+                  ... on TextArea{{
+                    suggestion
+                  }}
+                  ... on MissingItems{{
+                    missingItems{{
+                      name
+                    }}
+                  }}
+                  }}
             }}
         }}
     }}
@@ -75,14 +105,29 @@ query{{
 
 get_room_response_query_with_higher_lower_limit = '''
 query{{
-allRoomResponses(startDate: "{}",
+    allRoomResponses(startDate: "{}",
      endDate: "{}" ){{
         responses{{
             totalResponses
             roomName
             response{{
                 responseId
-                missingItems
+                response{{
+                  ... on Rate{{
+                    rate
+                  }}
+                  ... on SelectedOptions{{
+                    options
+                  }}
+                  ... on TextArea{{
+                    suggestion
+                  }}
+                  ... on MissingItems{{
+                    missingItems{{
+                      name
+                    }}
+                  }}
+                  }}
             }}
         }}
     }}
@@ -90,28 +135,33 @@ allRoomResponses(startDate: "{}",
 '''.format(end_date, start_date)
 
 get_room_response_query_by_date_query = {
-
-    'data': {
-        'allRoomResponses': {
-            'responses': [
-                {
-                    'totalResponses': 2,
-                    'roomName': 'Entebbe',
-                    'response': [
-                        {
-                            'responseId': 2,
-                            'missingItems': ['Markers']
-                        },
-                        {
-                            'responseId': 1,
-                            'missingItems':   []
-
-                        }
-                    ]
-                }
-            ]
+  "data": {
+    "allRoomResponses": {
+      "responses": [
+        {
+          "totalResponses": 2,
+          "roomName": "Entebbe",
+          "response": [
+            {
+              "responseId": 2,
+              "response": {
+                "options": [
+                  "marker pen",
+                  "apple tv"
+                ]
+              }
+            },
+            {
+              "responseId": 1,
+              "response": {
+                "rate": 1
+              }
+            }
+          ]
         }
+      ]
     }
+  }
 }
 
 
@@ -121,7 +171,22 @@ get_room_response_non_existence_room_id = '''{
         totalResponses,
         response{
             responseId,
-            response
+            response{
+          ... on Rate{
+            rate
+          }
+          ... on TextArea{
+            suggestion
+          }
+          ... on SelectedOptions{
+            options
+          }
+          ... on MissingItems{
+            missingItems{
+              name
+            }
+          }
+        }
         }
     }
 }
@@ -134,7 +199,23 @@ summary_room_response_query = '''{
         totalResponses,
         response {
           responseId,
-          response
+          response {
+            ... on Rate{
+              rate
+            }
+            ... on SelectedOptions{
+              options
+            }
+            ... on TextArea{
+              suggestion
+            }
+            ... on MissingItems{
+              missingItems{
+                name
+                id
+              }
+            }
+          }
         }
       }
     }
@@ -142,25 +223,33 @@ summary_room_response_query = '''{
 '''
 
 summary_room_response_data = {
-    "data": {
-        "allRoomResponses": {
-            "responses": [
-                {
-                    "roomName": "Entebbe",
-                    "totalResponses": 2,
-                    "response": [
-                        {
-                            "responseId": 2,
-                            "response": 'True'
-                        },
-                        {"responseId": 1,
-                         "response": "1"
-                         }
-                    ]
-                }
-            ]
+  "data": {
+    "allRoomResponses": {
+      "responses": [
+        {
+          "roomName": "Entebbe",
+          "totalResponses": 2,
+          "response": [
+            {
+              "responseId": 2,
+              "response": {
+                "options": [
+                  "marker pen",
+                  "apple tv"
+                ]
+              }
+            },
+            {
+              "responseId": 1,
+              "response": {
+                "rate": 1
+              }
+            }
+          ]
         }
+      ]
     }
+  }
 }
 
 filter_by_response_query = '''
@@ -306,7 +395,22 @@ query_paginated_responses = '''
         totalResponses,
         response {
           responseId,
-          response
+          response {
+            ... on Rate{
+              rate
+            }
+            ... on SelectedOptions{
+              options
+            }
+            ... on TextArea{
+              suggestion
+            }
+            ... on MissingItems{
+              missingItems{
+                name
+              }
+            }
+          }
         }
       }
    hasNext
@@ -317,29 +421,36 @@ query_paginated_responses = '''
 '''
 
 query_paginated_responses_response = {
-    "data": {
-        "allRoomResponses": {
-            "responses": [
-                {
-                    "roomName": "Entebbe",
-                    "totalResponses": 2,
-                    "response": [
-                        {
-                            "responseId": 2,
-                            "response": "True"
-                        },
-                        {
-                            "responseId": 1,
-                            'response': "1"
-                        }
-                    ]
-                }
-            ],
-            "hasNext": False,
-            "hasPrevious": False,
-            "pages": 1
+  "data": {
+    "allRoomResponses": {
+      "responses": [
+        {
+          "roomName": "Entebbe",
+          "totalResponses": 2,
+          "response": [
+            {
+              "responseId": 2,
+              "response": {
+                "options": [
+                  "marker pen",
+                  "apple tv"
+                ]
+              }
+            },
+            {
+              "responseId": 1,
+              "response": {
+                "rate": 1
+              }
+            }
+          ]
         }
+      ],
+      "hasNext": False,
+      "hasPrevious": False,
+      "pages": 1
     }
+  }
 }
 
 query_paginated_responses_empty_page = '''
@@ -350,7 +461,22 @@ query_paginated_responses_empty_page = '''
         totalResponses,
         response {
           responseId,
-          response
+          response{
+            ... on Rate{
+              rate
+            }
+            ... on TextArea{
+              suggestion
+            }
+            ... on SelectedOptions{
+              options
+            }
+            ... on MissingItems{
+              missingItems{
+                name
+              }
+            }
+          }
         }
       }
    hasNext
@@ -366,7 +492,22 @@ mark_response_as_resolved_mutation = '''
     roomResponse{
       resolved
       id
-      response
+      response{
+        ... on Rate{
+          rate
+        }
+        ... on TextArea{
+          suggestion
+        }
+        ... on SelectedOptions{
+          options
+        }
+        ... on MissingItems{
+          missingItems{
+            name
+          }
+        }
+      }
       roomId
     }
   }
@@ -374,27 +515,44 @@ mark_response_as_resolved_mutation = '''
 '''
 
 mark_user_response_as_resolved_mutation_response = {
-    "data": {
-        "resolveRoomResponse": {
-            "roomResponse": {
-                "resolved": True,
-                "id": "1",
-                "roomId": 1,
-                "response": "1"
-            }
-        }
+  "data": {
+    "resolveRoomResponse": {
+      "roomResponse": {
+        "resolved": True,
+        "id": 1,
+        "response": {
+          "rate": 1
+        },
+        "roomId": 1
+      }
     }
+  }
 }
+
 mark_response_as_resolved_mutation_with_an_invalid_response_id = '''
     mutation{
     resolveRoomResponse(responseId:4){
         roomResponse{
         resolved
         id
-        response
-        roomId
-        response
+        response{
+          ... on Rate{
+            rate
+          }
+          ... on TextArea{
+            suggestion
+          }
+          ... on SelectedOptions{
+            options
+          }
+          ... on MissingItems{
+            missingItems{
+              name
+            }
+          }
         }
+      roomId
+      }
     }
 }
 '''
@@ -416,7 +574,7 @@ mark_a_user_response_as_unresolved_mutation_response = {
         "resolveRoomResponse": {
             "roomResponse": {
                 "resolved": False,
-                "id": "2",
+                "id": 2,
                 "roomId": 1,
             }
         }
