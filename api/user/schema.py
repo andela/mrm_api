@@ -164,10 +164,9 @@ class ChangeUserRole(graphene.Mutation):
         exact_user.roles[0] = new_role
         exact_user.save()
 
-        if new_role.role == 'Admin':
-            user_name = exact_user.name
-            if not notification.send_admin_invite_email(email, user_name):
-                raise GraphQLError("Role changed but email not sent")
+        if not notification.send_changed_role_email(
+                email, exact_user.name, new_role.role):
+            raise GraphQLError("Role changed but email not sent")
 
         return ChangeUserRole(user=exact_user)
 
@@ -216,6 +215,8 @@ class InviteToConverge(graphene.Mutation):
 
     @Auth.user_roles('Admin')
     def mutate(self, info, email):
+        if not verify_email(email):
+            raise GraphQLError("Use a valid andela email")
         query_user = User.get_query(info)
         active_user = query_user.filter(UserModel.state == "active")
         user = active_user.filter(UserModel.email == email).first()

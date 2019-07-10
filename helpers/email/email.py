@@ -24,7 +24,9 @@ class EmailNotification:
                 user_name=kwargs.get('user_name'),
                 room_name=kwargs.get('room_name'),
                 event_title=kwargs.get('event_title'),
-                event_reject_reason=kwargs.get('event_reject_reason')
+                event_reject_reason=kwargs.get('event_reject_reason'),
+                new_role=kwargs.get('new_role'),
+                domain=kwargs.get('domain')
             ))
 
         return email.send()
@@ -33,13 +35,11 @@ class EmailNotification:
         """
         send email invite for user to join converge
         """
-        email = SendEmail(
-            "Invitation to join Converge", [email],
-            render_template('invite.html', name=admin,
-                            domain=Config.DOMAIN_NAME)
-            )
-
-        return email.send()
+        return EmailNotification.send_email_notification(
+            self, email=email, subject="Invitation to join Converge",
+            template='invite.html',
+            user_name=admin, domain=Config.DOMAIN_NAME
+        )
 
     def event_cancellation_notification(
         self, event, room_id, event_reject_reason
@@ -58,27 +58,31 @@ class EmailNotification:
         subject = 'Your room reservation was rejected'
         template = 'event_cancellation.html'
         return EmailNotification.send_email_notification(
-            self, email=email, subject=subject, template=template,
-            room_name=room_name, event_title=event_title,
+            self,
+            email=email,
+            subject=subject,
+            template=template,
+            room_name=room_name,
+            event_title=event_title,
             event_reject_reason=event_reject_reason
         )
 
-    def send_admin_invite_email(self, user_email, user_name):
+    def send_changed_role_email(self, user_email, user_name, new_role):
         """
-        send email notification when an admin is added
+        send email notification when user role is changed
             :params
-                - user_email: the email of the user being added as an admin
-                - user_name: the name of the user being added as an admin
+                - user_email: the email of the user whose role is changed
+                - user_name: the name of the user whose role is changed
         """
-        subject = 'Converge - You have been added as an admin'
-        template = 'admin_invite.html'
 
         return EmailNotification.send_email_notification(
             self,
             email=user_email,
-            subject=subject,
+            subject='Converge - Your role has been changed',
             user_name=user_name,
-            template=template
+            template='change_role.html',
+            new_role=new_role,
+            domain=Config.DOMAIN_NAME
         )
 
 

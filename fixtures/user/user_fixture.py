@@ -112,7 +112,7 @@ query_user_email_response = {
 
 change_user_role_mutation = '''
 mutation{
-    changeUserRole(email:"mrmtestuser@andela.com", roleId: 1){
+    changeUserRole(email:"peter.walugembe@andela.com", roleId: 2){
         user{
             name
             roles{
@@ -172,19 +172,13 @@ mutation{
 }
 '''
 
-send_invitation_to_existent_user_response = {
-    "errors": [{
-        "message": "User already joined Converge",
-        "locations": [{
-            "line": 3,
-            "column": 5
-        }],
-        "path": ["inviteToConverge"]
-    }],
-    "data": {
-        "inviteToConverge": null
+send_invitation_to_invalid_email = '''
+mutation{
+    inviteToConverge(email: "peter.walugembe@gmail.com"){
+        email
     }
 }
+'''
 
 send_invitation_to_existent_user_response = {
     "errors": [{
