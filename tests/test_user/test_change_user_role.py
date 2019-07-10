@@ -1,4 +1,4 @@
-from tests.base import BaseTestCase, CommonTestCases, change_test_user_role
+from tests.base import BaseTestCase, CommonTestCases
 from fixtures.user.user_fixture import (
     change_user_role_mutation, change_user_role_mutation_response,
     change_user_role_to_non_existence_role_mutation,
@@ -15,8 +15,6 @@ sys.path.append(os.getcwd())
 
 
 class TestChangeUserRole(BaseTestCase):
-
-    @change_test_user_role
     def test_change_user_role(self):
         """
         Testing change of user role
