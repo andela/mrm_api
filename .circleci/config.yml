@@ -216,18 +216,21 @@ jobs:
             echo "ANDELA_LOGIN_URL"=$(echo $IMAGE_ANDELA_LOGIN_URL) >> .env
             echo "ANDELA_API_URL"=$(echo $IMAGE_ANDELA_API_URL) >> .env
             if [ "$CIRCLE_BRANCH" == master ]; then
+              echo "DOMAIN_NAME"=$(echo $IMAGE_PRODUCTION_DOMAIN_NAME) >> .env
               echo "DEV_DATABASE_URL"=$(echo $IMAGE_DEV_DATABASE_URL_PRODUCTION) >> .env
               echo "DATABASE_URL"=$(echo $IMAGE_DATABASE_URL_PRODUCTION) >> .env
               echo "CELERY_BROKER_URL"=$(echo $IMAGE_CELERY_BROKER_URL_PRODUCTION) >> .env
               echo "CELERY_RESULT_BACKEND"=$(echo $IMAGE_CELERY_RESULT_BACKEND_PRODUCTION) >> .env
               echo "MRM_PUSH_URL"=$(echo $IMAGE_MRM_PUSH_URL_PRODUCTION) >> .env
             elif [ "$CIRCLE_BRANCH" == develop ]; then
+              echo "DOMAIN_NAME"=$(echo $IMAGE_STAGING_DOMAIN_NAME) >> .env
               echo "DEV_DATABASE_URL"=$(echo $IMAGE_DEV_DATABASE_URL_STAGING) >> .env
               echo "DATABASE_URL"=$(echo $IMAGE_DATABASE_URL_STAGING) >> .env
               echo "CELERY_BROKER_URL"=$(echo $IMAGE_CELERY_BROKER_URL_STAGING) >> .env
               echo "CELERY_RESULT_BACKEND"=$(echo $IMAGE_CELERY_RESULT_BACKEND_STAGING) >> .env
               echo "MRM_PUSH_URL"=$(echo $IMAGE_MRM_PUSH_URL_STAGING) >> .env
             else
+              echo "DOMAIN_NAME"=$(echo $IMAGE_SANDBOX_DOMAIN_NAME) >> .env
               echo "DEV_DATABASE_URL"=$(echo $IMAGE_DEV_DATABASE_URL_SANDBOX) >> .env
               echo "DATABASE_URL"=$(echo $IMAGE_DATABASE_URL_SANDBOX) >> .env
               echo "CELERY_BROKER_URL"=$(echo $IMAGE_CELERY_BROKER_URL_SANDBOX) >> .env
