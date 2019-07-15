@@ -118,16 +118,16 @@ class Query(graphene.ObjectType):
         if filtered_date_search:
             return filtered_date_search
         exact_room = RoomModel.query.filter(
-            RoomModel.name.ilike('%' + kwargs.get('room') + '%')).first()
+            RoomModel.name.ilike('%' + kwargs.get('room') + '%'),
+            RoomModel.state == "active").first()
         if not exact_room:
             raise GraphQLError(
                 "No response for this room, enter a valid room name")
-        room_response_query = Response.get_query(info).filter_by(
+        room_response = Response.get_query(info).filter_by(
             room_id=exact_room.id)
-        room_response = room_response_query.all()
         if not room_response:
             raise GraphQLError("No response for this room at the moment")
-        total_response = room_response_query.count()
+        total_response = room_response.count()
         all_responses = Query.get_room_response(
             self, room_response, exact_room.id)
         responses = RoomResponse(
@@ -165,14 +165,6 @@ class Query(graphene.ObjectType):
             kwargs.get('lower_limit_count'),
             kwargs.get('upper_limit_count'), int
         )
-        responses = filter_responses(
-            int, filter_rooms_by_responses, kwargs.get('upper_limit_count'),
-            kwargs.get('lower_limit_count'),  Query, info, responses
-        )
-        responses = check_response_and_room(
-            int, info, kwargs.get('room'), kwargs.get('upper_limit_count'),
-            kwargs.get('lower_limit_count'), responses, Query
-        )
         if 'upper_limit_count' and 'lower_limit_count' not in kwargs and kwargs.get('room'):  # noqa
             upper_limit, lower_limit = (kwargs.get('upper_limit'),
                                         kwargs.get('lower_limit'))
@@ -180,6 +172,23 @@ class Query(graphene.ObjectType):
                                                         lower_limit=lower_limit,
                                                         upper_limit=upper_limit,
                                                         **kwargs)
+        if kwargs.get('end_date') and kwargs.get('start_date'):
+            responses = filter_responses(
+                str, filter_response_by_date, kwargs.get('end_date'),
+                kwargs.get('start_date'),  Query, info, responses
+            )
+        if kwargs.get('upper_limit_count') and kwargs.get('lower_limit_count'):
+            responses = filter_by_dates_and_limits(
+                responses, kwargs.get('upper_limit_count'),
+                kwargs.get('lower_limit_count'))
+        responses = check_response_and_room(
+            str, info, kwargs.get('room'), kwargs.get('end_date'),
+            kwargs.get('start_date'), responses, Query
+        )
+        responses = check_response_and_room(
+            int, info, kwargs.get('room'), kwargs.get('upper_limit_count'),
+            kwargs.get('lower_limit_count'), responses, Query
+        )
         if kwargs.get('page') and kwargs.get('per_page'):
             paginated_response = ListPaginate(
                 iterable=responses, per_page=kwargs.get('per_page'),
@@ -194,22 +203,4 @@ class Query(graphene.ObjectType):
                                       has_next=has_next,
                                       query_total=query_total,
                                       pages=pages)
-
-        responses = filter_responses(
-            str, filter_response_by_date, kwargs.get('end_date'),
-            kwargs.get('start_date'),  Query, info, responses
-        )
-        responses = check_response_and_room(
-            str, info, kwargs.get('room'), kwargs.get('end_date'),
-            kwargs.get('start_date'), responses, Query
-        )
-        if kwargs.get('end_date') and kwargs.get('start_date') and kwargs.get(
-                'upper_limit_count') and kwargs.get('lower_limit_count'):
-            filtered_responses = check_response_and_room(
-                str, info, kwargs.get('room'), kwargs.get('end_date'),
-                kwargs.get('start_date'), responses, Query
-            )
-            responses = filter_by_dates_and_limits(
-                filtered_responses, kwargs.get('upper_limit_count'),
-                kwargs.get('lower_limit_count'))
         return PaginatedResponses(responses=responses)

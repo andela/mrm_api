@@ -28,8 +28,8 @@ def map_response_type(question_type):
             'check': lambda check_options: SelectedOptions(
                 options=check_options
             ),
-            'textarea': lambda suggestion: TextArea(suggestion=suggestion[0]),
-            'missingitem': lambda missing_items: MissingItems(
+            'text_area': lambda suggestion: TextArea(suggestion=suggestion[0]),
+            'missing_items': lambda missing_items: MissingItems(
                 missing_items=map(lambda id: ResourceModel.query.filter_by(
                     id=id  # map each resource id and return the corresponding resource # noqa
             ).first(), missing_items)),
@@ -75,12 +75,12 @@ def create_response(info, question_type, errors, responses, **kwargs): # noqa
         response.save()
         response.response = map_response_type(question_type)(response.response)
         responses.append(response)
-    elif question_type.lower() == 'missingitem' and 'missing_items' in kwargs\
+    elif question_type.lower() == 'missing_items' and 'missing_items' in kwargs\
             and kwargs['missing_items']:
         response = Response(
             response=set(kwargs['missing_items']),  # save unique ids
             room_id=kwargs['room_id'],
-            question_type="missingitem",
+            question_type="missing_items",
             question_id=kwargs['question_id'],
             created_date=datetime.now())
         response.save()
@@ -112,12 +112,12 @@ def create_response(info, question_type, errors, responses, **kwargs): # noqa
             'text_area' in kwargs and kwargs['text_area']:
         suggestion = Response(
             response=[kwargs['text_area']],
-            question_type="textarea",
+            question_type="text_area",
             room_id=kwargs['room_id'],
             question_id=kwargs['question_id'],
             created_date=datetime.now())
         suggestion.save()
-        suggestion.response = map_response_type('textarea')(
+        suggestion.response = map_response_type('text_area')(
             suggestion=suggestion.response
         )
         responses.append(suggestion)

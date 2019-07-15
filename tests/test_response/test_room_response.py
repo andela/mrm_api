@@ -24,9 +24,10 @@ from fixtures.response.room_response_fixture import (
     mark_a_user_response_as_unresolved_mutation,
     mark_a_user_response_as_unresolved_mutation_response,
     get_room_response_query_by_date,
-    get_room_response_query_by_date_query,
+    get_room_response_query_by_date_and_limits,
+    get_room_response_query_by_date_data,
     get_room_response_query_with_invalid_date,
-    get_room_response_query_with_higher_lower_limit
+    get_room_response_query_with_higher_start_date
 )
 
 sys.path.append(os.getcwd())
@@ -173,7 +174,18 @@ class TestRoomResponse(BaseTestCase):
         CommonTestCases.admin_token_assert_equal(
             self,
             get_room_response_query_by_date,
-            get_room_response_query_by_date_query
+            get_room_response_query_by_date_data
+        )
+
+    def test_room_response_with_date_range_and_limits(self):
+        """
+        Testing for room response with date range and
+        upper and lower limits
+        """
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            get_room_response_query_by_date_and_limits,
+            get_room_response_query_by_date_data
         )
 
     def test_room_response_with_invalid_date(self):
@@ -188,11 +200,11 @@ class TestRoomResponse(BaseTestCase):
 
     def test_room_with_invalid_date_difference(self):
         """
-        Testing for room response with higher lower limit
+        Testing for room response with higher start date
         """
         CommonTestCases.admin_token_assert_in(
                 self,
-                get_room_response_query_with_higher_lower_limit,
+                get_room_response_query_with_higher_start_date,
                 "Earlier date should be lower than later date"
             )
 
