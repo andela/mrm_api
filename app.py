@@ -11,7 +11,6 @@ from schema import schema
 from healthcheck_schema import healthcheck_schema
 from helpers.auth.authentication import Auth
 from api.analytics.analytics_request import AnalyticsRequest
-
 mail = Mail()
 
 

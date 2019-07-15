@@ -42,8 +42,6 @@ html_coverage_report/
 .tox/
 .coverage
 .coverage.*
-.coveragerc
-setup.cfg
 .cache
 nosetests.xml
 coverage.xml
