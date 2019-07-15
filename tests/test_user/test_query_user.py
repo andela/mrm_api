@@ -5,7 +5,9 @@ from fixtures.user.user_fixture import (
     paginated_users_query, paginated_users_response,
     get_users_by_location, get_users_by_location_and_role,
     get_user_by_role_reponse, get_users_by_role,
-    filter_user_by_location
+    filter_user_by_location,
+    query_user_by_name, query_user_by_name_response,
+    query_non_existing_user_by_name, query_non_existing_user_by_name_response
 )
 from helpers.database import db_session
 from api.user.models import User
@@ -76,7 +78,7 @@ class TestQueryUser(BaseTestCase):
         """
         CommonTestCases.admin_token_assert_equal(
             self, get_users_by_role, get_user_by_role_reponse
-            )
+        )
 
     def test_get_users_by_location_and_role(self):
         """
@@ -84,7 +86,7 @@ class TestQueryUser(BaseTestCase):
         """
         CommonTestCases.user_token_assert_in(
             self, get_users_by_location_and_role, "No users found"
-            )
+        )
 
     def test_query_users_by_location(self):
         """
@@ -94,4 +96,24 @@ class TestQueryUser(BaseTestCase):
             self,
             filter_user_by_location,
             "Location id does not exist"
+        )
+
+    def test_query_user_by_name(self):
+        """
+        Test query a user by name
+        """
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            query_user_by_name,
+            query_user_by_name_response
+        )
+
+    def test_query_user_by_invalid_name(self):
+        """
+        Test query a user by invalid name
+        """
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            query_non_existing_user_by_name,
+            query_non_existing_user_by_name_response
         )
