@@ -43,7 +43,7 @@ create_question_response = {
   "data": {
     "createQuestion": {
       "question": {
-        "id": "4",
+        "id": "5",
         "question": "How will you rate the cleanliness of the room",
         "questionType": "rate",
         "startDate": start_date.replace('T', ' '),
@@ -196,6 +196,11 @@ all_questions_response = {
                 'question': 'Any other suggestion',
                 'id': '3',
                 'questionType': 'input'
+            },
+            {
+                'question': 'Anything missing in the room?',
+                'id': '4',
+                'questionType': 'check'
             }
         ]
     }

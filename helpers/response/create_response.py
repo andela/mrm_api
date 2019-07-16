@@ -39,6 +39,7 @@ class ResponseDetail(graphene.ObjectType):
     response = graphene.Field(ResponseData)
     question_type = graphene.String()
     resolved = graphene.Boolean()
+    state = graphene.String()
 
 
 def map_response_type(question_type):
@@ -55,7 +56,7 @@ def map_response_type(question_type):
         }.get(question_type)
 
 
-def create_response(info, question_type, errors, responses, **kwargs): # noqa
+def create_response(info, question_type, errors, responses, **kwargs):  # noqa
     if question_type.lower() == 'rate' and \
             'rate' in kwargs and kwargs['rate']:
         rating = [1, 2, 3, 4, 5]
@@ -112,7 +113,7 @@ def create_response(info, question_type, errors, responses, **kwargs): # noqa
             if missing_item is None:
                 response.delete()
                 errors.append(
-                    'Response to question {} was not saved because one of the resources provided was not assigned to the room' # noqa
+                    'Response to question {} was not saved because one of the resources provided was not assigned to the room'  # noqa
                     .format(kwargs['question_id'])
                 )
                 return responses, errors
@@ -146,10 +147,10 @@ def create_response(info, question_type, errors, responses, **kwargs): # noqa
 
 def create_response_details(response, room_response):
     return ResponseDetail(
-                id=room_response.id,
-                created_date=room_response.created_date,
-                response=response,
-                room_id=room_response.room_id,
-                question_type=room_response.question_type.name,
-                resolved=room_response.resolved
-            )
+        id=room_response.id,
+        created_date=room_response.created_date,
+        response=response,
+        room_id=room_response.room_id,
+        question_type=room_response.question_type.name,
+        resolved=room_response.resolved
+    )
