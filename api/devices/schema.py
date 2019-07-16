@@ -84,6 +84,30 @@ class UpdateDevice(graphene.Mutation):
         return UpdateDevice(device=exact_device)
 
 
+class DeleteDevice(graphene.Mutation):
+    """
+         Returns device payload on deleting a device
+    """
+    class Arguments:
+        device_id = graphene.Int(required=True)
+        state = graphene.String()
+
+    device = graphene.Field(Devices)
+
+    @Auth.user_roles('Admin')
+    def mutate(self, info, device_id, **kwargs):
+        query_device = Devices.get_query(info)
+        result = query_device.filter(DevicesModel.state == "active")
+        exact_device = result.filter(
+            DevicesModel.id == device_id
+        ).first()
+        if not exact_device:
+            raise GraphQLError("Device not found")
+        update_entity_fields(exact_device, state="archived", **kwargs)
+        exact_device.save()
+        return DeleteDevice(device=exact_device)
+
+
 class Query(graphene.ObjectType):
     """
         Query to get list of all devices
@@ -167,3 +191,8 @@ class Mutation(graphene.ObjectType):
             \n- location: The location of the device\
             \n- room_id: Unique identifier of a room where the device is found\
             [required]")
+    delete_device = DeleteDevice.Field(
+        description="Deletes a given device given the arguments to delete\
+            \n- device_id: Unique identifier of the tag\
+            [required]"
+    )
