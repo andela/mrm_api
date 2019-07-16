@@ -150,6 +150,16 @@ class BaseTestCase(TestCase):
                 end_date="28 Nov 2018"
             )
             question_3.save()
+            question_4 = Question(
+                question_type="check",
+                question_title="Missing item",
+                question="Anything missing in the room?",
+                check_options=['duster'],
+                start_date="20 Nov 2018",
+                end_date="30 Nov 2018",
+                is_active=True
+            )
+            question_4.save()
             response_1 = Response(
                 question_id=1,
                 room_id=1,
@@ -170,6 +180,18 @@ class BaseTestCase(TestCase):
             )
             response_2.save()
             response_2.missing_resources.append(resource)
+
+            response_3 = Response(
+                question_id=question_4.id,
+                room_id=room_2.id,
+                question_type="check",
+                created_date=datetime.now(),
+                response=['duster'],
+                resolved=True,
+                state="archived"
+            )
+            response_3.save()
+
             structure = Structure(
                 structure_id='b05fc5f2-b4aa-4f48-a8fb-30bdcc3fc968',
                 level=1,

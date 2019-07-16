@@ -3,7 +3,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship
 from helpers.database import Base
-from utilities.utility import Utility, QuestionType
+from utilities.utility import Utility, QuestionType, StateType
 import api.question.models
 import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
@@ -28,6 +28,7 @@ class Response(Base, Utility):
     response = Column(postgresql.ARRAY(sa.String()))
     created_date = Column(DateTime, nullable=False)
     resolved = Column(Boolean, default=False)
+    state = Column(Enum(StateType), default="active", nullable=False)
     question = relationship('Question')
     room = relationship('Room')
     missing_resources = relationship(

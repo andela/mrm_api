@@ -64,6 +64,20 @@ all_questions_query_response = {
                 'endDate': '28 Nov 2018',
                 'questionResponseCount': 0,
                 'response': []
+            },
+                {
+                'id': '4',
+                'questionType': 'check',
+                'questionTitle': 'Missing item',
+                'question':  'Anything missing in the room?',
+                'startDate': '20 Nov 2018',
+                'endDate': '30 Nov 2018',
+                'questionResponseCount': 1,
+                'response': [{
+                    'id': '3',
+                    'questionId': 4,
+                    'roomId': 2
+                }]
             }]
         }
     }
@@ -251,6 +265,9 @@ all_questions_query_no_date_range_response = {
             },
             {
                 "questionType": "input"
+            },
+            {
+                "questionType": "check"
             }
         ]
     }

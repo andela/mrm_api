@@ -1,6 +1,6 @@
 import graphene
 from graphql import GraphQLError
-from api.response.schema import Response, ResponseData
+from api.response.schema import Response
 from api.room.schema import Room
 from api.room.models import Room as RoomModel
 from helpers.auth.authentication import Auth
@@ -14,22 +14,17 @@ from helpers.response.query_response import (
     filter_by_dates_and_limits
 )
 
-from helpers.response.create_response import map_response_type
-
-
-class ResponseDetails(graphene.ObjectType):
-    response_id = graphene.Int()
-    created_date = graphene.DateTime()
-    response = graphene.Field(ResponseData)
-    question_type = graphene.String()
-    resolved = graphene.Boolean()
+from helpers.response.create_response import (
+    map_response_type,
+    ResponseDetail
+)
 
 
 class RoomResponse(graphene.ObjectType):
     room_id = graphene.Int()
     room_name = graphene.String()
     total_responses = graphene.Int()
-    response = graphene.List(ResponseDetails)
+    response = graphene.List(ResponseDetail)
 
 
 class PaginatedResponses(graphene.ObjectType):
@@ -59,6 +54,7 @@ class Query(graphene.ObjectType):
         start_date=graphene.String(),
         room=graphene.String(),
         resolved=graphene.Boolean(),
+        archived=graphene.Boolean(),
         description="Returns a list of room responses. Accepts the arguments\
             \n- page: Page number of responses\
             \n- per_page: Number of room responses per page\
@@ -81,12 +77,15 @@ class Query(graphene.ObjectType):
                 question_type.value
             )(responses.response)
             resolved = responses.resolved
-            response_in_room = ResponseDetails(
-                response_id=response_id,
+            state = responses.state.value
+            response_in_room = ResponseDetail(
+                id=response_id,
                 response=response,
                 created_date=created_date,
                 question_type=question_type,
-                resolved=resolved)
+                resolved=resolved,
+                state=state
+            )
             response_list.append(response_in_room)
         return (response_list)
 
@@ -162,9 +161,38 @@ class Query(graphene.ObjectType):
             if resolved:
                 room_response = room_response.filter_by(resolved=True)
             response_count = room_response.count()
+            active_responses = []
+            for res in room_response:
+                if res.state.value == "active":
+                    active_responses.append(res)
+            response_count = len(active_responses)
             if response_count:
                 all_responses = Query.get_room_response(
-                    self, room_response, room.id)
+                    self, active_responses, room.id)
+                responses = RoomResponse(
+                    room_id=room.id,
+                    room_name=room_name,
+                    total_responses=response_count,
+                    response=all_responses)
+                response.append(responses)
+        return response
+
+    def get_all_archived_responses(self, info):
+        response = []
+        rooms = RoomModel.query.filter(RoomModel.state == "active").all()
+        for room in rooms:
+            room_name = room.name
+            room_response = Response.get_query(
+                info
+            ).filter_by(room_id=room.id).all()
+            archived_responses = []
+            for res in room_response:
+                if res.state.value == "archived":
+                    archived_responses.append(res)
+            response_count = len(archived_responses)
+            if response_count:
+                all_responses = Query.get_room_response(
+                    self, archived_responses, room.id)
                 responses = RoomResponse(
                     room_id=room.id,
                     room_name=room_name,
@@ -204,6 +232,8 @@ class Query(graphene.ObjectType):
             int, info, kwargs.get('room'), kwargs.get('upper_limit_count'),
             kwargs.get('lower_limit_count'), responses, Query
         )
+        if kwargs.get('archived'):
+            responses = Query.get_all_archived_responses(self, info)
         if kwargs.get('page') and kwargs.get('per_page'):
             paginated_response = ListPaginate(
                 iterable=responses, per_page=kwargs.get('per_page'),

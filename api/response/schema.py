@@ -1,17 +1,20 @@
 from datetime import datetime
 import graphene
-from helpers.auth.authentication import Auth
 from graphene_sqlalchemy import SQLAlchemyObjectType
-from api.response.models import Response as ResponseModel
-from utilities.validations import validate_empty_fields
 from graphql import GraphQLError
-from api.room.schema import Room
 from api.question.models import Question as QuestionModel
+from api.response.models import Response as ResponseModel
+from api.room.schema import Room
+from helpers.auth.authentication import Auth
 from helpers.pagination.paginate import ListPaginate
 from helpers.response.create_response import (
-    ResponseData, ResponseDetail, map_response_type,
-    create_response, create_response_details
-)
+                                              create_response,
+                                              create_response_details,
+                                              map_response_type,
+                                              ResponseDetail,
+                                              ResponseData)
+from utilities.utility import update_entity_fields
+from utilities.validations import validate_empty_fields
 
 
 class Response(SQLAlchemyObjectType):
@@ -123,13 +126,16 @@ class Query(graphene.ObjectType):
             created_date = current_response.created_date
             response = current_response.response
             resolved = current_response.resolved
+            state = current_response.state.value
             response_in_room = ResponseDetail(
                 id=response_id,
                 response=map_response_type(
                     current_response.question_type.name
                 )(response),
                 created_date=created_date,
-                resolved=resolved)
+                resolved=resolved,
+                state=state
+            )
             mapped_response.append(response_in_room)
         return mapped_response
 
@@ -140,12 +146,13 @@ class Query(graphene.ObjectType):
         per_page = kwargs.get('per_page')
         query = Response.get_query(info)
         room_feedback = query.filter_by(room_id=kwargs['room_id'])
-        if room_feedback.count() < 1:
+        active_feedback = room_feedback.filter(ResponseModel.state == "active")
+        if active_feedback.count() < 1:
             raise GraphQLError("This room\
  doesn't exist or doesn't have feedback.")
 
         if page and per_page:
-            responses = room_feedback.offset((page * per_page) - per_page)\
+            responses = active_feedback.offset((page * per_page) - per_page)\
                 .limit(per_page)
             paginated_response = ListPaginate(
                 iterable=room_feedback.all(),
@@ -161,7 +168,8 @@ class Query(graphene.ObjectType):
             room_response = RoomResponses(response=mapped_responses,
                                           room_id=kwargs['room_id'],
                                           total_responses=len(mapped_responses),
-                                          room_name=room_feedback[0].room.name)
+                                          room_name=active_feedback[0].room.name
+                                          )
             all_room_responses.append(room_response)
             return PaginatedResponse(responses=all_room_responses,
                                      has_previous=has_previous,
@@ -175,7 +183,7 @@ class Query(graphene.ObjectType):
         room_response = RoomResponses(response=mapped_responses,
                                       room_id=kwargs['room_id'],
                                       total_responses=len(mapped_responses),
-                                      room_name=room_feedback[0].room.name)
+                                      room_name=active_feedback[0].room.name)
         all_room_responses.append(room_response)
         return PaginatedResponse(responses=all_room_responses)
 
@@ -251,6 +259,42 @@ class HandleMultipleResponse(graphene.Mutation):
         )
 
 
+class ArchiveResponse(graphene.Mutation):
+    """
+    Returns payload after archiving a resolved response
+    """
+
+    class Arguments:
+        response_id = graphene.Int(required=True)
+
+    room_response = graphene.Field(ResponseDetail)
+
+    @Auth.user_roles('Admin', 'Super_Admin')
+    def mutate(self, info, response_id):
+        responses_query = Response.get_query(info)
+        exact_response = responses_query.filter(
+            ResponseModel.id == response_id,
+            ResponseModel.state == "active", ResponseModel.resolved).first()
+        if not exact_response:
+            raise GraphQLError(
+                "The specified response does not exist\
+ or hasn't been resolved yet."
+            )
+        update_entity_fields(exact_response, state="archived")
+        exact_response.save()
+        response = map_response_type(
+            exact_response.question_type.name
+        )(exact_response.response)
+        return ArchiveResponse(room_response=ResponseDetail(
+            id=exact_response.id,
+            response=response,
+            room_id=exact_response.room_id,
+            question_type=exact_response.question_type.name,
+            resolved=exact_response.resolved,
+            state=exact_response.state.value
+        ))
+
+
 class Mutation(graphene.ObjectType):
     create_response = CreateResponse.Field(
         description="Mutation to create a new response taking the arguments\
@@ -266,4 +310,9 @@ class Mutation(graphene.ObjectType):
         description="Mutation to mark or unmark multiple responses as resolved\
             \n- responses: List field of the responses to be handle\
             \n- resolved: Boolean field to set resolved as true or false"
+    )
+    archive_resolved_response = ArchiveResponse.Field(
+        description="Mutation to archive resolved responses\
+            \n- room_response: Field for the response inputs\
+            \n- response_id: Unique key identifier of a room_response"
     )

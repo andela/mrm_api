@@ -66,7 +66,7 @@ query{{
             totalResponses
             roomName
             response{{
-                responseId
+                id
                 response{{
                   ... on Rate{{
                     rate
@@ -99,7 +99,7 @@ query{{
             totalResponses
             roomName
             response{{
-                responseId
+                id
                 response{{
                   ... on Rate{{
                     rate
@@ -130,7 +130,7 @@ query{{
             totalResponses
             roomName
             response{{
-                responseId
+                id
                 response{{
                   ... on Rate{{
                     rate
@@ -161,7 +161,7 @@ query{{
             totalResponses
             roomName
             response{{
-                responseId
+                id
                 response{{
                   ... on Rate{{
                     rate
@@ -185,33 +185,33 @@ query{{
 '''.format(end_date, start_date)
 
 get_room_response_query_by_date_data = {
-  "data": {
-    "allRoomResponses": {
-      "responses": [
-        {
-          "totalResponses": 2,
-          "roomName": "Entebbe",
-          "response": [
-            {
-              "responseId": 2,
-              "response": {
-                "options": [
-                  "marker pen",
-                  "apple tv"
-                ]
-              }
-            },
-            {
-              "responseId": 1,
-              "response": {
-                "rate": 1
-              }
-            }
-          ]
+    "data": {
+        "allRoomResponses": {
+            "responses": [
+                {
+                    "totalResponses": 2,
+                    "roomName": "Entebbe",
+                    "response": [
+                        {
+                            "id": 2,
+                            "response": {
+                                "options": [
+                                    "marker pen",
+                                    "apple tv"
+                                ]
+                            }
+                        },
+                        {
+                            "id": 1,
+                            "response": {
+                                "rate": 1
+                            }
+                        }
+                    ]
+                }
+            ]
         }
-      ]
     }
-  }
 }
 
 
@@ -220,7 +220,7 @@ get_room_response_non_existence_room_id = '''{
         roomName,
         totalResponses,
         response{
-            responseId,
+            id,
             response{
           ... on Rate{
             rate
@@ -248,7 +248,7 @@ summary_room_response_query = '''{
         roomName,
         totalResponses,
         response {
-          responseId,
+          id,
           response {
             ... on Rate{
               rate
@@ -273,33 +273,33 @@ summary_room_response_query = '''{
 '''
 
 summary_room_response_data = {
-  "data": {
-    "allRoomResponses": {
-      "responses": [
-        {
-          "roomName": "Entebbe",
-          "totalResponses": 2,
-          "response": [
-            {
-              "responseId": 2,
-              "response": {
-                "options": [
-                  "marker pen",
-                  "apple tv"
-                ]
-              }
-            },
-            {
-              "responseId": 1,
-              "response": {
-                "rate": 1
-              }
-            }
-          ]
+    "data": {
+        "allRoomResponses": {
+            "responses": [
+                {
+                    "roomName": "Entebbe",
+                    "totalResponses": 2,
+                    "response": [
+                        {
+                            "id": 2,
+                            "response": {
+                                "options": [
+                                    "marker pen",
+                                    "apple tv"
+                                ]
+                            }
+                        },
+                        {
+                            "id": 1,
+                            "response": {
+                                "rate": 1
+                            }
+                        }
+                    ]
+                }
+            ]
         }
-      ]
     }
-  }
 }
 
 all_resolved_room_response_query = '''{
@@ -308,7 +308,7 @@ all_resolved_room_response_query = '''{
         roomName,
         totalResponses,
         response {
-          responseId,
+          id,
           response {
             ... on Rate{
               rate
@@ -333,27 +333,27 @@ all_resolved_room_response_query = '''{
 '''
 
 all_resolved_room_response_data = {
-  "data": {
-    "allRoomResponses": {
-      "responses": [
-        {
-          "roomName": "Entebbe",
-          "totalResponses": 1,
-          "response": [
-            {
-              "responseId": 2,
-              "response": {
-                "options": [
-                  "marker pen",
-                  "apple tv"
-                ]
-              }
-            }
-          ]
+    "data": {
+        "allRoomResponses": {
+            "responses": [
+                {
+                    "roomName": "Entebbe",
+                    "totalResponses": 1,
+                    "response": [
+                        {
+                            "id": 2,
+                            "response": {
+                                "options": [
+                                    "marker pen",
+                                    "apple tv"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
         }
-      ]
     }
-  }
 }
 
 filter_by_response_query = '''
@@ -363,7 +363,7 @@ query{
             totalResponses
             roomName
             response{
-                responseId
+                id
             }
         }
     }
@@ -377,7 +377,7 @@ query{
             totalResponses
             roomName
             response{
-                responseId
+                id
             }
         }
     }
@@ -391,7 +391,7 @@ search_response_by_room_query = '''
             totalResponses
             roomName
             response{
-                responseId
+                id
             }
         }
     }
@@ -405,7 +405,7 @@ query{
             totalResponses
             roomName
             response{
-                responseId
+                id
             }
         }
     }
@@ -419,7 +419,7 @@ query{
             totalResponses
             roomName
             response{
-                responseId
+                id
             }
         }
     }
@@ -433,7 +433,7 @@ query{
             totalResponses
             roomName
             response{
-                responseId
+                id
             }
         }
     }
@@ -447,7 +447,7 @@ query{
             totalResponses
             roomName
             response{
-                responseId
+                id
             }
         }
     }
@@ -462,7 +462,7 @@ query{
             roomId
             roomName
             response{
-                responseId
+                id
             }
         }
     }
@@ -476,10 +476,10 @@ filter_by_response_data = {
                 {
                     'response': [
                         {
-                            'responseId': 2,
+                            'id': 2,
                         },
                         {
-                            'responseId': 1,
+                            'id': 1,
                         }
 
                     ],
@@ -498,7 +498,7 @@ query{
             totalResponses
             roomName
             response{
-                responseId
+                id
                 response {
                   ... on Rate{
                     rate
@@ -523,27 +523,27 @@ query{
 '''
 
 search_resolved_responses_by_room_name_data = {
-  "data": {
-    "allRoomResponses": {
-      "responses": [
-        {
-          "roomName": "Entebbe",
-          "totalResponses": 1,
-          "response": [
-            {
-              "responseId": 2,
-              "response": {
-                "options": [
-                  "marker pen",
-                  "apple tv"
-                ]
-              }
-            }
-          ]
+    "data": {
+        "allRoomResponses": {
+            "responses": [
+                {
+                    "roomName": "Entebbe",
+                    "totalResponses": 1,
+                    "response": [
+                        {
+                            "id": 2,
+                            "response": {
+                                "options": [
+                                    "marker pen",
+                                    "apple tv"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
         }
-      ]
     }
-  }
 }
 
 query_paginated_responses = '''
@@ -553,7 +553,7 @@ query_paginated_responses = '''
         roomName,
         totalResponses,
         response {
-          responseId,
+          id,
           response {
             ... on Rate{
               rate
@@ -580,36 +580,36 @@ query_paginated_responses = '''
 '''
 
 query_paginated_responses_response = {
-  "data": {
-    "allRoomResponses": {
-      "responses": [
-        {
-          "roomName": "Entebbe",
-          "totalResponses": 2,
-          "response": [
-            {
-              "responseId": 2,
-              "response": {
-                "options": [
-                  "marker pen",
-                  "apple tv"
-                ]
-              }
-            },
-            {
-              "responseId": 1,
-              "response": {
-                "rate": 1
-              }
-            }
-          ]
+    "data": {
+        "allRoomResponses": {
+            "responses": [
+                {
+                    "roomName": "Entebbe",
+                    "totalResponses": 2,
+                    "response": [
+                        {
+                            "id": 2,
+                            "response": {
+                                "options": [
+                                    "marker pen",
+                                    "apple tv"
+                                ]
+                            }
+                        },
+                        {
+                            "id": 1,
+                            "response": {
+                                "rate": 1
+                            }
+                        }
+                    ]
+                }
+            ],
+            "hasNext": False,
+            "hasPrevious": False,
+            "pages": 1
         }
-      ],
-      "hasNext": False,
-      "hasPrevious": False,
-      "pages": 1
     }
-  }
 }
 
 query_paginated_responses_empty_page = '''
@@ -619,7 +619,7 @@ query_paginated_responses_empty_page = '''
         roomName,
         totalResponses,
         response {
-          responseId,
+          id,
           response{
             ... on Rate{
               rate
@@ -674,18 +674,18 @@ mark_response_as_resolved_mutation = '''
 '''
 
 mark_user_response_as_resolved_mutation_response = {
-  "data": {
-    "resolveRoomResponse": {
-      "roomResponse": {
-        "resolved": True,
-        "id": 1,
-        "response": {
-          "rate": 1
-        },
-        "roomId": 1
-      }
+    "data": {
+        "resolveRoomResponse": {
+            "roomResponse": {
+                "resolved": True,
+                "id": 1,
+                "response": {
+                    "rate": 1
+                },
+                "roomId": 1
+            }
+        }
     }
-  }
 }
 
 mark_response_as_resolved_mutation_with_an_invalid_response_id = '''
@@ -771,22 +771,22 @@ mark_multiple_as_resolved_mutation = '''
 '''
 
 mark_multiple_as_resolved_response = {
-  "data": {
-    "resolveMultipleResponses": {
-      "handledResponses": {
-        "responses": [
-          {
-            "id": 1,
-            "resolved": True,
-            "response": {
-              "rate": 1
+    "data": {
+        "resolveMultipleResponses": {
+            "handledResponses": {
+                "responses": [
+                    {
+                        "id": 1,
+                        "resolved": True,
+                        "response": {
+                            "rate": 1
+                        }
+                    }
+                ],
+                "totalResponses": 1
             }
-          }
-        ],
-        "totalResponses": 1
-      }
+        }
     }
-  }
 }
 
 mark_multiple_as_unresolved_mutation = '''
@@ -820,22 +820,22 @@ mark_multiple_as_unresolved_mutation = '''
 '''
 
 mark_multiple_as_unresolved_response = {
-  "data": {
-    "resolveMultipleResponses": {
-      "handledResponses": {
-        "responses": [
-          {
-            "id": 1,
-            "resolved": False,
-            "response": {
-              "rate": 1
+    "data": {
+        "resolveMultipleResponses": {
+            "handledResponses": {
+                "responses": [
+                    {
+                        "id": 1,
+                        "resolved": False,
+                        "response": {
+                            "rate": 1
+                        }
+                    }
+                ],
+                "totalResponses": 1
             }
-          }
-        ],
-        "totalResponses": 1
-      }
+        }
     }
-  }
 }
 
 mark_multiple_as_resolved_with_invalid_id = '''
