@@ -321,7 +321,8 @@ class Query(graphene.ObjectType):
         query = Room.get_query(info)
         if name == "":
             raise GraphQLError("Please input Room Name")
-        check_room_name = list(query.filter(RoomModel.name.ilike("%" + name + "%")).all())   # noqa: E501
+        check_room_name = list(query.filter(
+            RoomModel.name.ilike("%" + name + "%"),  RoomModel.state == "active").all())  # noqa: E501
         if not check_room_name:
             raise GraphQLError("Room not found")
         return check_room_name
