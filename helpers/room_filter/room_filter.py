@@ -1,5 +1,6 @@
 from api.room.models import Room as RoomModel, RoomResource
 from api.room_resource.models import Resource
+from api.room.models import RoomResource as RoomResourceModel
 from api.location.models import Location
 from api.room.models import Room
 from sqlalchemy import String, func, cast
@@ -28,6 +29,19 @@ def room_join_location(query):
     """
     query_location = query.join(Location.rooms)
     return query_location
+
+
+def room_resources_join_room(query):
+    """
+    Join room_resources model upto room model via foreign keys
+    :param
+        queryset
+    :return
+        queryset
+    """
+    assigned_resources_query = query.join(RoomResourceModel).join(
+        RoomModel).filter(RoomModel.state == "active")
+    return assigned_resources_query
 
 
 def location_join_room():

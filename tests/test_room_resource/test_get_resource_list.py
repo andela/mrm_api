@@ -12,12 +12,14 @@ from fixtures.room_resource.get_room_resource_fixtures import (
     get_paginated_resources_inexistent_page,
     get_resource_by_room_id,
     get_resource_by_room_id_response_by_admin,
-    get_resource_by_non_existing_room_id
+    get_resource_by_non_existing_room_id,
+    filter_resources_by_labels,
+    filter_resources_by_labels_response
 )
 from fixtures.room.assign_resource_fixture import (
     assign_resource_mutation,
     assign_resource_mutation_response
-    )
+)
 from helpers.database import db_session
 from fixtures.token.token_fixture import USER_TOKEN
 
@@ -71,9 +73,9 @@ class TestGetRoomResource(BaseTestCase):
         '''
         # assign resource to a room
         CommonTestCases.admin_token_assert_equal(
-           self,
-           assign_resource_mutation,
-           assign_resource_mutation_response,
+            self,
+            assign_resource_mutation,
+            assign_resource_mutation_response,
         )
         CommonTestCases.admin_token_assert_equal(
             self,
@@ -101,4 +103,21 @@ class TestGetRoomResource(BaseTestCase):
             self,
             get_resource_by_room_id,
             "You are not authorized to perform this action"
+        )
+
+    def test_filter_room_resource_by_labels(self):
+        '''
+            Test filtering room resources by labels like
+            buildings, floor, wings
+        '''
+        # assign resource to a room
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            assign_resource_mutation,
+            assign_resource_mutation_response,
+        )
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            filter_resources_by_labels,
+            filter_resources_by_labels_response
         )

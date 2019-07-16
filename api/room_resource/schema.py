@@ -1,6 +1,6 @@
 import graphene
 from graphene_sqlalchemy import SQLAlchemyObjectType
-from sqlalchemy import func, and_
+from sqlalchemy import func, and_, String, cast
 from graphql import GraphQLError
 
 from api.room_resource.models import Resource as ResourceModel
@@ -12,6 +12,7 @@ from utilities.utility import update_entity_fields
 from helpers.auth.authentication import Auth
 from helpers.auth.error_handler import SaveContextManager
 from helpers.pagination.paginate import Paginate, validate_page
+from helpers.room_filter.room_filter import room_resources_join_room
 
 
 class Resource(SQLAlchemyObjectType):
@@ -147,8 +148,16 @@ class PaginatedResource(Paginate):
         page = self.page
         per_page = self.per_page
         unique = self.unique
-        query = Resource.get_query(info)
-        active_resources = query.filter(ResourceModel.state == "active")
+        resource_labels = self.filter_data.get('resource_labels')
+        active_resources = Resource.get_query(info).filter(
+            ResourceModel.state == "active")
+        if resource_labels:
+            active_resources_query = room_resources_join_room(active_resources)
+            for resourse_label in resource_labels.split(','):
+                active_resources = active_resources_query.filter(
+                    cast(RoomModel.room_labels, String)
+                    .ilike(f'%{resourse_label.strip()}%'))
+
         if not page:
             if unique:
                 return active_resources.distinct(ResourceModel.name).all()
@@ -245,10 +254,12 @@ class Query(graphene.ObjectType):
         page=graphene.Int(),
         per_page=graphene.Int(),
         unique=graphene.Boolean(),
+        resource_labels=graphene.String(),
         description="Returns a list of paginated room resources and accepts the arguments\
             \n- page: Field for page of the room response\
             \n- per_page: Field for number of responses per page\
-            \n- unique: Boolean field for uniqueroom response")
+            \n- unique: Boolean field for uniqueroom response\
+            \n- resource_labels: Labels to filter the resources with")
     get_resources_by_room_id = graphene.Field(
         lambda: RoomResources,
         room_id=graphene.Int(),
@@ -269,8 +280,8 @@ class Query(graphene.ObjectType):
 
     def resolve_all_resources(self, info, **kwargs):
         # Get all resources
-        resp = PaginatedResource(**kwargs)
-        return resp
+        response = PaginatedResource(**kwargs)
+        return response
 
     @Auth.user_roles('Admin')
     def resolve_get_resources_by_room_id(self, info, room_id):

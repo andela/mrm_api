@@ -1,4 +1,25 @@
 null = None
+filter_resources_by_labels = '''
+    query {
+        allResources(resourceLabels:"1st Floor, Wing A"){
+                    resources{
+                      name
+                    }
+              }
+        }
+'''
+
+filter_resources_by_labels_response = {
+    "data": {
+        "allResources": {
+            "resources": [
+                {
+                    "name": "Markers"
+                }
+            ]
+        }
+    }
+}
 
 resource_query = '''
     query {
@@ -47,18 +68,18 @@ get_paginated_room_resources = '''
 '''
 
 get_paginated_room_resources_response = {
-  "data": {
-    "allResources": {
-      "resources": [
-        {
-          "name": "Markers"
+    "data": {
+        "allResources": {
+            "resources": [
+                {
+                    "name": "Markers"
+                }
+            ],
+            "hasNext": False,
+            "hasPrevious": False,
+            "pages": 1
         }
-      ],
-      "hasNext": False,
-      "hasPrevious": False,
-      "pages": 1
     }
-  }
 }
 
 filter_unique_resources = '''
@@ -151,16 +172,16 @@ query
 }'''
 
 get_resource_by_room_id_response_by_admin = {
-  "data": {
-    "getResourcesByRoomId": {
-      "roomResources": [
-        {
-          "name": "Markers",
-          "id": "1"
+    "data": {
+        "getResourcesByRoomId": {
+            "roomResources": [
+                {
+                    "name": "Markers",
+                    "id": "1"
+                }
+            ]
         }
-      ]
     }
-  }
 }
 
 get_resource_by_non_existing_room_id = '''
