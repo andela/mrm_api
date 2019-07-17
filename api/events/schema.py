@@ -254,7 +254,7 @@ class Query(graphene.ObjectType):
             \n- page: Page number to select when paginating\
             \n- per_page: The maximum number of pages per page when paginating")
 
-    @Auth.user_roles('Admin', 'Default User')
+    @Auth.user_roles('Admin', 'Default User', 'Super_Admin')
     def resolve_all_events(self, info, **kwargs):
         page = kwargs.get('page')
         per_page = kwargs.get('per_page')

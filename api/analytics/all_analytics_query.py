@@ -3,10 +3,13 @@ from helpers.auth.admin_roles import admin_roles
 from helpers.calendar.all_analytics_helper import (
     AllAnalyticsHelper, Event, BookingsCount
 )
+from api.role.schema import Role
 from helpers.calendar.analytics_helper import CommonAnalytics
 from helpers.auth.authentication import Auth
 from api.room.schema import Room
 from utilities.utility import percentage_formater
+from helpers.auth.user_details import get_user_from_db
+from utilities.validator import verify_location_id
 
 
 class ConsolidatedAnalytics(graphene.ObjectType):
@@ -41,17 +44,28 @@ class Query(graphene.ObjectType):
         AllAnalytics,
         start_date=graphene.String(),
         end_date=graphene.String(),
+        location_id=graphene.Int(),
         description="Query that returns a list of all analytics")
 
-    @Auth.user_roles('Admin', 'Default User')
+    @Auth.user_roles('Admin', 'Default User', 'Super_Admin')
     def resolve_all_analytics(self, info, **kwargs):
         start_date = kwargs.get('start_date')
         end_date = kwargs.get('end_date')
+        location_id = admin_roles.user_location_for_analytics_view()
+
+        admin_details = get_user_from_db()
+        query = Role.get_query(info)
+        admin_role = query.filter_by(id=admin_details.roles[0].id).first()
+        print(admin_role.role)
+        # check that id is valid
+        verify_location_id(kwargs)
+        if admin_role.role == 'Super_Admin' and kwargs.get('location_id', None):
+            location_id = kwargs.get('location_id')
+
         unconverted_dates = {
             'start': start_date,
-            'end': end_date
+            'end': end_date,
         }
-        location_id = admin_roles.user_location_for_analytics_view()
         start_date, end_date = CommonAnalytics.all_analytics_date_validation(
             self, start_date, end_date
         )

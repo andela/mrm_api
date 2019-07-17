@@ -23,7 +23,7 @@ from api.response.models import Response
 from api.tag.models import Tag
 from api.structure.models import Structure
 from fixtures.token.token_fixture import (
-    ADMIN_TOKEN, USER_TOKEN, ADMIN_NIGERIA_TOKEN)
+    ADMIN_TOKEN, USER_TOKEN, ADMIN_NIGERIA_TOKEN, SUPER_ADMIN_TOKEN)
 
 sys.path.append(os.getcwd())
 
@@ -202,10 +202,24 @@ class CommonTestCases(BaseTestCase):
     This code is used to reduce duplication
     :params
         - admin_token_assert_equal
+        - super_admin_token_assert_equal
         - admin_token_assert_in
         - user_token_assert_equal
         - user_token_assert_in
     """
+
+    def super_admin_token_assert_equal(self, query, expected_response):
+        """
+        Make a request with admin token and use assertEquals
+        to compare the values
+        :params
+            - query, expected_response
+        """
+        headers = {"Authorization": "Bearer" + " " + SUPER_ADMIN_TOKEN}
+        response = self.app_test.post(
+            '/mrm?query=' + query, headers=headers)
+        actual_response = json.loads(response.data)
+        self.assertEquals(actual_response, expected_response)
 
     def admin_token_assert_equal(self, query, expected_response):
         """
@@ -326,6 +340,18 @@ def change_user_role_helper(func):
 def change_test_user_role(func):
     def func_wrapper(self):
         user_role = Role(role='Default User')
+        user_role.save()
+        user = User(email='mrmtestuser@andela.com', name='Test user',
+                    location="Lagos", picture='www.andela.com/testuser')
+        user.save()
+        user.roles.append(user_role)
+        db_session().commit()
+    return func_wrapper
+
+
+def change_test_user_role_to_super_admin(func):
+    def func_wrapper(self):
+        user_role = Role(role='Super_Admin')
         user_role.save()
         user = User(email='mrmtestuser@andela.com', name='Test user',
                     location="Lagos", picture='www.andela.com/testuser')
