@@ -1,3 +1,4 @@
+from unittest.mock import patch
 from tests.base import BaseTestCase
 from fixtures.room.update_firebase_token_fixtures import (
     update_mutation,
@@ -14,10 +15,12 @@ sys.path.append(os.getcwd())
 
 class TestFirebaseToken(BaseTestCase):
 
-    def test_update_firebase_token(self):
+    @patch('api.room.schema.subscriber.update_room_token.delay')
+    def test_update_firebase_token(self, mock_subscriber):
         """
         Testing successful token update
         """
+        mock_subscriber.return_value = True
         execute_query = self.client.execute(
             update_mutation,
             context_value={'session': db_session})

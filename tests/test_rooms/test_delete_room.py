@@ -1,3 +1,4 @@
+from unittest.mock import patch
 from tests.base import BaseTestCase, CommonTestCases
 
 from fixtures.room.delete_room_fixtures import (
@@ -7,7 +8,9 @@ from fixtures.room.delete_room_fixtures import (
 
 
 class TestDeleteRoom(BaseTestCase):
-    def test_delete_room_admin_user(self):
+    @patch('api.room.schema.subscriber.remove_room.delay')
+    def test_delete_room_admin_user(self, mock_subscriber):
+        mock_subscriber.return_value = True
         CommonTestCases.admin_token_assert_in(
             self,
             delete_room_query,

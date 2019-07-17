@@ -27,10 +27,12 @@ sys.path.append(os.getcwd())
 
 class TestCreateRoom(BaseTestCase):
 
-    def test_room_creation(self):
+    @patch('api.room.schema.subscriber.add_room.delay')
+    def test_room_creation(self, mock_subscriber):
         """
         Testing for room creation
         """
+        mock_subscriber.return_value = True
         headers = {"Authorization": "Bearer" + " " + ADMIN_TOKEN}
 
         query = self.app_test.post(query_string, headers=headers)
@@ -68,10 +70,12 @@ class TestCreateRoom(BaseTestCase):
             invalid_room_label_query,
             "Room label is not a valid string type")
 
-    def test_valid_room_label_format(self):
+    @patch('api.room.schema.subscriber.add_room.delay')
+    def test_valid_room_label_format(self, mock_subscriber):
         """
         Test when the room label inserted is valid
         """
+        mock_subscriber.return_value = True
         CommonTestCases.admin_token_assert_equal(
             self,
             room_mutation_query,
