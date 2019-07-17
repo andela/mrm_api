@@ -23,6 +23,24 @@ class MissingItems(graphene.ObjectType):
     missing_items = graphene.List(Resource)
 
 
+class ResponseData(graphene.Union):
+    class Meta:
+        types = (Rate, SelectedOptions, TextArea, MissingItems)
+
+    @classmethod
+    def resolve_type(cls, instance, info):
+        return type(instance)
+
+
+class ResponseDetail(graphene.ObjectType):
+    id = graphene.Int()
+    room_id = graphene.Int()
+    created_date = graphene.DateTime()
+    response = graphene.Field(ResponseData)
+    question_type = graphene.String()
+    resolved = graphene.Boolean()
+
+
 def map_response_type(question_type):
     return {
             'check': lambda check_options: SelectedOptions(
@@ -124,3 +142,14 @@ def create_response(info, question_type, errors, responses, **kwargs): # noqa
     else:
         errors.append("Kindly respond to the right question type of {}".format(question_type))  # noqa
     return responses, errors
+
+
+def create_response_details(response, room_response):
+    return ResponseDetail(
+                id=room_response.id,
+                created_date=room_response.created_date,
+                response=response,
+                room_id=room_response.room_id,
+                question_type=room_response.question_type.name,
+                resolved=room_response.resolved
+            )
