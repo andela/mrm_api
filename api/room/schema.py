@@ -1,9 +1,7 @@
-import requests
 import graphene
 from sqlalchemy import func
 from graphene_sqlalchemy import (SQLAlchemyObjectType)
 from graphql import GraphQLError
-from config import Config
 from api.room.models import Room as RoomModel
 from api.tag.models import Tag as TagModel
 from utilities.validations import (
@@ -14,6 +12,7 @@ from utilities.validations import (
 from utilities.utility import update_entity_fields
 from helpers.auth.authentication import Auth
 from helpers.auth.admin_roles import admin_roles
+from helpers.room import subscriber
 from utilities.validator import (
     verify_location_id,
     ErrorHandler)
@@ -141,9 +140,7 @@ class CreateRoom(graphene.Mutation):
             room_tags = kwargs.pop('room_tags')
         room = RoomModel(**kwargs)
         save_room_tags(room, room_tags)
-        requests.get(url=Config.MRM_PUSH_URL + "/add_room",
-                     params={"calendar_id": room.calendar_id,
-                             "firebase_token": room.firebase_token})
+        subscriber.add_room.delay(room.calendar_id, room.firebase_token)
         return CreateRoom(room=room)
 
 
@@ -232,8 +229,7 @@ class DeleteRoom(graphene.Mutation):
         admin_roles.update_delete_rooms_create_resource(room_id)
         update_entity_fields(exact_room, state="archived", **kwargs)
         exact_room.save()
-        requests.delete(url=Config.MRM_PUSH_URL + "/delete_room",
-                        params={"calendar_id": exact_room.calendar_id})
+        subscriber.remove_room.delay(exact_room.calendar_id)
         return DeleteRoom(room=exact_room)
 
 
@@ -256,9 +252,8 @@ class UpdateFirebaseToken(graphene.Mutation):
             raise GraphQLError("Room not found")
         update_entity_fields(room, **kwargs)
         room.save()
-        requests.get(url=Config.MRM_PUSH_URL + "/token",
-                     params={"calendar_id": room.calendar_id,
-                             "firebase_token": room.firebase_token})
+        subscriber.update_room_token.delay(
+            room.calendar_id, room.firebase_token)
         return UpdateFirebaseToken(room=room)
 
 
