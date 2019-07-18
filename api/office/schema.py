@@ -37,7 +37,7 @@ class CreateOffice(graphene.Mutation):
 
     office = graphene.Field(Office)
 
-    @Auth.user_roles('Admin')
+    @Auth.user_roles('Admin', 'Super_Admin')
     def mutate(self, info, **kwargs):
         location = Location.query.filter_by(id=kwargs['location_id']).first()
         if not location:
@@ -72,7 +72,7 @@ class DeleteOffice(graphene.Mutation):
 
     office = graphene.Field(Office)
 
-    @Auth.user_roles('Admin')
+    @Auth.user_roles('Admin', 'Super_Admin')
     def mutate(self, info, office_id, **kwargs):
         query_office = Office.get_query(info)
         result = query_office.filter(OfficeModel.state == "active")
@@ -97,7 +97,7 @@ class UpdateOffice(graphene.Mutation):
 
     office = graphene.Field(Office)
 
-    @Auth.user_roles('Admin')
+    @Auth.user_roles('Admin', 'Super_Admin')
     def mutate(self, info, office_id, **kwargs):
         validate_empty_fields(**kwargs)
         get_office = Office.get_query(info)

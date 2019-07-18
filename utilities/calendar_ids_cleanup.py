@@ -16,7 +16,7 @@ class Query(graphene.ObjectType):
         DeleteResponse,
         description="Query to return a list of valid calendar ids")
 
-    @Auth.user_roles('Admin')
+    @Auth.user_roles('Admin', 'Super_Admin')
     def resolve_validate_rooms_calendar_ids(self, info):
         '''
         Validates the calendar IDs of all rooms in the database.

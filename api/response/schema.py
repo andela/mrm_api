@@ -9,18 +9,9 @@ from api.room.schema import Room
 from api.question.models import Question as QuestionModel
 from helpers.pagination.paginate import ListPaginate
 from helpers.response.create_response import (
-    create_response, Rate, SelectedOptions, TextArea, MissingItems
+    ResponseData, ResponseDetail, map_response_type,
+    create_response, create_response_details
 )
-from helpers.response.create_response import map_response_type
-
-
-class ResponseData(graphene.Union):
-    class Meta:
-        types = (Rate, SelectedOptions, TextArea, MissingItems)
-
-    @classmethod
-    def resolve_type(cls, instance, info):
-        return type(instance)
 
 
 class Response(SQLAlchemyObjectType):
@@ -34,20 +25,16 @@ class Response(SQLAlchemyObjectType):
     response = graphene.Field(ResponseData)
 
 
-class ResponseDetail(graphene.ObjectType):
-    id = graphene.Int()
-    room_id = graphene.Int()
-    created_date = graphene.DateTime()
-    response = graphene.Field(ResponseData)
-    question_type = graphene.String()
-    resolved = graphene.Boolean()
-
-
 class RoomResponses(graphene.ObjectType):
     room_id = graphene.Int()
     room_name = graphene.String()
     total_responses = graphene.Int()
     response = graphene.List(ResponseDetail)
+
+
+class HandledResponses(graphene.ObjectType):
+    total_responses = graphene.Int()
+    responses = graphene.List(ResponseDetail)
 
 
 class PaginatedResponse(graphene.ObjectType):
@@ -146,7 +133,7 @@ class Query(graphene.ObjectType):
             mapped_response.append(response_in_room)
         return mapped_response
 
-    @Auth.user_roles('Admin')
+    @Auth.user_roles('Admin', 'Super_Admin')
     def resolve_get_room_response(self, info, **kwargs):
         # Get the room's feedback
         page = kwargs.get('page')
@@ -203,7 +190,7 @@ class HandleRoomResponse(graphene.Mutation):
 
     room_response = graphene.Field(ResponseDetail)
 
-    @Auth.user_roles('Admin')
+    @Auth.user_roles('Admin', 'Super_Admin')
     def mutate(self, info, response_id, **kwargs):
         query_responses = Response.get_query(info)
         room_response = query_responses.filter(
@@ -220,13 +207,46 @@ class HandleRoomResponse(graphene.Mutation):
             room_response.question_type.name
         )(room_response.response)
         return HandleRoomResponse(
-            room_response=ResponseDetail(
-                id=room_response.id,
-                created_date=room_response.created_date,
-                response=response,
-                room_id=room_response.room_id,
-                question_type=room_response.question_type.name,
-                resolved=room_response.resolved
+            room_response=create_response_details(response, room_response)
+        )
+
+
+class HandleMultipleResponse(graphene.Mutation):
+    """
+        Returns handled responses on marking or unmarking
+        multiple responses as resolved
+    """
+    class Arguments:
+        responses = graphene.List(graphene.Int, required=True)
+        resolved = graphene.Boolean()
+
+    handledResponses = graphene.Field(HandledResponses)
+
+    @Auth.user_roles('Admin')
+    def mutate(self, info, responses, resolved):
+        handled_responses = []
+        query_responses = Response.get_query(info)
+        for response in responses:
+            room_response = query_responses.filter(
+                ResponseModel.id == response).first()
+            if not room_response:
+                raise GraphQLError(
+                    "Response " + str(response) + " does not exist"
+                )
+        for response in responses:
+            room_response = query_responses.filter(
+                ResponseModel.id == response).first()
+            room_response.resolved = resolved
+            room_response.save()
+            response = map_response_type(
+                room_response.question_type.name
+            )(room_response.response)
+            response = create_response_details(response, room_response)
+            handled_responses.append(response)
+        return HandleMultipleResponse(
+            handledResponses=HandledResponses(
+                responses=handled_responses,
+                total_responses=len(handled_responses)
             )
         )
 
@@ -241,4 +261,9 @@ class Mutation(graphene.ObjectType):
         description="Mutation to mark or unmark a response as resolved\
             \n- room_response: Field for the response inputs\
             \n- response_id: Unique key identifier of a room_response"
+    )
+    resolve_multiple_responses = HandleMultipleResponse.Field(
+        description="Mutation to mark or unmark multiple responses as resolved\
+            \n- responses: List field of the responses to be handle\
+            \n- resolved: Boolean field to set resolved as true or false"
     )

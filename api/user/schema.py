@@ -140,7 +140,7 @@ class DeleteUser(graphene.Mutation):
 
     user = graphene.Field(User)
 
-    @Auth.user_roles('Admin')
+    @Auth.user_roles('Admin', 'Super_Admin')
     def mutate(self, info, email, **kwargs):
         query_user = User.get_query(info)
         active_user = query_user.filter(UserModel.state == "active")
@@ -168,7 +168,7 @@ class ChangeUserRole(graphene.Mutation):
 
     user = graphene.Field(User)
 
-    @Auth.user_roles('Admin')
+    @Auth.user_roles('Admin', 'Super_Admin')
     def mutate(self, info, email, **kwargs):
         query_user = User.get_query(info)
         active_user = query_user.filter(UserModel.state == "active")
@@ -237,7 +237,7 @@ class InviteToConverge(graphene.Mutation):
 
     email = graphene.String()
 
-    @Auth.user_roles('Admin')
+    @Auth.user_roles('Admin', 'Super_Admin')
     def mutate(self, info, email):
         query_user = User.get_query(info)
         active_user = query_user.filter(UserModel.state == "active")
