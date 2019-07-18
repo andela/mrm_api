@@ -4,12 +4,12 @@ from sqlalchemy.orm import relationship
 
 from helpers.database import Base
 from utilities.validations import validate_empty_fields
-from utilities.utility import Utility, StateType
+from utilities.utility import Utility, StateType, ActivityType
 
 
 class Devices(Base, Utility):
     __tablename__ = 'devices'
-    id = Column(Integer, Sequence('devices_id_seq', start=1, increment=1), primary_key=True) # noqa
+    id = Column(Integer, Sequence('devices_id_seq', start=1, increment=1), primary_key=True)  # noqa
     name = Column(String, nullable=False)
     device_type = Column(String, nullable=False)
     date_added = Column(DateTime, nullable=False)
@@ -18,6 +18,7 @@ class Devices(Base, Utility):
     room_id = Column(Integer, ForeignKey('rooms.id', ondelete="CASCADE"))
     room = relationship('Room')
     state = Column(Enum(StateType), default="active")
+    activity = Column(Enum(ActivityType), default="online")
 
     def __init__(self, **kwargs):
         validate_empty_fields(**kwargs)

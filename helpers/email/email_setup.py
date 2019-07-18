@@ -30,7 +30,7 @@ class SendEmail:
             html=self.template,
             sender=self.sender)
 
-    @celery.task
+    @celery.task(name='asynchronous-email-notifications')
     def send_async_email(msg_dict):
         mail = Mail()
         msg = Message()

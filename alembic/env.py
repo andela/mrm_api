@@ -45,7 +45,7 @@ from api.question.models import Question
 from api.response.models import Response
 from api.tag.models import Tag
 from api.structure.models import Structure
-
+from admin_notifications.models import AdminNotification
 
 target_metadata = Base.metadata
 

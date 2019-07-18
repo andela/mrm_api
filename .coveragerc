@@ -13,5 +13,3 @@ omit =
 
 [html]
 directory=html_coverage_report
-
-    
