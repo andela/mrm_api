@@ -1,6 +1,9 @@
 import graphene
 from graphene_sqlalchemy import SQLAlchemyObjectType
 from graphql import GraphQLError
+import pytz
+from dateutil import parser
+from datetime import timedelta
 
 from api.events.models import Events as EventsModel
 from api.room.models import Room as RoomModel
@@ -8,13 +11,14 @@ from helpers.calendar.events import RoomSchedules, CalendarEvents
 from helpers.email.email import notification
 from helpers.calendar.credentials import get_single_calendar_event
 from helpers.auth.authentication import Auth
-from helpers.calendar.analytics_helper import CommonAnalytics
-from helpers.auth.user_details import get_user_from_db
 from helpers.pagination.paginate import ListPaginate
 from helpers.devices.devices import update_device_last_seen
-import pytz
-from dateutil import parser
-from datetime import datetime, timedelta
+from helpers.events_filter.events_filter import (
+    filter_events_by_date_range,
+    validate_page_and_per_page
+)
+
+utc = pytz.utc
 
 
 class Events(SQLAlchemyObjectType):
@@ -23,14 +27,6 @@ class Events(SQLAlchemyObjectType):
     """
     class Meta:
         model = EventsModel
-
-
-class DailyRoomEvents(graphene.ObjectType):
-    """
-    Returns days with their events
-    """
-    day = graphene.String()
-    events = graphene.List(Events)
 
 
 class EventCheckin(graphene.Mutation):
@@ -228,111 +224,62 @@ class Mutation(graphene.ObjectType):
              event[required]")
 
 
-class PaginatedDailyRoomEvents(graphene.ObjectType):
+class PaginateEvents(graphene.ObjectType):
     """
-    Paginated result for daily room events
+        Paginate the number of events returned
     """
-    DailyRoomEvents = graphene.List(DailyRoomEvents)
-    has_previous = graphene.Boolean()
-    has_next = graphene.Boolean()
+    events = graphene.List(Events)
     pages = graphene.Int()
     query_total = graphene.Int()
+    has_next = graphene.Boolean()
+    has_previous = graphene.Boolean()
 
 
 class Query(graphene.ObjectType):
     all_events = graphene.Field(
-        PaginatedDailyRoomEvents,
-        start_date=graphene.String(),
-        end_date=graphene.String(),
+        PaginateEvents,
         page=graphene.Int(),
         per_page=graphene.Int(),
+        start_date=graphene.String(),
+        end_date=graphene.String(),
         description="Query that returns a list of events given the arguments\
-            \n- start_date: The date and time to start selection \
-                            when filtering by time period\
-            \n- end_date: The date and time to end selection \
-                            when filtering by time period\
+            \n- start_date: The date and time to start selection in range \
+                            when filtering by the time period\
+            \n- end_date: The date and time to end selection in range \
+                            when filtering by the time period\
             \n- page: Page number to select when paginating\
-            \n- per_page: The maximum number of pages per page when paginating")
+            \n- per_page: The maximum number of events per page when paginating") # noqa
 
     @Auth.user_roles('Admin', 'Default User', 'Super_Admin')
     def resolve_all_events(self, info, **kwargs):
+        start_date = kwargs.get('start_date')
+        end_date = kwargs.get('end_date')
         page = kwargs.get('page')
         per_page = kwargs.get('per_page')
-        if page is not None and page < 1:
-            raise GraphQLError("page must be at least 1")
-        if per_page is not None and per_page < 1:
-            raise GraphQLError("perPage must be at least 1")
-        if page and not per_page:
-            raise GraphQLError("perPage argument missing")
-        if per_page and not page:
-            raise GraphQLError("page argument missing")
-        user = get_user_from_db()
-        start_date, end_date = CommonAnalytics.all_analytics_date_validation(
-            self, kwargs['start_date'], kwargs['end_date']
-        )
+        page, per_page = validate_page_and_per_page(page, per_page)
         query = Events.get_query(info)
-        all_events, all_dates = CommonAnalytics.get_all_events_and_dates(
+        response = filter_events_by_date_range(
             query, start_date, end_date
-        )
-        events_in_location = CalendarEvents().get_events_in_location(
-            user, all_events)
-        all_days_events = []
-        for date in set(all_dates):
-            daily_events = []
-            for event in events_in_location:
-                CommonAnalytics.format_date(event.start_time)
-                event_start_date = parser.parse(
-                    event.start_time).astimezone(pytz.utc)
-                day_of_event = event_start_date.strftime("%a %b %d %Y")
-                if date == day_of_event:
-                    daily_events.append(event)
-            if page and per_page:
-                events = divide_daily_events_per_page(
-                    self, date, per_page, daily_events)
-                all_days_events = all_days_events + events
-            else:
-                all_days_events.append(
-                    DailyRoomEvents(
-                        day=date,
-                        events=daily_events
-                    )
-                )
-            all_days_events.sort(key=lambda x: datetime.strptime(x.day, "%a %b %d %Y"), reverse=True) # noqa
-        if page and per_page:
-            paginated_events = ListPaginate(
-                iterable=all_days_events,
-                per_page=1,
-                page=page)
-            has_previous = paginated_events.has_previous
-            has_next = paginated_events.has_next
-            current_page = paginated_events.current_page
-            pages = paginated_events.pages
-            query_total = paginated_events.query_total
-            return PaginatedDailyRoomEvents(
-                                     DailyRoomEvents=current_page,
-                                     has_previous=has_previous,
-                                     has_next=has_next,
-                                     query_total=query_total,
-                                     pages=pages)
-
-        return PaginatedDailyRoomEvents(DailyRoomEvents=all_days_events)
-
-
-def divide_daily_events_per_page(self, date, max_per_page, daily_events):
-    events = []
-    max_daily_events = max_per_page
-    events_per_page = []
-    for event_index, day_event in enumerate(daily_events):
-        event_number = event_index + 1
-        events_per_page.append(day_event)
-        if (event_number == max_daily_events or
-                len(daily_events) == event_number):
-            events.append(
-                DailyRoomEvents(
-                    day=date,
-                    events=events_per_page
-                )
             )
-            events_per_page = []
-            max_daily_events += max_per_page
-    return events
+        response.sort(
+            key=lambda x: parser.parse(x.start_time).astimezone(utc),
+            reverse=True)
+
+        if page and per_page:
+            paginated_response = ListPaginate(
+                iterable=response,
+                per_page=per_page,
+                page=page)
+            current_page = paginated_response.current_page
+            has_previous = paginated_response.has_previous
+            has_next = paginated_response.has_next
+            pages = paginated_response.pages
+            query_total = paginated_response.query_total
+            return PaginateEvents(
+                events=current_page,
+                has_previous=has_previous,
+                has_next=has_next,
+                query_total=query_total,
+                pages=pages)
+
+        return PaginateEvents(events=response)

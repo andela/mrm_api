@@ -10,8 +10,6 @@ from helpers.auth.admin_roles import admin_roles
 from flask import request
 from flask_json import JsonError
 from api.events.models import Events as EventsModel
-import pytz
-from dateutil import parser
 
 
 class EventsDuration(graphene.ObjectType):
@@ -211,19 +209,3 @@ class CommonAnalytics:
             dates.remove(last_month)
         dates.append([last_month_start_date, end_date])
         return dates
-
-    @staticmethod
-    def get_all_events_and_dates(query, start_date, end_date):
-        all_events = query.filter(
-            EventsModel.state == 'active',
-            EventsModel.end_time < end_date,
-            EventsModel.start_time > start_date
-            ).all()
-        all_dates = []
-        for event in all_events:
-            CommonAnalytics.format_date(event.start_time)
-            event_start_date = parser.parse(
-                event.start_time).astimezone(pytz.utc)
-            day_of_event = event_start_date.strftime("%a %b %d %Y")
-            all_dates.append(day_of_event)
-        return all_events, all_dates
