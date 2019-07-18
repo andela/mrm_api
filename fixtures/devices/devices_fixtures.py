@@ -49,8 +49,8 @@ expected_response_devices_with_filter = {
                 "name": "Samsung"
             }
         ]
-        }
     }
+}
 
 query_device = '''
         {
@@ -190,6 +190,59 @@ update_device_query = '''
             }
 '''
 
+update_device_activity_mutation = '''
+            mutation {
+            updateDeviceActivity(deviceId:2){
+                device{
+                    id
+                }
+            }
+            }
+'''
+
+expected_update_device_activity_response = {
+    "data": {
+        "updateDeviceActivity": {
+            "device": {
+                "id": "2"
+            }
+        }
+    }
+}
+
+
+query_non_existent_device_id = '''
+mutation {
+            updateDeviceActivity(deviceId:1000){
+                device{
+                name
+                location
+                deviceType
+                activity
+                }
+            }
+            }
+'''
+expected_response_non_existent_device_id = {
+    "errors": [
+        {
+            "message": "Device not found",
+            "locations": [
+                {
+                    "line": 2,
+                    "column": 13
+                }
+            ],
+            "path": [
+                "updateDeviceActivity"
+            ]
+        }
+    ],
+    "data": {
+        "updateDeviceActivity": null
+    }
+}
+
 
 expected_update_device_response = {
     "data": {
@@ -202,6 +255,7 @@ expected_update_device_response = {
         }
     }
 }
+
 
 query_with_non_existant_id = '''
             mutation{
@@ -220,7 +274,6 @@ query_with_non_existant_id = '''
             }
             }
 '''
-
 delete_device_mutation = '''
             mutation{
             deleteDevice(
@@ -234,13 +287,13 @@ delete_device_mutation = '''
 '''
 
 delete_device_response = {
-  "data": {
-    "deleteDevice": {
-      "device": {
-        "id": "1"
-      }
+    "data": {
+        "deleteDevice": {
+            "device": {
+                "id": "1"
+            }
+        }
     }
-  }
 }
 
 create_device_query_invalid_room = '''
@@ -261,6 +314,7 @@ create_device_query_invalid_room = '''
 
 non_existant_id_response = "DeviceId not found"
 devices_query = '/mrm?query='+create_devices_query
+devices_query_response = b'{"data":{"createDevice":{"device":{"name":"Apple tablet","location":"Kenya","deviceType":"External Display"}}}}'  # noqaE501
 
 search_device_by_name = '''
     query{
@@ -289,7 +343,7 @@ search_device_by_name_expected_response = {
             'id': '1',
             'name': 'Samsung',
             'deviceType': 'External Display'
-            }]
-        }
+        }]
     }
+}
 devices_query_response = b'{"data":{"createDevice":{"device":{"name":"Apple tablet","location":"Kampala","deviceType":"External Display"}}}}'  # noqaE501

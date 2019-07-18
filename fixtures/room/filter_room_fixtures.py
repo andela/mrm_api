@@ -34,26 +34,12 @@ filter_rooms_by_location = '''query {
     }
 }
     '''
-filter_rooms_by_location_response = {
-    "data": {
-        "allRooms": {
-            "rooms": [
-                {
-                    "name": "Entebbe",
-                    "capacity": 6,
-                    "roomType": "meeting",
-                    "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg"  # noqa: E501
-                },
-                {
-                    "name": "Tana",
-                    "capacity": 14,
-                    "roomType": "meeting",
-                    "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg"  # noqa: E501
-                }
-            ]
-        }
-    }
-}
+filter_rooms_by_location_response = {'data': {'allRooms':
+                                              {'rooms': [{'name': 'Buluma', 'capacity': 10, # noqa 501
+                                                          'roomType': 'meeting',
+                                                          'imageUrl': 'https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg'}, # noqa 501
+                                                         {'name': 'Entebbe', 'capacity': 6, # noqa 501
+                                                          'roomType': 'meeting', 'imageUrl': 'https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg'}, {'name': 'Tana', 'capacity': 14, 'roomType': 'meeting', 'imageUrl': 'https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg'}]}}} # noqa 501
 filter_rooms_by_wings_and_floors = '''
     query {
     allRooms(roomLabels:"1st Floor, Wing A") {

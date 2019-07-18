@@ -41,7 +41,7 @@ class CreateDevice(graphene.Mutation):
         room_location = location_join_room().filter(
             RoomModel.id == kwargs['room_id'],
             RoomModel.state == 'active'
-            ).first()
+        ).first()
         if not room_location:
             raise GraphQLError("Room not found")
         user = get_user_from_db()
@@ -106,6 +106,28 @@ class DeleteDevice(graphene.Mutation):
         update_entity_fields(exact_device, state="archived", **kwargs)
         exact_device.save()
         return DeleteDevice(device=exact_device)
+
+
+class UpdateDeviceActivity(graphene.Mutation):
+    """Changes a device activity from online to offline"""
+    class Arguments:
+        device_id = graphene.Int(required=True)
+        activity = graphene.String()
+
+    device = graphene.Field(Devices)
+
+    @Auth.user_roles('Admin')
+    def mutate(self, info, device_id, **kwargs):
+        query_device = Devices.get_query(info)
+        result = query_device.filter(DevicesModel.activity == "offline")
+        exact_device = result.filter(
+            DevicesModel.id == device_id
+        ).first()
+        if not exact_device:
+            raise GraphQLError("Device not found")
+        update_entity_fields(exact_device, activity="online", **kwargs)
+        exact_device.save()
+        return UpdateDeviceActivity(device=exact_device)
 
 
 class Query(graphene.ObjectType):
@@ -193,6 +215,10 @@ class Mutation(graphene.ObjectType):
             [required]")
     delete_device = DeleteDevice.Field(
         description="Deletes a given device given the arguments to delete\
+            \n- device_id: Unique identifier of the tag\
+            [required]")
+    update_device_activity = UpdateDeviceActivity.Field(
+        description="admin updates the device activity from offline to online\
             \n- device_id: Unique identifier of the tag\
             [required]"
     )

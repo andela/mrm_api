@@ -100,6 +100,15 @@ class BaseTestCase(TestCase):
                         room_labels=["1st Floor", "Wing B"])
             room_2.save()
             room_2.room_tags.append(tag)
+            room_3 = Room(name='Buluma',
+                        room_type='meeting',
+                        capacity=10,
+                        location_id=location.id,
+                        structure_id='851ae8b3-48dd-46b5-89bc-ca3f8111ad87',
+                        calendar_id='andela.com_2d3437383637373630343336@resource.calendar.google.com',  # noqa: E501
+                        image_url="https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg",  # noqa: E501
+                        room_labels=["1st Floor", "Wing B"])
+            room_3.save()
             resource = Resource(name='Markers',
                                 quantity=3)
             resource.save()
@@ -112,6 +121,16 @@ class BaseTestCase(TestCase):
                 room_id=1
             )
             device.save()
+            device_2 = Devices(
+                last_seen="2018-06-08T11:17:58.785136",
+                date_added="2018-06-08T11:17:58.785136",
+                name="Lg screen",
+                location="Nairobi",
+                device_type="External Display",
+                room_id=3
+            )
+            device_2.activity = "offline"
+            device_2.save()
             question_1 = Question(
                 question_type="rate",
                 question_title="Rating Feedback",
@@ -279,6 +298,7 @@ class CommonTestCases(BaseTestCase):
         headers = {"Authorization": "Bearer" + " " + USER_TOKEN}
         response = self.app_test.post(
             '/mrm?query=' + query, headers=headers)
+
         actual_response = json.loads(response.data)
         self.assertEquals(actual_response, expected_response)
 

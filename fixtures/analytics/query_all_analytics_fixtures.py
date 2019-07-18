@@ -101,6 +101,23 @@ all_analytics_query_response = {
               "durationInMinutes": 0
             }
           ]
+        },
+        {
+          "roomName": "Buluma",
+          "cancellations": 0,
+          "cancellationsPercentage": 0.0,
+          "autoCancellations": 0,
+          "numberOfBookings": 0,
+          "checkins": 0,
+          "checkinsPercentage": 0.0,
+          "bookingsPercentageShare": 0.0,
+          "appBookings": 0,
+          "appBookingsPercentage": 0.0,
+          "events": [
+            {
+              "durationInMinutes": 0
+            }
+          ]
         }
       ],
       "bookingsCount": [

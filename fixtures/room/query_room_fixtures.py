@@ -29,12 +29,12 @@ paginated_rooms_response = {
         "allRooms": {
             "rooms": [
                 {
-                    "name": "Entebbe"
+                    "name": "Buluma"
                 }
             ],
             "hasNext": True,
             "hasPrevious": False,
-            "pages": 2
+            "pages": 3
         }
     }
 }
