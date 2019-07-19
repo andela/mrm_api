@@ -1,7 +1,7 @@
 """add admin notifications table
 
 Revision ID: f0873fb8edb3
-Revises: 50173cb0491f
+Revises: af8e4f84b552
 Create Date: 2019-06-27 13:31:19.694650
 
 """
@@ -11,7 +11,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = 'f0873fb8edb3'
-down_revision = '50173cb0491f'
+down_revision = 'af8e4f84b552'
 branch_labels = None
 depends_on = None
 

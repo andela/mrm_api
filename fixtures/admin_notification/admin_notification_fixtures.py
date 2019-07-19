@@ -20,6 +20,38 @@ get_all_unread_notifications_response = {
   }
 }
 
+get_all_unread_notifications_settings_false = '''
+query {
+    allUnreadNotifications{
+      notifications {
+        id
+        title
+        message
+      }
+    }
+}
+'''
+
+get_all_unread_notifications_response_on_false = {
+  "errors": [
+    {
+      "message": "Notifications are turned off.",
+      "locations": [
+        {
+          "line": 3,
+          "column": 5
+        }
+      ],
+      "path": [
+        "allUnreadNotifications"
+      ]
+    }
+  ],
+  "data": {
+    "allUnreadNotifications": null
+  }
+}
+
 change_notification_status_unexistent_id = '''
 mutation {
   updateNotificationStatus(notificationId: 260){

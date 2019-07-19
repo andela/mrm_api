@@ -5,6 +5,7 @@ from helpers.auth.authentication import Auth
 from datetime import datetime
 from admin_notifications.models import AdminNotification as \
     AdminNotificationModel
+from api.notification.models import Notification
 
 
 class AdminNotifications(SQLAlchemyObjectType):
@@ -31,10 +32,15 @@ class Query(graphene.ObjectType):
 
     @Auth.user_roles('Admin')
     def resolve_all_unread_notifications(self, info):
-        query = AdminNotifications.get_query(info)
-        notifications = query.filter(
-            AdminNotificationModel.status == "unread").all()
-        return NotificationsList(notifications=notifications)
+        notifications_on = Notification.query.filter_by(
+            get_notifications=True
+        ).first()
+        if notifications_on:
+            query = AdminNotifications.get_query(info)
+            notifications = query.filter(
+                AdminNotificationModel.status == "unread").all()
+            return NotificationsList(notifications=notifications)
+        raise GraphQLError("Notifications are turned off.")
 
 
 class UpdateNotificationStatus(graphene.Mutation):

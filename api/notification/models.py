@@ -11,3 +11,4 @@ class Notification(Base, Utility):
     user_id = Column(Integer, ForeignKey('users.id', ondelete="CASCADE"))
     device_health_notification = Column(Boolean, default=True)
     meeting_update_notification = Column(Boolean, default=True)
+    get_notifications = Column(Boolean, default=True)

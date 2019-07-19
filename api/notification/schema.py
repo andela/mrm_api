@@ -40,6 +40,7 @@ class UpdateNotification(graphene.Mutation):
     class Arguments:
         device_health_notification = graphene.Boolean()
         meeting_update_notification = graphene.Boolean()
+        get_notifications = graphene.Boolean()
     notification = graphene.Field(Notification)
 
     @Auth.user_roles('Default User', 'Admin', 'Super_Admin')
@@ -56,6 +57,9 @@ class UpdateNotification(graphene.Mutation):
         if 'meeting_update_notification' in kwargs:
             notification.meeting_update_notification = kwargs[
                 'meeting_update_notification']
+        if 'get_notifications' in kwargs:
+            notification.get_notifications = kwargs[
+                'get_notifications']
         notification.save()
 
         return UpdateNotification(notification=notification)
