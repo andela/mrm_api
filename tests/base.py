@@ -109,7 +109,8 @@ class BaseTestCase(TestCase):
                 name="Samsung",
                 location="Kampala",
                 device_type="External Display",
-                room_id=1
+                room_id=1,
+                state="active"
             )
             device.save()
             question_1 = Question(
