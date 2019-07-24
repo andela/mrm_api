@@ -135,12 +135,13 @@ class Authentication:
                         raise GraphQLError("The database cannot be reached")
                     for value in response['values']:
                         if user.email == value["email"]:
-                            if value['location']:
-                                user.location = value['location'][
+                            if value['location'] and not user.location:
+                                user_location = value['location'][
                                     'name'
                                 ] or "Nairobi"
+                                user.location = user_location
                                 user.save()
-                                check_and_add_location(user.location)
+                                check_and_add_location(user_location)
                     if user.roles and user.roles[0].role in expected_args:
                         return func(*args, **kwargs)
                     else:

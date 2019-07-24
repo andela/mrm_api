@@ -15,6 +15,7 @@ from helpers.user_filter.user_filter import user_filter
 from utilities.utility import update_entity_fields
 from api.role.schema import Role
 from api.role.models import Role as RoleModel
+from api.location.models import Location as LocationModel
 
 
 class User(SQLAlchemyObjectType):
@@ -195,6 +196,36 @@ class ChangeUserRole(graphene.Mutation):
         return ChangeUserRole(user=exact_user)
 
 
+class ChangeUserLocation(graphene.Mutation):
+    """
+        Returns user details on changing the user's location
+    """
+    class Arguments:
+        email = graphene.String(required=True)
+        location_id = graphene.Int(required=True)
+
+    user = graphene.Field(User)
+
+    @Auth.user_roles('Admin', 'Super_Admin')
+    def mutate(self, info, **kwargs):
+        email = kwargs['email']
+        location_id = kwargs['location_id']
+        query_user = User.get_query(info)
+        user = query_user.filter(
+          UserModel.state == "active", UserModel.email == email).first()
+        if not user:
+            raise GraphQLError("User not found")
+        new_location = LocationModel.query.filter_by(
+          id=location_id, state="active").first()
+        if not new_location:
+            raise GraphQLError('the location supplied does not exist')
+        if user.location == new_location.name:
+            raise GraphQLError('user already in this location')
+        user.location = new_location.name
+        user.save()
+        return ChangeUserLocation(user=user)
+
+
 class CreateUserRole(graphene.Mutation):
     """
         Returns payload of creating a role for a user
@@ -268,6 +299,10 @@ class Mutation(graphene.ObjectType):
         description="Changes the role of a user and takes arguments\
             \n- email: The email field of a user[required]\
             \n- role_id: unique identifier of a user role")
+    change_user_location = ChangeUserLocation.Field(
+        description="Changes the location of a user and accepts the arguments\
+            \n- email: The email field of the user[required]\
+            \n- location_id: the new location of the user[required]")
     invite_to_converge = InviteToConverge.Field(
         description="Invites a new user to converge \
             \n- email: The email field of a user[required]")

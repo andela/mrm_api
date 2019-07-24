@@ -325,3 +325,119 @@ query_non_existing_user_by_name_response = {
         "userByName": null
     }
 }
+
+change_user_location_invalid_user_mutation = '''
+       mutation {
+        changeUserLocation(email: "someinvaliduser@andela.com", locationId: 1) {
+          user {
+            name
+            location
+          }
+        }
+      }
+   '''
+
+
+change_user_location_invalid_user_response = {
+    "errors": [
+      {
+        "message": "User not found",
+        "locations": [
+          {
+            "line": 3,
+            "column": 9
+          }
+        ],
+        "path": [
+          "changeUserLocation"
+        ]
+      }
+    ],
+    "data": {
+      "changeUserLocation": null
+    }
+}
+
+change_user_location_invalid_location_id_mutation = '''
+      mutation {
+      changeUserLocation(email: "peter.walugembe@andela.com", locationId: 90) {
+        user {
+          name
+          location
+        }
+      }
+    }
+  '''
+
+change_user_location_invalid_location_id_response = {
+  "errors": [
+    {
+      "message": "the location supplied does not exist",
+      "locations": [
+        {
+          "line": 3,
+          "column": 7
+        }
+      ],
+      "path": [
+        "changeUserLocation"
+      ]
+    }
+  ],
+  "data": {
+    "changeUserLocation": null
+  }
+}
+
+change_user_location_to_same_location_mutation = '''
+       mutation {
+        changeUserLocation(email: "peter.walugembe@andela.com", locationId: 1) {
+          user {
+            name
+            location
+          }
+        }
+      }
+   '''
+
+change_user_location_to_same_location_response = {
+  "errors": [
+    {
+      "message": "user already in this location",
+      "locations": [
+        {
+          "line": 3,
+          "column": 9
+        }
+      ],
+      "path": [
+        "changeUserLocation"
+      ]
+    }
+  ],
+  "data": {
+    "changeUserLocation": null
+  }
+}
+
+change_user_location_valid_input_mutation = '''
+       mutation {
+        changeUserLocation(email: "peter.walugembe@andela.com", locationId: 2) {
+          user {
+            name
+            location
+          }
+        }
+      }
+   '''
+
+change_user_location_valid_input_response = {
+  "data": {
+    "changeUserLocation": {
+      "user": {
+        "name": "Peter Walugembe",
+        "location": "Nairobi"
+      }
+    }
+  }
+}
