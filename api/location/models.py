@@ -31,7 +31,8 @@ class Location(Base, Utility):
     structure = Column(String, nullable=True)
     rooms = relationship(
         'Room', cascade="all, delete-orphan",
-        order_by="func.lower(Room.name)")
+        order_by="func.lower(Room.name)",
+        primaryjoin="and_(Location.id==Room.location_id, Room.state=='active')")
     __table_args__ = (
             Index(
                 'ix_unique_location_content',
