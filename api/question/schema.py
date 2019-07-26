@@ -201,7 +201,7 @@ class Query(graphene.ObjectType):
     def resolve_all_questions(self, info, start_date=None, end_date=None):
         # get all questions
         query = Question.get_query(info)
-        questions = query.filter(QuestionModel.is_active)
+        questions = query.filter(QuestionModel.state == "active").all()
         questions_by_range = filter_questions_by_date_range(
                                                             questions,
                                                             start_date, end_date
