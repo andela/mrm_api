@@ -1,0 +1,222 @@
+#!/usr/bin/env groovy
+/*
+    This is an example pipeline that implement full CI/CD for the converge backend application
+    The pipeline is made up of 5 main steps
+    1. Set up of the environment
+    2. Tests
+    3. Code climate
+    4. Build docker image
+    5. Deploy to kubernetes
+ */
+pipeline {
+  agent {
+    kubernetes {
+      label 'mrm-api'
+      defaultContainer 'jnlp'
+      yamlFile 'jenkins/KubernetesPod.yml'
+    }
+  }
+  environment {
+    PROJECT_NAME = 'mrm-api'
+    APP_SETTINGS = 'testing'
+    POSTGRES_DB = 'mrm_test_db'
+    GOOGLE_APPLICATION_CREDENTIALS = "${WORKSPACE}/google-service-key.json"
+  }
+  stages {
+        stage('Setup environment') {
+          steps {
+            container('mrm-api') {
+              withCredentials([
+                file(credentialsId: 'MRM_API_ENV', variable: 'ENV_FILE')
+              ]) {
+                load "$ENV_FILE"
+              }
+              sh "chmod +x jenkins/scripts/*.sh"
+              sh script: "${WORKSPACE}/jenkins/scripts/setup_gcloud.sh", label: "Set up gcloud"
+              sh """
+                 python -m venv env
+                 . env/bin/activate
+                 pip install -U setuptools
+                 pip install -r requirements.txt
+              """
+            }
+          }
+        }
+        stage ('Tests') {
+        parallel {
+              stage('test-3.6-flake') {
+                  steps {
+                    container('mrm-api'){
+                      withCredentials([
+                     file(credentialsId: 'MRM_API_TEST_ENV', variable: 'ENV_FILE')
+                   ]) {
+                load "$ENV_FILE"
+              }
+              sh script: "${WORKSPACE}/jenkins/scripts/run_tests.sh", label: "Run tests"
+              sh script: "${WORKSPACE}/jenkins/scripts/upload_coverage.sh python3.6"
+                    }
+                  }
+              post{
+              success{
+              container('mrm-api'){
+                sh script: "${WORKSPACE}/jenkins/scripts/notify_slack.sh success"
+              }
+            }
+            failure {
+              container('mrm-api'){
+                sh script: "${WORKSPACE}/jenkins/scripts/notify_slack.sh fail"
+              }
+            }
+          }
+        }
+              stage('test-3.5') {
+                agent {
+                  kubernetes {
+                    label 'nested-pod'
+                    yaml """
+              spec:
+                containers:
+                - name: mrm-test-db
+                  image: postgres:9.6.5-alpine
+                  env:
+                   - name: POSTGRES_USER
+                     value: postgres
+                   - name: POSTGRES_DB
+                     value: "mrm_test_db"
+                   - name: POSTGRES_PASSWORD
+                     value: ""
+                - name: mrm-api-test
+                  image: gcr.io/andela-learning/converge-backend-jenkins:latest
+                  resources:
+                    requests:
+                      cpu: 4
+                      memory: 2G
+                  command: 
+                  - cat
+                  tty: true
+                  env:
+                   - name: DOCKER_HOST
+                     value: tcp://localhost:2375
+                   - name: TEST_DATABASE_URL
+                     value: postgresql://postgres@localhost/mrm_test_db
+                  securityContext:
+                     privileged: true
+                volumes:
+                  - name: docker-graph-storage
+                    emptyDir: {}             
+              """
+                  }
+                }
+                  steps {
+                      container('mrm-api-test'){
+                                      withCredentials([
+                file(credentialsId: 'MRM_API_ENV', variable: 'ENV_FILE'),
+                file(credentialsId: 'MRM_API_TEST_ENV', variable: 'ENV_TEST_FILE')
+
+              ]) {
+                load "$ENV_FILE"
+                load "$ENV_TEST_FILE"
+              }
+                sh "chmod +x jenkins/scripts/*.sh"
+                sh script: "${WORKSPACE}/jenkins/scripts/setup_gcloud.sh", label: "Set up gcloud"
+                sh """
+                 python -m venv env
+                 . env/bin/activate
+                 pip install -U setuptools
+                 pip install -r requirements.txt
+              """
+                sh script: "${WORKSPACE}/jenkins/scripts/run_tests.sh", label: "Run tests"
+                sh script: "${WORKSPACE}/jenkins/scripts/upload_coverage.sh python3.5"
+                      }
+                  }
+                         post{
+            success{
+              container('mrm-api-test'){
+                sh script: "${WORKSPACE}/jenkins/scripts/notify_slack.sh success", label: "Notify slack(success)"
+              }
+            }
+            failure {
+              container('mrm-api-test'){
+                sh script: "${WORKSPACE}/jenkins/scripts/notify_slack.sh fail", label: "Notify slack(fail)"
+              }
+            }
+
+          }
+              }
+                }
+        }
+        stage("codeclimate-reporting"){
+          steps{
+            container('mrm-api'){
+              sh "curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ${WORKSPACE}/cc-test-reporter"
+              sh "chmod +x ${WORKSPACE}/cc-test-reporter"
+              sh script: "${WORKSPACE}/jenkins/scripts/codeclimate_reports.sh", label: "retrieve code climate reports"
+              sh script: "${WORKSPACE}/jenkins/scripts/codeclimate_results.sh", label: "consolidate results"
+            }
+          }
+          post{
+            success{
+              container('mrm-api'){
+                sh script:"${WORKSPACE}/jenkins/scripts/notify_slack.sh success", label: "Notify slack(success)"
+              }
+            }
+            failure {
+              container('mrm-api'){
+                sh script: "${WORKSPACE}/jenkins/scripts/notify_slack.sh fail", label: "Notify slack(fail)"
+              }
+            }
+          }
+        }
+
+        stage("build_backend_image"){
+          when { anyOf { branch 'v2'; branch 'develop'; branch 'master'; branch 'sandbox-jenkins'} }
+          steps{
+            container("mrm-api"){
+              withCredentials([string(credentialsId: 'mrm-github-repo-token', variable: 'GITHUB_REPO_TOKEN'),
+                               file(credentialsId: 'MRM_API_IMAGE_ENV', variable: 'ENV_FILE')]){
+                load "$ENV_FILE"
+                sh script: "${WORKSPACE}/jenkins/scripts/set_env_vars.sh", label: "Set up environment variables"
+                sh script: "${WORKSPACE}/jenkins/scripts/build_image.sh", label: "Build docker image"
+              }            
+            }
+          }
+          post{
+            success{
+              container('mrm-api'){
+                sh script:"${WORKSPACE}/jenkins/scripts/notify_slack.sh success", label: "Notify slack(success)"
+              }
+            }
+            failure {
+              container('mrm-api'){
+                sh script: "${WORKSPACE}/jenkins/scripts/notify_slack.sh fail",  label: "Notify slack(fail)"
+              }
+            }
+          }
+        }
+
+        stage("deploy_backend_to_kubernetes"){
+          when { anyOf { branch 'v2'; branch 'develop'; branch 'master'; branch 'sandbox-jenkins'} }
+          steps{
+            container('mrm-api'){
+              withCredentials([string(credentialsId: 'mrm-github-repo-token', variable: 'GITHUB_REPO_TOKEN'),
+                               file(credentialsId: 'MRM_API_IMAGE_ENV', variable: 'ENV_FILE')]){
+                 sh script: "${WORKSPACE}/jenkins/scripts/deploy_backend_to_kubernetes.sh", label: "Deploy to kubernetes"
+              }
+              
+            }
+          }
+          post{
+            success{
+              container('mrm-api'){
+                sh script:"${WORKSPACE}/jenkins/scripts/notify_slack.sh success", label: "Notify slack(success)"
+              }
+            }
+            failure {
+              container('mrm-api'){
+                sh script: "${WORKSPACE}/jenkins/scripts/notify_slack.sh fail"
+              }
+            }
+          }
+        }
+  }
+}
