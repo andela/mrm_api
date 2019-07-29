@@ -216,6 +216,9 @@ get_all_questions_query_response = {
         "allQuestions": [
             {
                 "questionType": "rate"
+            },
+            {
+                "questionType": "input"
             }
         ]
     }
@@ -245,6 +248,9 @@ all_questions_query_no_date_range_response = {
             },
             {
                 "questionType": "check"
+            },
+            {
+                "questionType": "input"
             }
         ]
     }
