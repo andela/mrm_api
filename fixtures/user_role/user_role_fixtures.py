@@ -74,24 +74,37 @@ user_role_query_response = {
     }
 }
 
-query_user_by_user_email = '''
+query_users_by_user_role = '''
 query {
-  user(email:"mrm@andela.com"){
-    roles
-    {
-      role
+  users(roleId:1){
+    users{
+      roles
+      {
+        role
+      }
     }
   }
 }
 '''
 
-query_user_by_user_email_response = {
+query_users_by_user_role_response = {
     "data": {
-        "user": {
-            "roles": [
-                {
-                    "role": "Admin"
-                }
+        "users": {
+            "users": [
+              {
+                "roles": [
+                    {
+                        "role": "Admin"
+                    }
+                ]
+              },
+              {
+                "roles": [
+                    {
+                        "role": "Admin"
+                    }
+                ]
+              }
             ]
         }
     }
@@ -142,30 +155,6 @@ change_unavailable_user_role_mutation_response = {
     ],
     "data": {
         "changeUserRole": null
-    }
-}
-
-query_user_by_user_email = '''
-query {
-  user(email:"mrm@andela.com"){
-    name
-    roles{
-      role
-    }
-  }
-}
-'''
-
-query_user_by_user_email_response = {
-    "data": {
-        "user": {
-            "name": "test test",
-            "roles": [
-                {
-                    "role": "Admin"
-                }
-            ]
-        }
     }
 }
 

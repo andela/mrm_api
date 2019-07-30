@@ -10,8 +10,8 @@ from fixtures.user_role.user_role_fixtures import (
     change_unavailable_user_role_mutation_response,
     user_role_query, user_role_query_response,
     change_user_role_mutation_response,
-    query_user_by_user_email,
-    query_user_by_user_email_response,
+    query_users_by_user_role,
+    query_users_by_user_role_response,
     assign_invalid_user_role_mutation,
     assign_invalid_user_role_response)
 from helpers.database import db_session
@@ -55,20 +55,11 @@ class TestQueryUserRole(BaseTestCase):
         self.assertEqual(execute_query, expected_responese)
 
     def test_query_users_role_by_role(self):
-        user = User(email='mrm@andela.com', location="Lagos",
-                    name="test test",
-                    picture="www.andela.com/testuser")
-        user.save()
-        role = base.role
-        user.roles.append(role)
-        db_session().commit()
-
-        execute_query = self.client.execute(
-            query_user_by_user_email,
-            context_value={'session': db_session})
-
-        expected_response = query_user_by_user_email_response
-        self.assertEqual(execute_query, expected_response)
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            query_users_by_user_role,
+            query_users_by_user_role_response
+        )
 
     @change_test_user_role
     def test_change_user_role(self):

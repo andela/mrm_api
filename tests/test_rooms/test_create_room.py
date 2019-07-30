@@ -8,6 +8,7 @@ from fixtures.helpers.decorators_fixtures import (
 )
 from fixtures.room.create_room_fixtures import (
     room_mutation_query,
+    room_mutation_different_location_query,
     room_name_empty_mutation,
     room_mutation_query_duplicate_name,
     room_mutation_query_duplicate_name_response,
@@ -101,8 +102,8 @@ class TestCreateRoom(BaseTestCase):
         """
         CommonTestCases.lagos_admin_token_assert_in(
             self,
-            room_mutation_query,
-            "You are not authorized to make changes in Kampala"
+            room_mutation_different_location_query,
+            "You are not authorized to make changes in Nairobi"
         )
 
     def test_room_mutation_invalid_tag(self):

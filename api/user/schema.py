@@ -108,6 +108,7 @@ class Query(graphene.ObjectType):
         response = PaginatedUsers(**kwargs)
         return response
 
+    @Auth.user_roles('Admin', 'Default User', 'Super_Admin')
     def resolve_user(self, info, email):
         # Returns a specific user.
         query = User.get_query(info)
