@@ -14,7 +14,7 @@ class EmailNotification:
         """
         send email notifications after a given activity has occured
         """
-        recipients = [kwargs.get('email')]
+        recipients = kwargs.get('email')
 
         email = SendEmail(
             kwargs.get('subject'), recipients,
@@ -36,7 +36,7 @@ class EmailNotification:
         send email invite for user to join converge
         """
         return EmailNotification.send_email_notification(
-            self, email=email, subject="Invitation to join Converge",
+            self, email=[email], subject="Invitation to join Converge",
             template='invite.html',
             user_name=admin, domain=Config.DOMAIN_NAME
         )
@@ -51,8 +51,9 @@ class EmailNotification:
             - room_id: Id of the room rejecting the event
             - event_reject_reason: Reason for rejecting the event
         """
+        attendees = event['attendees']
+        email = [attendee['email'] for attendee in attendees]
         event_title = event['summary']
-        email = event['organizer']['email']
         room = RoomModel.query.filter_by(id=room_id).first()
         room_name = room.name
         subject = 'Your room reservation was rejected'
@@ -77,7 +78,7 @@ class EmailNotification:
 
         return EmailNotification.send_email_notification(
             self,
-            email=user_email,
+            email=[user_email],
             subject='Converge - Your role has been changed',
             user_name=user_name,
             template='change_role.html',
