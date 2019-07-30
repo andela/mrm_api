@@ -56,7 +56,6 @@ class Query(graphene.ObjectType):
         admin_details = get_user_from_db()
         query = Role.get_query(info)
         admin_role = query.filter_by(id=admin_details.roles[0].id).first()
-        print(admin_role.role)
         # check that id is valid
         verify_location_id(kwargs)
         if admin_role.role == 'Super_Admin' and kwargs.get('location_id', None):

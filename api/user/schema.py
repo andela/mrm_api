@@ -15,7 +15,6 @@ from helpers.user_filter.user_filter import user_filter
 from utilities.utility import update_entity_fields
 from api.role.schema import Role
 from api.role.models import Role as RoleModel
-from api.location.models import Location as LocationModel
 
 
 class User(SQLAlchemyObjectType):
@@ -169,11 +168,21 @@ class ChangeUserRole(graphene.Mutation):
 
     user = graphene.Field(User)
 
+    @staticmethod
+    def isNotSuperAdmin(new_role):
+
+        admin_details = get_user_from_db()
+        admin_role = RoleModel.query.filter_by(id=admin_details.roles[0].id).first()
+
+        if admin_role.role == 'Admin' and new_role.role == 'Super_Admin':
+            raise GraphQLError('You are not authorized to create this role')
+
     @Auth.user_roles('Admin', 'Super_Admin')
     def mutate(self, info, email, **kwargs):
         query_user = User.get_query(info)
         active_user = query_user.filter(UserModel.state == "active")
         exact_user = active_user.filter(UserModel.email == email).first()
+
         if not exact_user:
             raise GraphQLError("User not found")
 
@@ -185,44 +194,18 @@ class ChangeUserRole(graphene.Mutation):
         if new_role.role == current_user_role:
             raise GraphQLError('This role is already assigned to this user')
 
+        if new_role.role == 'Super_Admin':
+            ChangeUserRole.isNotSuperAdmin(new_role)
+
+        if new_role.role == 'Admin':
+            user_name = exact_user.name
+            if not notification.send_admin_invite_email(email, user_name):
+                raise GraphQLError("Role changed but email not sent")
+
         exact_user.roles[0] = new_role
         exact_user.save()
 
-        if not notification.send_changed_role_email(
-                email, exact_user.name, new_role.role):
-            raise GraphQLError("Role changed but email not sent")
-
         return ChangeUserRole(user=exact_user)
-
-
-class ChangeUserLocation(graphene.Mutation):
-    """
-        Returns user details on changing the user's location
-    """
-    class Arguments:
-        email = graphene.String(required=True)
-        location_id = graphene.Int(required=True)
-
-    user = graphene.Field(User)
-
-    @Auth.user_roles('Admin', 'Super_Admin')
-    def mutate(self, info, **kwargs):
-        email = kwargs['email']
-        location_id = kwargs['location_id']
-        query_user = User.get_query(info)
-        user = query_user.filter(
-          UserModel.state == "active", UserModel.email == email).first()
-        if not user:
-            raise GraphQLError("User not found")
-        new_location = LocationModel.query.filter_by(
-          id=location_id, state="active").first()
-        if not new_location:
-            raise GraphQLError('the location supplied does not exist')
-        if user.location == new_location.name:
-            raise GraphQLError('user already in this location')
-        user.location = new_location.name
-        user.save()
-        return ChangeUserLocation(user=user)
 
 
 class CreateUserRole(graphene.Mutation):
@@ -269,8 +252,6 @@ class InviteToConverge(graphene.Mutation):
 
     @Auth.user_roles('Admin', 'Super_Admin')
     def mutate(self, info, email):
-        if not verify_email(email):
-            raise GraphQLError("Use a valid andela email")
         query_user = User.get_query(info)
         active_user = query_user.filter(UserModel.state == "active")
         user = active_user.filter(UserModel.email == email).first()
@@ -300,10 +281,6 @@ class Mutation(graphene.ObjectType):
         description="Changes the role of a user and takes arguments\
             \n- email: The email field of a user[required]\
             \n- role_id: unique identifier of a user role")
-    change_user_location = ChangeUserLocation.Field(
-        description="Changes the location of a user and accepts the arguments\
-            \n- email: The email field of the user[required]\
-            \n- location_id: the new location of the user[required]")
     invite_to_converge = InviteToConverge.Field(
         description="Invites a new user to converge \
             \n- email: The email field of a user[required]")
