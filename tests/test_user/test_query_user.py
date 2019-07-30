@@ -51,18 +51,11 @@ class TestQueryUser(BaseTestCase):
         )
 
     def test_query_users_by_email(self):
-        user = User(email='mrm@andela.com',
-                    name="test test",
-                    picture="www.andela.com/test")
-        user.save()
-        db_session().commit()
-
-        execute_query = self.client.execute(
+        CommonTestCases.admin_token_assert_equal(
+            self,
             query_user_by_email,
-            context_value={'session': db_session})
-
-        expected_responese = query_user_email_response
-        self.assertEqual(execute_query, expected_responese)
+            query_user_email_response
+        )
 
     def test_get_users_by_location_error(self):
         """

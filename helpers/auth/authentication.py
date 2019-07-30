@@ -133,15 +133,21 @@ class Authentication:
                         user = User.query.filter_by(email=email).first()
                     except Exception:
                         raise GraphQLError("The database cannot be reached")
-                    for value in response['values']:
-                        if user.email == value["email"]:
-                            if value['location'] and not user.location:
-                                user_location = value['location'][
-                                    'name'
-                                ] or "Nairobi"
-                                user.location = user_location
-                                user.save()
-                                check_and_add_location(user_location)
+                    user_values = response['values']
+                    if len(user_values):
+                        for value in user_values:
+                            if user.email == value["email"]:
+                                if value['location'] and not user.location:
+                                    user_location = value['location'][
+                                        'name'
+                                    ] or "Nairobi"
+                                    user.location = user_location
+                                    user.save()
+                                    check_and_add_location(user_location)
+                    else:  # pragma: no cover
+                        if not user.location:
+                            user.location = "Nairobi"
+                            user.save()
                     if user.roles and user.roles[0].role in expected_args:
                         return func(*args, **kwargs)
                     else:

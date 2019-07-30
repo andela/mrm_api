@@ -96,7 +96,7 @@ paginated_users_response = {
 
 query_user_by_email = '''
  query {
-  user(email: "mrm@andela.com"){
+  user(email: "peter.walugembe@andela.com"){
     email
   }
 }
@@ -105,7 +105,7 @@ query_user_by_email = '''
 query_user_email_response = {
     "data": {
         "user": {
-            "email": "mrm@andela.com",
+            "email": "peter.walugembe@andela.com",
         }
     }
 }

@@ -46,6 +46,35 @@ room_mutation_query_response = {'data': {'createRoom': {
 }
 }
 
+room_mutation_different_location_query = '''
+ mutation {
+        createRoom(
+          name: "Syne",
+          calendarId: "andela.com_3836323338323230343935@resource.calendar.google.com",  # noqa: E501
+          roomType: "Meeting",
+          capacity: 1,
+          locationId: 2,
+          roomTags: [1],
+          structureId: "b05fc5f2-b4aa-4f48-a8fb-30bdcc3fc968",
+          imageUrl: "http://url.com",
+          roomLabels: ["Epic tower", "1st Floor"]) {
+            room {
+                name
+                roomType
+                capacity
+                locationId,
+                calendarId,
+                structureId,
+                imageUrl
+                roomTags {
+                  name
+                  color
+                }
+                roomLabels
+            }
+        }
+    }
+'''
 
 room_mutation_response = {
     "data": {
