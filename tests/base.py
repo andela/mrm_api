@@ -65,6 +65,8 @@ class BaseTestCase(TestCase):
             role.save()
             role_2 = Role(role="Test")
             role_2.save()
+            role_3 = Role(role="Super Admin")
+            role_3.save()
             admin_user.roles.append(role)
             lagos_admin.roles.append(role)
             tag = Tag(name='Block-B',
@@ -396,25 +398,12 @@ def change_test_user_role(func):
     return func_wrapper
 
 
-def change_test_user_role_to_super_admin(func):
+def change_user_role_to_super_admin(func):
     def func_wrapper(self):
-        user_role = Role(role='Super Admin')
-        user_role.save()
-        user = User(email='mrmtestuser@andela.com', name='Test user',
-                    location="Lagos", picture='www.andela.com/testuser')
-        user.save()
-        user.roles.append(user_role)
-        db_session().commit()
-    return func_wrapper
-
-
-def change_admin_user_role_to_super_admin(func):
-    def func_wrapper(self):
-        user_role = Role(role='Super Admin')
-        user_role.save()
+        super_admin_role = Role.query.filter_by(role='Super Admin').first()
         user = User.query.filter_by(email="peter.walugembe@andela.com").first()
         user.roles.pop()
-        user.roles.append(user_role)
+        user.roles.append(super_admin_role)
         user.save()
         db_session().commit()
         return func(self)

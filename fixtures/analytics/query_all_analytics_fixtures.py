@@ -123,7 +123,7 @@ all_analytics_query_response_super_admin_with_invalid_locationid = {
             "message": "Location Id does not exist",
             "locations": [
                 {
-                    "line": 2,
+                    "line": 3,
                     "column": 7
                 }
             ],

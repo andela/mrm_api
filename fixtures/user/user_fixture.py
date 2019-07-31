@@ -112,7 +112,20 @@ query_user_email_response = {
 
 change_user_role_mutation = '''
 mutation{
-    changeUserRole(email:"peter.walugembe@andela.com", roleId: 2){
+    changeUserRole(email:"peter.walugembe@andela.com", roleId: 1){
+        user{
+            name
+            roles{
+                role
+            }
+        }
+    }
+}
+'''
+
+change_user_role_to_super_admin_mutation = '''
+mutation{
+    changeUserRole(email:"peter.walugembe@andela.com", roleId: 3){
         user{
             name
             roles{
