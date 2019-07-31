@@ -16,6 +16,7 @@ from utilities.utility import update_entity_fields
 from api.role.schema import Role
 from api.role.models import Role as RoleModel
 from api.location.models import Location as LocationModel
+from helpers.user_role.restrict_admin import check_admin_restriction
 
 
 class User(SQLAlchemyObjectType):
@@ -186,13 +187,13 @@ class ChangeUserRole(graphene.Mutation):
         if new_role.role == current_user_role:
             raise GraphQLError('This role is already assigned to this user')
 
+        check_admin_restriction(new_role.role)
         exact_user.roles[0] = new_role
         exact_user.save()
 
         if not notification.send_changed_role_email(
                 email, exact_user.name, new_role.role):
             raise GraphQLError("Role changed but email not sent")
-
         return ChangeUserRole(user=exact_user)
 
 
