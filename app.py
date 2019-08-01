@@ -1,5 +1,4 @@
 from flask import Flask, render_template
-
 from flask_graphql import GraphQLView
 from flask_cors import CORS
 from flask_json import FlaskJSON
@@ -11,6 +10,7 @@ from schema import schema
 from healthcheck_schema import healthcheck_schema
 from helpers.auth.authentication import Auth
 from api.analytics.analytics_request import AnalyticsRequest
+from utilities.file_reader import read_log_file
 
 mail = Mail()
 
@@ -26,6 +26,12 @@ def create_app(config_name):
     @app.route("/", methods=['GET'])
     def index():
         return render_template('index.html')
+
+    @app.route("/logs", methods=['GET'])
+    @Auth.user_roles('Super Admin', 'REST')
+    def logs():
+        log_file = 'mrm.err.log'
+        return app.response_class(read_log_file(log_file), mimetype='text')
 
     app.add_url_rule(
         '/mrm',

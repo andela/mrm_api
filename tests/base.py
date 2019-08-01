@@ -206,6 +206,10 @@ class BaseTestCase(TestCase):
             )
             structure.save()
             db_session.commit()
+            f = open('mrm.err.log', 'a+')
+            f.write('[2019-08-06 13:22:32 +0000] [1574] [ERROR] Error /logs\r')
+            f.write('Traceback (most recent call last):\r')
+            f.write('if pattern.search(line):\r')
 
     def get_admin_location_id(self):
         payload = jwt.decode(ADMIN_TOKEN, verify=False)
@@ -383,4 +387,17 @@ def change_test_user_role_to_super_admin(func):
         user.save()
         user.roles.append(user_role)
         db_session().commit()
+    return func_wrapper
+
+
+def change_admin_user_role_to_super_admin(func):
+    def func_wrapper(self):
+        user_role = Role(role='Super Admin')
+        user_role.save()
+        user = User.query.filter_by(email="peter.walugembe@andela.com").first()
+        user.roles.pop()
+        user.roles.append(user_role)
+        user.save()
+        db_session().commit()
+        return func(self)
     return func_wrapper
