@@ -154,7 +154,7 @@ class Query(graphene.ObjectType):
         Structure, structure_id=graphene.String(), description="Returns the office \
         structure corresponding to the provided structureId")
 
-    @Auth.user_roles('Admin', 'Super_Admin')
+    @Auth.user_roles('Admin', 'Default User', 'Super_Admin')
     def resolve_all_structures(self, info):
         query = Structure.get_query(info)
         location_id = admin_roles.user_location_for_analytics_view()
@@ -163,7 +163,7 @@ class Query(graphene.ObjectType):
             StructureModel.location_id == location_id).all()
         return all_structures
 
-    @Auth.user_roles('Admin', 'Super_Admin')
+    @Auth.user_roles('Admin', 'Default User', 'Super_Admin')
     def resolve_structure_by_structure_id(self, info, structure_id):
         if not structure_id.strip():
             raise GraphQLError("Please input a valid structureId")
