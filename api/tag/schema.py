@@ -26,7 +26,7 @@ class CreateTag(graphene.Mutation):
         description = graphene.String(required=True)
     tag = graphene.Field(Tag)
 
-    @Auth.user_roles('Admin', 'Super_Admin')
+    @Auth.user_roles('Admin', 'Super Admin')
     def mutate(self, info, **kwargs):
         validate_empty_fields(**kwargs)
         tag = TagModel(**kwargs)
@@ -50,7 +50,7 @@ class UpdateTag(graphene.Mutation):
         description = graphene.String()
     tag = graphene.Field(Tag)
 
-    @Auth.user_roles('Admin', 'Super_Admin')
+    @Auth.user_roles('Admin', 'Super Admin')
     def mutate(self, info, tag_id, **kwargs):
         validate_empty_fields(**kwargs)
         query_tag = Tag.get_query(info)
@@ -73,7 +73,7 @@ class DeleteTag(graphene.Mutation):
         state = graphene.String()
     tag = graphene.Field(Tag)
 
-    @Auth.user_roles('Admin', 'Super_Admin')
+    @Auth.user_roles('Admin', 'Super Admin')
     def mutate(self, info, tag_id, **kwargs):
         query = Tag.get_query(info)
         result = query.filter(TagModel.state == "active")

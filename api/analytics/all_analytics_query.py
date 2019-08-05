@@ -47,7 +47,7 @@ class Query(graphene.ObjectType):
         location_id=graphene.Int(),
         description="Query that returns a list of all analytics")
 
-    @Auth.user_roles('Admin', 'Default User', 'Super_Admin')
+    @Auth.user_roles('Admin', 'Default User', 'Super Admin')
     def resolve_all_analytics(self, info, **kwargs):
         start_date = kwargs.get('start_date')
         end_date = kwargs.get('end_date')
@@ -56,10 +56,10 @@ class Query(graphene.ObjectType):
         admin_details = get_user_from_db()
         query = Role.get_query(info)
         admin_role = query.filter_by(id=admin_details.roles[0].id).first()
-        print(admin_role.role)
+
         # check that id is valid
         verify_location_id(kwargs)
-        if admin_role.role == 'Super_Admin' and kwargs.get('location_id', None):
+        if admin_role.role == 'Super Admin' and kwargs.get('location_id', None):
             location_id = kwargs.get('location_id')
 
         unconverted_dates = {

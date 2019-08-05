@@ -89,7 +89,7 @@ class Query(graphene.ObjectType):
             response_list.append(response_in_room)
         return (response_list)
 
-    @Auth.user_roles('Admin', 'Super_Admin')
+    @Auth.user_roles('Admin', 'Super Admin')
     def resolve_room_response(self, info, room_id, resolved=False):
         query = Room.get_query(info)
         query_response = Response.get_query(info)
@@ -201,7 +201,7 @@ class Query(graphene.ObjectType):
                 response.append(responses)
         return response
 
-    @Auth.user_roles('Admin', 'Super_Admin')
+    @Auth.user_roles('Admin', 'Super Admin')
     def resolve_all_room_responses(self, info, **kwargs):
         responses = Query.get_all_responses(self, info, kwargs.get('resolved'))
         check_limits_are_provided(

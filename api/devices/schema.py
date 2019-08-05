@@ -36,7 +36,7 @@ class CreateDevice(graphene.Mutation):
         device_type = graphene.String(required=True)
     device = graphene.Field(Devices)
 
-    @Auth.user_roles('Admin', 'Super_Admin')
+    @Auth.user_roles('Admin', 'Super Admin')
     def mutate(self, info, **kwargs):
         room_location = location_join_room().filter(
             RoomModel.id == kwargs['room_id'],
@@ -68,7 +68,7 @@ class UpdateDevice(graphene.Mutation):
         room_id = graphene.Int(required=True)
     device = graphene.Field(Devices)
 
-    @Auth.user_roles('Admin', 'Super_Admin')
+    @Auth.user_roles('Admin', 'Super Admin')
     def mutate(self, info, device_id, **kwargs):
         validate_empty_fields(**kwargs)
 
@@ -94,7 +94,7 @@ class DeleteDevice(graphene.Mutation):
 
     device = graphene.Field(Devices)
 
-    @Auth.user_roles('Admin')
+    @Auth.user_roles('Admin', 'Super Admin')
     def mutate(self, info, device_id, **kwargs):
         query_device = Devices.get_query(info)
         result = query_device.filter(DevicesModel.state == "active")
@@ -154,7 +154,7 @@ class Query(graphene.ObjectType):
                     .ilike(f'%{device_label.strip()}%'))
         return all_devices
 
-    @Auth.user_roles('Admin', 'Super_Admin')
+    @Auth.user_roles('Admin', 'Super Admin')
     def resolve_specific_device(self, info, device_id):
         query = Devices.get_query(info)
         device = query.filter(DevicesModel.id == device_id).first()
@@ -164,7 +164,7 @@ class Query(graphene.ObjectType):
 
         return device
 
-    @Auth.user_roles('Admin', 'Super_Admin')
+    @Auth.user_roles('Admin', 'Super Admin')
     def resolve_device_by_name(self, info, device_name):
         devices = Devices.get_query(info)
         device_name = ''.join(device_name.split()).lower()

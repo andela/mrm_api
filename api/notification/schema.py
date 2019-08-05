@@ -42,7 +42,7 @@ class UpdateNotification(graphene.Mutation):
         meeting_update_notification = graphene.Boolean()
     notification = graphene.Field(Notification)
 
-    @Auth.user_roles('Default User', 'Admin', 'Super_Admin')
+    @Auth.user_roles('Default User', 'Admin', 'Super Admin')
     def mutate(self, info, **kwargs):
         # Mutation to update a notification
         user = get_user_from_db()

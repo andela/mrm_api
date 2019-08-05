@@ -112,7 +112,7 @@ class CreateRoom(graphene.Mutation):
         room_labels = graphene.List(graphene.String, required=False)
     room = graphene.Field(Room)
 
-    @Auth.user_roles('Admin', 'Super_Admin')
+    @Auth.user_roles('Admin', 'Super Admin')
     def mutate(self, info, **kwargs):
         validate_empty_fields(**kwargs)
         verify_location_id(kwargs)
@@ -186,7 +186,7 @@ class UpdateRoom(graphene.Mutation):
         room_labels = graphene.List(graphene.String)
     room = graphene.Field(Room)
 
-    @Auth.user_roles('Admin', 'Super_Admin')
+    @Auth.user_roles('Admin', 'Super Admin')
     def mutate(self, info, room_id, **kwargs):
         validate_empty_fields(**kwargs)
         if kwargs.get('structure_id'):
@@ -217,7 +217,7 @@ class DeleteRoom(graphene.Mutation):
         state = graphene.String()
     room = graphene.Field(Room)
 
-    @Auth.user_roles('Admin', 'Super_Admin')
+    @Auth.user_roles('Admin', 'Super Admin')
     def mutate(self, info, room_id, **kwargs):
         query_room = Room.get_query(info)
         active_rooms = query_room.filter(RoomModel.state == "active")

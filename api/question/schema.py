@@ -44,7 +44,7 @@ class CreateQuestion(graphene.Mutation):
         check_options = graphene.List(graphene.String, required=False)
     question = graphene.Field(Question)
 
-    @Auth.user_roles('Admin', 'Super_Admin')
+    @Auth.user_roles('Admin', 'Super Admin')
     def mutate(self, info, **kwargs):
         validate_empty_fields(**kwargs)
         validate_question_type(**kwargs)
@@ -107,7 +107,7 @@ class UpdateQuestion(graphene.Mutation):
 
     question = graphene.Field(Question)
 
-    @Auth.user_roles('Admin', 'Super_Admin')
+    @Auth.user_roles('Admin', 'Super Admin')
     def mutate(self, info, question_id, **kwargs):
         validate_empty_fields(**kwargs)
         validate_question_type(**kwargs)
@@ -136,7 +136,7 @@ class DeleteQuestion(graphene.Mutation):
 
     question = graphene.Field(Question)
 
-    @Auth.user_roles('Admin', 'Super_Admin')
+    @Auth.user_roles('Admin', 'Super Admin')
     def mutate(self, info, question_id):
         query_question = Question.get_query(info)
         active_questions = query_question.filter(
