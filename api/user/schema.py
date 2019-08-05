@@ -108,13 +108,13 @@ class Query(graphene.ObjectType):
         response = PaginatedUsers(**kwargs)
         return response
 
-    @Auth.user_roles('Admin', 'Default User', 'Super_Admin')
+    @Auth.user_roles('Admin', 'Default User', 'Super Admin')
     def resolve_user(self, info, email):
         # Returns a specific user.
         query = User.get_query(info)
         return query.filter(UserModel.email == email).first()
 
-    @Auth.user_roles('Admin')
+    @Auth.user_roles('Admin', 'Super Admin')
     def resolve_user_by_name(self, info, user_name):
         user_list = []
         user_name = ''.join(user_name.split()).lower()
@@ -142,7 +142,7 @@ class DeleteUser(graphene.Mutation):
 
     user = graphene.Field(User)
 
-    @Auth.user_roles('Admin', 'Super_Admin')
+    @Auth.user_roles('Admin', 'Super Admin')
     def mutate(self, info, email, **kwargs):
         query_user = User.get_query(info)
         active_user = query_user.filter(UserModel.state == "active")
@@ -170,7 +170,7 @@ class ChangeUserRole(graphene.Mutation):
 
     user = graphene.Field(User)
 
-    @Auth.user_roles('Admin', 'Super_Admin')
+    @Auth.user_roles('Admin', 'Super Admin')
     def mutate(self, info, email, **kwargs):
         query_user = User.get_query(info)
         active_user = query_user.filter(UserModel.state == "active")
@@ -206,7 +206,7 @@ class ChangeUserLocation(graphene.Mutation):
 
     user = graphene.Field(User)
 
-    @Auth.user_roles('Admin', 'Super_Admin')
+    @Auth.user_roles('Admin', 'Super Admin')
     def mutate(self, info, **kwargs):
         email = kwargs['email']
         location_id = kwargs['location_id']
@@ -268,7 +268,7 @@ class InviteToConverge(graphene.Mutation):
 
     email = graphene.String()
 
-    @Auth.user_roles('Admin', 'Super_Admin')
+    @Auth.user_roles('Admin', 'Super Admin')
     def mutate(self, info, email):
         if not verify_email(email):
             raise GraphQLError("Use a valid andela email")

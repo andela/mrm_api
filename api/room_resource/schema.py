@@ -43,7 +43,7 @@ class AssignResource(graphene.Mutation):
         room_id = graphene.Int(required=True)
     room_resource = graphene.Field(RoomResource)
 
-    @Auth.user_roles('Admin', 'Super_Admin')
+    @Auth.user_roles('Admin', 'Super Admin')
     def mutate(self, info, **kwargs):
         validate_empty_fields(**kwargs)
         query = RoomSQLAlchemyObject.get_query(info)
@@ -85,7 +85,7 @@ class UpdateAssignedResource(graphene.Mutation):
         quantity = graphene.Int(required=True)
     room_resource = graphene.Field(RoomResource)
 
-    @Auth.user_roles('Admin', 'Super_Admin')
+    @Auth.user_roles('Admin', 'Super Admin')
     def mutate(self, info, resource_id, room_id, **kwargs):
         room_resource_query = RoomResource.get_query(info)
         rooms_with_resource = room_resource_query.filter(
@@ -117,7 +117,7 @@ class DeleteAssignedResource(graphene.Mutation):
         room_id = graphene.Int(required=True)
     room_resource = graphene.Field(RoomResource)
 
-    @Auth.user_roles('Admin', 'Super_Admin')
+    @Auth.user_roles('Admin', 'Super Admin')
     def mutate(self, info, resource_id, room_id):
         query = RoomResource.get_query(info)
         exact_room = RoomModel.query.filter_by(id=room_id).first()
@@ -181,7 +181,7 @@ class CreateResource(graphene.Mutation):
         name = graphene.String(required=True)
     resource = graphene.Field(Resource)
 
-    @Auth.user_roles('Admin', 'Super_Admin')
+    @Auth.user_roles('Admin', 'Super Admin')
     def mutate(self, info, **kwargs):
         resource = ResourceModel(**kwargs)
         payload = {
@@ -202,7 +202,7 @@ class UpdateRoomResource(graphene.Mutation):
         resource_id = graphene.Int()
     resource = graphene.Field(Resource)
 
-    @Auth.user_roles('Admin', 'Super_Admin')
+    @Auth.user_roles('Admin', 'Super Admin')
     def mutate(self, info, resource_id, **kwargs):
         validate_empty_fields(**kwargs)
         query = Resource.get_query(info)
@@ -226,7 +226,7 @@ class DeleteResource(graphene.Mutation):
         state = graphene.String()
     resource = graphene.Field(Resource)
 
-    @Auth.user_roles('Admin', 'Super_Admin')
+    @Auth.user_roles('Admin', 'Super Admin')
     def mutate(self, info, resource_id):
         query_resources = Resource.get_query(info)
         exact_resource = query_resources.filter(and_(
@@ -283,7 +283,7 @@ class Query(graphene.ObjectType):
         response = PaginatedResource(**kwargs)
         return response
 
-    @Auth.user_roles('Admin', 'Super_Admin')
+    @Auth.user_roles('Admin', 'Super Admin')
     def resolve_get_resources_by_room_id(self, info, room_id):
         # Get resources of a specific room
         exact_room = RoomSQLAlchemyObject.get_query(info).filter(
@@ -308,7 +308,7 @@ class Query(graphene.ObjectType):
             resources.append(room_resource)
         return RoomResources(roomResources=resources)
 
-    @Auth.user_roles('Admin', 'Super_Admin')
+    @Auth.user_roles('Admin', 'Super Admin')
     def resolve_resource_by_name(self, info, search_name):
         matching_resources = []
         resource_name = search_name.lower().replace(" ", "")
@@ -323,7 +323,7 @@ class Query(graphene.ObjectType):
             raise GraphQLError('No Matching Resource')
         return matching_resources
 
-    @Auth.user_roles('Admin', 'Super_Admin')
+    @Auth.user_roles('Admin', 'Super Admin')
     def resolve_rooms_containing_resource(self, info, resource_id):
         resource_exists = Resource.get_query(info).filter_by(
             id=resource_id).first()

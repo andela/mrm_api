@@ -274,7 +274,7 @@ class Query(graphene.ObjectType):
         response = PaginatedRooms(**kwargs)
         return response
 
-    @Auth.user_roles('Admin', 'Super_Admin')
+    @Auth.user_roles('Admin', 'Super Admin')
     def resolve_all_remote_rooms(self, info, return_all=None):
         page_token = None
         filter = map_remote_room_location_to_filter()
@@ -299,7 +299,7 @@ class Query(graphene.ObjectType):
                 break
         return AllRemoteRooms(rooms=remote_rooms)
 
-    @Auth.user_roles('Admin', 'Super_Admin')
+    @Auth.user_roles('Admin', 'Super Admin')
     def resolve_filter_rooms_by_tag(self, info, tagId):
         rooms = Room.get_query(info).join(tags).join(
             Tag).filter(tags.c.tag_id == tagId).all()

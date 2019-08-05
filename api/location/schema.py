@@ -44,7 +44,7 @@ class CreateLocation(graphene.Mutation):
         structure = graphene.String()
     location = graphene.Field(Location)
 
-    @Auth.user_roles('Admin', 'Super_Admin')
+    @Auth.user_roles('Admin', 'Super Admin')
     def mutate(self, info, **kwargs):
         # Validate if the country given is a valid country
         validate_country_field(**kwargs)
@@ -86,7 +86,7 @@ class UpdateLocation(graphene.Mutation):
         structure = graphene.String()
     location = graphene.Field(Location)
 
-    @Auth.user_roles('Admin', 'Super_Admin')
+    @Auth.user_roles('Admin', 'Super Admin')
     def mutate(self, info, location_id, **kwargs):
         location = Location.get_query(info)
         result = location.filter(LocationModel.state == "active")
@@ -123,7 +123,7 @@ class DeleteLocation(graphene.Mutation):
 
     location = graphene.Field(Location)
 
-    @Auth.user_roles('Admin', 'Super_Admin')
+    @Auth.user_roles('Admin', 'Super Admin')
     def mutate(self, info, location_id, **kwargs):
         query = Location.get_query(info)
         result = query.filter(LocationModel.state == "active")

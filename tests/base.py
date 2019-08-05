@@ -374,7 +374,7 @@ def change_test_user_role(func):
 
 def change_test_user_role_to_super_admin(func):
     def func_wrapper(self):
-        user_role = Role(role='Super_Admin')
+        user_role = Role(role='Super Admin')
         user_role.save()
         user = User(email='mrmtestuser@andela.com', name='Test user',
                     location="Lagos", picture='www.andela.com/testuser')

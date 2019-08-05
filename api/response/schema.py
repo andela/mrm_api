@@ -139,7 +139,7 @@ class Query(graphene.ObjectType):
             mapped_response.append(response_in_room)
         return mapped_response
 
-    @Auth.user_roles('Admin', 'Super_Admin')
+    @Auth.user_roles('Admin', 'Super Admin')
     def resolve_get_room_response(self, info, **kwargs):
         # Get the room's feedback
         page = kwargs.get('page')
@@ -198,7 +198,7 @@ class HandleRoomResponse(graphene.Mutation):
 
     room_response = graphene.Field(ResponseDetail)
 
-    @Auth.user_roles('Admin', 'Super_Admin')
+    @Auth.user_roles('Admin', 'Super Admin')
     def mutate(self, info, response_id, **kwargs):
         query_responses = Response.get_query(info)
         room_response = query_responses.filter(
@@ -230,7 +230,7 @@ class HandleMultipleResponse(graphene.Mutation):
 
     handledResponses = graphene.Field(HandledResponses)
 
-    @Auth.user_roles('Admin')
+    @Auth.user_roles('Admin', 'Super Admin')
     def mutate(self, info, responses, resolved):
         handled_responses = []
         query_responses = Response.get_query(info)
@@ -269,7 +269,7 @@ class ArchiveResponse(graphene.Mutation):
 
     room_response = graphene.Field(ResponseDetail)
 
-    @Auth.user_roles('Admin', 'Super_Admin')
+    @Auth.user_roles('Admin', 'Super Admin')
     def mutate(self, info, response_id):
         responses_query = Response.get_query(info)
         exact_response = responses_query.filter(

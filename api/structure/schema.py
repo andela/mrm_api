@@ -49,7 +49,7 @@ class CreateOfficeStructure(graphene.Mutation):
 
     structure = graphene.List(Structure)
 
-    @Auth.user_roles('Admin', 'Super_Admin')
+    @Auth.user_roles('Admin', 'Super Admin')
     def mutate(self, info, **kwargs):
         validate_structure_id(**kwargs)
         office_structure = []
@@ -68,7 +68,7 @@ class DeleteOfficeStructure(graphene.Mutation):
         structure_ids = graphene.List(graphene.String, required=True)
     structure = graphene.List(Structure)
 
-    @Auth.user_roles('Admin', 'Super_Admin')
+    @Auth.user_roles('Admin', 'Super Admin')
     def mutate(self, info, structure_ids):
         office_structure_query = Structure.get_query(info)
         room_query = Room.get_query(info)
@@ -110,7 +110,7 @@ class UpdateOfficeStructure(graphene.Mutation):
         position = graphene.Int()
     structure = graphene.Field(Structure)
 
-    @Auth.user_roles('Admin', 'Super_Admin')
+    @Auth.user_roles('Admin', 'Super Admin')
     def mutate(self, info, structure_id, **kwargs):
         validate_empty_fields(**kwargs)
         query = Structure.get_query(info)
@@ -154,7 +154,7 @@ class Query(graphene.ObjectType):
         Structure, structure_id=graphene.String(), description="Returns the office \
         structure corresponding to the provided structureId")
 
-    @Auth.user_roles('Admin', 'Default User', 'Super_Admin')
+    @Auth.user_roles('Admin', 'Default User', 'Super Admin')
     def resolve_all_structures(self, info):
         query = Structure.get_query(info)
         location_id = admin_roles.user_location_for_analytics_view()
@@ -163,7 +163,7 @@ class Query(graphene.ObjectType):
             StructureModel.location_id == location_id).all()
         return all_structures
 
-    @Auth.user_roles('Admin', 'Default User', 'Super_Admin')
+    @Auth.user_roles('Admin', 'Default User', 'Super Admin')
     def resolve_structure_by_structure_id(self, info, structure_id):
         if not structure_id.strip():
             raise GraphQLError("Please input a valid structureId")
