@@ -7,6 +7,7 @@ from flask_testing import TestCase
 from graphene.test import Client
 from datetime import datetime
 from alembic import command, config
+from unittest.mock import patch
 
 from app import create_app
 from schema import schema
@@ -38,7 +39,8 @@ class BaseTestCase(TestCase):
         self.client = Client(schema)
         return app
 
-    def setUp(self):
+    @patch('api.room.models.verify_calendar_id')
+    def setUp(self, mock_verify_calendar_id):
         app = self.create_app()
         self.app_test = app.test_client()
         with app.app_context():

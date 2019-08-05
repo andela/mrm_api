@@ -28,7 +28,8 @@ sys.path.append(os.getcwd())
 class TestCreateRoom(BaseTestCase):
 
     @patch('api.room.schema.subscriber.add_room.delay')
-    def test_room_creation(self, mock_subscriber):
+    @patch('api.room.models.verify_calendar_id')
+    def test_room_creation(self, mock_calendar_id, mock_subscriber):
         """
         Testing for room creation
         """
@@ -71,7 +72,8 @@ class TestCreateRoom(BaseTestCase):
             "Room label is not a valid string type")
 
     @patch('api.room.schema.subscriber.add_room.delay')
-    def test_valid_room_label_format(self, mock_subscriber):
+    @patch('api.room.models.verify_calendar_id')
+    def test_valid_room_label_format(self, mock_calendar_id, mock_subscriber):
         """
         Test when the room label inserted is valid
         """
