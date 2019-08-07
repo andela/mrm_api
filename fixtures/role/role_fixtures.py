@@ -55,8 +55,8 @@ role_query_response = {
                 "role": "Admin"
             },
             {
-                "role": "Ops"
-            }
+                "role": "Test"
+            },
         ]
     }
 }

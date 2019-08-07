@@ -17,9 +17,6 @@ class TestQueryRole(BaseTestCase):
         """
         Testing for User creation
         """
-        role = Role(role='Ops')
-        role.save()
-        db_session().commit()
 
         execute_query = self.client.execute(
             role_query,
