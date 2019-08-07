@@ -63,6 +63,8 @@ class BaseTestCase(TestCase):
             global role
             role = Role(role="Admin")
             role.save()
+            role_2 = Role(role="Test")
+            role_2.save()
             admin_user.roles.append(role)
             lagos_admin.roles.append(role)
             tag = Tag(name='Block-B',

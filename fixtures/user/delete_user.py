@@ -18,10 +18,8 @@ delete_user_2 = '''
 mutation {
     deleteUser(email: "test.test@andela.com") {
         user{
-            id
             email
             roles {
-                id
                 role
             }
         }
@@ -66,11 +64,9 @@ expected_query_after_delete = {
     "data": {
         "deleteUser": {
             "user": {
-                "id": "3",
                 "email": "test.test@andela.com",
                 "roles": [
                     {
-                        "id": "2",
                         "role": "Default User"
                     }
                 ]
