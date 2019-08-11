@@ -5,6 +5,7 @@ import re
 from api.location.models import CountryType, TimeZoneType
 from graphql import GraphQLError
 from api.structure.models import Structure as StructureModel
+from api.office_structure.models import OfficeStructure as OfficeStructureModel
 
 
 def validate_url(**kwargs):
@@ -141,3 +142,47 @@ def validate_structure_id(**kwargs):
                 structure_id=structure['structure_id']).first()
             if existing_structure:
                 raise GraphQLError('{} already exists'.format(structure.name))
+
+
+def ensure_unique_id(node_list):
+    node_id_list = [node.id for node in node_list]
+    if len(node_list) != len(set(node_id_list)):
+        raise GraphQLError('nodes must have unique id')
+    node_with_id = OfficeStructureModel.query.filter(
+        OfficeStructureModel.id.in_(node_id_list)).first()
+    if node_with_id:
+        raise GraphQLError('node id "{}" in use'.format(node_with_id.id))
+
+
+def ensure_single_root_node(node_list):
+    total_root_nodes = len(
+      [node.parent_id for node in node_list if node.parent_id is None])
+    if total_root_nodes != 1:
+        raise GraphQLError(
+          'there must be exactly 1 root node. {} were supplied'.format(
+            total_root_nodes))
+
+
+def ensure_valid_parent_id(node_list):
+    """
+    Function to validate that parent nodes do not appear before their children
+    """
+    available_parents = set()
+    for node in node_list:
+        if node.parent_id and node.parent_id not in available_parents:
+            raise GraphQLError(
+              'node "{}" appears before its parent'.format(
+                node.name))
+        available_parents.add(node.id)
+
+
+def validate_structure_nodes(node_list):
+    """
+    This function ensures the structure nodes are well formatted to form
+    a valid structure
+    """
+    if not len(node_list):
+        raise GraphQLError('node_list cannot be empty')
+    ensure_unique_id(node_list)
+    ensure_single_root_node(node_list)
+    ensure_valid_parent_id(node_list)
