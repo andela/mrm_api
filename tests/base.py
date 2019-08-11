@@ -23,6 +23,7 @@ from api.question.models import Question
 from api.response.models import Response
 from api.tag.models import Tag
 from api.structure.models import Structure
+from api.office_structure.models import OfficeStructure
 from fixtures.token.token_fixture import (
     ADMIN_TOKEN, USER_TOKEN, ADMIN_NIGERIA_TOKEN, SUPER_ADMIN_TOKEN)
 
@@ -205,6 +206,21 @@ class BaseTestCase(TestCase):
                 position=1,
             )
             structure.save()
+            parent_node = OfficeStructure(
+                 id='C56A4180-65AA-42EC-A945-5FD21DEC0518',
+                 name='Epic Tower',
+                 tag='Lagos Building',
+                 location_id=1
+            )
+            parent_node.save()
+            child_node = OfficeStructure(
+                 id='C56A4180-65AA-42EC-A945-5FD21DEC0519',
+                 name='Gold Coast',
+                 tag='First Floor',
+                 parent_id='C56A4180-65AA-42EC-A945-5FD21DEC0518',
+                 location_id=1
+            )
+            child_node.save()
             db_session.commit()
             f = open('mrm.err.log', 'a+')
             f.write('[2019-08-06 13:22:32 +0000] [1574] [ERROR] Error /logs\r')
