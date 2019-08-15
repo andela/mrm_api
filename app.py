@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, Response
 from flask_graphql import GraphQLView
 from flask_cors import CORS
 from flask_json import FlaskJSON
@@ -30,8 +30,15 @@ def create_app(config_name):
     @app.route("/logs", methods=['GET'])
     @Auth.user_roles('Super Admin', 'REST')
     def logs():
+        response = None
         log_file = 'mrm.err.log'
-        return app.response_class(read_log_file(log_file), mimetype='text')
+        try:
+            open(log_file)  # trigger opening of file
+            response = Response(read_log_file(log_file), mimetype='text')
+        except FileNotFoundError:  # pragma: no cover
+            message = 'Log file was not found'
+            response = Response(message, mimetype='text', status=404)
+        return response
 
     app.add_url_rule(
         '/mrm',
