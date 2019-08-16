@@ -1,5 +1,8 @@
 import graphene
 from graphene_sqlalchemy import SQLAlchemyObjectType
+from graphql import GraphQLError
+from enum import Enum
+from sqlalchemy import asc, desc
 from api.office_structure.models import OfficeStructure as StructureModel
 from helpers.auth.authentication import Auth
 from utilities.validations import (
@@ -55,3 +58,32 @@ class CreateStructure(graphene.Mutation):
 
 class Mutation(graphene.ObjectType):
     create_structure = CreateStructure.Field()
+
+
+class Order(Enum):
+    ASC = 'asc'
+    DESC = 'desc'
+
+
+class Query(graphene.ObjectType):
+    """
+      Query for node path
+    """
+    node_path_by_name = graphene.List(
+        StructureNode,
+        node_name=graphene.String(required=True),
+        order=graphene.Argument(graphene.Enum.from_enum(Order)),
+        description="Returns the path from root to the node within structure"
+        )
+
+    @Auth.user_roles('Admin', 'Default User', 'Super Admin')
+    def resolve_node_path_by_name(self, info, **kwargs):
+        node_name = kwargs['node_name']
+        order = kwargs.get('order')
+        query = StructureNode.get_query(info)
+        order = asc if order == 'asc' else desc
+        node = query.filter(
+          StructureModel.name.ilike(node_name.strip())).first()
+        if not node:
+            raise GraphQLError('node not found')
+        return node.path_to_root(order=order)
