@@ -48,4 +48,5 @@ class TestCreateUser(BaseTestCase):
         query_response = self.client.execute(
             non_Andela_email_mutation,
             context_value={'session': db_session})
-        self.assertEqual(query_response, non_Andela_email_mutation_response)
+        response_expected = non_Andela_email_mutation_response
+        self.assertEqual(query_response, response_expected)

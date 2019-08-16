@@ -278,6 +278,9 @@ class CreateUserRole(graphene.Mutation):
             if not exact_role:
                 raise GraphQLError('Role id does not exist')
 
+            if len(exact_user.roles) > 0:
+                raise GraphQLError('This user is already assigned a role')
+
             exact_user.roles.append(exact_role)
             exact_user.save()
 

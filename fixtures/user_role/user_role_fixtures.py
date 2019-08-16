@@ -12,6 +12,19 @@ mutation{
 }
 '''
 
+user_mutation_query_for_duplicated_role = '''
+mutation{
+  createUserRole(userId: 1, roleId: 1){
+    userRole{
+      id
+      roles{
+        id
+      }
+    }
+  }
+}
+'''
+
 user_role_mutation_response = {
     "data": {
         "createUserRole": {
