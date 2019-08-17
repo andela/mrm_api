@@ -10,10 +10,9 @@ def read_log_file(log_file):
     timestamp_pattern = re.compile(r'(\d+-\d+-\d+ \d+:\d+:\d+)')
     error_details = []
     for line in reversed(list(open(log_file, 'r'))):
-        # check if line contains timestamp
-        if timestamp_pattern.search(line):
+        if timestamp_pattern.search(line):  # check if line contains timestamp
             yield line
-            for detail in reversed(error_details):  # pragma: no cover
+            for detail in reversed(error_details):
                 yield detail
             error_details.clear()
         else:
