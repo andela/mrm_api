@@ -334,21 +334,21 @@ change_user_location_invalid_user_mutation = '''
 
 change_user_location_invalid_user_response = {
     "errors": [
-      {
-        "message": "User not found",
-        "locations": [
-          {
-            "line": 3,
-            "column": 9
-          }
-        ],
-        "path": [
-          "changeUserLocation"
-        ]
-      }
+        {
+            "message": "User not found",
+            "locations": [
+                {
+                    "line": 3,
+                    "column": 9
+                }
+            ],
+            "path": [
+                "changeUserLocation"
+            ]
+        }
     ],
     "data": {
-      "changeUserLocation": null
+        "changeUserLocation": null
     }
 }
 
@@ -364,23 +364,23 @@ change_user_location_invalid_location_id_mutation = '''
   '''
 
 change_user_location_invalid_location_id_response = {
-  "errors": [
-    {
-      "message": "the location supplied does not exist",
-      "locations": [
+    "errors": [
         {
-          "line": 3,
-          "column": 7
+            "message": "the location supplied does not exist",
+            "locations": [
+                {
+                    "line": 3,
+                    "column": 7
+                }
+            ],
+            "path": [
+                "changeUserLocation"
+            ]
         }
-      ],
-      "path": [
-        "changeUserLocation"
-      ]
+    ],
+    "data": {
+        "changeUserLocation": null
     }
-  ],
-  "data": {
-    "changeUserLocation": null
-  }
 }
 
 change_user_location_to_same_location_mutation = '''
@@ -395,23 +395,23 @@ change_user_location_to_same_location_mutation = '''
    '''
 
 change_user_location_to_same_location_response = {
-  "errors": [
-    {
-      "message": "user already in this location",
-      "locations": [
+    "errors": [
         {
-          "line": 3,
-          "column": 9
+            "message": "user already in this location",
+            "locations": [
+                {
+                    "line": 3,
+                    "column": 9
+                }
+            ],
+            "path": [
+                "changeUserLocation"
+            ]
         }
-      ],
-      "path": [
-        "changeUserLocation"
-      ]
+    ],
+    "data": {
+        "changeUserLocation": null
     }
-  ],
-  "data": {
-    "changeUserLocation": null
-  }
 }
 
 change_user_location_valid_input_mutation = '''
@@ -426,12 +426,95 @@ change_user_location_valid_input_mutation = '''
    '''
 
 change_user_location_valid_input_response = {
-  "data": {
-    "changeUserLocation": {
-      "user": {
-        "name": "Peter Walugembe",
-        "location": "Nairobi"
-      }
+    "data": {
+        "changeUserLocation": {
+            "user": {
+                "name": "Peter Walugembe",
+                "location": "Nairobi"
+            }
+        }
+    }
+}
+
+set_user_location_mutation = '''
+mutation {
+  setUserLocation(locationId: 2){
+    user{
+      email
+      location
     }
   }
+}
+'''
+set_user_location_exists_mutation = '''
+mutation {
+  setUserLocation(locationId: 1){
+    user{
+      email
+      location
+    }
+  }
+}
+'''
+
+set_user_location_exists_invalid_location = '''
+mutation {
+  setUserLocation(locationId: 10000){
+    user{
+      email
+      location
+    }
+  }
+}
+'''
+
+set_user_location_mutation_response = {
+    "data": {
+        "setUserLocation": {
+            "user": {
+                "email": "peter.adeoye@andela.com",
+                "location": "Nairobi"
+            }
+        }
+    }
+}
+
+set_location_for_user_with_location_response = {
+    "errors": [
+        {
+            "message": "This user already has a location set.",
+            "locations": [
+                {
+                    "line": 3,
+                    "column": 3
+                }
+            ],
+            "path": [
+                "setUserLocation"
+            ]
+        }
+    ],
+    "data": {
+        "setUserLocation": None
+    }
+}
+
+set_user_location_exists_invalid_location_response = {
+    "errors": [
+        {
+            "message": "The location supplied does not exist",
+            "locations": [
+                {
+                    "line": 3,
+                    "column": 3
+                }
+            ],
+            "path": [
+                "setUserLocation"
+            ]
+        }
+    ],
+    "data": {
+        "setUserLocation": None
+    }
 }

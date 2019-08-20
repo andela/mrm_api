@@ -121,15 +121,8 @@ class Authentication:
                     for value in response['values']:
                         if user_data.email == value["email"]:
                             if value['location']:  # pragma: no cover
-                                user_data.location = value['location'][
-                                    'name'
-                                ] or "Nairobi"
-                                user_data.save()
-                    user_data.save()  # pragma: no cover
-                    if not user_data.location:  # pragma: no cover
-                        user_data.location = "Nairobi"
-                        user_data.save()
-                        check_and_add_location(user_data.location)
+                                check_and_add_location(
+                                    value['location']['name'])
                     notification_settings = NotificationModel(
                         user_id=user_data.id)
                     notification_settings.save()
