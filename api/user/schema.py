@@ -212,11 +212,11 @@ class ChangeUserLocation(graphene.Mutation):
         location_id = kwargs['location_id']
         query_user = User.get_query(info)
         user = query_user.filter(
-          UserModel.state == "active", UserModel.email == email).first()
+            UserModel.state == "active", UserModel.email == email).first()
         if not user:
             raise GraphQLError("User not found")
         new_location = LocationModel.query.filter_by(
-          id=location_id, state="active").first()
+            id=location_id, state="active").first()
         if not new_location:
             raise GraphQLError('the location supplied does not exist')
         if user.location == new_location.name:
@@ -224,6 +224,33 @@ class ChangeUserLocation(graphene.Mutation):
         user.location = new_location.name
         user.save()
         return ChangeUserLocation(user=user)
+
+
+class SetUserLocation(graphene.Mutation):
+    """
+        Mutation for users to set their location
+    """
+    class Arguments:
+        location_id = graphene.Int(required=True)
+
+    user = graphene.Field(User)
+
+    @Auth.user_roles('Admin', 'Super Admin', 'Default User')
+    def mutate(self, info, **kwargs):
+        logged_in_user = get_user_from_db()
+        location_id = kwargs['location_id']
+        query_user = User.get_query(info)
+        user = query_user.filter(
+            UserModel.state == "active", UserModel.id == logged_in_user.id).first() # noqa
+        if user.location:
+            raise GraphQLError('This user already has a location set.')
+        new_location = LocationModel.query.filter_by(
+            id=location_id, state="active").first()
+        if not new_location:
+            raise GraphQLError('The location supplied does not exist')
+        user.location = new_location.name
+        user.save()
+        return SetUserLocation(user=user)
 
 
 class CreateUserRole(graphene.Mutation):
@@ -305,6 +332,9 @@ class Mutation(graphene.ObjectType):
         description="Changes the location of a user and accepts the arguments\
             \n- email: The email field of the user[required]\
             \n- location_id: the new location of the user[required]")
+    set_user_location = SetUserLocation.Field(
+        description="sets the location of a user with no location and accepts arguments\
+           \n- location_id: the new location of the user[required]")
     invite_to_converge = InviteToConverge.Field(
         description="Invites a new user to converge \
             \n- email: The email field of a user[required]")
