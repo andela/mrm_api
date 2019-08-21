@@ -25,7 +25,7 @@ expected_query_all_locations = {
                 "abbreviation": "KLA",
                 "rooms": [
                     {
-                        "name": "Entebbe",
+                        "name": "Entebbe Test",
                         "roomType": "meeting",
                         "capacity": 6,
                         "roomTags": [
@@ -37,7 +37,19 @@ expected_query_all_locations = {
                         ]
                     },
                     {
-                        "name": "Tana",
+                        "name": "Kampala",
+                        "roomType": "meeting",
+                        "capacity": 14,
+                        "roomTags": [
+                            {
+                                "name": "Block-B",
+                                "color": "green",
+                                "description": "The description"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Tana Dummy",
                         "roomType": "meeting",
                         "capacity": 14,
                         "roomTags": [
@@ -101,15 +113,20 @@ expected_all_location_no_hierachy = {
     'data': {'allLocations': [
         {'rooms': [
                 {
-                    'name': 'Entebbe',
+                    'name': 'Entebbe Test',
                     'roomType': 'meeting',
                     'capacity': 6
                 },
                 {
-                    'name': 'Tana',
+                    'name': 'Kampala',
                     'roomType': 'meeting',
                     'capacity': 14
                 },
+                {
+                    'name': 'Tana Dummy',
+                    'roomType': 'meeting',
+                    'capacity': 14
+                }
             ]},
         {'rooms': []},
         {'rooms': []}

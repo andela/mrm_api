@@ -31,7 +31,7 @@ end_event_mutation_response = {
         "meetingEndTime": "2018-07-10T09:45:00Z",
         "room": {
           "id": "1",
-          "name": "Entebbe",
+          "name": "Entebbe Test",
           "calendarId": "andela.com_3630363835303531343031@resource.calendar.google.com"  # noqa: E501
         }
       }

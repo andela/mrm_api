@@ -268,13 +268,19 @@ db_rooms_query_response = {
     "data": {
         "rooms": [
             {
-                "name": "Entebbe",
+                "name": "Entebbe Test",
                 "capacity": 6,
                 "roomType": "meeting",
                 "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg"  # noqa: E501
             },
             {
-                "name": "Tana",
+                "name": "Tana Dummy",
+                "capacity": 14,
+                "roomType": "meeting",
+                "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg"  # noqa: E501
+            },
+            {
+                "name": "Kampala",
                 "capacity": 14,
                 "roomType": "meeting",
                 "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg"  # noqa: E501
@@ -283,12 +289,33 @@ db_rooms_query_response = {
     }
 }
 
-query_rooms_response = {
+query_actual_rooms_response = {
     "data": {
         "allRooms": {
             "rooms": [
                 {
-                    "name": "Entebbe",
+                    "name": "Kampala",
+                    "capacity": 14,
+                    "roomType": "meeting",
+                    "roomTags": [
+                        {
+                            "name": "Block-B",
+                            "color": "green"
+                        }
+                    ],
+                    "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg"  # noqa: E501
+                }
+            ]
+        }
+    }
+}
+
+query_test_rooms_response = {
+    "data": {
+        "allRooms": {
+            "rooms": [
+                {
+                    "name": "Entebbe Test",
                     "capacity": 6,
                     "roomType": "meeting",
                     "roomTags": [
@@ -300,7 +327,7 @@ query_rooms_response = {
                     "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg"  # noqa: E501
                 },
                 {
-                    "name": "Tana",
+                    "name": "Tana Dummy",
                     "capacity": 14,
                     "roomType": "meeting",
                     "roomTags": [
@@ -319,7 +346,7 @@ query_rooms_response = {
 room_mutation_query_duplicate_name = '''
     mutation {
         createRoom(
-            name: "Entebbe", roomType: "Meeting", capacity: 4, locationId: 1,
+            name: "Entebbe Test", roomType: "Meeting", capacity: 4, locationId: 1,
             calendarId:"andela.com_3836323338323230343935@resource.calendar.google.com",
             structureId: "b05fc5f2-b4aa-4f48-a8fb-30bdcc3fc968",
             imageUrl: "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg",
@@ -344,7 +371,7 @@ room_mutation_query_duplicate_name = '''
 room_mutation_query_duplicate_name_response = {
     "errors": [
         {
-            "message": "Entebbe Room already exists",
+            "message": "Entebbe Test Room already exists",
             "locations": [
                 {
                     "line": 3,

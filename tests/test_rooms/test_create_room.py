@@ -1,11 +1,9 @@
 import sys
 import os
 from unittest.mock import patch
-
 from tests.base import BaseTestCase, CommonTestCases
 from fixtures.helpers.decorators_fixtures import (
-    query_string, query_string_response
-)
+    query_string, query_string_response)
 from fixtures.room.create_room_fixtures import (
     room_mutation_query,
     room_mutation_different_location_query,

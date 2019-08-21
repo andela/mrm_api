@@ -35,7 +35,7 @@ get_room_response_query = '''{
 get_room_response_query_data = {
     "data": {
         "roomResponse": {
-            "roomName": "Entebbe",
+            "roomName": "Entebbe Test",
             "totalResponses": 2
         }
     }
@@ -52,7 +52,7 @@ get_resolved_room_responses_query = '''{
 get_resolved_room_responses_query_data = {
     "data": {
         "roomResponse": {
-            "roomName": "Entebbe",
+            "roomName": "Entebbe Test",
             "totalResponses": 1
         }
     }
@@ -94,7 +94,7 @@ query{{
     allRoomResponses(startDate: "{}",
      endDate: "{}",
      upperLimitCount: 3, lowerLimitCount: 0,
-     room:"Entebbe" ){{
+     room:"Entebbe Test" ){{
         responses{{
             totalResponses
             roomName
@@ -190,7 +190,7 @@ get_room_response_query_by_date_data = {
             "responses": [
                 {
                     "totalResponses": 2,
-                    "roomName": "Entebbe",
+                    "roomName": "Entebbe Test",
                     "response": [
                         {
                             "id": 2,
@@ -277,7 +277,7 @@ summary_room_response_data = {
         "allRoomResponses": {
             "responses": [
                 {
-                    "roomName": "Entebbe",
+                    "roomName": "Entebbe Test",
                     "totalResponses": 2,
                     "response": [
                         {
@@ -337,7 +337,7 @@ all_resolved_room_response_data = {
         "allRoomResponses": {
             "responses": [
                 {
-                    "roomName": "Entebbe",
+                    "roomName": "Entebbe Test",
                     "totalResponses": 1,
                     "response": [
                         {
@@ -386,7 +386,8 @@ query{
 
 search_response_by_room_query = '''
  query{
-    allRoomResponses(lowerLimitCount: 1, upperLimitCount: 3, room:"Entebbe"){
+    allRoomResponses(
+      lowerLimitCount: 1, upperLimitCount: 3, room:"Entebbe Test"){
         responses{
             totalResponses
             roomName
@@ -428,7 +429,7 @@ query{
 
 search_response_by_room_only = '''
 query{
-    allRoomResponses(room:"Entebbe"){
+    allRoomResponses(room:"Entebbe Test"){
         responses{
             totalResponses
             roomName
@@ -483,7 +484,7 @@ filter_by_response_data = {
                         }
 
                     ],
-                    'roomName': 'Entebbe',
+                    'roomName': 'Entebbe Test',
                     'totalResponses': 2,
                 }
             ]
@@ -493,7 +494,7 @@ filter_by_response_data = {
 
 search_resolved_responses_by_room_name = '''
 query{
-    allRoomResponses(room:"Entebbe", resolved:true){
+    allRoomResponses(room:"Entebbe Test", resolved:true){
         responses{
             totalResponses
             roomName
@@ -527,7 +528,7 @@ search_resolved_responses_by_room_name_data = {
         "allRoomResponses": {
             "responses": [
                 {
-                    "roomName": "Entebbe",
+                    "roomName": "Entebbe Test",
                     "totalResponses": 1,
                     "response": [
                         {
@@ -584,7 +585,7 @@ query_paginated_responses_response = {
         "allRoomResponses": {
             "responses": [
                 {
-                    "roomName": "Entebbe",
+                    "roomName": "Entebbe Test",
                     "totalResponses": 2,
                     "response": [
                         {

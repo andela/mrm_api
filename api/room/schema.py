@@ -1,21 +1,17 @@
+import os
 import graphene
-from sqlalchemy import func
-from graphene_sqlalchemy import (SQLAlchemyObjectType)
+from sqlalchemy import any_, func, not_
+from graphene_sqlalchemy import SQLAlchemyObjectType
 from graphql import GraphQLError
 from api.room.models import Room as RoomModel
 from api.tag.models import Tag as TagModel
 from utilities.validations import (
-    validate_empty_fields,
-    validate_room_labels,
-    validate_structure_id
-)
+    validate_empty_fields, validate_room_labels, validate_structure_id)
 from utilities.utility import update_entity_fields
 from helpers.auth.authentication import Auth
 from helpers.auth.admin_roles import admin_roles
 from helpers.room import subscriber
-from utilities.validator import (
-    verify_location_id,
-    ErrorHandler)
+from utilities.validator import verify_location_id, ErrorHandler
 from helpers.room_filter.room_filter import room_filter, room_join_location
 from helpers.pagination.paginate import Paginate, validate_page
 
@@ -131,8 +127,7 @@ class CreateRoom(graphene.Mutation):
         result = exact_query.filter(
             RoomModel.name == kwargs.get('name'),
             RoomModel.state == "active",
-            RoomModel.location_id == kwargs.get('location_id')
-        )
+            RoomModel.location_id == kwargs.get('location_id'))
         if result.count():
             ErrorHandler.check_conflict(self, kwargs['name'], 'Room')
         room_tags = []
@@ -151,21 +146,40 @@ class PaginatedRooms(Paginate):
     rooms = graphene.List(Room)
 
     def resolve_rooms(self, info, **kwargs):
+        test_room_keyword_patterns = ["%_ummy%", "%_est%"]
         page = self.page
         per_page = self.per_page
         filter_data = self.filter_data
         query = Room.get_query(info)
         exact_query = room_filter(query, filter_data)
         active_rooms = exact_query.filter(RoomModel.state == "active")
-        if not page:
-            return active_rooms.order_by(func.lower(RoomModel.name)).all()
-        page = validate_page(page)
-        self.query_total = active_rooms.count()
-        result = active_rooms.order_by(func.lower(
-            RoomModel.name)).limit(per_page).offset(page*per_page)
-        if result.count() == 0:
-            return GraphQLError("No more resources")
-        return result
+        test_rooms = active_rooms.filter(
+            RoomModel.name.like(any_(test_room_keyword_patterns)))
+        actual_rooms = active_rooms.filter(not_(
+            RoomModel.name.like('%_ummy%') | RoomModel.name.like('%_est%')))
+        # Return test rooms for the staging enviroment.
+        if (os.getenv("APP_SETTINGS") == "development") or \
+                (os.getenv("APP_SETTINGS") == "testing"):
+            if not page:
+                return test_rooms.order_by(func.lower(RoomModel.name)).all()
+            page = validate_page(page)
+            self.query_total = test_rooms.count()
+            result_test_rooms = test_rooms.order_by(func.lower(
+                RoomModel.name)).limit(per_page).offset(page*per_page)
+            if result_test_rooms.count() == 0:
+                return GraphQLError("No more resources")
+            return result_test_rooms
+        # Return actual rooms for the production enviroment.
+        elif (os.getenv("APP_SETTINGS") == "production"):
+            if not page:
+                return actual_rooms.order_by(func.lower(RoomModel.name)).all()
+            page = validate_page(page)
+            self.query_total = actual_rooms.count()
+            result_actual_rooms = actual_rooms.order_by(func.lower(
+                RoomModel.name)).limit(per_page).offset(page*per_page)
+            if result_actual_rooms.count() == 0:
+                return GraphQLError("No more resources")
+            return result_actual_rooms
 
 
 class UpdateRoom(graphene.Mutation):

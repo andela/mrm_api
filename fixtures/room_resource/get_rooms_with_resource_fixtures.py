@@ -14,7 +14,7 @@ rooms_containing_resource_expected_response = {
         "roomsContainingResource": [
             {
                 "room": {
-                    "name": "Entebbe",
+                    "name": "Entebbe Test",
                     "capacity": 6
                 }
             },

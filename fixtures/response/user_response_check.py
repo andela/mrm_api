@@ -139,7 +139,7 @@ filter_question_by_room_response = {
     "getRoomResponse": {
       "responses": [
         {
-          "roomName": "Entebbe",
+          "roomName": "Entebbe Test",
           "roomId": 1,
           "response": [
             {
@@ -189,7 +189,7 @@ filter_response_by_room_with_pagination_response = {
     "getRoomResponse": {
       "responses": [
         {
-          "roomName": "Entebbe",
+          "roomName": "Entebbe Test",
           "roomId": 1,
           "response": [
             {

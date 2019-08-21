@@ -93,7 +93,7 @@ event_query_with_pagination_response = {
                     'id': '1',
                     'roomId': 1,
                     'room': {
-                        'name': 'Entebbe'
+                        'name': 'Entebbe Test'
                         }
             }],
             'hasNext': False,
@@ -366,7 +366,7 @@ event_query_without_page_and_per_page_response = {
                     'id': '1',
                     'roomId': 1,
                     'room': {
-                        'name': 'Entebbe'
+                        'name': 'Entebbe Test'
                         }
             }],
             'hasNext': None,

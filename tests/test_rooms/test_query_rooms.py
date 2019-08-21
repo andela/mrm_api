@@ -1,13 +1,16 @@
 import json
+import os
 from unittest.mock import patch
 from tests.base import BaseTestCase, CommonTestCases
 from helpers.calendar.calendar import get_calendar_list_mock_data
 from fixtures.room.create_room_fixtures import (
     rooms_query,
-    query_rooms_response)
+    query_test_rooms_response,
+    query_actual_rooms_response)
 from fixtures.room.query_room_fixtures import (
     paginated_rooms_query,
-    paginated_rooms_response,
+    paginated_test_rooms_response,
+    paginated_actual_rooms_response,
     room_query_by_id,
     room_query_by_id_response,
     room_with_non_existant_id,
@@ -19,17 +22,34 @@ from helpers.calendar.credentials import get_google_api_calendar_list
 
 
 class QueryRooms(BaseTestCase):
-    def test_query_rooms(self):
+    @patch.dict(os.environ, {"APP_SETTINGS": "development"})
+    def test_query_test_rooms(self):
         execute_query = self.client.execute(
             rooms_query)
-        expected_response = query_rooms_response
+        expected_response = query_test_rooms_response
         self.assertEqual(execute_query, expected_response)
 
-    def test_paginate_room_query(self):
+    @patch.dict(os.environ, {"APP_SETTINGS": "production"})
+    def test_query_actual_rooms(self):
+        execute_query = self.client.execute(
+            rooms_query)
+        expected_response = query_actual_rooms_response
+        self.assertEqual(execute_query, expected_response)
+
+    @patch.dict(os.environ, {"APP_SETTINGS": "development"})
+    def test_paginate_test_rooms_query(self):
         CommonTestCases.admin_token_assert_equal(
             self,
             paginated_rooms_query,
-            paginated_rooms_response
+            paginated_test_rooms_response
+        )
+
+    @patch.dict(os.environ, {"APP_SETTINGS": "production"})
+    def test_paginate_actual_rooms_query(self):
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            paginated_rooms_query,
+            paginated_actual_rooms_response
         )
 
     @patch("api.room.schema_query.get_google_api_calendar_list", spec=True,
@@ -62,7 +82,16 @@ class QueryRooms(BaseTestCase):
         self.assertEquals(
             actual_response["errors"][0]['message'], expected_response)
 
-    def test_paginated_empty_page(self):
+    @patch.dict(os.environ, {"APP_SETTINGS": "development"})
+    def test_paginated_empty_page_on_test_rooms(self):
+        CommonTestCases.admin_token_assert_in(
+            self,
+            paginated_rooms_query_blank_page,
+            "No more resources"
+        )
+
+    @patch.dict(os.environ, {"APP_SETTINGS": "production"})
+    def test_paginated_empty_page_on_actual_rooms(self):
         CommonTestCases.admin_token_assert_in(
             self,
             paginated_rooms_query_blank_page,

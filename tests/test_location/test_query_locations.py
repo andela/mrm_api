@@ -1,5 +1,4 @@
 from tests.base import BaseTestCase
-
 from fixtures.location.all_locations_fixtures import (
     all_locations_query,
     expected_query_all_locations,

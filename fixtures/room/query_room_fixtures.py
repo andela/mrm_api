@@ -24,12 +24,27 @@ paginated_rooms_query = '''
 }
 '''
 
-paginated_rooms_response = {
+paginated_actual_rooms_response = {
     "data": {
         "allRooms": {
             "rooms": [
                 {
-                    "name": "Entebbe"
+                    "name": "Kampala"
+                }
+            ],
+            "hasNext": False,
+            "hasPrevious": False,
+            "pages": 1
+        }
+    }
+}
+
+paginated_test_rooms_response = {
+    "data": {
+        "allRooms": {
+            "rooms": [
+                {
+                    "name": "Entebbe Test"
                 }
             ],
             "hasNext": True,
@@ -53,7 +68,7 @@ room_query_by_id_response = {
     "data": {
         "getRoomById": {
             "capacity": 6,
-            "name": "Entebbe",
+            "name": "Entebbe Test",
             "roomType": "meeting"
         }
     }
@@ -167,7 +182,7 @@ room_search_by_name_response = {
     "data": {
         "getRoomByName": [
             {
-                "name": "Entebbe"
+                "name": "Entebbe Test"
             }]
     }
 }

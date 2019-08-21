@@ -131,7 +131,7 @@ filter_archived_responses_response = {
             "responses": [
                 {
                     "roomId": 2,
-                    "roomName": "Tana",
+                    "roomName": "Tana Dummy",
                     "response": [
                         {
                             "id": 3,
