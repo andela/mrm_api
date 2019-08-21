@@ -25,6 +25,29 @@ class InputNode(graphene.InputObjectType):
     tag = graphene.String(required=True)
 
 
+class DeleteNode(graphene.Mutation):
+    """
+    Returns node payload after deleting a node
+    """
+
+    class Arguments:
+        node_id = graphene.UUID(required=True)
+
+    node = graphene.Field(StructureNode)
+
+    @Auth.user_roles('Admin', 'Super Admin')
+    def mutate(self, info, node_id):
+        exact_node = db_session.query(StructureModel).filter(
+            StructureModel.id == node_id).first()
+        if not exact_node:
+            raise GraphQLError(
+                "The specified node does not exist"
+            )
+        db_session.delete(exact_node)
+        db_session.commit()
+        return DeleteNode(node=exact_node)
+
+
 class CreateStructure(graphene.Mutation):
     """ Returns a list of nodes on structure creation"""
     class Arguments:
@@ -58,6 +81,10 @@ class CreateStructure(graphene.Mutation):
 
 class Mutation(graphene.ObjectType):
     create_structure = CreateStructure.Field()
+    delete_node = DeleteNode.Field(
+        description="Mutation to delete a node\
+            \n- node_id: Unique key identifier of a node"
+    )
 
 
 class Order(Enum):
