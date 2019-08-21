@@ -69,7 +69,7 @@ all_analytics_query_response = {
       "bookings": 1,
       "analytics": [
         {
-          "roomName": "Entebbe",
+          "roomName": "Entebbe Test",
           "cancellations": 0,
           "cancellationsPercentage": 0.0,
           "autoCancellations": 0,
@@ -86,7 +86,24 @@ all_analytics_query_response = {
           ]
         },
         {
-          "roomName": "Tana",
+          "roomName": "Tana Dummy",
+          "cancellations": 0,
+          "cancellationsPercentage": 0.0,
+          "autoCancellations": 0,
+          "numberOfBookings": 0,
+          "checkins": 0,
+          "checkinsPercentage": 0.0,
+          "bookingsPercentageShare": 0.0,
+          "appBookings": 0,
+          "appBookingsPercentage": 0.0,
+          "events": [
+            {
+              "durationInMinutes": 0
+            }
+          ]
+        },
+        {
+          "roomName": "Kampala",
           "cancellations": 0,
           "cancellationsPercentage": 0.0,
           "autoCancellations": 0,

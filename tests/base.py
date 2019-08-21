@@ -85,7 +85,7 @@ class BaseTestCase(TestCase):
                           color='blue',
                           description='The description')
             tag_two.save()
-            room = Room(name='Entebbe',
+            room = Room(name='Entebbe Test',
                         room_type='meeting',
                         capacity=6,
                         location_id=location.id,
@@ -95,7 +95,7 @@ class BaseTestCase(TestCase):
                         room_labels=["1st Floor", "Wing A"])
             room.save()
             room.room_tags.append(tag)
-            room_2 = Room(name='Tana',
+            room_2 = Room(name='Tana Dummy',
                         room_type='meeting',
                         capacity=14,
                         location_id=location.id,
@@ -105,6 +105,16 @@ class BaseTestCase(TestCase):
                         room_labels=["1st Floor", "Wing B"])
             room_2.save()
             room_2.room_tags.append(tag)
+            room_3 = Room(name='Kampala',
+                        room_type='meeting',
+                        capacity=14,
+                        location_id=location.id,
+                        structure_id='851ae8b3-48dd-46b5-89bc-ca3f8111ad87',
+                        calendar_id='andela.com_3432393432393935363436@resource.calendar.google.com',  # noqa: E501
+                        image_url="https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg",  # noqa: E501
+                        room_labels=["1st Floor", "Wing B"])
+            room_3.save()
+            room_3.room_tags.append(tag)
             resource = Resource(name='Markers',
                                 quantity=3)
             resource.save()
@@ -304,6 +314,17 @@ class CommonTestCases(BaseTestCase):
         headers = {"Authorization": "Bearer" + " " + ADMIN_TOKEN}
         response = self.app_test.post('/mrm?query=' + query, headers=headers)
         self.assertIn(expected_response, str(response.data))
+
+    def admin_token_assert_in_errors(self, query, expected_response):
+        """
+        Make a request with admin token and use assertIn
+        to compare the values for negative tests.
+        :params
+            - query, expected_response
+        """
+        headers = {"Authorization": "Bearer" + " " + ADMIN_TOKEN}
+        response = self.app_test.post('/mrm?query=' + query, headers=headers)
+        self.assertIn(expected_response, str(response.data.decode()))
 
     def lagos_admin_token_assert_in(self, query, expected_response):
         """

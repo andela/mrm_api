@@ -82,7 +82,7 @@ query_without_room_id = '''mutation{
 
 query_room_id_non_existant = '''mutation{
     updateRoom(
-        roomId: 4,
+        roomId: 4000,
         name: "Jinja",
         capacity: 8,
         roomType: "board room",

@@ -30,7 +30,7 @@ event_checkin_response = {
                 "cancelled": False,
                 "room": {
                     "id": "1",
-                    "name": "Entebbe",
+                    "name": "Entebbe Test",
                     "calendarId": "andela.com_3630363835303531343031@resource.calendar.google.com"  # noqa
                 }
             }
@@ -160,7 +160,7 @@ response_for_event_existing_in_db_checkin = {
                 "cancelled": False,
                 "room": {
                     "id": "1",
-                    "name": "Entebbe",
+                    "name": "Entebbe Test",
                     "calendarId": "andela.com_3630363835303531343031@resource.calendar.google.com"  # noqa
                 }
             }

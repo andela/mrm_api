@@ -14,7 +14,7 @@ filter_rooms_by_capacity_response = {
         "allRooms": {
             "rooms": [
                 {
-                    "name": "Entebbe",
+                    "name": "Entebbe Test",
                     "capacity": 6,
                     "roomType": "meeting",
                     "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg"  # noqa: E501
@@ -39,13 +39,13 @@ filter_rooms_by_location_response = {
         "allRooms": {
             "rooms": [
                 {
-                    "name": "Entebbe",
+                    "name": "Entebbe Test",
                     "capacity": 6,
                     "roomType": "meeting",
                     "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg"  # noqa: E501
                 },
                 {
-                    "name": "Tana",
+                    "name": "Tana Dummy",
                     "capacity": 14,
                     "roomType": "meeting",
                     "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg"  # noqa: E501
@@ -72,7 +72,7 @@ filter_rooms_by_wings_and_floors_response = {
             'rooms': [
                 {
                     'id': '1',
-                    'name': 'Entebbe',
+                    'name': 'Entebbe Test',
                     'roomLabels': [
                         '1st Floor',
                         'Wing A'
@@ -117,7 +117,7 @@ filter_rooms_by_location_capacity_response = {
         "allRooms": {
             "rooms": [
                 {
-                    "name": "Entebbe",
+                    "name": "Entebbe Test",
                     "capacity": 6,
                     "roomType": "meeting",
                     "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg"  # noqa: E501
@@ -204,7 +204,7 @@ filter_rooms_by_room_labels_response = {
         "allRooms": {
             "rooms": [
                 {
-                    "name": "Entebbe",
+                    "name": "Entebbe Test",
                     "capacity": 6,
                     "roomType": "meeting",
                     "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg",  # noqa: E501

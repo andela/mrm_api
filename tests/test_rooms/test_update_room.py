@@ -1,14 +1,10 @@
-
-
 from tests.base import BaseTestCase, CommonTestCases
-
 from fixtures.room.room_update_fixtures import (
     query_update_all_fields,
     query_without_room_id,
     query_room_id_non_existant,
     update_with_empty_field,
-    query_update_without_structure_id
-)
+    query_update_without_structure_id)
 
 
 class TestUpdateRoom(BaseTestCase):
@@ -32,7 +28,7 @@ class TestUpdateRoom(BaseTestCase):
             "required positional argument")
 
     def test_for_error_if_room_id_is_non_existant_room(self):
-        CommonTestCases.admin_token_assert_in(
+        CommonTestCases.admin_token_assert_in_errors(
             self,
             query_room_id_non_existant,
             "Room not found")

@@ -50,9 +50,7 @@ class AnalyticsReport():
 
         rooms_no_meetings_df = all_rooms_data_df.loc[
             lambda all_rooms_data_df: all_rooms_data_df['minutes'] == 0].rename(
-                columns={
-                    'roomName': 'Room'
-                }).assign(Meetings=0)
+                columns={'roomName': 'Room'}).assign(Meetings=0)
 
         rooms_no_meetings_df = rooms_no_meetings_df[['Room', 'Meetings']]
 
@@ -172,8 +170,7 @@ class AnalyticsReport():
             report_data_frame['Most Used Rooms'],
             report_data_frame['Least Used Rooms'],
             '<h1>Room Analytics Report Summary</h1><p> <h2>Report Period: From ' + start_date_formatted + ' to ' + end_date_formatted + '</h2>',   # noqa
-            'templates/analytics_report.html'
-            )
+            'templates/analytics_report.html')
         rendered = render_template('analytics_report.html')
 
         return rendered
