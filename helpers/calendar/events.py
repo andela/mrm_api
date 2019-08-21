@@ -150,6 +150,7 @@ class CalendarEvents:
             event_results = get_google_calendar_events(
                 calendarId=room.calendar_id,
                 syncToken=room.next_sync_token,
+                singleEvents=True,
                 pageToken=next_page)
 
             next_page = event_results.get("nextPageToken")
