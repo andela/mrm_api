@@ -233,6 +233,18 @@ delete_device_mutation = '''
             }
 '''
 
+delete_non_exiting_device_mutation = '''
+    mutation{
+        deleteDevice(
+            deviceId:1000
+            ){
+                device{
+                    id
+                }
+            }
+        }
+'''
+
 delete_device_response = {
   "data": {
     "deleteDevice": {
