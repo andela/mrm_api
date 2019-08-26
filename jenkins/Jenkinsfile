@@ -91,7 +91,7 @@ pipeline {
                     requests:
                       cpu: 4
                       memory: 2G
-                  command: 
+                  command:
                   - cat
                   tty: true
                   env:
@@ -103,7 +103,7 @@ pipeline {
                      privileged: true
                 volumes:
                   - name: docker-graph-storage
-                    emptyDir: {}             
+                    emptyDir: {}
               """
                   }
                 }
@@ -169,7 +169,7 @@ pipeline {
         }
 
         stage("build_backend_image"){
-          when { anyOf { branch 'v2'; branch 'develop'; branch 'master'} }
+          when { anyOf { branch 'v2'; branch 'develop'; branch 'master'; branch 'deploy-to-sandbox'} }
           steps{
             container("mrm-api"){
               withCredentials([string(credentialsId: 'mrm-github-repo-token', variable: 'GITHUB_REPO_TOKEN'),
@@ -177,7 +177,7 @@ pipeline {
                 load "$ENV_FILE"
                 sh script: "${WORKSPACE}/jenkins/scripts/set_env_vars.sh", label: "Set up environment variables"
                 sh script: "${WORKSPACE}/jenkins/scripts/build_image.sh", label: "Build docker image"
-              }            
+              }
             }
           }
           post{
@@ -195,14 +195,14 @@ pipeline {
         }
 
         stage("deploy_backend_to_kubernetes"){
-          when { anyOf { branch 'v2'; branch 'develop'; branch 'master'} }
+          when { anyOf { branch 'v2'; branch 'develop'; branch 'master'; branch 'deploy-to-sandbox'} }
           steps{
             container('mrm-api'){
               withCredentials([string(credentialsId: 'mrm-github-repo-token', variable: 'GITHUB_REPO_TOKEN'),
                                file(credentialsId: 'MRM_API_IMAGE_ENV', variable: 'ENV_FILE')]){
                  sh script: "${WORKSPACE}/jenkins/scripts/deploy_backend_to_kubernetes.sh", label: "Deploy to kubernetes"
               }
-              
+
             }
           }
           post{
