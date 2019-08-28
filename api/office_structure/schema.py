@@ -11,6 +11,7 @@ from utilities.validations import (
 )
 from helpers.auth.admin_roles import admin_roles
 from helpers.database import db_session
+from utilities.utility import update_entity_fields
 
 
 class StructureNode(SQLAlchemyObjectType):
@@ -23,6 +24,43 @@ class InputNode(graphene.InputObjectType):
     parent_id = graphene.UUID()
     name = graphene.String(required=True)
     tag = graphene.String(required=True)
+
+
+class UpdateNode(graphene.Mutation):
+    """
+        Returns a node payload after updating a node
+    """
+    class Arguments:
+        node_id = graphene.UUID(required=True)
+        name = graphene.String()
+        tag = graphene.String()
+    node = graphene.Field(StructureNode)
+
+    @Auth.user_roles('Admin', 'Super Admin')
+    def mutate(self, info, **kwargs):
+        query = StructureNode.get_query(info)
+        node = query.filter(
+            StructureModel.id == kwargs['node_id']).first()
+
+        if not node:
+            raise GraphQLError("node not found")
+
+        validate_empty_fields(**kwargs)
+
+        if kwargs.get('name'):
+            kwargs['name'] = kwargs['name'].strip()
+        else:
+            kwargs['name'] = node.name
+
+        if kwargs.get('tag'):
+            kwargs['tag'] = kwargs['tag'].strip()
+        else:
+            kwargs['tag'] = node.tag
+
+        update_entity_fields(node, **kwargs)
+        node.save()
+
+        return UpdateNode(node=node)
 
 
 class DeleteNode(graphene.Mutation):
@@ -85,6 +123,13 @@ class Mutation(graphene.ObjectType):
         description="Mutation to delete a node\
             \n- node_id: Unique key identifier of a node"
     )
+    update_node = UpdateNode.Field(
+        description="Mutation to update a node\
+            \n - node_id: Unique key identifier of a node (required)\
+            \n - name: name of the node to be updated (optional)\
+            \n - tag: tag of the node to be updated (optional)\
+            \n If only node_id is passed, no update is made and\
+            \n the current node is returned")
 
 
 class Order(Enum):
