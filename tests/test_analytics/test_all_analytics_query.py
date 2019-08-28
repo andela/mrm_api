@@ -39,7 +39,7 @@ class TestAllAnalytics(BaseTestCase):
             all_analytics_query_response
         )
 
-        CommonTestCases.super_admin_token_assert_equal(
+        CommonTestCases.admin_token_assert_equal(
             self,
             all_analytics_query_invalid_locationid,
             all_analytics_query_response_super_admin_with_invalid_locationid

@@ -14,6 +14,7 @@ from api.role.models import Role
 from api.notification.models import Notification as NotificationModel
 from helpers.connection.connection_error_handler import handle_http_error
 from helpers.location.location import check_and_add_location
+from utilities.utility import StateType
 
 from helpers.database import db_session
 
@@ -146,6 +147,10 @@ class Authentication:
                         user = User.query.filter_by(email=email).first()
                     except Exception:
                         raise GraphQLError("The database cannot be reached")
+
+                    if user and user.state != StateType.active:  # pragma: no cover # noqa
+                        raise GraphQLError(
+                            "Your account is not active, please contact an admin")  # noqa
 
                     if not user:
                         self.save_user(email, *expected_args)

@@ -241,8 +241,7 @@ class SetUserLocation(graphene.Mutation):
         logged_in_user = get_user_from_db()
         location_id = kwargs['location_id']
         query_user = User.get_query(info)
-        user = query_user.filter(
-            UserModel.state == "active", UserModel.id == logged_in_user.id).first() # noqa
+        user = query_user.filter(UserModel.id == logged_in_user.id).first()
         if user.location:
             raise GraphQLError('This user already has a location set.')
         new_location = LocationModel.query.filter_by(
