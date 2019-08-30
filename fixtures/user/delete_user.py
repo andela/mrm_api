@@ -27,6 +27,34 @@ mutation {
 }
 '''
 
+mutation_hard_delete_user = '''
+mutation {
+    deleteUser(email: "peter.adeoye@andela.com", remove: true) {
+        user{
+            email
+            roles {
+                role
+            }
+        }
+    }
+}
+'''
+
+expected_response_hard_delete_user = {
+    "data": {
+        "deleteUser": {
+            "user": {
+                "email": "peter.adeoye@andela.com",
+                "roles": [
+                    {
+                        "role": "Admin"
+                    }
+                ]
+            }
+        }
+    }
+}
+
 delete_self = '''
 mutation {
     deleteUser(email: "peter.walugembe@andela.com") {

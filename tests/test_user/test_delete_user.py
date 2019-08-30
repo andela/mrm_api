@@ -4,7 +4,10 @@ import os
 from tests.base import BaseTestCase, CommonTestCases
 from fixtures.user.delete_user import (
     delete_user, expected_query_after_delete, delete_self, user_not_found,
-    delete_user_2, user_invalid_email)
+    delete_user_2, user_invalid_email,
+    mutation_hard_delete_user,
+    expected_response_hard_delete_user
+    )
 from api.user.models import User
 from api.role.models import Role
 import tests.base as base
@@ -34,6 +37,17 @@ class TestDeleteUser(BaseTestCase):
             self,
             delete_user_2,
             expected_query_after_delete
+        )
+
+    def test_hard_delete_user(self):
+        """
+        Test to hard-delete a user
+        """
+
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            mutation_hard_delete_user,
+            expected_response_hard_delete_user
         )
 
     def test_user_delete_admin(self):
