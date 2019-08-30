@@ -140,24 +140,27 @@ class DeleteUser(graphene.Mutation):
     class Arguments:
         email = graphene.String(required=True)
         state = graphene.String()
+        remove = graphene.Boolean(default_value=False)
 
     user = graphene.Field(User)
 
     @Auth.user_roles('Admin', 'Super Admin')
     def mutate(self, info, email, **kwargs):
-        query_user = User.get_query(info)
-        active_user = query_user.filter(UserModel.state == "active")
-        exact_query_user = active_user.filter(UserModel.email == email).first()
-        user_from_db = get_user_from_db()
         if not verify_email(email):
             raise GraphQLError("Invalid email format")
-        if not exact_query_user:
+        user_to_be_deleted = User.get_query(info).filter_by(email=email).first()
+        if not user_to_be_deleted:
             raise GraphQLError("User not found")
-        if user_from_db.email == email:
+        current_user = get_user_from_db()
+        if current_user.email == user_to_be_deleted.email:
             raise GraphQLError("You cannot delete yourself")
-        update_entity_fields(exact_query_user, state="archived", **kwargs)
-        exact_query_user.save()
-        return DeleteUser(user=exact_query_user)
+        should_remove_user = kwargs.get('remove')
+        if should_remove_user:
+            user_to_be_deleted.delete()
+        else:
+            update_entity_fields(user_to_be_deleted, state="archived", **kwargs)
+            user_to_be_deleted.save()
+        return DeleteUser(user=user_to_be_deleted)
 
 
 class ChangeUserRole(graphene.Mutation):
@@ -326,7 +329,8 @@ class Mutation(graphene.ObjectType):
     delete_user = DeleteUser.Field(
         description="Deletes a user having arguments\
             \n- email: The email field of a user[required]\
-            \n- state: Check if the user is active, archived or deleted")
+            \n- state: Check if the user is active, archived or deleted\
+            \n- remove: True if it should be a hard delete")
     change_user_role = ChangeUserRole.Field(
         description="Changes the role of a user and takes arguments\
             \n- email: The email field of a user[required]\
