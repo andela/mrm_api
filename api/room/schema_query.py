@@ -1,4 +1,6 @@
 import graphene
+import os
+import re
 from graphql import GraphQLError
 from helpers.calendar.analytics import RoomAnalytics  # noqa: E501
 from helpers.auth.authentication import Auth
@@ -297,7 +299,14 @@ class Query(graphene.ObjectType):
             page_token = calendar_list.get('nextPageToken')
             if not page_token:
                 break
-        return AllRemoteRooms(rooms=remote_rooms)
+        match = r'\bTest|\bDummy|\btest|\bdummy'
+        if os.getenv("APP_SETTINGS") != "production":
+            test_rooms = [room for room in remote_rooms
+                          if re.search(match, room.name)]
+            return AllRemoteRooms(rooms=test_rooms)
+        actual_rooms = [room for room in remote_rooms
+                        if not re.search(match, room.name)]
+        return AllRemoteRooms(rooms=actual_rooms)
 
     @Auth.user_roles('Admin', 'Super Admin')
     def resolve_filter_rooms_by_tag(self, info, tagId):

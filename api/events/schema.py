@@ -157,7 +157,8 @@ class MrmNotification(graphene.Mutation):
         calendar_id = graphene.String()
 
     def mutate(self, info, calendar_id):
-        room = RoomModel.query.filter_by(calendar_id=calendar_id).first()
+        room = RoomModel.query.filter_by(
+            calendar_id=calendar_id, state="active").first()
         CalendarEvents().sync_single_room_events(room)
         return MrmNotification(message="success")
 

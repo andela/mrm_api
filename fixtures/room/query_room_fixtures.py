@@ -11,6 +11,14 @@ all_remote_rooms_query = '''
 }
 '''
 
+all_dummy_rooms_response = {
+    "data": {
+        "allRemoteRooms": {
+            "rooms": []
+            }
+        }
+    }
+
 paginated_rooms_query = '''
  query {
   allRooms(page:1, perPage:1){
