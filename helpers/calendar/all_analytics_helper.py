@@ -1,4 +1,5 @@
 import graphene
+import pytz
 import dateutil.parser
 from graphql import GraphQLError
 from helpers.calendar.analytics_helper import CommonAnalytics
@@ -28,6 +29,7 @@ class AllAnalyticsHelper:
         parsed_day_after_end_date = parsed_end_date + relativedelta(days=1)
         number_of_days = (parsed_day_after_end_date - parsed_start_date).days
         bookings_count = []
+        user_time_zone = CommonAnalytics.get_user_time_zone()
         if number_of_days <= 30:
             dates = CommonAnalytics.get_list_of_dates(
                 start_date, number_of_days)
@@ -36,7 +38,8 @@ class AllAnalyticsHelper:
                 string_date = dateutil.parser.parse(
                     date[0]).strftime("%b %d %Y")
                 for event in events:
-                    if dateutil.parser.parse(event.start_time[:10]).strftime("%b %d %Y") == string_date: # noqa
+                    start_timez = dateutil.parser.parse(event.start_time).astimezone(pytz.timezone(user_time_zone)) # noqa
+                    if start_timez.strftime("%b %d %Y") == string_date:
                         bookings += 1
                 output = BookingsCount(
                     period=string_date,
@@ -54,7 +57,8 @@ class AllAnalyticsHelper:
                     period=string_month,
                     total_bookings=0)
                 for event in events:
-                    if dateutil.parser.parse(event.start_time[:10]).strftime("%b %Y") == string_month: # noqa
+                    start_timez = dateutil.parser.parse(event.start_time).astimezone(pytz.timezone(user_time_zone)) # noqa
+                    if start_timez.strftime("%b %Y") == string_month:
                         output.total_bookings += 1
                 bookings_count.append(output)
         return bookings_count
