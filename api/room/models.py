@@ -61,7 +61,8 @@ class Room(Base, Utility):
         lazy="joined")
     devices = relationship(
         'Devices', cascade="all, delete-orphan",
-        order_by="func.lower(Devices.name)")
+        order_by="func.lower(Devices.name)",
+        primaryjoin="and_(Room.id==Devices.room_id, Devices.state=='active')")
     resources = relationship("RoomResource", back_populates='room')
 
     __table_args__ = (
