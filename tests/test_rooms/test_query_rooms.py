@@ -1,4 +1,5 @@
 import json
+import os
 from unittest.mock import patch
 from tests.base import BaseTestCase, CommonTestCases
 from helpers.calendar.calendar import get_calendar_list_mock_data
@@ -13,7 +14,8 @@ from fixtures.room.query_room_fixtures import (
     room_with_non_existant_id,
     room_query_with_non_existant_id_response,
     all_remote_rooms_query,
-    paginated_rooms_query_blank_page
+    paginated_rooms_query_blank_page,
+    all_dummy_rooms_response
 )
 from helpers.calendar.credentials import get_google_api_calendar_list
 
@@ -34,11 +36,37 @@ class QueryRooms(BaseTestCase):
 
     @patch("api.room.schema_query.get_google_api_calendar_list", spec=True,
            return_value=get_calendar_list_mock_data())
-    def test_query_remote_rooms(self, mock_get_json):
+    @patch.dict(os.environ, {"APP_SETTINGS": "production"})
+    def test_query_actual_remote_rooms(self, mock_get_json):
+        """
+           Mocks google calendar to return actual rooms
+           on the production enviroment.
+           Returns:
+           - Actual rooms
+           Actual rooms have no key words;
+           - Test or Dummy
+        """
         CommonTestCases.admin_token_assert_in(
             self,
             all_remote_rooms_query,
             "calendar.google.com"
+        )
+
+    @patch("api.room.schema_query.get_google_api_calendar_list", spec=True,
+           return_value=get_calendar_list_mock_data())
+    def test_query_test_remote_rooms(self, mock_get_json):
+        """
+           Mocks google calendar to return test rooms
+           on the staging enviroment.
+           Returns:
+           - Test rooms
+           Test rooms have the key words;
+           - Test or Dummy
+        """
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            all_remote_rooms_query,
+            all_dummy_rooms_response
         )
 
     @patch("helpers.calendar.credentials.Credentials")
