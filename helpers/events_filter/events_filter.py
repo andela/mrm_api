@@ -3,13 +3,19 @@ from graphql import GraphQLError
 import pytz
 
 from api.events.models import Events as EventsModel
+from api.location.models import Location as LocationModel
+from api.role.models import Role as RoleModel
+from api.room.models import Room as RoomModel
 
 utc = pytz.utc
 
 
-def filter_events_by_date_range(query, start_date, end_date):
+def filter_events_by_date_range_in_location(query, start_date, end_date, user):
     """
     Return events that  fall in the date range
+    and matches the current_user's location with the events in that
+    location and filters to return the events for that location
+    but returns all locations for a user with super admin role
     """
     if start_date and not end_date:
         raise GraphQLError("endDate argument missing")
@@ -21,19 +27,29 @@ def filter_events_by_date_range(query, start_date, end_date):
         events = query.filter(
                 EventsModel.state == 'active'
             ).all()
-        if not events:
-            raise GraphQLError('Events do not exist')
         return events
 
     start_date, end_date = format_range_dates(start_date, end_date)
 
-    events = query.filter(
+    admin_role = RoleModel.query.filter_by(
+            id=user.roles[0].id).first()
+    if admin_role.role == 'Super Admin':
+        events = query.filter(
             EventsModel.state == 'active',
             EventsModel.start_time >= start_date,
             EventsModel.end_time <= end_date
         ).all()
-    if not events:
-        raise GraphQLError('Events do not exist for the date range')
+        return events
+
+    location = LocationModel.query.filter_by(
+            name=user.location
+            ).first()
+    events = query.join(RoomModel).filter(
+            EventsModel.state == 'active',
+            EventsModel.start_time >= start_date,
+            EventsModel.end_time <= end_date,
+            RoomModel.location_id == location.id
+        ).all()
     return events
 
 

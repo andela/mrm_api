@@ -14,9 +14,10 @@ from helpers.auth.authentication import Auth
 from helpers.pagination.paginate import ListPaginate
 from helpers.devices.devices import update_device_last_seen
 from helpers.events_filter.events_filter import (
-    filter_events_by_date_range,
+    filter_events_by_date_range_in_location,
     validate_page_and_per_page
 )
+from helpers.auth.user_details import get_user_from_db
 
 utc = pytz.utc
 
@@ -258,10 +259,13 @@ class Query(graphene.ObjectType):
         page = kwargs.get('page')
         per_page = kwargs.get('per_page')
         page, per_page = validate_page_and_per_page(page, per_page)
+        user = get_user_from_db()
         query = Events.get_query(info)
-        response = filter_events_by_date_range(
-            query, start_date, end_date
+        response = filter_events_by_date_range_in_location(
+            query, start_date, end_date, user
             )
+        if not response:
+            raise GraphQLError('Events do not exist for the date range')
         response.sort(
             key=lambda x: parser.parse(x.start_time).astimezone(utc),
             reverse=True)
