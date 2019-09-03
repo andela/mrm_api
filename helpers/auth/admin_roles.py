@@ -32,7 +32,7 @@ class Admin_roles():
         if admin_details.location != room_location.name:
             raise GraphQLError("You are not authorized to make changes in " + room_location.name)  # noqa: E501
 
-    def user_location_for_analytics_view(self):
+    def user_location_for_analytics_view(self, location_name=False):
         """
         Return admin's location for viewing analytics data
         """
@@ -40,11 +40,13 @@ class Admin_roles():
         location = Location.query.filter_by(
              name=admin_details.location
         ).first()
-        if location:
-            if location.state != StateType.active:
-                raise GraphQLError('Location is not active')
-            return location.id
-        raise GraphQLError('Your location does not exist')
+        if not location:
+            raise GraphQLError('Your location does not exist')
+        if location.state != StateType.active:
+            raise GraphQLError('Location is not active')
+        if location_name:
+            return location.name
+        return location.id
 
 
 admin_roles = Admin_roles()

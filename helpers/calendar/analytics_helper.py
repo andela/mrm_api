@@ -1,8 +1,12 @@
 import graphene
+import pytz
 from datetime import datetime, timedelta
 import dateutil.parser
 from dateutil.relativedelta import relativedelta
 from graphql import GraphQLError
+from sqlalchemy.sql import text
+from helpers.database import db_session
+from helpers.calendar.events_sql import room_events_query
 from api.room.models import Room as RoomModel
 from api.location.models import Location as LocationModel
 from helpers.room_filter.room_filter import room_join_location
@@ -29,15 +33,24 @@ class RoomStatistics(graphene.ObjectType):
 
 class CommonAnalytics:
 
+    def get_user_time_zone():
+        user_location = admin_roles.user_location_for_analytics_view(
+            location_name=True)
+        if user_location.lower() in ['lagos', 'nairobi', 'kigali', 'kampala']:
+            return 'Africa/' + user_location
+        return 'Etc/UTC'
+
     def convert_dates(self, start_date, end_date):
         """
-        Convert date format and add one day to end_date
+        Convert date format to UTC and add one day to end_date
         Google calendar is exclusive of end_date
         """
         if end_date is None:
             end_date = start_date
-        start_date = datetime.strptime(start_date, '%b %d %Y').isoformat() + 'Z'
-        end_date = (datetime.strptime(end_date, "%b %d %Y") + relativedelta(days=1)).isoformat() + 'Z'  # noqa: E501
+        start_date = datetime.strptime(start_date, '%b %d %Y').astimezone(
+            pytz.utc)
+        end_date = (datetime.strptime(
+            end_date, "%b %d %Y") + relativedelta(days=1)).astimezone(pytz.utc)
         return(start_date, end_date)
 
     def all_analytics_date_validation(self, start_date, end_date):
@@ -121,12 +134,18 @@ class CommonAnalytics:
             - room_id - for specific room
             - event_start_time, event_end_time(Time range)
         """
-        events = EventsModel.query.filter(
-            EventsModel.room_id == room_id,
-            EventsModel.state == 'active',
-            EventsModel.end_time < event_end_time,
-            EventsModel.start_time > event_start_time
-        ).all()
+        user_time_zone = CommonAnalytics.get_user_time_zone()
+        hour_offset = str(event_start_time.astimezone(pytz.timezone(
+          user_time_zone)).utcoffset().total_seconds()/60/60) + 'h'
+
+        events = db_session.query(EventsModel).from_statement(
+          text(room_events_query)).params(
+                state="active",
+                room_id=room_id,
+                event_end_time=event_end_time.isoformat(),
+                event_start_time=event_start_time.isoformat(),
+                hour_offset=hour_offset
+                ).all()
         return events
 
     def get_event_details(self, query, event, room_id):
