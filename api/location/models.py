@@ -11,15 +11,18 @@ class CountryType(enum.Enum):
     Uganda = "Uganda"
     Kenya = "Kenya"
     Nigeria = "Nigeria"
+    Rwanda = "Rwanda"
 
 
 class TimeZoneType(enum.Enum):
     EAST_AFRICA_TIME = "UTC+3"
     WEST_AFRICA_TIME = "UTC+1"
+    CENTRAL_AFRICA_TIME = "UTC+2"
 
 
 class Location(Base, Utility):
     __tablename__ = 'locations'
+
     id = Column(Integer, Sequence('locations_id_seq',
                                   start=1, increment=1), primary_key=True)
     name = Column(String, nullable=False)
