@@ -11,6 +11,8 @@ from healthcheck_schema import healthcheck_schema
 from helpers.auth.authentication import Auth
 from api.analytics.analytics_request import AnalyticsRequest
 from utilities.file_reader import read_log_file
+from graphql_ws.gevent import GeventSubscriptionServer
+from flask_sockets import Sockets
 
 mail = Mail()
 
@@ -19,6 +21,7 @@ def create_app(config_name):
     app = Flask(__name__)
     CORS(app)
     FlaskJSON(app)
+    sockets = Sockets(app)
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
     mail.init_app(app)
@@ -56,6 +59,14 @@ def create_app(config_name):
             graphiql=True   # for healthchecks
         )
     )
+
+    subscription_server = GeventSubscriptionServer(schema)
+    app.app_protocol = lambda environ_path_info: 'graphql-ws'
+
+    @sockets.route('/subscriptions')
+    def echo_socket(ws):  # pragma: no cover
+        subscription_server.handle(ws)
+        return []
 
     @app.route("/analytics", methods=['POST'])
     @Auth.user_roles('Admin', 'REST')

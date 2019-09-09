@@ -30,4 +30,8 @@ manager.add_command(
 
 
 if __name__ == '__main__':
-    manager.run()
+    from gevent import pywsgi
+    from geventwebsocket.handler import WebSocketHandler
+    app.debug = True
+    server = pywsgi.WSGIServer(('', 5000), app, handler_class=WebSocketHandler)
+    server.serve_forever()
