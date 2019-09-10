@@ -3,7 +3,6 @@ from fixtures.room_resource.update_assigned_resource import (
     update_assigned_resource_query,
     update_assigned_resource_query_response,
     update_with_negative_quantity,
-    update_non_existing_room,
     update_non_existing_resource
 )
 from fixtures.room.assign_resource_fixture import (
@@ -54,22 +53,6 @@ class TestUpdateAssignedResorce(BaseTestCase):
             self,
             update_with_negative_quantity,
             "Assigned quantity cannot be less than zero"
-        )
-
-    def test_update_with_non_existing_room(self):
-        """
-        Test that an admin can not update a
-        non existing room in the room_resources table
-        """
-        CommonTestCases.admin_token_assert_equal(
-           self,
-           assign_resource_mutation,
-           assign_resource_mutation_response,
-        )
-        CommonTestCases.admin_token_assert_in(
-            self,
-            update_non_existing_room,
-            "Room has no assigned resource"
         )
 
     def test_update_with_non_existing_resource(self):

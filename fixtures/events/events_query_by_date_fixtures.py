@@ -7,25 +7,6 @@ query_events = '''
         }
     }
 '''
-event_query_response = {
-  "errors": [
-    {
-      "message": "Events do not exist for the date range",
-      "locations": [
-        {
-          "line": 3,
-          "column": 9
-        }
-      ],
-      "path": [
-        "allEvents"
-      ]
-    }
-  ],
-  "data": {
-    "allEvents": None
-  }
-}
 
 query_events_with_start_date_before_end_date = '''
     query{
@@ -44,26 +25,6 @@ query_events_with_start_date_before_end_date = '''
         }
     }
 '''
-
-event_query_with_start_date_before_end_date_response = {
-    "errors": [
-      {
-        "message": "Start date must be lower than end date",
-        "locations": [
-          {
-            "line": 3,
-            "column": 9
-          }
-        ],
-        "path": [
-          "allEvents"
-        ]
-      }
-    ],
-    "data": {
-      "allEvents": None
-    }
-  }
 
 query_events_with_pagination = '''
     query{
@@ -122,26 +83,6 @@ query{
 }
 '''
 
-event_query_page_without_per_page_response = {
-  "errors": [
-    {
-      "message": "perPage argument missing",
-      "locations": [
-        {
-          "line": 3,
-          "column": 3
-        }
-      ],
-      "path": [
-        "allEvents"
-      ]
-    }
-  ],
-  "data": {
-    "allEvents": None
-  }
-}
-
 query_events_per_page_without_page = '''
 query{
   allEvents(
@@ -160,27 +101,6 @@ query{
   }
 }
 '''
-
-event_query_perPage_without_page_response = {
-  "errors": [
-    {
-      "message": "page argument missing",
-      "locations": [
-        {
-          "line": 3,
-          "column": 3
-        }
-      ],
-      "path": [
-        "allEvents"
-      ]
-    }
-  ],
-  "data": {
-    "allEvents": None
-  }
-}
-
 
 query_events_invalid_page = '''
 query{
@@ -202,26 +122,6 @@ query{
 }
 '''
 
-event_query_invalid_page_response = {
-  "errors": [
-    {
-      "message": "page must be at least 1",
-      "locations": [
-        {
-          "line": 3,
-          "column": 3
-        }
-      ],
-      "path": [
-        "allEvents"
-      ]
-    }
-  ],
-  "data": {
-    "allEvents": None
-  }
-}
-
 query_events_invalid_per_page = '''
 query{
   allEvents(
@@ -242,26 +142,6 @@ query{
 }
 '''
 
-event_query_invalid_per_page_response = {
-  "errors": [
-    {
-      "message": "perPage must be at least 1",
-      "locations": [
-        {
-          "line": 3,
-          "column": 3
-        }
-      ],
-      "path": [
-        "allEvents"
-      ]
-    }
-  ],
-  "data": {
-    "allEvents": None
-  }
-}
-
 query_events_without_start_date = '''
   query{
     allEvents(
@@ -281,26 +161,6 @@ query_events_without_start_date = '''
   }
 '''
 
-event_query_without_start_date_response = {
-  "errors": [
-    {
-      "message": "startDate argument missing",
-      "locations": [
-        {
-          "line": 3,
-          "column": 5
-        }
-      ],
-      "path": [
-        "allEvents"
-      ]
-    }
-  ],
-  "data": {
-    "allEvents": None
-  }
-}
-
 query_events_without_end_date = '''
   query{
     allEvents(
@@ -319,26 +179,6 @@ query_events_without_end_date = '''
     }
   }
 '''
-
-event_query_without_end_date_response = {
-  "errors": [
-    {
-      "message": "endDate argument missing",
-      "locations": [
-        {
-          "line": 3,
-          "column": 5
-        }
-      ],
-      "path": [
-        "allEvents"
-      ]
-    }
-  ],
-  "data": {
-    "allEvents": None
-  }
-}
 
 query_events_without_page_and_per_page = '''
 query{
@@ -386,24 +226,3 @@ query_events_without_start_and_end_date = '''
       }
   }
 '''
-
-event_query_without_start_and_end_date_response = {
-
-  "errors": [
-    {
-      "message": "Page does not exist",
-      "locations": [
-        {
-          "line": 3,
-          "column": 7
-        }
-      ],
-      "path": [
-        "allEvents"
-      ]
-    }
-  ],
-  "data": {
-    "allEvents": None
-  }
-}

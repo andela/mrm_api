@@ -34,14 +34,12 @@ def filter_response_by_date(Query, info, end_date, start_date):
         end_date=end_date, start_date=start_date
     )
     end_date = end_date + timedelta(days=1)
-    filtered_responses = []
+
     for responses in all_responses:
-        for response in responses.response:
-            if (response.created_date >= start_date and
-                    response.created_date <= end_date):
-                filtered_responses.append(response)
-            setattr(responses, 'response', filtered_responses)
-        filtered_responses = []
+        filtered_responses = [response for response in responses.response if
+                              response.created_date >= start_date and
+                              response.created_date <= end_date]
+        setattr(responses, 'response', filtered_responses)
     return all_responses
 
 

@@ -86,26 +86,22 @@ class UpdateAssignedResource(graphene.Mutation):
     room_resource = graphene.Field(RoomResource)
 
     @Auth.user_roles('Admin', 'Super Admin')
-    def mutate(self, info, resource_id, room_id, **kwargs):
+    def mutate(self, info, **kwargs):
+        resource_id = kwargs['resource_id']
+        room_id = kwargs['room_id']
         room_resource_query = RoomResource.get_query(info)
-        rooms_with_resource = room_resource_query.filter(
-            RoomResourceModel.room_id == room_id).all()
-        if not rooms_with_resource:
-            raise GraphQLError('Room has no assigned resource')
-        current_resource = None
-        for room_resource in rooms_with_resource:
-            if room_resource.resource_id == resource_id:
-                current_resource = room_resource.quantity
-                break
-        if current_resource is None:
+        actual_resource = room_resource_query.filter_by(
+            room_id=room_id, resource_id=resource_id).first()
+
+        if not actual_resource:
             raise GraphQLError('Resource does not exist in the room')
         if kwargs['quantity'] < 0:
             raise GraphQLError(
                 'Assigned quantity cannot be less than zero'
             )
-        update_entity_fields(room_resource, **kwargs)
-        room_resource.save()
-        return UpdateAssignedResource(room_resource=room_resource)
+        update_entity_fields(actual_resource, **kwargs)
+        actual_resource.save()
+        return UpdateAssignedResource(room_resource=actual_resource)
 
 
 class DeleteAssignedResource(graphene.Mutation):
