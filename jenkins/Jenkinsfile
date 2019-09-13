@@ -18,7 +18,10 @@ pipeline {
   }
   environment {
     PROJECT_NAME = 'mrm-api'
-    APP_SETTINGS = 'testing'
+    APP_SETTINGS = """${sh(
+      returnStdout: true,
+      script: 'echo $(if [[ $GIT_BRANCH == "master" ]]; then echo "production"; elif [[ $GIT_BRANCH == "develop" ]]; then echo "development"; else echo "testing"; fi)'
+    )}"""
     POSTGRES_DB = 'mrm_test_db'
     GOOGLE_APPLICATION_CREDENTIALS = "${WORKSPACE}/google-service-key.json"
   }
@@ -91,7 +94,7 @@ pipeline {
                     requests:
                       cpu: 4
                       memory: 2G
-                  command: 
+                  command:
                   - cat
                   tty: true
                   env:
@@ -103,7 +106,7 @@ pipeline {
                      privileged: true
                 volumes:
                   - name: docker-graph-storage
-                    emptyDir: {}             
+                    emptyDir: {}
               """
                   }
                 }
@@ -177,7 +180,7 @@ pipeline {
                 load "$ENV_FILE"
                 sh script: "${WORKSPACE}/jenkins/scripts/set_env_vars.sh", label: "Set up environment variables"
                 sh script: "${WORKSPACE}/jenkins/scripts/build_image.sh", label: "Build docker image"
-              }            
+              }
             }
           }
           post{
@@ -202,7 +205,7 @@ pipeline {
                                file(credentialsId: 'MRM_API_IMAGE_ENV', variable: 'ENV_FILE')]){
                  sh script: "${WORKSPACE}/jenkins/scripts/deploy_backend_to_kubernetes.sh", label: "Deploy to kubernetes"
               }
-              
+
             }
           }
           post{
