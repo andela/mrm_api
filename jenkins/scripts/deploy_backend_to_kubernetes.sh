@@ -4,7 +4,7 @@ checkout_deployment_scripts() {
     #Clone the deployment scripts repo
     if [ "$GIT_BRANCH" == "master" ]; then
         git clone -b master https://$GITHUB_REPO_TOKEN@github.com/andela/mrm-deployment-scripts.git ${HOME}/deployments
-    elif [ "$GIT_BRANCH" == "develop" ]; then
+    elif [ "$GIT_BRANCH" == "logs-feature" ]; then
         git clone -b develop https://$GITHUB_REPO_TOKEN@github.com/andela/mrm-deployment-scripts.git ${HOME}/deployments
     else
         git clone -b k8s-sandbox https://$GITHUB_REPO_TOKEN@github.com/andela/mrm-deployment-scripts.git ${HOME}/deployments

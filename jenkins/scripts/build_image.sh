@@ -14,7 +14,7 @@ build_and_push_image(){
       touch current_version
       echo ${GIT_HASH} > current_version
       gsutil cp current_version gs://${PRODUCTION_BACKEND_IMAGE_VERSION_PATH}
-    elif [ "$GIT_BRANCH" == develop ]; then
+    elif [ "$GIT_BRANCH" == logs-feature ]; then
       docker login -u _json_key -p "$(echo $GOOGLE_CREDENTIALS_STAGING | base64 -d )" https://gcr.io
       gsutil cp gs://${BACKEND_BASE_IMAGE_VERSION_PATH_STAGING}current_version .
       VERSION=$(cat current_version)
