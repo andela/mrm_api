@@ -1,4 +1,5 @@
 from tests.base import BaseTestCase, CommonTestCases
+
 from fixtures.events.events_query_by_date_fixtures import (
     query_events,
     event_query_response,
@@ -6,6 +7,8 @@ from fixtures.events.events_query_by_date_fixtures import (
     event_query_with_start_date_before_end_date_response,
     query_events_with_pagination,
     event_query_with_pagination_response,
+    query_events_with_location,
+    event_query_with_location_response,
     query_events_page_without_per_page,
     event_query_page_without_per_page_response,
     query_events_per_page_without_page,
@@ -23,6 +26,7 @@ from fixtures.events.events_query_by_date_fixtures import (
     query_events_without_page_and_per_page,
     event_query_without_page_and_per_page_response
 )
+from tests.base import change_user_role_to_super_admin
 
 
 class TestEventsQuery(BaseTestCase):
@@ -56,6 +60,18 @@ class TestEventsQuery(BaseTestCase):
             self,
             query_events_with_pagination,
             event_query_with_pagination_response
+
+        )
+
+    @change_user_role_to_super_admin
+    def test_query_events_with_location(self):
+        """
+        Test a super_user can query for all events in all locations
+        """
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            query_events_with_location,
+            event_query_with_location_response
         )
 
     def test_query_events_without_start_date(self):

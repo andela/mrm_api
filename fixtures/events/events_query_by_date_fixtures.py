@@ -104,6 +104,48 @@ event_query_with_pagination_response = {
     }
 }
 
+query_events_with_location = '''
+    query{
+        allEvents(startDate: "Jul 11 2018",
+                  endDate: "Jul 11 2018",
+                  page:1,
+                  perPage: 1){
+            events {
+                    id
+                    roomId
+                    room{
+                        name
+                        locationId
+                    }
+            },
+            hasNext,
+            hasPrevious,
+            pages,
+            queryTotal
+        }
+    }
+'''
+
+event_query_with_location_response = {
+    'data': {
+        'allEvents': {
+            'events': [{
+                    'id': '1',
+                    'roomId': 1,
+                    'room': {
+                        'name': 'Entebbe',
+                        'locationId': 1
+                        }
+            }],
+            'hasNext': False,
+            'hasPrevious': False,
+            'pages': 1,
+            'queryTotal': 1
+        }
+    }
+}
+
+
 query_events_page_without_per_page = '''
 query{
   allEvents(
