@@ -70,8 +70,15 @@ class Query(graphene.ObjectType):
             self, start_date, end_date
         )
         query = Room.get_query(info)
-        room_analytics, bookings, percentages_dict, bookings_count = AllAnalyticsHelper.get_all_analytics( # noqa
-            self, query, start_date, end_date, location_id, unconverted_dates)
+        room_analytics, bookings, percentages_dict, bookings_count =  \
+            AllAnalyticsHelper.get_all_analytics(
+                self,
+                query,
+                start_date=start_date,
+                end_date=end_date,
+                location_id=location_id,
+                unconverted_dates=unconverted_dates
+                )
         analytics = []
         for analytic in room_analytics:
             current_analytic = ConsolidatedAnalytics(

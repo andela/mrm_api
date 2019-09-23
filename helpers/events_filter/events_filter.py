@@ -7,17 +7,22 @@ from api.events.models import Events as EventsModel
 utc = pytz.utc
 
 
-def filter_events_by_date_range(query, start_date, end_date):
+def validate_date_input(start_date, end_date):
     """
-    Return events that  fall in the date range
+    Ensures either both or none of start_date and end_date is supplied
     """
     if start_date and not end_date:
         raise GraphQLError("endDate argument missing")
     if end_date and not start_date:
         raise GraphQLError("startDate argument missing")
 
-    if not start_date and not end_date:
 
+def filter_events_by_date_range(query, start_date, end_date):
+    """
+    Returns events that fall within the date range supplied
+    """
+    validate_date_input(start_date, end_date)
+    if not start_date and not end_date:
         events = query.filter(
                 EventsModel.state == 'active'
             ).all()

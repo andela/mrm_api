@@ -5,6 +5,7 @@ import api.room.schema_query
 import api.room_resource.schema
 import api.role.schema
 import api.user.schema
+import api.user.schema_query
 import api.devices.schema
 import api.events.schema
 import utilities.calendar_ids_cleanup
@@ -25,7 +26,7 @@ class Query(
         api.room.schema_query.Query,
         api.room_resource.schema.Query,
         api.role.schema.Query,
-        api.user.schema.Query,
+        api.user.schema_query.Query,
         api.devices.schema.Query,
         utilities.calendar_ids_cleanup.Query,
         api.notification.schema.Query,

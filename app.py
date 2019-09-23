@@ -9,7 +9,6 @@ from helpers.database import db_session
 from schema import schema
 from healthcheck_schema import healthcheck_schema
 from helpers.auth.authentication import Auth
-from api.analytics.analytics_request import AnalyticsRequest
 from utilities.file_reader import read_log_file
 
 mail = Mail()
@@ -56,11 +55,6 @@ def create_app(config_name):
             graphiql=True   # for healthchecks
         )
     )
-
-    @app.route("/analytics", methods=['POST'])
-    @Auth.user_roles('Admin', 'REST')
-    def analytics_report():
-        return AnalyticsRequest.validate_request(AnalyticsRequest)
 
     @app.teardown_appcontext
     def shutdown_session(exception=None):

@@ -1,6 +1,6 @@
 import graphene
 from graphene_sqlalchemy import (SQLAlchemyObjectType)
-from sqlalchemy import func, exc
+from sqlalchemy import exc
 from graphql import GraphQLError
 
 from api.user.models import User as UserModel
@@ -8,10 +8,8 @@ from api.notification.models import Notification as NotificationModel
 from helpers.auth.user_details import get_user_from_db
 from helpers.auth.authentication import Auth
 from utilities.validator import verify_email
-from helpers.pagination.paginate import Paginate, validate_page
 from helpers.auth.error_handler import SaveContextManager
 from helpers.email.email import notification
-from helpers.user_filter.user_filter import user_filter
 from utilities.utility import update_entity_fields
 from api.role.schema import Role
 from api.role.models import Role as RoleModel
@@ -50,86 +48,6 @@ class CreateUser(graphene.Mutation):
             notification_settings = NotificationModel(user_id=user.id)
             notification_settings.save()
             return CreateUser(user=user)
-
-
-class PaginatedUsers(Paginate):
-    """
-        Paginated users data
-    """
-    users = graphene.List(User)
-
-    def resolve_users(self, info):
-        page = self.page
-        per_page = self.per_page
-        query = User.get_query(info)
-        active_user = query.filter(UserModel.state == "active")
-        exact_query = user_filter(active_user, self.filter_data)
-        if not page:
-            return exact_query.order_by(func.lower(UserModel.email)).all()
-        page = validate_page(page)
-        self.query_total = exact_query.count()
-        result = exact_query.order_by(
-            func.lower(UserModel.name)).limit(per_page).offset(page * per_page)
-        if result.count() == 0:
-            return GraphQLError("No users found")
-        return result
-
-
-class Query(graphene.ObjectType):
-    """
-        Returns PaginatedUsers
-    """
-    users = graphene.Field(
-        PaginatedUsers,
-        page=graphene.Int(),
-        per_page=graphene.Int(),
-        location_id=graphene.Int(),
-        role_id=graphene.Int(),
-        description="Returns a list of paginated users and accepts arguments\
-            \n- page: Field with the users page\
-            \n- per_page: Field indicating users per page\
-            \n- location_id: Field with the unique key of user's location\
-            \n- role_id: Field with the unique key of the user role"
-    )
-    user = graphene.Field(
-        lambda: User,
-        email=graphene.String(),
-        description="Query to get a specific user using the user's email\
-            accepts the argument\n- email: Email of a user")
-
-    user_by_name = graphene.List(
-        User,
-        user_name=graphene.String(),
-        description="Returns user details and accepts the argument\
-            \n- user_name: The name of the user"
-    )
-
-    def resolve_users(self, info, **kwargs):
-        # Returns all users
-        response = PaginatedUsers(**kwargs)
-        return response
-
-    @Auth.user_roles('Admin', 'Default User', 'Super Admin')
-    def resolve_user(self, info, email):
-        # Returns a specific user.
-        query = User.get_query(info)
-        return query.filter(UserModel.email == email).first()
-
-    @Auth.user_roles('Admin', 'Super Admin')
-    def resolve_user_by_name(self, info, user_name):
-        user_list = []
-        user_name = ''.join(user_name.split()).lower()
-        if not user_name:
-            raise GraphQLError("Please provide the user name")
-        active_users = User.get_query(info).filter_by(state="active")
-        for user in active_users:
-            exact_user_name = user.name.lower().replace(" ", "")
-            if user_name in exact_user_name:
-                user_list.append(user)
-        if not user_list:
-            raise GraphQLError("User not found")
-
-        return user_list
 
 
 class DeleteUser(graphene.Mutation):

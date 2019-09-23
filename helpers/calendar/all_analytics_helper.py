@@ -18,6 +18,30 @@ class BookingsCount(graphene.ObjectType):
 
 class AllAnalyticsHelper:
 
+    def count_bookings_within_period(events, date_pattern, string_date):
+        """
+        Counts the bookings within a specified period
+        """
+        user_time_zone = CommonAnalytics.get_user_time_zone()
+        bookings = 0
+        for event in events:
+            start_timez = dateutil.parser.parse(event.start_time).astimezone(pytz.timezone(user_time_zone)) # noqa
+            if start_timez.strftime(date_pattern) == string_date:
+                bookings += 1
+        return bookings
+
+    def map_bookings_to_period(dates, date_pattern, events):
+        """
+        Maps bookings to the period in which they occurred
+        """
+        bookings_count = []
+        for date in dates:
+            string_date = dateutil.parser.parse(date[0]).strftime(date_pattern)
+            bookings = AllAnalyticsHelper.count_bookings_within_period(events, date_pattern, string_date) # noqa
+            output = BookingsCount(period=string_date, total_bookings=bookings)
+            bookings_count.append(output)
+        return bookings_count
+
     def bookings_count(self, unconverted_dates, events):
         """
         Get bookings count and period in a given room
@@ -28,45 +52,51 @@ class AllAnalyticsHelper:
         parsed_end_date = dateutil.parser.parse(day_after_end_date)
         parsed_day_after_end_date = parsed_end_date + relativedelta(days=1)
         number_of_days = (parsed_day_after_end_date - parsed_start_date).days
-        bookings_count = []
-        user_time_zone = CommonAnalytics.get_user_time_zone()
+        dates = []
+        date_pattern = "%b %d %Y"
         if number_of_days <= 30:
             dates = CommonAnalytics.get_list_of_dates(
-                start_date, number_of_days)
-            for date in dates:
-                bookings = 0
-                string_date = dateutil.parser.parse(
-                    date[0]).strftime("%b %d %Y")
-                for event in events:
-                    start_timez = dateutil.parser.parse(event.start_time).astimezone(pytz.timezone(user_time_zone)) # noqa
-                    if start_timez.strftime("%b %d %Y") == string_date:
-                        bookings += 1
-                output = BookingsCount(
-                    period=string_date,
-                    total_bookings=bookings)
-                bookings_count.append(output)
+                 start_date, number_of_days)
         else:
             dates = CommonAnalytics.get_list_of_month_dates(
                 start_date,
                 parsed_start_date,
                 day_after_end_date,
                 parsed_day_after_end_date)
-            for date in dates:
-                string_month = dateutil.parser.parse(date[0]).strftime("%b %Y")
-                output = BookingsCount(
-                    period=string_month,
-                    total_bookings=0)
-                for event in events:
-                    start_timez = dateutil.parser.parse(event.start_time).astimezone(pytz.timezone(user_time_zone)) # noqa
-                    if start_timez.strftime("%b %Y") == string_month:
-                        output.total_bookings += 1
-                bookings_count.append(output)
-        return bookings_count
+            date_pattern = "%b %Y"
 
-    def get_all_analytics(self, query, start_date, end_date, location_id, unconverted_dates): # noqa
+        return AllAnalyticsHelper.map_bookings_to_period(
+            dates, date_pattern, events)
+
+    def get_events_statistics(self, events):
+        """
+        Gets total checkins, app_bookings... from events
+        """
+        events_stats = {
+           "checkins": 0,
+           "app_bookings": 0,
+           "auto_cancellations": 0,
+           "cancellations": 0,
+           "duration_in_minutes": 0
+        }
+        for event in events:
+            events_stats['checkins'] += bool(event.checked_in)
+            events_stats['app_bookings'] += bool(event.app_booking)
+            events_stats['auto_cancellations'] += bool(event.auto_cancelled)
+            events_stats['cancellations'] += bool(event.cancelled)
+            events_stats['duration_in_minutes'] += CommonAnalytics.get_time_duration_for_event( # noqa
+                self, event.start_time, event.end_time
+            )
+        return events_stats
+
+    def get_all_analytics(self, query, **kwargs):
         """
         Get all room analytics
         """
+        start_date = kwargs['start_date']
+        end_date = kwargs['end_date']
+        location_id = kwargs['location_id']
+        unconverted_dates = kwargs['unconverted_dates']
         rooms = query.filter_by(state="active", location_id=location_id).all()
         room_analytics = []
         bookings = 0
@@ -78,11 +108,6 @@ class AllAnalyticsHelper:
         all_events = []
         for room in rooms:
             events = []
-            duaration_in_minutes = 0
-            cancellations = 0
-            checkins = 0
-            auto_cancellations = 0
-            app_bookings = 0
             try:
                 events_result = CommonAnalytics.get_all_events_in_a_room(
                     self, room.id, start_date, end_date)
@@ -90,42 +115,31 @@ class AllAnalyticsHelper:
                 continue
             all_events += events_result
             bookings += len(events_result)
-            for event in events_result:
-                if event.checked_in:
-                    checkins += 1
-                if event.app_booking:
-                    app_bookings += 1
-                if event.auto_cancelled:
-                    auto_cancellations += 1
-                if event.cancelled:
-                    cancellations += 1
-                duaration_in_minutes += CommonAnalytics.get_time_duration_for_event( # noqa
-                    self, event.start_time, event.end_time
-                )
+            events_stats = AllAnalyticsHelper.get_events_statistics(self, events_result) # noqa
             current_event = Event(
-                duration_in_minutes=duaration_in_minutes)
+                duration_in_minutes=events_stats['duration_in_minutes'])
             events.append(current_event)
-            total_checkins += checkins
-            total_app_bookings += app_bookings
-            total_auto_cancellations += auto_cancellations
-            total_cancellations += cancellations
+            total_checkins += events_stats['checkins']
+            total_app_bookings += events_stats['app_bookings']
+            total_auto_cancellations += events_stats['auto_cancellations']
+            total_cancellations += events_stats['cancellations']
             num_of_events = len(events_result)
             room_analytic = {
                 'number_of_meetings': num_of_events,
                 'room_name': room.name,
                 'num_of_events': num_of_events,
                 'room_events': events,
-                'cancellations': cancellations,
-                'checkins': checkins,
-                'auto_cancellations': auto_cancellations,
+                'cancellations': events_stats['cancellations'],
+                'checkins': events_stats['checkins'],
+                'auto_cancellations': events_stats['auto_cancellations'],
                 'cancellations_percentage': percentage_formater(
-                    cancellations, num_of_events
+                    events_stats['cancellations'], num_of_events
                 ),
                 'checkins_percentage': percentage_formater(
-                    checkins, num_of_events
+                    events_stats['checkins'], num_of_events
                 ),
-                'app_bookings': app_bookings,
-                'app_bookings_percentage': percentage_formater(app_bookings, num_of_events) # noqa
+                'app_bookings': events_stats['app_bookings'],
+                'app_bookings_percentage': percentage_formater(events_stats['app_bookings'], num_of_events) # noqa
             }
             room_analytics.append(room_analytic)
             room_analytics.sort(key=lambda x: x['number_of_meetings'], reverse=True) # noqa

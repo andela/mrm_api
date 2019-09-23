@@ -9,7 +9,8 @@ from api.room.schema import Room
 from api.room.models import Room as RoomModel
 from utilities.validations import (
     validate_empty_fields,
-    validate_structure_id
+    validate_structure_id,
+    validate_unique_structure_id
 )
 from utilities.utility import update_entity_fields
 
@@ -51,7 +52,7 @@ class CreateOfficeStructure(graphene.Mutation):
 
     @Auth.user_roles('Admin', 'Super Admin')
     def mutate(self, info, **kwargs):
-        validate_structure_id(**kwargs)
+        validate_unique_structure_id(**kwargs)
         office_structure = []
         for each_structure in kwargs['data']:
             node = create_structure(**each_structure)
@@ -78,17 +79,14 @@ class DeleteOfficeStructure(graphene.Mutation):
             RoomModel.state == "active")
         structures = []
         for structure_id in structure_ids:
+            validate_structure_id(structure_id=structure_id)
             office_structure = active_structures.filter(
                 StructureModel.structure_id == structure_id).first()
-            if not office_structure:
-                message = 'The structure {} does not exist'.format(structure_id)
-                raise GraphQLError(message)
             rooms = active_rooms.filter(
                 RoomModel.structure_id == structure_id).all()
-            if len(rooms) > 0:
-                for room in rooms:
-                    update_entity_fields(room, state="archived")
-                    room.save()
+            for room in rooms:
+                update_entity_fields(room, state="archived")
+                room.save()
             update_entity_fields(office_structure, state="archived")
             office_structure.save()
             structures.append(office_structure)

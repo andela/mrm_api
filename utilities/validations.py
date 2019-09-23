@@ -119,29 +119,32 @@ def validate_room_labels(**kwargs):
 
 def validate_structure_id(**kwargs):
     """
-    Function to validate that a structure id exists or is unique in structures
-    table
+    Function to validate that a structure id exists
     :param structure_id
     """
+    structure_id = kwargs.get('structure_id')
+    structure = StructureModel.query.filter_by(
+        structure_id=structure_id).first()
+    if not structure:
+        error_message = 'The structure {} does not exist'.format(structure_id)
+        raise GraphQLError(error_message)
 
-    if kwargs.get('structure_id'):
-        structure = StructureModel.query.filter_by(
-            structure_id=kwargs.get('structure_id')
-        ).first()
-        if structure is None:
-            raise GraphQLError("Structure id does not exist")
-    else:
-        structure_id_list = [structure['structure_id']
-                             for structure in kwargs['data']]
-        for structure_id in structure_id_list:
-            if structure_id_list.count(structure_id) > 1:
-                raise GraphQLError(
-                    'The office stuctures does not contain unique ids')
-        for structure in kwargs['data']:
-            existing_structure = StructureModel.query.filter_by(
-                structure_id=structure['structure_id']).first()
-            if existing_structure:
-                raise GraphQLError('{} already exists'.format(structure.name))
+
+def validate_unique_structure_id(**kwargs):
+    """
+    Function to validate that structure ids are unique
+    """
+    structure_id_list = \
+        [structure['structure_id'] for structure in kwargs['data']]
+    for structure_id in structure_id_list:
+        if structure_id_list.count(structure_id) > 1:
+            raise GraphQLError(
+                'The office stuctures does not contain unique ids')
+
+        structure_in_db = StructureModel.query.filter_by(
+            structure_id=structure_id).first()
+        if structure_in_db:
+            raise GraphQLError('{} already exists'.format(structure_in_db.name))
 
 
 def ensure_unique_id(node_list):
