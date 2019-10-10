@@ -29,6 +29,7 @@ from helpers.events_filter.events_filter import (
     calendar_dates_format,
     empty_string_checker
 )
+from helpers.event.slack_notifier import notify_slack
 
 utc = pytz.utc
 
@@ -228,7 +229,8 @@ class EndEvent(graphene.Mutation):
                 meeting_end_time=kwargs['meeting_end_time']
             )
             event.save()
-
+        event_id = kwargs['event_id']
+        notify_slack.delay(event_id)
         return EndEvent(event=event)
 
 

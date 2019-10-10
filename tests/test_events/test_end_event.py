@@ -1,4 +1,5 @@
 from tests.base import BaseTestCase, CommonTestCases
+from unittest.mock import Mock, patch
 
 from fixtures.events.end_event_fixtures import (
     end_event_mutation,
@@ -16,10 +17,12 @@ from fixtures.events.event_checkin_fixtures import (
 
 class TestEndEvent(BaseTestCase):
 
-    def test_end_event(self):
+    @patch('api.events.schema.notify_slack.delay')
+    def test_end_event(self, mock_notify_slack):
         """
         Test user can end an event
         """
+        mock_notify_slack.return_value = True
         CommonTestCases.user_token_assert_equal(
             self,
             event_checkin_mutation,
@@ -41,10 +44,12 @@ class TestEndEvent(BaseTestCase):
             end_unchecked_in_event_mutation_response
         )
 
-    def test_end_event_twice(self):
+    @patch('api.events.schema.notify_slack.delay')
+    def test_end_event_twice(self, mock_notify_slack):
         """
         Test user cannot end an event twice
         """
+        mock_notify_slack.return_value = True
         CommonTestCases.user_token_assert_equal(
             self,
             event_checkin_mutation,

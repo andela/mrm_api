@@ -27,6 +27,9 @@ class Config:
         },
     }
 
+    # slack bot url
+    NOTIFY_URL = os.getenv('SLACK_NOTIFICATION_URL')
+
     @staticmethod
     def init_app(app):
         pass
