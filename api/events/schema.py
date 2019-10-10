@@ -17,6 +17,7 @@ from helpers.events_filter.events_filter import (
     filter_events_by_date_range,
     validate_page_and_per_page
 )
+from helpers.event.slack_notifier import notify_slack
 
 utc = pytz.utc
 
@@ -79,7 +80,7 @@ class CancelEvent(graphene.Mutation):
         room_id, event = check_event_in_db(self, info, "cancelled", **kwargs)
         try:
             device_last_seen = parser.parse(
-                    kwargs['start_time']) + timedelta(minutes=10)
+                kwargs['start_time']) + timedelta(minutes=10)
         except ValueError:
             raise GraphQLError("Invalid start time")
         update_device_last_activity(info, room_id, device_last_seen, 'cancel meeting')
@@ -96,15 +97,15 @@ class CancelEvent(graphene.Mutation):
                 auto_cancelled=True)
             event.save()
         calendar_event = get_single_calendar_event(
-                                                    kwargs['calendar_id'],
-                                                    kwargs['event_id']
-                                                )
+            kwargs['calendar_id'],
+            kwargs['event_id']
+        )
         event_reject_reason = 'after 10 minutes'
         if not notification.event_cancellation_notification(
-                                                            calendar_event,
-                                                            room_id,
-                                                            event_reject_reason
-                                                            ):
+            calendar_event,
+            room_id,
+            event_reject_reason
+        ):
             raise GraphQLError("Event cancelled but email not sent")
         return CancelEvent(event=event)
 
@@ -130,9 +131,10 @@ class EndEvent(graphene.Mutation):
             event = EventsModel(
                 event_id=kwargs['event_id'],
                 meeting_end_time=kwargs['meeting_end_time']
-                )
+            )
             event.save()
-
+        event_id = kwargs['event_id']
+        notify_slack.delay(event_id)
         return EndEvent(event=event)
 
 
@@ -263,7 +265,7 @@ class Query(graphene.ObjectType):
         query = Events.get_query(info)
         response = filter_events_by_date_range(
             query, start_date, end_date
-            )
+        )
         response.sort(
             key=lambda x: parser.parse(x.start_time).astimezone(utc),
             reverse=True)

@@ -19,6 +19,9 @@ class Config:
     CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
     CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND')
 
+    # slack bot url
+    NOTIFY_URL = os.getenv('SLACK_NOTIFICATION_URL')
+
     @staticmethod
     def init_app(app):
         pass
