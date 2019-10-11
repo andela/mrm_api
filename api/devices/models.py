@@ -18,6 +18,7 @@ class Devices(Base, Utility):
     room_id = Column(Integer, ForeignKey('rooms.id', ondelete="CASCADE"))
     room = relationship('Room')
     state = Column(Enum(StateType), nullable=False, default="active")
+    last_activity = Column(String, nullable=True)
 
     def __init__(self, **kwargs):
         validate_empty_fields(**kwargs)
