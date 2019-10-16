@@ -12,7 +12,7 @@ from helpers.email.email import notification
 from helpers.calendar.credentials import get_single_calendar_event
 from helpers.auth.authentication import Auth
 from helpers.pagination.paginate import ListPaginate
-from helpers.devices.devices import update_device_last_seen
+from helpers.devices.devices import update_device_last_activity
 from helpers.events_filter.events_filter import (
     filter_events_by_date_range,
     validate_page_and_per_page
@@ -46,7 +46,7 @@ class EventCheckin(graphene.Mutation):
     def mutate(self, info, **kwargs):
         room_id, event = check_event_in_db(self, info, "checked_in", **kwargs)
         if kwargs.get('check_in_time'):
-            update_device_last_seen(info, room_id, kwargs['check_in_time'])
+            update_device_last_activity(info, room_id, kwargs['check_in_time'], 'check in')
         if not event:
             event = EventsModel(
                 event_id=kwargs['event_id'],
@@ -82,7 +82,7 @@ class CancelEvent(graphene.Mutation):
                     kwargs['start_time']) + timedelta(minutes=10)
         except ValueError:
             raise GraphQLError("Invalid start time")
-        update_device_last_seen(info, room_id, device_last_seen)
+        update_device_last_activity(info, room_id, device_last_seen, 'cancel meeting')
         if not event:
             event = EventsModel(
                 event_id=kwargs['event_id'],
@@ -124,6 +124,8 @@ class EndEvent(graphene.Mutation):
 
     def mutate(self, info, **kwargs):
         room_id, event = check_event_in_db(self, info, "ended", **kwargs)
+        if kwargs.get('meeting_end_time'):
+            update_device_last_activity(info, room_id, kwargs['meeting_end_time'], 'end meeting')
         if not event:
             event = EventsModel(
                 event_id=kwargs['event_id'],
