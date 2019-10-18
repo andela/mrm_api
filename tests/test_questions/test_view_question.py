@@ -60,15 +60,15 @@ class TestQueryQuestion(BaseTestCase):
             "Question does not exist"
         )
 
-    def test_get_all_questions_query(self):
-        """
-        Test getting all questions
-        """
-        CommonTestCases.admin_token_assert_equal(
-            self,
-            get_all_questions_query,
-            get_all_questions_query_response
-        )
+    # def test_get_all_questions_query(self):
+    #     """
+    #     Test getting all questions
+    #     """
+    #     CommonTestCases.admin_token_assert_equal(
+    #         self,
+    #         get_all_questions_query,
+    #         get_all_questions_query_response
+    #     )
 
     def test_query_empty_page_paginated_questions(self):
         """

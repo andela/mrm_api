@@ -218,9 +218,9 @@ query {
 '''
 
 get_all_questions_query = '''
-query {
-  allQuestions(startDate: "2018 Nov 20", endDate: "2018 Nov 28"){
-      questionType
+query{
+  allQuestions{
+    questionType
   }
 }
 '''
@@ -229,10 +229,10 @@ get_all_questions_query_response = {
     "data": {
         "allQuestions": [
             {
-                "questionType": "rate"
+                "questionType": "rate",
             },
             {
-                "questionType": "input"
+                "questionType": "check",
             }
         ]
     }

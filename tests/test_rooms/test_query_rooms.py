@@ -15,7 +15,10 @@ from fixtures.room.query_room_fixtures import (
     room_query_with_non_existant_id_response,
     all_remote_rooms_query,
     paginated_rooms_query_blank_page,
-    all_dummy_rooms_response
+    all_dummy_rooms_response,
+    filter_rooms_by_tag_query,
+    filter_rooms_by_tag_query_response,
+    filter_rooms_by_tag_query_with_unexisted_id
 )
 from helpers.calendar.credentials import get_google_api_calendar_list
 
@@ -95,4 +98,23 @@ class QueryRooms(BaseTestCase):
             self,
             paginated_rooms_query_blank_page,
             "No more resources"
+        )
+
+    def test_filter_room_by_tag_query(self):
+        expected_query = filter_rooms_by_tag_query
+        expected_response = filter_rooms_by_tag_query_response
+
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            expected_query,
+            expected_response
+        )
+
+    def test_filter_room_by_tag_query_with_unexisted_id(self):
+        expected_query = filter_rooms_by_tag_query_with_unexisted_id
+
+        CommonTestCases.admin_token_assert_in(
+            self,
+            expected_query,
+            "No rooms found with this tag"
         )

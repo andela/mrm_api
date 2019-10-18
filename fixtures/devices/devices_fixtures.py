@@ -49,8 +49,8 @@ expected_response_devices_with_filter = {
                 "name": "Samsung"
             }
         ]
-        }
     }
+}
 
 query_device = '''
         {
@@ -234,13 +234,13 @@ delete_device_mutation = '''
 '''
 
 delete_device_response = {
-  "data": {
-    "deleteDevice": {
-      "device": {
-        "id": "1"
-      }
+    "data": {
+        "deleteDevice": {
+            "device": {
+                "id": "1"
+            }
+        }
     }
-  }
 }
 
 create_device_query_invalid_room = '''
@@ -289,7 +289,42 @@ search_device_by_name_expected_response = {
             'id': '1',
             'name': 'Samsung',
             'deviceType': 'External Display'
-            }]
-        }
+        }]
     }
+}
 devices_query_response = b'{"data":{"createDevice":{"device":{"name":"Apple tablet","location":"Kampala","deviceType":"External Display"}}}}'  # noqaE501
+
+search_device_by_name_query_without_device_name_argument = '''
+query{
+  deviceByName(deviceName:""){
+    id
+    dateAdded
+    name
+    
+  }
+}
+'''
+
+search_device_by_name_query_without_device_name_response = {
+
+}
+
+# search_device_by_name_query_without_device_name_response = {
+#     "errors": [
+#         {
+#             "message": "Please provide the device name",
+#             "locations": [
+#                 {
+#                     "line": 2,
+#                     "column": 3
+#                 }
+#             ],
+#             "path": [
+#                 "deviceByName"
+#             ]
+#         }
+#     ],
+#     "data": {
+#         "deviceByName": null
+#     }
+# }

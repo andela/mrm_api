@@ -15,9 +15,9 @@ all_dummy_rooms_response = {
     "data": {
         "allRemoteRooms": {
             "rooms": []
-            }
         }
     }
+}
 
 paginated_rooms_query = '''
  query {
@@ -222,3 +222,38 @@ room_occupants_invalid_calendar_id_query = '''
     }
     }
     '''
+
+filter_rooms_by_tag_query = '''
+{
+    filterRoomsByTag(tagId: 1){
+        capacity
+        name
+        roomType
+    }
+}
+'''
+
+filter_rooms_by_tag_query_response = '''
+{
+  "data": {
+    "filterRoomsByTag": [
+      {
+        "capacity": 8,
+        "name": "Monrovia",
+        "roomType": "board room"
+      }
+    ]
+  }
+}
+
+'''
+
+filter_rooms_by_tag_query_with_unexisted_id = '''
+{
+    filterRoomsByTag(tagId: 100){
+        capacity
+        name
+        roomType
+    }
+}
+'''
