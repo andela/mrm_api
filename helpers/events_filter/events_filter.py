@@ -1,8 +1,8 @@
 from datetime import datetime, timedelta
 from graphql import GraphQLError
 import pytz
+from dateutil import parser
 
-from api.events.models import Events as EventsModel
 
 utc = pytz.utc
 
@@ -17,29 +17,12 @@ def validate_date_input(start_date, end_date):
         raise GraphQLError("startDate argument missing")
 
 
-def filter_events_by_date_range(query, start_date, end_date):
+def validate_calendar_id_input(calendar_id):
     """
-    Returns events that fall within the date range supplied
+    Ensures that the calendar id is supplied
     """
-    validate_date_input(start_date, end_date)
-    if not start_date and not end_date:
-        events = query.filter(
-                EventsModel.state == 'active'
-            ).all()
-        if not events:
-            raise GraphQLError('Events do not exist')
-        return events
-
-    start_date, end_date = format_range_dates(start_date, end_date)
-
-    events = query.filter(
-            EventsModel.state == 'active',
-            EventsModel.start_time >= start_date,
-            EventsModel.end_time <= end_date
-        ).all()
-    if not events:
-        raise GraphQLError('Events do not exist for the date range')
-    return events
+    if not calendar_id:
+        raise GraphQLError("Calendar Id missing")
 
 
 def format_range_dates(start_date, end_date):
@@ -74,3 +57,9 @@ def validate_page_and_per_page(page, per_page):
         raise GraphQLError("page argument missing")
     else:
         return (page, per_page)
+
+
+def sort_events_by_date(events):
+    events.sort(
+        key=lambda x: parser.parse(x.start_time).astimezone(utc),
+        reverse=True)

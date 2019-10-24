@@ -4,9 +4,14 @@ from graphql import GraphQLError
 import pytz
 from dateutil import parser
 from datetime import timedelta
+from graphene import String
 
 from api.events.models import Events as EventsModel
 from api.room.models import Room as RoomModel
+from api.events.models import (
+    filter_event_by_room,
+    filter_events_by_date_range
+)
 from helpers.calendar.events import RoomSchedules, CalendarEvents
 from helpers.email.email import notification
 from helpers.calendar.credentials import get_single_calendar_event
@@ -14,8 +19,9 @@ from helpers.auth.authentication import Auth
 from helpers.pagination.paginate import ListPaginate
 from helpers.devices.devices import update_device_last_activity
 from helpers.events_filter.events_filter import (
-    filter_events_by_date_range,
-    validate_page_and_per_page
+    sort_events_by_date,
+    validate_page_and_per_page,
+    validate_calendar_id_input
 )
 
 utc = pytz.utc
@@ -238,6 +244,13 @@ class PaginateEvents(graphene.ObjectType):
     has_previous = graphene.Boolean()
 
 
+class RoomEvents(graphene.ObjectType):
+    """
+        Return all events in a room
+    """
+    events = graphene.List(Events)
+
+
 class Query(graphene.ObjectType):
     all_events = graphene.Field(
         PaginateEvents,
@@ -253,6 +266,19 @@ class Query(graphene.ObjectType):
             \n- page: Page number to select when paginating\
             \n- per_page: The maximum number of events per page when paginating") # noqa
 
+    all_events_by_room = graphene.Field(
+        RoomEvents,
+        calendar_id=String(),
+        start_date=String(),
+        end_date=String(),
+        description="Query that returns a list of events given the arguments\
+            \n- calendar_id: The room calendar Id\
+            \n- start_date: The date and time to start selection in range \
+                            when filtering by the time period\
+            \n- end_date: The date and time to end selection in range \
+                            when filtering by the time period")
+
+
     @Auth.user_roles('Admin', 'Default User', 'Super Admin')
     def resolve_all_events(self, info, **kwargs):
         start_date = kwargs.get('start_date')
@@ -264,9 +290,7 @@ class Query(graphene.ObjectType):
         response = filter_events_by_date_range(
             query, start_date, end_date
             )
-        response.sort(
-            key=lambda x: parser.parse(x.start_time).astimezone(utc),
-            reverse=True)
+        sort_events_by_date(response)
 
         if page and per_page:
             paginated_response = ListPaginate(
@@ -286,3 +310,22 @@ class Query(graphene.ObjectType):
                 pages=pages)
 
         return PaginateEvents(events=response)
+        
+
+    @Auth.user_roles('Admin', 'Super Admin')
+    def resolve_all_events_by_room(self, info, **kwargs):
+        calendar_id = kwargs.get('calendar_id')
+        validate_calendar_id_input(calendar_id)
+        start_date = kwargs.get('start_date')
+        end_date = kwargs.get('end_date')
+        room = RoomModel.query.filter_by(
+                calendar_id = calendar_id
+            ).first()
+        if not room:
+            raise GraphQLError("No rooms with the given CalendarId")
+        response = filter_event_by_room(
+            room.id, start_date, end_date
+            )
+        sort_events_by_date(response)
+
+        return RoomEvents(events=response)
