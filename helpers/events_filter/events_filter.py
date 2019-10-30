@@ -4,7 +4,6 @@ import pytz
 import inspect
 from dateutil import parser
 
-
 utc = pytz.utc
 
 
@@ -125,3 +124,23 @@ def calendar_dates_format(start_date, start_time, duration):
     end_date = end_date.strftime('%Y-%m-%dT%H:%M:%S')
 
     return (start_date, end_date)
+
+
+def format_range_time(start_time, end_time):
+    """
+    Raises a GraphQL error when
+    start_time is bigger than end_time
+    """
+    start_time = datetime.strptime(start_time, '%H:%M:%S')
+    end_time = datetime.strptime(end_time, '%H:%M:%S')
+
+    if start_time > end_time:
+        raise GraphQLError("Start time must be lower than end time")
+    return start_time, end_time
+
+
+def convert_date(provided_date, provided_time, time_zone):
+    date = provided_date + ' ' + provided_time
+    new_date = parser.parse(date)
+    new_date_format = str(pytz.timezone(time_zone).localize(new_date))
+    return new_date_format.replace(new_date_format[10], 'T')

@@ -15,7 +15,15 @@ from helpers.auth.user_details import get_user_from_db
 from helpers.remote_rooms.remote_rooms_location import (
     map_remote_room_location_to_filter
 )
-from helpers.calendar.credentials import get_google_api_calendar_list
+from helpers.calendar.credentials import (get_google_api_calendar_list,
+                                          credentials
+                                          )
+from helpers.events_filter.events_filter import (convert_date,
+                                                 validate_date_input,
+                                                 format_range_dates,
+                                                 format_range_time,
+                                                 empty_string_checker
+                                                 )
 from api.room.schema import (RatioOfCheckinsAndCancellations,
                              BookingsAnalyticsCount)
 
@@ -107,6 +115,15 @@ class PaginatedEvents(graphene.ObjectType):
     has_previous = graphene.Boolean()
     has_next = graphene.Boolean()
     pages = graphene.Int()
+
+
+class AvailableRooms(graphene.ObjectType):
+    id = graphene.String()
+    name = graphene.String()
+
+
+class AllAvailableRooms(graphene.ObjectType):
+    availableRoom = graphene.List(AvailableRooms)
 
 
 class Query(graphene.ObjectType):
@@ -307,6 +324,90 @@ class Query(graphene.ObjectType):
         actual_rooms = [room for room in remote_rooms
                         if not re.search(match, room.name)]
         return AllRemoteRooms(rooms=actual_rooms)
+
+    all_available_rooms = graphene.Field(
+        AllAvailableRooms,
+        start_date=graphene.String(required=True),
+        start_time=graphene.String(required=True),
+        end_date=graphene.String(required=True),
+        end_time=graphene.String(required=True),
+        time_zone=graphene.String(required=True),
+        description="Returns available rooms in a given period \
+            \n- start_time: Start time and date when you want to book room from\
+            [required]\n- end_time: time and date you want to book room upto\
+                [required]\n time_zone: The time zone of the location\
+                    [required]\n location: The location of the office's \
+                        room you want to book"
+    )
+
+    @Auth.user_roles('Admin', 'Super Admin')
+    def resolve_all_available_rooms(self, info, **kwargs):
+
+        time_zone = kwargs['time_zone']
+        empty_string_checker(time_zone)
+        validate_date_input(kwargs['start_date'], kwargs['end_date'])
+        validate_date_input(kwargs['start_time'], kwargs['end_time'])
+        format_range_dates(kwargs['start_date'], kwargs['end_date'])
+        format_range_time(kwargs['start_time'], kwargs['end_time'])
+
+        start_time = convert_date(kwargs['start_date'],
+                                  kwargs['start_time'],
+                                  time_zone
+                                  )
+        end_time = convert_date(kwargs['end_date'],
+                                kwargs['end_time'],
+                                time_zone
+                                )
+
+        # list of all remote rooms in a user's location
+        locational_remote_rooms = Query.resolve_all_remote_rooms(
+            self, info, return_all=False)
+        all_rooms = []
+        for room in locational_remote_rooms.rooms:
+            all_rooms.append({
+                "id": room.calendar_id,
+                "name": room.name
+            })
+
+        # list of all remote rooms and
+        # for each room shows whether it is free or busy in a given period.
+        service = credentials.set_api_credentials()
+        all_calendars = get_google_api_calendar_list()['items']
+        all_remote_rooms = []
+        for room in all_calendars:
+            free_busy_rooms_request_object = {
+                "timeMin": start_time,
+                "timeMax": end_time,
+                "timeZone": time_zone,
+                "items": [
+                    {
+                        "id": room['id']
+                    }
+                ]
+            }
+            res = service.freebusy().query(
+                body=free_busy_rooms_request_object
+                ).execute()
+            all_remote_rooms.append(res[u'calendars'])
+
+        # all busy remote rooms in a given period
+        busy_rooms = [key for element in all_remote_rooms for key,
+                      value in element.items() if len(value["busy"]) != 0]
+
+        # all available rooms in a user's location in a given period
+        available_rooms = [room for room in all_rooms if room[
+            'id'
+            ] not in busy_rooms]
+        all_available_rooms = [AvailableRooms(room['id'],
+                                              room['name']
+                                              ) for room in available_rooms]
+
+        def raise_no_available_rooms():
+            raise GraphQLError("No available rooms at the moment")
+
+        return AllAvailableRooms(
+            availableRoom=all_available_rooms
+        ) if available_rooms else raise_no_available_rooms()
 
     @Auth.user_roles('Admin', 'Super Admin')
     def resolve_filter_rooms_by_tag(self, info, tagId):
