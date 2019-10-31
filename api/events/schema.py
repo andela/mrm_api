@@ -14,7 +14,10 @@ from api.events.models import (
 )
 from helpers.calendar.events import RoomSchedules, CalendarEvents
 from helpers.email.email import notification
-from helpers.calendar.credentials import get_single_calendar_event
+from helpers.calendar.credentials import (
+    get_single_calendar_event,
+    credentials
+)
 from helpers.auth.authentication import Auth
 from helpers.pagination.paginate import ListPaginate
 from helpers.devices.devices import update_device_last_activity
@@ -22,6 +25,10 @@ from helpers.events_filter.events_filter import (
     sort_events_by_date,
     validate_page_and_per_page,
     validate_calendar_id_input
+)
+from helpers.events_filter.events_filter import (
+    calendar_dates_format,
+    empty_string_checker
 )
 
 utc = pytz.utc
@@ -33,6 +40,87 @@ class Events(SQLAlchemyObjectType):
     """
     class Meta:
         model = EventsModel
+
+
+class BookEvent(graphene.Mutation):
+    """
+        Book Calendar events
+    """
+    response = graphene.String()
+
+    class Arguments:
+        event_title = graphene.String(required=True)
+        start_date = graphene.String(required=True)
+        start_time = graphene.String(required=True)
+        duration = graphene.Float(required=False)
+        attendees = graphene.String(required=False)
+        organizer = graphene.String(required=False)
+        description = graphene.String(required=False)
+        room = graphene.String(required=True)
+        time_zone = graphene.String(required=True)
+
+    @Auth.user_roles('Admin', 'Default User', 'Super Admin')
+    def mutate(self, info, **kwargs):
+        """Creates calendar events
+
+        Args:
+            event_title: A sting that communicates the event summary/title
+            [required]
+            start_date: The start date of the event eg. 'Nov 4 2019' [required]
+            start_time: The end time of the event eg '07:00 AM' [required]
+            duration: A float of the duration of the event in minutes
+            attendees: A string of emails of the event guests
+            description: Any additional information about the event
+            room: The meeting room where the even will be held [required]
+            time_zone: The timezone of the event location eg. 'Africa/Kigali'
+            organizer: The email of the co-organizer, the converge email is
+            the default
+
+        Returns:
+            A string that communicates a successfully created event.
+        """
+        room = kwargs.get('room', None)
+        attendees = kwargs.get('attendees', None)
+        description = kwargs.get('description', None)
+        time_zone = kwargs.get('time_zone', 'Africa/Accra')
+        duration = kwargs.get('duration', 60)
+        organizer = kwargs.get('organizer', None)
+
+        event_title = kwargs['event_title']
+        empty_string_checker(event_title)
+        empty_string_checker(room)
+        empty_string_checker(time_zone)
+
+        start_date, end_date = calendar_dates_format(
+            kwargs['start_date'], kwargs['start_time'], duration)
+
+        attendees = attendees.replace(" ", "").split(",")
+        guests = []
+        for guest in attendees:
+            attendee = {'email': guest}
+            guests.append(attendee)
+
+        event = {
+            'summary': kwargs['event_title'],
+            'location': room,
+            'description': description,
+            'start': {
+                'dateTime': start_date,
+                'timeZone': time_zone,
+            },
+            'end': {
+                'dateTime': end_date,
+                'timeZone': time_zone,
+            },
+            'attendees': guests,
+            "organizer": {
+                "email": organizer
+            }
+        }
+        service = credentials.set_api_credentials()
+        service.events().insert(calendarId='primary', body=event,
+                                sendNotifications=True).execute()
+        return BookEvent(response='Event created successfully')
 
 
 class EventCheckin(graphene.Mutation):
@@ -204,6 +292,19 @@ def check_event_in_db(instance, info, event_check, **kwargs):
 class Mutation(graphene.ObjectType):
     event_checkin = EventCheckin.Field()
     cancel_event = CancelEvent.Field()
+    book_event = BookEvent.Field(
+        description="Mutation to book a calendar event given the arguments\
+            \n- event_title: A sting that communicates the event\
+            summary/title [required]\n- start_date: The start date \
+                 of the event eg 'Nov 4 2019' [required]\
+            \n- start_time: The end time of the event eg'07:00 AM'[required]\
+            \n- duration: A float of the duration of the event in minutes\
+            \n- attendees: A string of emails of the event guests\
+            \n- description: Any additional information about the event\
+            \n- room: The meeting room where the even will be held[required]\
+            \n- organizer: The email of the co - organizer, the converge\
+                email is the default\
+            \n- time_zone: The timezone of the event location")
     end_event = EndEvent.Field(
         description="Mutation to end a calendar event given the arguments\
             \n- calendar_id: The unique identifier of the calendar event\
