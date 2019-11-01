@@ -18,7 +18,7 @@ more-itertools==4.1.0
 numpy==1.15.2
 opencv-python==3.4.3.18
 pandas==0.23.4
-Pillow==5.3.0
+Pillow==6.2.0
 pdfkit==0.6.1
 psycopg2-binary==2.7.4
 py==1.5.3
