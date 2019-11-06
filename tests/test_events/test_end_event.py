@@ -1,5 +1,5 @@
 from tests.base import BaseTestCase, CommonTestCases
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 
 from fixtures.events.end_event_fixtures import (
     end_event_mutation,

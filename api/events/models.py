@@ -29,6 +29,7 @@ class Events(Base, Utility):
     meeting_end_time = Column(String, nullable=True)
     auto_cancelled = Column(Boolean, nullable=True, default=False)
     app_booking = Column(Boolean, nullable=True, default=False)
+    organizer_email = Column(String, nullable=True)
 
 
 def filter_event(start_date, end_date, room_id=None):

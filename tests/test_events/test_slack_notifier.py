@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 from helpers.event.slack_notifier import notify_slack
 
 
@@ -11,5 +11,5 @@ class TestSlackNotifier(unittest.TestCase):
         Test to verify that a request is made when
         an event ends
         """
-        notify_slack('event_id')
+        notify_slack('event_id', 'andela@andela.com', '18')
         mock_get_request.assert_called_once()

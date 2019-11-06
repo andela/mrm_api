@@ -189,6 +189,7 @@ class CalendarEvents:
                         recurring_event_id=event.get("recurringEventId"),
                         room_id=room.id,
                         event_title=event.get("summary"),
+                        organizer_email=organizer.get('email'),
                         start_time=event["start"].get(
                             "dateTime") or event["start"].get("date"),
                         end_time=event["end"].get(

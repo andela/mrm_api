@@ -6,7 +6,8 @@ book_event_mutation = '''mutation {
         duration:60
         attendees: "adafia.samuel@gmail.com, qanda8@gmail.com",
         timeZone: "Africa/Kigali",
-        room:"Yankara"
+        room:"Yankara",
+        roomId:1
     ){
             response
         }
@@ -21,7 +22,8 @@ book_event_mutation_no_title = '''mutation {
         duration:60
         attendees: "adafia.samuel@gmail.com, qanda8@gmail.com",
         timeZone: "Africa/Kigali",
-        room:"Yankara"
+        room:"Yankara",
+        roomId:1
     ){
             response
         }
@@ -36,7 +38,8 @@ book_event_mutation_no_room = '''mutation {
         duration:60
         attendees: "adafia.samuel@gmail.com, qanda8@gmail.com",
         timeZone: "Africa/Kigali",
-        room:""
+        room:"",
+        roomId:1
     ){
             response
         }
@@ -51,7 +54,8 @@ book_event_mutation_no_start_date = '''mutation {
         duration:60
         attendees: "adafia.samuel@gmail.com, qanda8@gmail.com",
         timeZone: "Africa/Kigali",
-        room:"Yankara"
+        room:"Yankara",
+        roomId:1
     ){
             response
         }
@@ -66,7 +70,8 @@ book_event_mutation_no_start_time = '''mutation {
         duration:60
         attendees: "adafia.samuel@gmail.com, qanda8@gmail.com",
         timeZone: "Africa/Kigali",
-        room:"Yankara"
+        room:"Yankara",
+        roomId:1
     ){
             response
         }
@@ -81,7 +86,8 @@ book_event_mutation_no_time_Zone = '''mutation {
         duration:60
         attendees: "adafia.samuel@gmail.com, qanda8@gmail.com",
         timeZone: "",
-        room:"Yankara"
+        room:"Yankara",
+        roomId:1
     ){
             response
         }
