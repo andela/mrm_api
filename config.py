@@ -1,4 +1,5 @@
 import os
+from celery.schedules import crontab
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 
@@ -18,6 +19,13 @@ class Config:
     # Celery configuration
     CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
     CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND')
+    CELERY_IMPORTS = ["services.data_deletion.clean_archived_data"]
+    CELERYBEAT_SCHEDULE = {
+        'clean_archived_data': {
+            'task': 'clean_archived_data.delete_archived_data',
+            'schedule': crontab(hour=23, minute=00)
+        },
+    }
 
     @staticmethod
     def init_app(app):

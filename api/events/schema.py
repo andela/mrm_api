@@ -52,7 +52,8 @@ class EventCheckin(graphene.Mutation):
     def mutate(self, info, **kwargs):
         room_id, event = check_event_in_db(self, info, "checked_in", **kwargs)
         if kwargs.get('check_in_time'):
-            update_device_last_activity(info, room_id, kwargs['check_in_time'], 'check in')
+            update_device_last_activity(
+                info, room_id, kwargs['check_in_time'], 'check in')
         if not event:
             event = EventsModel(
                 event_id=kwargs['event_id'],
@@ -85,10 +86,11 @@ class CancelEvent(graphene.Mutation):
         room_id, event = check_event_in_db(self, info, "cancelled", **kwargs)
         try:
             device_last_seen = parser.parse(
-                    kwargs['start_time']) + timedelta(minutes=10)
+                kwargs['start_time']) + timedelta(minutes=10)
         except ValueError:
             raise GraphQLError("Invalid start time")
-        update_device_last_activity(info, room_id, device_last_seen, 'cancel meeting')
+        update_device_last_activity(
+            info, room_id, device_last_seen, 'cancel meeting')
         if not event:
             event = EventsModel(
                 event_id=kwargs['event_id'],
@@ -102,15 +104,15 @@ class CancelEvent(graphene.Mutation):
                 auto_cancelled=True)
             event.save()
         calendar_event = get_single_calendar_event(
-                                                    kwargs['calendar_id'],
-                                                    kwargs['event_id']
-                                                )
+            kwargs['calendar_id'],
+            kwargs['event_id']
+        )
         event_reject_reason = 'after 10 minutes'
         if not notification.event_cancellation_notification(
-                                                            calendar_event,
-                                                            room_id,
-                                                            event_reject_reason
-                                                            ):
+            calendar_event,
+            room_id,
+            event_reject_reason
+        ):
             raise GraphQLError("Event cancelled but email not sent")
         return CancelEvent(event=event)
 
@@ -131,12 +133,13 @@ class EndEvent(graphene.Mutation):
     def mutate(self, info, **kwargs):
         room_id, event = check_event_in_db(self, info, "ended", **kwargs)
         if kwargs.get('meeting_end_time'):
-            update_device_last_activity(info, room_id, kwargs['meeting_end_time'], 'end meeting')
+            update_device_last_activity(
+                info, room_id, kwargs['meeting_end_time'], 'end meeting')
         if not event:
             event = EventsModel(
                 event_id=kwargs['event_id'],
                 meeting_end_time=kwargs['meeting_end_time']
-                )
+            )
             event.save()
 
         return EndEvent(event=event)
@@ -264,7 +267,7 @@ class Query(graphene.ObjectType):
             \n- end_date: The date and time to end selection in range \
                             when filtering by the time period\
             \n- page: Page number to select when paginating\
-            \n- per_page: The maximum number of events per page when paginating") # noqa
+            \n- per_page: The maximum number of events per page when paginating")  # noqa
 
     all_events_by_room = graphene.Field(
         RoomEvents,
@@ -278,7 +281,6 @@ class Query(graphene.ObjectType):
             \n- end_date: The date and time to end selection in range \
                             when filtering by the time period")
 
-
     @Auth.user_roles('Admin', 'Default User', 'Super Admin')
     def resolve_all_events(self, info, **kwargs):
         start_date = kwargs.get('start_date')
@@ -289,7 +291,7 @@ class Query(graphene.ObjectType):
         query = Events.get_query(info)
         response = filter_events_by_date_range(
             query, start_date, end_date
-            )
+        )
         sort_events_by_date(response)
 
         if page and per_page:
@@ -310,7 +312,6 @@ class Query(graphene.ObjectType):
                 pages=pages)
 
         return PaginateEvents(events=response)
-        
 
     @Auth.user_roles('Admin', 'Super Admin')
     def resolve_all_events_by_room(self, info, **kwargs):
@@ -319,13 +320,13 @@ class Query(graphene.ObjectType):
         start_date = kwargs.get('start_date')
         end_date = kwargs.get('end_date')
         room = RoomModel.query.filter_by(
-                calendar_id = calendar_id
-            ).first()
+            calendar_id=calendar_id
+        ).first()
         if not room:
             raise GraphQLError("No rooms with the given CalendarId")
         response = filter_event_by_room(
             room.id, start_date, end_date
-            )
+        )
         sort_events_by_date(response)
 
         return RoomEvents(events=response)
