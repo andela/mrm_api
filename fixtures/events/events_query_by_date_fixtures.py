@@ -51,11 +51,11 @@ event_query_with_pagination_response = {
     'data': {
         'allEvents': {
             'events': [{
-                    'id': '1',
-                    'roomId': 1,
-                    'room': {
-                        'name': 'Entebbe'
-                        }
+                'id': '1',
+                'roomId': 1,
+                'room': {
+                    'name': 'Entebbe'
+                }
             }],
             'hasNext': False,
             'hasPrevious': False,
@@ -200,14 +200,14 @@ query{
 '''
 
 event_query_without_page_and_per_page_response = {
-  'data': {
+    'data': {
         'allEvents': {
             'events': [{
-                    'id': '1',
-                    'roomId': 1,
-                    'room': {
-                        'name': 'Entebbe'
-                        }
+                'id': '1',
+                'roomId': 1,
+                'room': {
+                    'name': 'Entebbe'
+                }
             }],
             'hasNext': None,
             'hasPrevious': None,

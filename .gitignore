@@ -140,5 +140,5 @@ converge_db/
 events.json
 calendar_list.json
 
-# maintain consistent coding styles 
+# maintain consistent coding styles
 .editorconfig

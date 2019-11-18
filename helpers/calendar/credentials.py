@@ -37,6 +37,9 @@ class Credentials():
         return service
 
 
+credentials = Credentials()
+
+
 def get_google_calendar_events(calendarId=None, timeMin=None,
                                timeMax=None, singleEvents=None, orderBy=None,
                                syncToken=None, pageToken=None
@@ -78,7 +81,7 @@ def get_single_calendar_event(calendar_id, event_id):
     credentials = Credentials()
     service = credentials.set_api_credentials()
     event = service.events().get(
-                                calendarId=calendar_id,
-                                eventId=event_id
-                                ).execute()
+        calendarId=calendar_id,
+        eventId=event_id
+    ).execute()
     return event
