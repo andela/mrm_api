@@ -9,8 +9,7 @@ from graphene import String
 from api.events.models import Events as EventsModel
 from api.room.models import Room as RoomModel
 from api.events.models import (
-    filter_event_by_room,
-    filter_events_by_date_range
+    filter_event
 )
 from helpers.calendar.events import RoomSchedules, CalendarEvents
 from helpers.email.email import notification
@@ -389,9 +388,8 @@ class Query(graphene.ObjectType):
         page = kwargs.get('page')
         per_page = kwargs.get('per_page')
         page, per_page = validate_page_and_per_page(page, per_page)
-        query = Events.get_query(info)
-        response = filter_events_by_date_range(
-            query, start_date, end_date
+        response = filter_event(
+           start_date, end_date
         )
         sort_events_by_date(response)
 
@@ -425,8 +423,8 @@ class Query(graphene.ObjectType):
         ).first()
         if not room:
             raise GraphQLError("No rooms with the given CalendarId")
-        response = filter_event_by_room(
-            room.id, start_date, end_date
+        response = filter_event(
+            start_date, end_date, room.id
         )
         sort_events_by_date(response)
 
