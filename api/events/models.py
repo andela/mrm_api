@@ -31,54 +31,40 @@ class Events(Base, Utility):
     app_booking = Column(Boolean, nullable=True, default=False)
 
 
-def filter_events_by_date_range(query, start_date, end_date):
+def filter_event(start_date, end_date, room_id=None):
     """
-    Returns events that fall within the date range supplied
+    Returns events filtered by room id,
+    start date and end date if provided,
+    or returns all events otherwise.
     """
+    def error_message(error):
+        raise GraphQLError(error)
+
     validate_date_input(start_date, end_date)
-    if not start_date and not end_date:
-        events = query.filter(
-            Events.state == 'active'
-        ).all()
-        if not events:
-            raise GraphQLError('Events do not exist')
-        return events
 
-    start_date, end_date = format_range_dates(start_date, end_date)
+    if room_id and start_date:
+        start_date, end_date = format_range_dates(start_date, end_date)
+        return Events.query.filter(
+            Events.room_id == room_id,
+            Events.state == 'active',
+            Events.start_time >= start_date,
+            Events.end_time <= end_date
+        ).all() or error_message('Events do not exist for the date range')
 
-    events = query.filter(
-        Events.state == 'active',
-        Events.start_time >= start_date,
-        Events.end_time <= end_date
-    ).all()
-    if not events:
-        raise GraphQLError('Events do not exist for the date range')
-    return events
-
-
-def filter_event_by_room(room_id, start_date, end_date):
-    """
-    Returns all events in a room using the calendar id as the filter field.
-    If the start and end dates are provided, it considers them as well.
-    """
-    validate_date_input(start_date, end_date)
-    if not start_date and not end_date:
-        events = Events.query.filter_by(
+    if room_id:
+        return Events.query.filter_by(
             room_id=room_id,
             state='active'
-        ).all()
-        if not events:
-            raise GraphQLError('Events do not exist')
-        return events
+        ).all() or error_message('Events do not exist')
 
-    start_date, end_date = format_range_dates(start_date, end_date)
+    if start_date:
+        start_date, end_date = format_range_dates(start_date, end_date)
+        return Events.query.filter(
+            Events.state == 'active',
+            Events.start_time >= start_date,
+            Events.end_time <= end_date
+        ).all() or error_message('Events do not exist for the date range')
 
-    events = Events.query.filter(
-        Events.room_id == room_id,
-        Events.state == 'active',
-        Events.start_time >= start_date,
-        Events.end_time <= end_date
-    ).all()
-    if not events:
-        raise GraphQLError('Events do not exist for the date range')
-    return events
+    return Events.query.filter(
+        Events.state == 'active'
+    ).all() or error_message('Events do not exist')
