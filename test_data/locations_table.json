@@ -1,0 +1,21 @@
+{
+    "table_name": "locations",
+    "data": [
+        {
+            "name":"Kampala",
+            "abbreviation":"KLA"
+        },
+        {
+            "name": "Nairobi",
+            "abbreviation": "NBO"
+        },
+        {
+            "name": "Lagos",
+            "abbreviation": "LOS"
+        },
+        {
+            "name": "Kigali",
+            "abbreviation": "KGL"
+        }
+    ]
+}

@@ -1,0 +1,17 @@
+{
+    "table_name": "users",
+    "data": [
+        {
+            "email": "peter.walugembe@andela.com",
+            "name": "Peter Walugembe",
+            "picture": "https://www.andela.com/walugembe",
+            "location": "Kampala"
+        },
+        {
+        "email":"peter.adeoye@andela.com",
+        "name":"Peter Adeoye",
+        "picture":"https://www.andela.com/adeoye",
+        "location":"Lagos"
+        }
+    ]
+}

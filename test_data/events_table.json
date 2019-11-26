@@ -1,0 +1,15 @@
+{
+    "table_name": "events",
+    "data": [
+        {
+            "event_id":"test_id5",
+            "room_id":1,
+            "event_title":"Onboarding",
+            "start_time":"2018-07-11T09:00:00Z",
+            "end_time":"2018-07-11T09:45:00Z",
+            "number_of_participants":4,
+            "checked_in":false,
+            "cancelled":false
+        }
+    ]
+}

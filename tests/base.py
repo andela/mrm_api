@@ -5,7 +5,6 @@ import jwt
 
 from flask_testing import TestCase
 from graphene.test import Client
-from datetime import datetime
 from alembic import command, config
 from unittest.mock import patch
 
@@ -13,19 +12,14 @@ from app import create_app
 from schema import schema
 from helpers.database import engine, db_session, Base
 from api.location.models import Location
-from api.room.models import Room
-from api.room_resource.models import Resource
 from api.user.models import User
 from api.role.models import Role
-from api.events.models import Events
-from api.devices.models import Devices
-from api.question.models import Question
-from api.response.models import Response
-from api.tag.models import Tag
-from api.structure.models import Structure
-from api.office_structure.models import OfficeStructure
 from fixtures.token.token_fixture import (
     ADMIN_TOKEN, USER_TOKEN, ADMIN_NIGERIA_TOKEN)
+from tests.save_test_data import (
+    insert_association_tables_data, insert_data_in_database,
+    files, association_tables_files
+    )
 
 sys.path.append(os.getcwd())
 
@@ -51,185 +45,8 @@ class BaseTestCase(TestCase):
             command.downgrade(self.alembic_configuration, '-1')
             command.upgrade(self.alembic_configuration, 'head')
 
-            admin_user = User(email="peter.walugembe@andela.com",
-                              name="Peter Walugembe",
-                              picture="https://www.andela.com/walugembe")
-            admin_user.location = "Kampala"
-            admin_user.save()
-            lagos_admin = User(email="peter.adeoye@andela.com",
-                               location="Lagos", name="Peter Adeoye",
-                               picture="https://www.andela.com/adeoye")
-            lagos_admin.save()
-            global role
-            role = Role(role="Admin")
-            role.save()
-            role_2 = Role(role="Test")
-            role_2.save()
-            role_3 = Role(role="Super Admin")
-            role_3.save()
-            admin_user.roles.append(role)
-            lagos_admin.roles.append(role)
-            tag = Tag(name='Block-B',
-                      color='green',
-                      description='The description')
-            tag.save()
-
-            location = Location(name='Kampala',
-                                abbreviation='KLA')
-            location.save()
-            location_two = Location(name='Nairobi',
-                                    abbreviation='NBO')
-            location_two.save()
-            location_three = Location(name='Lagos',
-                                      abbreviation='LOS')
-            location_three.save()
-            tag_two = Tag(name='Block-C',
-                          color='blue',
-                          description='The description')
-            tag_two.save()
-            room = Room(name='Entebbe',
-                        room_type='meeting',
-                        capacity=6,
-                        location_id=location.id,
-                        structure_id='851ae8b3-48dd-46b5-89bc-ca3f8111ad87',
-                        calendar_id='andela.com_3630363835303531343031@resource.calendar.google.com',  # noqa: E501
-                        image_url="https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg",  # noqa: E501
-                        room_labels=["1st Floor", "Wing A"])
-            room.save()
-            room.room_tags.append(tag)
-            room_2 = Room(name='Tana',
-                        room_type='meeting',
-                        capacity=14,
-                        location_id=location.id,
-                        structure_id='851ae8b3-48dd-46b5-89bc-ca3f8111ad87',
-                        calendar_id='andela.com_3730313534393638323232@resource.calendar.google.com',  # noqa: E501
-                        image_url="https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg",  # noqa: E501
-                        room_labels=["1st Floor", "Wing B"])
-            room_2.save()
-            room_2.room_tags.append(tag)
-            resource = Resource(name='Markers',
-                                quantity=3)
-            resource.save()
-            device = Devices(
-                last_seen="2018-06-08T11:17:58.785136",
-                date_added="2018-06-08T11:17:58.785136",
-                name="Samsung",
-                location="Kampala",
-                device_type="External Display",
-                room_id=1,
-                state="active"
-            )
-            device.save()
-            question_1 = Question(
-                question_type="rate",
-                question_title="Rating Feedback",
-                question="How will you rate the brightness of the room",
-                start_date="20 Nov 2018",
-                end_date="28 Nov 2018",
-                is_active=True
-            )
-            question_1.save()
-            question_2 = Question(
-                question_type="check",
-                question_title="check Feedback",
-                question="Is there anything missing in the room",
-                check_options=['apple tv', 'whiteboard', 'maker pen'],
-                start_date="20 Nov 2018",
-                end_date="30 Nov 2018",
-                is_active=True
-            )
-            event = Events(
-                event_id="test_id5",
-                room_id=1,
-                event_title="Onboarding",
-                start_time="2018-07-11T09:00:00Z",
-                end_time="2018-07-11T09:45:00Z",
-                number_of_participants=4,
-                checked_in=False,
-                cancelled=False)
-            event.save()
-            question_2.save()
-            question_3 = Question(
-                question_type="input",
-                question_title="input Feedback",
-                question="Any other suggestion",
-                start_date="20 Nov 2018",
-                end_date="28 Nov 2018"
-            )
-            question_3.save()
-            question_4 = Question(
-                question_type="check",
-                question_title="Missing item",
-                question="Anything missing in the room?",
-                check_options=['duster'],
-                start_date="20 Nov 2018",
-                end_date="30 Nov 2018",
-                is_active=True
-            )
-            question_4.save()
-            response_1 = Response(
-                question_id=1,
-                room_id=1,
-                question_type="rate",
-                created_date=datetime.now(),
-                response="1",
-                resolved=False,
-            )
-            response_1.save()
-
-            response_2 = Response(
-                question_id=question_2.id,
-                room_id=room.id,
-                question_type="check",
-                created_date=datetime.now(),
-                response=['marker pen', 'apple tv'],
-                resolved=True,
-            )
-            response_2.save()
-            response_2.missing_resources.append(resource)
-
-            response_3 = Response(
-                question_id=question_4.id,
-                room_id=room_2.id,
-                question_type="check",
-                created_date=datetime.now(),
-                response=['duster'],
-                resolved=True,
-                state="archived"
-            )
-            response_3.save()
-
-            structure = Structure(
-                structure_id='b05fc5f2-b4aa-4f48-a8fb-30bdcc3fc968',
-                level=1,
-                name='Epic tower',
-                parent_id="1",
-                parent_title="parent_title",
-                tag='Building',
-                location_id=1,
-                position=1,
-            )
-            structure.save()
-            parent_node = OfficeStructure(
-                 id='C56A4180-65AA-42EC-A945-5FD21DEC0518',
-                 name='Epic Tower',
-                 tag='Lagos Building',
-                 location_id=1
-            )
-            parent_node.save()
-            child_node = OfficeStructure(
-                 id='C56A4180-65AA-42EC-A945-5FD21DEC0519',
-                 name='Gold Coast',
-                 tag='First Floor',
-                 parent_id='C56A4180-65AA-42EC-A945-5FD21DEC0518',
-                 location_id=1
-            )
-            child_node.save()
-            db_session.commit()
-            f = open('mrm.err.log', 'a+')
-            f.write('[2019-08-06 13:22:32 +0000] [1574] [ERROR] Error /logs\r')
-            f.write('Traceback (most recent call last):\r')
-            f.write('if pattern.search(line):\r')
+            insert_data_in_database(db_session, files)
+            insert_association_tables_data(db_session, association_tables_files)
 
     def get_admin_location_id(self):
         payload = jwt.decode(ADMIN_TOKEN, verify=False)
@@ -366,7 +183,8 @@ def change_user_role_helper(func):
         user = User(email='mrm@andela.com', name='this user',
                     location="Nairobi", picture='www.andela.com/user')
         user.save()
-        user.roles.append(role)
+        admin_role = Role.query.filter_by(role='Admin').first()
+        user.roles.append(admin_role)
         db_session().commit()
         return headers
     return func_wrapper

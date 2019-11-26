@@ -10,7 +10,6 @@ from fixtures.user.delete_user import (
     )
 from api.user.models import User
 from api.role.models import Role
-import tests.base as base
 
 
 sys.path.append(os.getcwd())
@@ -55,7 +54,7 @@ class TestDeleteUser(BaseTestCase):
                           location="Kampala", name="test test",
                           picture="www.andela.com/test")
         admin_user.save()
-        role = base.role
+        role = Role.query.filter_by(role='Admin').first()
         admin_user.roles.append(role)
 
         CommonTestCases.user_token_assert_in(

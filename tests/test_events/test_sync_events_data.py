@@ -17,7 +17,7 @@ class TestSyncEvents(BaseTestCase):
         response = self.client.execute(sync_data_mutation)
         self.assertEqual(sync_data_response, response)
 
-    def test_syncs_after_notification_is_recieved(self, mocked_method):
+    def test_syncs_after_notification_is_received(self, mocked_method):
         mocked_method.return_value = get_events_mock_data()
         response = self.client.execute(notification_mutation)
         self.assertEqual(notification_response, response)

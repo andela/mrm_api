@@ -51,6 +51,11 @@ expected_query_all_locations = {
                 ]
             },
             {
+                "name": "Kigali",
+                "abbreviation": "KGL",
+                "rooms": []
+            },
+            {
                 "name": "Lagos",
                 "abbreviation": "LOS",
                 "rooms": []
@@ -111,6 +116,7 @@ expected_all_location_no_hierachy = {
                     'capacity': 14
                 },
             ]},
+        {'rooms': []},
         {'rooms': []},
         {'rooms': []}
     ]
