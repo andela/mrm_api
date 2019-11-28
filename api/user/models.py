@@ -32,12 +32,12 @@ class User(Base, Utility):
         lazy="joined")
 
     __table_args__ = (
-            Index(
-                'ix_unique_user_content',
-                'name',
-                unique=True,
-                postgresql_where=(state == 'active')),
-        )
+        Index(
+            'ix_unique_user_content',
+            'name',
+            unique=True,
+            postgresql_where=(state == 'active')),
+    )
 
     # TODO Refactor this section after
     # reorganising the User <> Location
@@ -49,3 +49,4 @@ class User(Base, Utility):
         self.email = kwargs['email']
         self.name = kwargs['name']
         self.picture = kwargs['picture']
+        self.location = kwargs.get('location', 'Kigali')

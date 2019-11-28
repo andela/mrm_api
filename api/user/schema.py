@@ -160,18 +160,10 @@ class SetUserLocation(graphene.Mutation):
     @Auth.user_roles('Admin', 'Super Admin', 'Default User')
     def mutate(self, info, **kwargs):
         logged_in_user = get_user_from_db()
-        location_id = kwargs['location_id']
         query_user = User.get_query(info)
         user = query_user.filter(UserModel.id == logged_in_user.id).first()
         if user.location:
             raise GraphQLError('This user already has a location set.')
-        new_location = LocationModel.query.filter_by(
-            id=location_id, state="active").first()
-        if not new_location:
-            raise GraphQLError('The location supplied does not exist')
-        user.location = new_location.name
-        user.save()
-        return SetUserLocation(user=user)
 
 
 class CreateUserRole(graphene.Mutation):

@@ -3,22 +3,12 @@ from fixtures.user.user_fixture import (
     set_user_location_mutation,
     set_user_location_mutation_response,
     set_user_location_exists_mutation,
-    set_location_for_user_with_location_response,
-    set_user_location_exists_invalid_location,
-    set_user_location_exists_invalid_location_response
+    set_location_for_user_with_location_response
 
 )
 
 
 class TestSetUserLocation(BaseTestCase):
-    def test_change_user_location_invalid_location_id(self):
-        """
-        Test that the supplied location must exist in the database
-        """
-        CommonTestCases.lagos_admin_token_assert_equal(
-            self, set_user_location_exists_invalid_location,
-            set_user_location_exists_invalid_location_response
-        )
 
     def test_set_user_location(self):
         """
