@@ -7,19 +7,24 @@ from fixtures.helpers.decorators_fixtures import (
     query_string, query_string_response
 )
 from fixtures.room.create_room_fixtures import (
+    room_name_empty_mutation,
+    room_invalid_location_id_mutation,
+    room_invalid_tag_mutation
+)
+from fixtures.room.create_room_query_fixtures import (
     room_mutation_query,
     room_mutation_different_location_query,
-    room_name_empty_mutation,
     room_mutation_query_duplicate_name,
-    room_mutation_query_duplicate_name_response,
     room_invalid_calendar_id_mutation_query,
     room_duplicate_calender_id_mutation_query,
-    room_duplicate_calendar_id_mutation_response,
-    room_invalid_location_id_mutation,
-    room_invalid_tag_mutation,
     invalid_room_label_query,
-    non_existent_structure_room_label_query,
-    room_mutation_query_response)
+    non_existent_structure_room_label_query
+)
+from fixtures.room.create_room_responses_fixtures import (
+    room_mutation_query_duplicate_name_response,
+    room_duplicate_calendar_id_mutation_response,
+    room_mutation_query_response
+)
 from fixtures.token.token_fixture import ADMIN_TOKEN
 
 sys.path.append(os.getcwd())

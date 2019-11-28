@@ -1,6 +1,8 @@
 from tests.base import BaseTestCase, CommonTestCases
 from fixtures.devices.devices_fixtures import (
-    delete_device_mutation,
+    delete_device_mutation
+)
+from fixtures.devices.devices_fixtures_responses import (
     delete_device_response
 )
 

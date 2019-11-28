@@ -5,9 +5,12 @@ from tests.base import (
 )
 from fixtures.analytics.query_all_analytics_fixtures import (
     all_analytics_query,
-    all_analytics_query_response,
     all_analytics_query_invalid_locationid,
-    analytics_query_for_date_ranges,
+    analytics_query_for_date_ranges
+)
+
+from fixtures.analytics.analytics_query_responses import (
+    all_analytics_query_response,
     all_analytics_query_response_super_admin_with_invalid_locationid
 )
 

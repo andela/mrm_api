@@ -1,3 +1,6 @@
+from ..output.OutputBuilder import build
+from ..output.Error import error_item
+
 null = None
 query_update_all_fields = '''mutation{
     updateLocation(locationId: 1, name: "Kampala", country: "Kenya", abbreviation: "KE"){ # noqa: E501
@@ -36,20 +39,15 @@ query_location_id_non_existant = '''mutation{
   }
 }
 '''
-expected_location_id_non_existant_query = {
-     "errors": [{
-      "message": "Location not found",
-      "locations": [
-        {
-          "line": 2,
-          "column": 3
-        }
-      ],
-      "path": ["updateLocation"]
-       }],
-      "data": {
-      "updateLocation": null}
-}
+eli_error = error_item
+eli_error.message = "Location not found"
+eli_error.locations = [{"line": 2, "column": 3}]
+eli_error.path = ["updateLocation"]
+eli_data = {"updateLocation": null}
+expected_location_id_non_existant_query = build(
+    error=eli_error.build_error(eli_error),
+    data=eli_data
+)
 
 query_update_location_invalid_timezone = '''mutation {
     updateLocation(

@@ -3,7 +3,6 @@ from fixtures.events.events_query_by_date_fixtures import (
     query_events,
     query_events_with_start_date_before_end_date,
     query_events_with_pagination,
-    event_query_with_pagination_response,
     query_events_page_without_per_page,
     query_events_per_page_without_page,
     query_events_invalid_page,
@@ -11,7 +10,10 @@ from fixtures.events.events_query_by_date_fixtures import (
     query_events_without_start_date,
     query_events_without_end_date,
     query_events_without_start_and_end_date,
-    query_events_without_page_and_per_page,
+    query_events_without_page_and_per_page
+)
+from fixtures.events.events_query_by_date_responses_fixtures import (
+    event_query_with_pagination_response,
     event_query_without_page_and_per_page_response
 )
 

@@ -1,13 +1,16 @@
 from tests.base import BaseTestCase, CommonTestCases
 from fixtures.user.user_fixture import (
-    change_user_role_mutation, change_user_role_mutation_response,
+    change_user_role_mutation,
     change_user_role_to_non_existence_role_mutation,
-    change_user_role_to_non_existing_role_mutation_response,
     change_role_of_non_existing_user_mutation,
     assign_role_to_non_existing_user_mutation,
     change_user_role_with_already_assigned_role_mutation,
-    change_user_role_with_already_assigned_role_mutation_response,
     change_user_role_to_super_admin_mutation
+)
+from fixtures.user.user_fixture_response import (
+    change_user_role_mutation_response,
+    change_user_role_to_non_existing_role_mutation_response,
+    change_user_role_with_already_assigned_role_mutation_response
 )
 from tests.base import change_user_role_to_super_admin
 

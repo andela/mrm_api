@@ -9,9 +9,7 @@ getRoomsInALocation(locationId:1){
 }
 '''
 
-expected_query_get_rooms_in_location = {
-"data": {
-        "getRoomsInALocation": [
+rooms_sample = [
             {
                 "name": "Entebbe",
                 "capacity": 6,
@@ -25,5 +23,9 @@ expected_query_get_rooms_in_location = {
                 "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg"  # noqa: E501
             }
         ]
+
+expected_query_get_rooms_in_location = {
+    "data": {
+        "getRoomsInALocation": rooms_sample
     }
 }

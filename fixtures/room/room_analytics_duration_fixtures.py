@@ -1,3 +1,6 @@
+from ..output.OutputBuilder import build
+from ..output.Error import error_item
+
 null = None
 true = True
 false = False
@@ -84,7 +87,7 @@ get_weekly_meetings_total_duration_response = {
                             "numberOfMeetings": 1
                         }
                     ]
-                    }]}}}
+                }]}}}
 
 get_paginated_meetings_total_duration_query = '''
 query {
@@ -106,26 +109,26 @@ query {
 '''
 
 get_paginated_meetings_total_duration_response = {
-  "data": {
-    "analyticsForMeetingsDurations": {
-      "hasPrevious": false,
-      "hasNext": false,
-      "pages": 1,
-      "MeetingsDurationaAnalytics": [
-        {
-          "roomName": "Entebbe",
-          "count": 1,
-          "totalDuration": 45,
-          "events": [
+    "data": {
+        "analyticsForMeetingsDurations": {
+            "hasPrevious": false,
+            "hasNext": false,
+            "pages": 1,
+            "MeetingsDurationaAnalytics": [
+                {
+                    "roomName": "Entebbe",
+                    "count": 1,
+                    "totalDuration": 45,
+                    "events": [
                         {
                             "durationInMinutes": 45,
                             "numberOfMeetings": 1
                         }
                     ]
+                }
+            ]
         }
-      ]
     }
-  }
 }
 
 get_paginated_meetings_total_duration_query_invalid_page = '''
@@ -147,16 +150,12 @@ query {
 }
 '''
 
-get_paginated_meetings_total_duration_invalid_page_result = {
-    "errors": [{
-        "message": "Page does not exist",
-        "locations": [{
-            "line": 3,
-            "column": 5
-        }],
-        "path": ["analyticsForMeetingsDurations"]
-    }],
-    "data": {
-        "analyticsForMeetingsDurations": null
-    }
-}
+gpm_error = error_item
+gpm_error.message = "Page does not exist"
+gpm_error.locations = [{"line": 3, "column": 5}]
+gpm_error.path = ["analyticsForMeetingsDurations"]
+gpm_data = {"analyticsForMeetingsDurations": null}
+get_paginated_meetings_total_duration_invalid_page_result = build(
+    error=gpm_error.build_error(gpm_error),
+    data=gpm_data
+)

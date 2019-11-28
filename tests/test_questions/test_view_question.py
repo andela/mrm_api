@@ -3,17 +3,19 @@ import os
 from tests.base import BaseTestCase, CommonTestCases
 from fixtures.questions.get_question_fixtures import (
     all_questions_query,
-    all_questions_query_response,
     paginated_all_questions_query,
-    paginated_all_questions_query_response,
     get_question_by_id_query,
-    get_question_by_id_query_response,
     get_question_invalid_id_query,
     get_all_questions_query,
-    get_all_questions_query_response,
     paginated_questions_empty_page,
     all_questions_higher_start_date_query,
-    all_questions_query_no_date_range,
+    all_questions_query_no_date_range
+)
+from fixtures.questions.get_question_responses_fixtures import (
+    all_questions_query_response,
+    paginated_all_questions_query_response,
+    get_question_by_id_query_response,
+    get_all_questions_query_response,
     all_questions_query_no_date_range_response
 )
 

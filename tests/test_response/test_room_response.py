@@ -5,29 +5,39 @@ from fixtures.response.room_response_fixture import (
     get_room_response_query,
     get_room_response_query_data,
     get_room_response_non_existence_room_id,
-    search_response_by_room_invalid_room_query,
-    search_response_by_room_query,
-    search_response_by_room_only,
-    search_response_by_room_beyond_limits_query,
-    search_response_by_invalid_room,
-    summary_room_response_query,
-    summary_room_response_data,
-    filter_by_response_query,
-    filter_by_response_invalid_query,
-    filter_by_response_data,
-    query_paginated_responses,
-    query_paginated_responses_response,
-    query_paginated_responses_empty_page,
-    mark_response_as_resolved_mutation,
-    mark_user_response_as_resolved_mutation_response,
-    mark_response_as_resolved_mutation_with_an_invalid_response_id,
-    mark_a_user_response_as_unresolved_mutation,
-    mark_a_user_response_as_unresolved_mutation_response,
     get_room_response_query_by_date,
     get_room_response_query_by_date_and_limits,
     get_room_response_query_by_date_data,
     get_room_response_query_with_invalid_date,
     get_room_response_query_with_higher_start_date
+)
+from fixtures.response.room_search_response_fixture import (
+    search_response_by_room_invalid_room_query,
+    search_response_by_room_query,
+    search_response_by_room_only,
+    search_response_by_room_beyond_limits_query,
+    search_response_by_invalid_room
+)
+from fixtures.response.room_summary_response_fixture import (
+    summary_room_response_query,
+    summary_room_response_data
+)
+from fixtures.response.room_filter_response_fixture import (
+    filter_by_response_query,
+    filter_by_response_invalid_query,
+    filter_by_response_data
+)
+from fixtures.response.room_query_response_fixture import (
+    query_paginated_responses,
+    query_paginated_responses_response,
+    query_paginated_responses_empty_page
+)
+from fixtures.response.room_mark_response_fixture import (
+    mark_response_as_resolved_mutation,
+    mark_user_response_as_resolved_mutation_response,
+    mark_response_as_resolved_mutation_with_an_invalid_response_id,
+    mark_a_user_response_as_unresolved_mutation,
+    mark_a_user_response_as_unresolved_mutation_response
 )
 
 sys.path.append(os.getcwd())

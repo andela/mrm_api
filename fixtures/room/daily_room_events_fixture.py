@@ -32,27 +32,6 @@ query{
 }
 '''
 
-daily_room_events_response = {
-  "data": {
-    "analyticsForDailyRoomEvents": {
-      "DailyRoomEvents": [
-        {
-            "day": "Wed Jul 11 2018",
-            "events": [
-                {
-                    'endTime': '09:45:00',
-                    'eventSummary': 'Onboarding',
-                    'noOfParticipants': 4,
-                    'roomName': 'Entebbe',
-                    'startTime': '09:00:00'
-                }
-            ]
-        }
-      ]
-    }
-  }
-}
-
 paginated_daily_room_events_query = '''
 query{
     analyticsForDailyRoomEvents(startDate:"Jul 11 2018",page:1, perPage:1,
@@ -92,38 +71,3 @@ query{
         hasPrevious
     }
 }'''  # fetch for invalid page number(non-existing)
-
-
-daily_paginated_room_events_response = {
-  "data": {
-    "analyticsForDailyRoomEvents": {
-      "DailyRoomEvents": [
-        {
-          "day": "Wed Jul 11 2018",
-          "events": [
-            {
-              "eventSummary": "Onboarding",
-              "startTime": "09:00:00",
-              "endTime": "09:45:00",
-              "roomName": "Entebbe",
-              "noOfParticipants": 4
-            }
-          ]
-        }
-      ],
-      "pages": 1,
-      "hasNext": False,
-      "hasPrevious": False
-    }
-  }
-}
-
-daily_events_wrong_date_format_response = {'errors': [
-    {
-        'message': "time data '10 jan 2019' does not match format '%b %d %Y'",
-        'locations': [{'line': 3, 'column': 5}],
-        'path': ['analyticsForDailyRoomEvents']}],
-    'data': {
-        'analyticsForDailyRoomEvents': None
-}
-}

@@ -47,24 +47,6 @@ query_events_with_pagination = '''
     }
 '''
 
-event_query_with_pagination_response = {
-    'data': {
-        'allEvents': {
-            'events': [{
-                'id': '1',
-                'roomId': 1,
-                'room': {
-                    'name': 'Entebbe'
-                }
-            }],
-            'hasNext': False,
-            'hasPrevious': False,
-            'pages': 1,
-            'queryTotal': 1
-        }
-    }
-}
-
 query_events_page_without_per_page = '''
 query{
   allEvents(
@@ -198,24 +180,6 @@ query{
     }
   }
 '''
-
-event_query_without_page_and_per_page_response = {
-    'data': {
-        'allEvents': {
-            'events': [{
-                'id': '1',
-                'roomId': 1,
-                'room': {
-                    'name': 'Entebbe'
-                }
-            }],
-            'hasNext': None,
-            'hasPrevious': None,
-            'pages': None,
-            'queryTotal': None
-        }
-    }
-}
 
 query_events_without_start_and_end_date = '''
   query{

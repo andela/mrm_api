@@ -1,7 +1,9 @@
 from tests.base import BaseTestCase, CommonTestCases
 from fixtures.devices.devices_fixtures import (
     query_devices,
-    query_devices_with_filter,
+    query_devices_with_filter
+)
+from fixtures.devices.devices_fixtures_responses import (
     expected_response_devices,
     expected_response_devices_with_filter
 )

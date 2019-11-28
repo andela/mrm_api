@@ -1,13 +1,15 @@
 from tests.base import BaseTestCase, CommonTestCases
 from fixtures.user.user_fixture import (
     change_user_location_valid_input_mutation,
-    change_user_location_valid_input_response,
     change_user_location_invalid_user_mutation,
-    change_user_location_invalid_user_response,
     change_user_location_invalid_location_id_mutation,
+    change_user_location_to_same_location_mutation
+)
+from fixtures.user.user_fixture_response import (
+    change_user_location_to_same_location_response,
     change_user_location_invalid_location_id_response,
-    change_user_location_to_same_location_mutation,
-    change_user_location_to_same_location_response
+    change_user_location_invalid_user_response,
+    change_user_location_valid_input_response
 )
 
 

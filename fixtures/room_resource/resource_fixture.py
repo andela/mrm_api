@@ -1,3 +1,6 @@
+from ..output.OutputBuilder import build
+from ..output.Error import error_item
+
 null = None
 
 resource_query = '''
@@ -39,42 +42,22 @@ resource_response = {
     }
 }
 
-none_existing_resource_response = {
-    "errors": [
-        {
-            "message": "No Matching Resource",
-            "locations": [
-                {
-                    "line": 3,
-                    "column": 13
-                }
-            ],
-            "path": [
-                "resourceByName"
-            ]
-        }
-    ],
-    "data": {
-        "resourceByName": null
-    }
-}
+ner_error = error_item
+ner_error.message = "No Matching Resource"
+ner_error.locations = [{"line": 3, "column": 13}]
+ner_error.path = ["resourceByName"]
+ner_data = {"resourceByName": null}
+none_existing_resource_response = build(
+    error=ner_error.build_error(ner_error),
+    data=ner_data
+)
 
-search_blank_name_response = {
-    "errors": [
-        {
-            "message": "Please input Resource Name",
-            "locations": [
-                {
-                    "line": 3,
-                    "column": 13
-                }
-            ],
-            "path": [
-                "resourceByName"
-            ]
-        }
-    ],
-    "data": {
-        "resourceByName": null
-    }
-}
+sbn_error = error_item
+sbn_error.message = "Please input Resource Name"
+sbn_error.locations = [{"line": 3, "column": 13}]
+sbn_error.path = ["resourceByName"]
+sbn_data = {"resourceByName": null}
+search_blank_name_response = build(
+    error=sbn_error.build_error(sbn_error),
+    data=sbn_data
+)

@@ -2,11 +2,13 @@ import sys
 import os
 from tests.base import BaseTestCase, CommonTestCases
 from fixtures.questions.create_questions_fixtures import (
-   update_question_mutation,
-   update_question_response,
-   update_question_invalidId,
-   query_update_total_views_of_questions,
-   update_question_with_invalid_question_type
+    update_question_mutation,
+    update_question_invalidId,
+    query_update_total_views_of_questions,
+    update_question_with_invalid_question_type
+)
+from fixtures.questions.create_questions_responses_fixtures import (
+    update_question_response
 )
 
 

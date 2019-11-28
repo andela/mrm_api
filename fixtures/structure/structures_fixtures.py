@@ -1,3 +1,6 @@
+from ..output.OutputBuilder import build
+from ..output.Error import error_item
+
 null = None
 
 structures_query = '''
@@ -64,25 +67,15 @@ structure_query_non_existant_structure_id = '''
    }
         '''
 
-expected_error_non_existant_structure_id = {
-  "errors": [
-    {
-      "message": "Structure not found",
-      "locations": [
-        {
-          "line": 3,
-          "column": 7
-        }
-      ],
-      "path": [
-        "structureByStructureId"
-      ]
-    }
-  ],
-  "data": {
-    "structureByStructureId": null
-  }
-}
+een_error = error_item
+een_error.message = "Structure not found"
+een_error.locations = [{"line": 3, "column": 7}]
+een_error.path = ["structureByStructureId"]
+een_data = {"structureByStructureId": null}
+expected_error_non_existant_structure_id = build(
+    error=een_error.build_error(een_error),
+    data=een_data
+)
 
 structure_query_invalid_structure_id = '''
    {
@@ -94,22 +87,12 @@ structure_query_invalid_structure_id = '''
    }
         '''
 
-expected_error_invalid_structure_id = {
-  "errors": [
-    {
-      "message": "Please input a valid structureId",
-      "locations": [
-        {
-          "line": 3,
-          "column": 7
-        }
-      ],
-      "path": [
-        "structureByStructureId"
-      ]
-    }
-  ],
-  "data": {
-    "structureByStructureId": null
-  }
-}
+eei_error = error_item
+eei_error.message = "Please input a valid structureId"
+eei_error.locations = [{"line": 3, "column": 7}]
+eei_error.path = ["structureByStructureId"]
+eei_data = {"structureByStructureId": null}
+expected_error_invalid_structure_id = build(
+    error=eei_error.build_error(eei_error),
+    data=eei_data
+)

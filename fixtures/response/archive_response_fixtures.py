@@ -1,3 +1,6 @@
+from ..output.OutputBuilder import build
+from ..output.Error import error_item
+
 null = None
 true = True
 
@@ -39,26 +42,15 @@ mutation{
   }
 }
 '''
-
-archive_unresolved_response_response = {
-    "errors": [
-        {
-            "message": "The specified response does not exist or hasn't been resolved yet.",  # noqa: E501
-            "locations": [
-                {
-                    "line": 3,
-                    "column": 3
-                }
-            ],
-            "path": [
-                "archiveResolvedResponse"
-            ]
-        }
-    ],
-    "data": {
-        "archiveResolvedResponse": null
-    }
-}
+aur_error = error_item
+aur_error.message = "The specified response does not exist or hasn't been resolved yet."  # noqa: E501
+aur_error.locations = [{"line": 3, "column": 3}]
+aur_error.path = ["archiveResolvedResponse"]
+aur_data = {"archiveResolvedResponse": null}
+archive_unresolved_response_response = build(
+    error=aur_error.build_error(aur_error),
+    data=aur_data
+)
 
 archive_non_existing_response_mutation = '''
 mutation{
@@ -72,26 +64,15 @@ mutation{
   }
 }
 '''
-
-archive_non_existing_response_response = {
-    "errors": [
-        {
-            "message": "The specified response does not exist or hasn't been resolved yet.",  # noqa: E501
-            "locations": [
-                {
-                    "line": 3,
-                    "column": 3
-                }
-            ],
-            "path": [
-                "archiveResolvedResponse"
-            ]
-        }
-    ],
-    "data": {
-        "archiveResolvedResponse": null
-    }
-}
+ane_error = error_item
+ane_error.message = "The specified response does not exist or hasn't been resolved yet."  # noqa: E501
+ane_error.locations = [{"line": 3, "column": 3}]
+ane_error.path = ["archiveResolvedResponse"]
+ane_data = {"archiveResolvedResponse": null}
+archive_non_existing_response_response = build(
+    error=ane_error.build_error(ane_error),
+    data=ane_data
+)
 
 filter_archived_responses_query = '''
 {

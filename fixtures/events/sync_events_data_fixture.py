@@ -6,14 +6,6 @@ mutation{
     }
 """
 
-sync_data_response = {
-  "data": {
-    "syncEventData": {
-      "message": "success"
-    }
-  }
-}
-
 notification_mutation = """
 mutation{
     mrmNotification(calendarId: \
@@ -22,11 +14,3 @@ mutation{
         }
     }
 """
-
-notification_response = {
-  "data": {
-    "mrmNotification": {
-      "message": "success"
-    }
-  }
-}

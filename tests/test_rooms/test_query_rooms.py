@@ -3,9 +3,8 @@ import os
 from unittest.mock import patch
 from tests.base import BaseTestCase, CommonTestCases
 from helpers.calendar.calendar import get_calendar_list_mock_data
-from fixtures.room.create_room_fixtures import (
-    rooms_query,
-    query_rooms_response)
+from fixtures.room.create_room_query_fixtures import rooms_query
+from fixtures.room.create_room_responses_fixtures import query_rooms_response
 from fixtures.room.query_room_fixtures import (
     paginated_rooms_query,
     paginated_rooms_response,

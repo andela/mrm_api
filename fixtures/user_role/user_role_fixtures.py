@@ -1,3 +1,6 @@
+from ..output.OutputBuilder import build
+from ..output.Error import error_item
+
 null = None
 user_role_mutation_query = '''
 mutation{
@@ -151,25 +154,15 @@ mutation{
 }
 '''
 
-change_unavailable_user_role_mutation_response = {
-    "errors": [
-        {
-            "message": "User not found",
-            "locations": [
-                {
-                    "line": 3,
-                    "column": 3
-                }
-            ],
-            "path": [
-                "changeUserRole"
-            ]
-        }
-    ],
-    "data": {
-        "changeUserRole": null
-    }
-}
+cuu_error = error_item
+cuu_error.message = "User not found"
+cuu_error.locations = [{"line": 3, "column": 3}]
+cuu_error.path = ["changeUserRole"]
+cuu_data = {"changeUserRole": null}
+change_unavailable_user_role_mutation_response = build(
+    error=cuu_error.build_error(cuu_error),
+    data=cuu_data
+)
 
 assign_invalid_user_role_mutation = '''
 mutation{
@@ -184,22 +177,12 @@ mutation{
 }
 '''
 
-assign_invalid_user_role_response = {
-    "errors": [
-        {
-            "message": "invalid role id",
-            "locations": [
-                {
-                    "line": 3,
-                    "column": 3
-                }
-            ],
-            "path": [
-                "changeUserRole"
-            ]
-        }
-    ],
-    "data": {
-        "changeUserRole": null
-    }
-}
+aiu_error = error_item
+aiu_error.message = "invalid role id"
+aiu_error.locations = [{"line": 3, "column": 3}]
+aiu_error.path = ["changeUserRole"]
+aiu_data = {"changeUserRole": null}
+assign_invalid_user_role_response = build(
+    error=aiu_error.build_error(aiu_error),
+    data=aiu_data
+)

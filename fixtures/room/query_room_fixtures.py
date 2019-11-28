@@ -1,3 +1,6 @@
+from ..output.OutputBuilder import build
+from ..output.Error import error_item
+
 null = None
 
 all_remote_rooms_query = '''
@@ -131,38 +134,23 @@ room_occupants_query_with_non_existant_calendar_id = '''
                         }
                         '''
 
-room_occupants_of_non_existant_calendar_id_response = {
-    "errors": [
-        {
-            "message": "Invalid CalendarId",
-            "locations": [
-                {
-                    "line": 1,
-                    "column": 2
-                }
-            ]
-        }
-    ],
-    "data": {
-        "roomSchedule": null
-    }
-}
-room_schedule_of_non_existant_calendar_id_response = {
-    "errors": [
-        {
-            "message": "Invalid CalendarId",
-            "locations": [
-                {
-                    "line": 1,
-                    "column": 2
-                }
-            ]
-        }
-    ],
-    "data": {
-        "roomSchedule": null
-    }
-}
+roo_error = error_item
+roo_error.message = "Invalid CalendarId"
+roo_error.locations = [{"line": 1, "column": 2}]
+roo_data = {"roomSchedule": null}
+room_occupants_of_non_existant_calendar_id_response = build(
+    error=roo_error.build_error(roo_error),
+    data=roo_data
+)
+
+rso_error = error_item
+rso_error.message = "Invalid CalendarId"
+rso_error.locations = [{"line": 1, "column": 2}]
+rso_data = {"roomSchedule": null}
+room_schedule_of_non_existant_calendar_id_response = build(
+    error=rso_error.build_error(rso_error),
+    data=rso_data
+)
 
 room_search_by_name = '''
 {

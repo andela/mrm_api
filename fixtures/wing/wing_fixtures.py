@@ -1,3 +1,6 @@
+from ..output.OutputBuilder import build
+from ..output.Error import error_item
+
 null = None
 
 create_wing_mutation = '''
@@ -33,25 +36,15 @@ duplicate_wing_mutation = '''
     }
 '''
 
-duplicate_wing_mutation_response = {
-    "errors": [
-        {
-            "message": "Naija Wing already exists",
-            "locations": [
-                {
-                    "line": 3,
-                    "column": 9
-                }
-            ],
-            "path": [
-                "createWing"
-            ]
-        }
-    ],
-    "data": {
-        "createWing": null
-    }
-}
+dwm_error = error_item
+dwm_error.message = "Naija Wing already exists"
+dwm_error.locations = [{"line": 3, "column": 9}]
+dwm_error.path = ["createWing"]
+dwm_data = {"createWing": null}
+duplicate_wing_mutation_response = build(
+    error=dwm_error.build_error(dwm_error),
+    data=dwm_data
+)
 
 wing_creation_no_name = '''
     mutation {
@@ -64,25 +57,15 @@ wing_creation_no_name = '''
     }
 '''
 
-wing_creation_no_name_response = {
-    "errors": [
-        {
-            "message": "name is required field",
-            "locations": [
-                {
-                    "line": 3,
-                    "column": 9
-                }
-            ],
-            "path": [
-                "createWing"
-            ]
-        }
-    ],
-    "data": {
-        "createWing": null
-    }
-}
+wcn_error = error_item
+wcn_error.message = "name is required field"
+wcn_error.locations = [{"line": 3, "column": 9}]
+wcn_error.path = ["createWing"]
+wcn_data = {"createWing": null}
+wing_creation_no_name_response = build(
+    error=wcn_error.build_error(wcn_error),
+    data=wcn_data
+)
 
 create_wing_other_location = '''
     mutation {
@@ -150,25 +133,15 @@ update_duplicate_wing_mutation = '''
     }
 '''
 
-update_duplicate_wing_mutation_response = {
-    "errors": [
-        {
-            "message": "Naija Wing already exists",
-            "locations": [
-                {
-                    "line": 3,
-                    "column": 9
-                }
-            ],
-            "path": [
-                "updateWing"
-            ]
-        }
-    ],
-    "data": {
-        "updateWing": null
-    }
-}
+udw_error = error_item
+udw_error.message = "Naija Wing already exists"
+udw_error.locations = [{"line": 3, "column": 9}]
+udw_error.path = ["updateWing"]
+udw_data = {"updateWing": null}
+update_duplicate_wing_mutation_response = build(
+    error=udw_error.build_error(udw_error),
+    data=udw_data
+)
 
 wing_update_no_name = '''
     mutation {
