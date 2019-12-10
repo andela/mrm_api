@@ -8,7 +8,8 @@ from fixtures.analytics.query_all_analytics_fixtures import (
     all_analytics_query_response,
     all_analytics_query_invalid_locationid,
     analytics_query_for_date_ranges,
-    all_analytics_query_response_super_admin_with_invalid_locationid
+    all_analytics_query_response_super_admin_with_invalid_locationid,
+    all_analytics_query_down_time
 )
 
 
@@ -24,6 +25,18 @@ class TestAllAnalytics(BaseTestCase):
             self,
             all_analytics_query,
             all_analytics_query_response
+        )
+
+    def test_all_analytics_query_donw(self):
+        """
+        Tests a user can query for analytics
+
+        """
+
+        CommonTestCases.admin_token_assert_in(
+            self,
+            all_analytics_query_down_time,
+            "this device was seen"
         )
 
     @change_user_role_to_super_admin
