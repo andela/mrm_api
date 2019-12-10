@@ -4,11 +4,13 @@ user_mutation_query = '''
 mutation {
   createUser(email: "mrm@andela.com"
             name: "this user"
+            location:"Lagos"
             picture: "www.andela.com/user"){
     user {
       email,
       name,
-      picture
+      picture,
+      location
     }
   }
 }
@@ -20,7 +22,8 @@ user_mutation_response = {
             "user": {
                 "email": "mrm@andela.com",
                 "name": "this user",
-                "picture": "www.andela.com/user"
+                "picture": "www.andela.com/user",
+                "location": "Lagos"
             }
         }
     }
@@ -245,7 +248,7 @@ get_user_by_role_reponse = {
             'users': [
                 {
                     'name': 'Peter Adeoye',
-                    'location': None
+                    'location': 'Lagos'
                 }
             ]
         }
@@ -343,7 +346,6 @@ change_user_location_invalid_user_mutation = '''
         }
       }
    '''
-
 
 change_user_location_invalid_user_response = {
     "errors": [
@@ -470,29 +472,7 @@ mutation {
 }
 '''
 
-set_user_location_exists_invalid_location = '''
-mutation {
-  setUserLocation(locationId: 10000){
-    user{
-      email
-      location
-    }
-  }
-}
-'''
-
 set_user_location_mutation_response = {
-    "data": {
-        "setUserLocation": {
-            "user": {
-                "email": "peter.adeoye@andela.com",
-                "location": "Nairobi"
-            }
-        }
-    }
-}
-
-set_location_for_user_with_location_response = {
     "errors": [
         {
             "message": "This user already has a location set.",
@@ -512,10 +492,10 @@ set_location_for_user_with_location_response = {
     }
 }
 
-set_user_location_exists_invalid_location_response = {
+set_location_for_user_with_location_response = {
     "errors": [
         {
-            "message": "The location supplied does not exist",
+            "message": "This user already has a location set.",
             "locations": [
                 {
                     "line": 3,
