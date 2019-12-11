@@ -1,0 +1,15 @@
+{
+    "table_name": "office_structures",
+    "data": [
+        {
+            "structure_id":"b05fc5f2-b4aa-4f48-a8fb-30bdcc3fc968",
+            "level":1,
+            "name":"Epic tower",
+            "parent_id":"1",
+            "parent_title":"parent_title",
+            "tag":"Building",
+            "location_id":1,
+            "position":1
+        }
+    ]
+}

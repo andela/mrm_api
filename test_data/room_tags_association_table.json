@@ -1,0 +1,13 @@
+{
+    "table_name": "room_tags",
+    "data": [
+        {
+            "tag_id": 1,
+            "room_id": 1
+        },
+        {
+            "tag_id": 1,
+            "room_id": 2
+        }
+    ]
+}

@@ -1,0 +1,38 @@
+{
+    "table_name": "questions",
+    "data": [
+        {
+            "question_type":"rate",
+            "question_title":"Rating Feedback",
+            "question":"How will you rate the brightness of the room",
+            "start_date":"20 Nov 2018",
+            "end_date":"28 Nov 2018",
+            "is_active":true
+        },
+        {
+            "question_type": "check",
+            "question_title": "check Feedback",
+            "question": "Is there anything missing in the room",
+            "check_options":["apple tv", "whiteboard", "maker pen"],
+            "start_date": "20 Nov 2018",
+            "end_date": "30 Nov 2018",
+            "is_active": true
+        },
+        {
+            "question_type":"input",
+            "question_title":"input Feedback",
+            "question":"Any other suggestion",
+            "start_date":"20 Nov 2018",
+            "end_date":"28 Nov 2018"
+        },
+        {
+            "question_type":"check",
+            "question_title":"Missing item",
+            "question":"Anything missing in the room?",
+            "check_options":["duster"],
+            "start_date":"20 Nov 2018",
+            "end_date":"30 Nov 2018",
+            "is_active":true
+        }
+    ]
+}

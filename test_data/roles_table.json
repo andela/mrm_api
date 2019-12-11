@@ -1,0 +1,14 @@
+{
+    "table_name": "roles",
+    "data": [
+        {
+            "role": "Admin"
+        },
+        {
+            "role": "Test"
+        },
+        {
+            "role": "Super Admin"
+        }
+    ]
+}

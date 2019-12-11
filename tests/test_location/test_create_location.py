@@ -68,6 +68,7 @@ class TestCreateLocation(BaseTestCase):
         db_session.remove()
         with engine.begin() as conn:
             conn.execute("DROP TABLE locations CASCADE")
+            conn.execute("ALTER SEQUENCE locations_id_seq RESTART WITH 1")
         CommonTestCases.admin_token_assert_in(
             self,
             create_location_query,

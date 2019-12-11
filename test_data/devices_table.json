@@ -1,0 +1,14 @@
+{
+    "table_name": "devices",
+    "data": [
+        {
+            "last_seen":"2018-06-08T11:17:58.785136",
+            "date_added":"2018-06-08T11:17:58.785136",
+            "name":"Samsung",
+            "location":"Kampala",
+            "device_type":"External Display",
+            "room_id":1,
+            "state":"active"
+        }
+    ]
+}

@@ -2,9 +2,11 @@ import datetime
 
 null = None
 
-start_date = (datetime.date.today() - datetime.timedelta(
+created_at = 'Nov 30 2019'
+created_at_datetime = datetime.datetime.strptime(created_at, '%b %d %Y')
+start_date = (created_at_datetime - datetime.timedelta(
     days=2)).strftime('%b %d %Y')
-end_date = datetime.date.today().strftime('%b %d %Y')
+end_date = created_at_datetime.strftime('%b %d %Y')
 invalid_start_date = (datetime.date.today() + datetime.timedelta(
     days=10)).strftime('%b %d %Y')
 invalid_end_date = (datetime.date.today() + datetime.timedelta(

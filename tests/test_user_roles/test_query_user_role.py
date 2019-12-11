@@ -19,7 +19,6 @@ from api.user.models import User
 from api.role.models import Role
 import sys
 import os
-import tests.base as base
 sys.path.append(os.getcwd())
 user_role = Role(role="Default")
 
@@ -29,7 +28,7 @@ def create_user():
                 name="test test",
                 picture="www.andela.com/testuser")
     user.save()
-    role = base.role
+    role = Role.query.filter_by(role='Admin').first()
     user.roles.append(role)
     db_session().commit()
     return user

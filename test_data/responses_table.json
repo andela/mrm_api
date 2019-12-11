@@ -1,0 +1,30 @@
+{
+    "table_name": "responses",
+    "data": [
+        {
+            "question_id":1,
+            "room_id":1,
+            "question_type":"rate",
+            "created_date": "2019-11-30 16:20:24.885363",
+            "response":"1",
+            "resolved":false
+        },
+        {
+            "question_id":2,
+            "room_id":1,
+            "question_type":"check",
+            "created_date": "2019-11-30 16:20:24.885363",
+            "response":["marker pen", "apple tv"],
+            "resolved":true
+        },
+        {
+            "question_id":4,
+            "room_id":2,
+            "question_type":"check",
+            "created_date":"2019-11-30 16:20:24.885363",
+            "response":["duster"],
+            "resolved":true,
+            "state":"archived"
+        }
+    ]
+}

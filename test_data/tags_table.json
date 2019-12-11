@@ -1,0 +1,15 @@
+{
+    "table_name": "tags",
+    "data": [
+        {
+            "name":"Block-B",
+            "color":"green",
+            "description":"The description"
+        },
+        {
+            "name": "Block-C",
+            "color": "blue",
+            "description": "The description"
+        }        
+    ]
+}
