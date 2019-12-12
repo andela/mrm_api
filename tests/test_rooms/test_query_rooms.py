@@ -15,7 +15,8 @@ from fixtures.room.query_room_fixtures import (
     room_query_with_non_existant_id_response,
     all_remote_rooms_query,
     paginated_rooms_query_blank_page,
-    all_dummy_rooms_response
+    all_dummy_rooms_response,
+    all_remote_rooms_with_argument_return_all_true_query
 )
 from helpers.calendar.credentials import get_google_api_calendar_list
 
@@ -52,23 +53,6 @@ class QueryRooms(BaseTestCase):
             "calendar.google.com"
         )
 
-    @patch("api.room.schema_query.get_google_api_calendar_list", spec=True,
-           return_value=get_calendar_list_mock_data())
-    def test_query_test_remote_rooms(self, mock_get_json):
-        """
-           Mocks google calendar to return test rooms
-           on the staging enviroment.
-           Returns:
-           - Test rooms
-           Test rooms have the key words;
-           - Test or Dummy
-        """
-        CommonTestCases.admin_token_assert_equal(
-            self,
-            all_remote_rooms_query,
-            all_dummy_rooms_response
-        )
-
     @patch("helpers.calendar.credentials.Credentials")
     def test_calendar_list_function(self, mocked_method):
         '''
@@ -77,6 +61,20 @@ class QueryRooms(BaseTestCase):
         '''
         get_google_api_calendar_list()
         assert mocked_method.called
+
+    @patch("api.room.schema_query.get_google_api_calendar_list", spec=True,
+           return_value=get_calendar_list_mock_data())
+    def test_all_remote_rooms_with_argument_return_all_true(self,
+                                                            mock_get_json):
+        """
+        returning all remote rooms with true as
+        a value to the returnAll argument
+        """
+        CommonTestCases.admin_token_assert_equal(
+            self,
+            all_remote_rooms_with_argument_return_all_true_query,
+            all_dummy_rooms_response
+        )
 
     def test_query_room_with_id(self):
         response = self.app_test.post('/mrm?query='+room_query_by_id)

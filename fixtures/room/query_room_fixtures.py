@@ -15,9 +15,20 @@ all_dummy_rooms_response = {
     "data": {
         "allRemoteRooms": {
             "rooms": []
-            }
         }
     }
+}
+
+all_remote_rooms_with_argument_return_all_true_query = '''
+ query{
+  allRemoteRooms(returnAll: true){
+    rooms{
+      calendarId
+      name
+    }
+  }
+}
+'''
 
 paginated_rooms_query = '''
  query {

@@ -297,7 +297,9 @@ class Query(graphene.ObjectType):
     def resolve_all_remote_rooms(self, info, return_all=None):
         page_token = None
         filter = map_remote_room_location_to_filter()
-        location = 'all' if return_all else get_user_from_db().location
+        location = get_user_from_db().location
+        if not filter.get(location) or return_all:
+            location = 'all'
         remote_rooms = []
         while True:
             calendar_list = get_google_api_calendar_list(pageToken=page_token)

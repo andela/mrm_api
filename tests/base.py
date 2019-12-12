@@ -211,18 +211,18 @@ class BaseTestCase(TestCase):
             )
             structure.save()
             parent_node = OfficeStructure(
-                 id='C56A4180-65AA-42EC-A945-5FD21DEC0518',
-                 name='Epic Tower',
-                 tag='Lagos Building',
-                 location_id=1
+                id='C56A4180-65AA-42EC-A945-5FD21DEC0518',
+                name='Epic Tower',
+                tag='Lagos Building',
+                location_id=1
             )
             parent_node.save()
             child_node = OfficeStructure(
-                 id='C56A4180-65AA-42EC-A945-5FD21DEC0519',
-                 name='Gold Coast',
-                 tag='First Floor',
-                 parent_id='C56A4180-65AA-42EC-A945-5FD21DEC0518',
-                 location_id=1
+                id='C56A4180-65AA-42EC-A945-5FD21DEC0519',
+                name='Gold Coast',
+                tag='First Floor',
+                parent_id='C56A4180-65AA-42EC-A945-5FD21DEC0518',
+                location_id=1
             )
             child_node.save()
             db_session.commit()
