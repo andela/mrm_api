@@ -142,6 +142,7 @@ class BaseTestCase(TestCase):
                 event_id="test_id5",
                 room_id=1,
                 event_title="Onboarding",
+                organizer_email="converge.notification@andela.com",
                 start_time="2018-07-11T09:00:00Z",
                 end_time="2018-07-11T09:45:00Z",
                 number_of_participants=4,
@@ -211,18 +212,18 @@ class BaseTestCase(TestCase):
             )
             structure.save()
             parent_node = OfficeStructure(
-                 id='C56A4180-65AA-42EC-A945-5FD21DEC0518',
-                 name='Epic Tower',
-                 tag='Lagos Building',
-                 location_id=1
+                id='C56A4180-65AA-42EC-A945-5FD21DEC0518',
+                name='Epic Tower',
+                tag='Lagos Building',
+                location_id=1
             )
             parent_node.save()
             child_node = OfficeStructure(
-                 id='C56A4180-65AA-42EC-A945-5FD21DEC0519',
-                 name='Gold Coast',
-                 tag='First Floor',
-                 parent_id='C56A4180-65AA-42EC-A945-5FD21DEC0518',
-                 location_id=1
+                id='C56A4180-65AA-42EC-A945-5FD21DEC0519',
+                name='Gold Coast',
+                tag='First Floor',
+                parent_id='C56A4180-65AA-42EC-A945-5FD21DEC0518',
+                location_id=1
             )
             child_node.save()
             db_session.commit()

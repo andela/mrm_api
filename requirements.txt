@@ -39,3 +39,5 @@ flake8==3.5.0
 coveralls==1.8.2
 validators==0.12.4
 graphql-core==2.2.1
+requests==2.22.0
+graphql-core==2.2.1

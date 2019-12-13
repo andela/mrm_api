@@ -29,6 +29,7 @@ from helpers.events_filter.events_filter import (
     calendar_dates_format,
     empty_string_checker
 )
+from helpers.event.slack_notifier import notify_slack
 
 utc = pytz.utc
 
@@ -39,6 +40,18 @@ class Events(SQLAlchemyObjectType):
     """
     class Meta:
         model = EventsModel
+
+
+class EventArguments(graphene.ObjectType):
+
+    """
+    returns common event arguments
+    """
+
+    calendar_id = graphene.String(required=True)
+    event_id = graphene.String(required=True)
+    start_time = graphene.String(required=True)
+    end_time = graphene.String(required=True)
 
 
 class BookEvent(graphene.Mutation):
@@ -56,6 +69,7 @@ class BookEvent(graphene.Mutation):
         organizer = graphene.String(required=False)
         description = graphene.String(required=False)
         room = graphene.String(required=True)
+        room_id = graphene.Int(required=True)
         time_zone = graphene.String(required=True)
 
     @Auth.user_roles('Admin', 'Default User', 'Super Admin')
@@ -71,9 +85,11 @@ class BookEvent(graphene.Mutation):
             attendees: A string of emails of the event guests
             description: Any additional information about the event
             room: The meeting room where the even will be held [required]
+            room_id: The id of the meeting room where the even will
+            be held [required]
             time_zone: The timezone of the event location eg. 'Africa/Kigali'
-            organizer: The email of the co-organizer, the converge email is
-            the default
+            organizer: The email of the organizer. it should be gotten
+            from the user token.
 
         Returns:
             A string that communicates a successfully created event.
@@ -86,12 +102,14 @@ class BookEvent(graphene.Mutation):
         organizer = kwargs.get('organizer', None)
 
         event_title = kwargs['event_title']
+        room_id = kwargs['room_id']
         empty_string_checker(event_title)
         empty_string_checker(room)
+        empty_string_checker(room_id)
         empty_string_checker(time_zone)
 
         start_date, end_date = calendar_dates_format(
-            kwargs['start_date'], kwargs['start_time'], duration)
+            kwargs['start_date'], kwargs['start_time'], duration, time_zone)
 
         attendees = attendees.replace(" ", "").split(",")
         guests = []
@@ -117,8 +135,23 @@ class BookEvent(graphene.Mutation):
             }
         }
         service = credentials.set_api_credentials()
-        service.events().insert(calendarId='primary', body=event,
-                                sendNotifications=True).execute()
+        event_created = service.events() \
+            .insert(calendarId='primary',
+                    body=event,
+                    sendNotifications=True).execute()
+        new_event = EventsModel(
+            event_id=event_created['id'],
+            event_title=kwargs['event_title'],
+            start_time=start_date,
+            end_time=end_date,
+            number_of_participants=len(guests),
+            app_booking=True,
+            checked_in=False,
+            room_id=room_id,
+            cancelled=False,
+            organizer_email=organizer
+        )
+        new_event.save()
         return BookEvent(response='Event created successfully')
 
 
@@ -127,11 +160,11 @@ class EventCheckin(graphene.Mutation):
         Returns the eventcheckin payload
     """
     class Arguments:
-        calendar_id = graphene.String(required=True)
-        event_id = graphene.String(required=True)
+        calendar_id = EventArguments.calendar_id
+        event_id = EventArguments.event_id
         event_title = graphene.String(required=True)
-        start_time = graphene.String(required=True)
-        end_time = graphene.String(required=True)
+        start_time = EventArguments.start_time
+        end_time = EventArguments.end_time
         number_of_participants = graphene.Int(required=True)
         check_in_time = graphene.String(required=False)
     event = graphene.Field(Events)
@@ -160,11 +193,11 @@ class CancelEvent(graphene.Mutation):
         Returns the payload on event cancelation
     """
     class Arguments:
-        calendar_id = graphene.String(required=True)
-        event_id = graphene.String(required=True)
+        calendar_id = EventArguments.calendar_id
+        event_id = EventArguments.event_id
         event_title = graphene.String(required=True)
-        start_time = graphene.String(required=True)
-        end_time = graphene.String(required=True)
+        start_time = EventArguments.start_time
+        end_time = EventArguments.end_time
         number_of_participants = graphene.Int()
     event = graphene.Field(Events)
 
@@ -210,14 +243,32 @@ class EndEvent(graphene.Mutation):
     Returns event payload on ending the event
     """
     class Arguments:
-        calendar_id = graphene.String(required=True)
-        event_id = graphene.String(required=True)
-        start_time = graphene.String(required=True)
-        end_time = graphene.String(required=True)
+        calendar_id = EventArguments.calendar_id
+        event_id = EventArguments.event_id
+        organizer_email = graphene.String(required=True)
+        room_id = graphene.Int(required=True)
+        start_time = EventArguments.start_time
+        end_time = EventArguments.end_time
         meeting_end_time = graphene.String(required=True)
     event = graphene.Field(Events)
 
     def mutate(self, info, **kwargs):
+        calendar_id = kwargs['calendar_id']
+        event_id = kwargs['event_id']
+        organizer_email = kwargs['organizer_email']
+        room_id = kwargs['room_id']
+        start_time = kwargs['start_time']
+        end_time = kwargs['end_time']
+        meeting_end_time = kwargs['meeting_end_time']
+
+        empty_string_checker(calendar_id)
+        empty_string_checker(event_id)
+        empty_string_checker(organizer_email)
+        empty_string_checker(room_id)
+        empty_string_checker(start_time)
+        empty_string_checker(end_time)
+        empty_string_checker(meeting_end_time)
+
         room_id, event = check_event_in_db(self, info, "ended", **kwargs)
         if kwargs.get('meeting_end_time'):
             update_device_last_activity(
@@ -229,6 +280,7 @@ class EndEvent(graphene.Mutation):
             )
             event.save()
 
+        notify_slack.delay(event_id, organizer_email, room_id)
         return EndEvent(event=event)
 
 

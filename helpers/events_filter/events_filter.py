@@ -5,6 +5,7 @@ import inspect
 from dateutil import parser
 
 utc = pytz.utc
+timezone = pytz.timezone
 
 
 def validate_date_input(start_date, end_date):
@@ -96,7 +97,7 @@ def date_time_format_validator(date_text, time_text):
         raise ValueError("start time should be in this format: 'HH:MM'")
 
 
-def calendar_dates_format(start_date, start_time, duration):
+def calendar_dates_format(start_date, start_time, duration, time_zone):
     """Converts user date, time and duration input into start_date
         and end_date format that is acceptable by the Google Calendar API
 
@@ -104,6 +105,7 @@ def calendar_dates_format(start_date, start_time, duration):
         start_date: Date string of the day of the event
         start_time: Time sting of the time of the event
         duration: A float of the duration of the event
+        time_zone: The timezone of the event location eg. 'Africa/Kigali'
 
     Returns:
         start_date and end_date in this format "%Y-%m-%dT%H:%M:%S".
@@ -120,8 +122,8 @@ def calendar_dates_format(start_date, start_time, duration):
 
     end_date = start_date + timedelta(minutes=duration)
 
-    start_date = start_date.strftime('%Y-%m-%dT%H:%M:%S')
-    end_date = end_date.strftime('%Y-%m-%dT%H:%M:%S')
+    start_date = start_date.replace(tzinfo=timezone(time_zone)).isoformat()
+    end_date = end_date.replace(tzinfo=timezone(time_zone)).isoformat()
 
     return (start_date, end_date)
 
