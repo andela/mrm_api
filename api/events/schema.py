@@ -1,6 +1,5 @@
 import graphene
 from graphene_sqlalchemy import SQLAlchemyObjectType
-from graphql import GraphQLError
 import pytz
 from dateutil import parser
 from datetime import timedelta
@@ -29,6 +28,7 @@ from helpers.events_filter.events_filter import (
     calendar_dates_format,
     empty_string_checker
 )
+from api.bugsnag_error import return_error
 
 utc = pytz.utc
 
@@ -175,7 +175,7 @@ class CancelEvent(graphene.Mutation):
             device_last_seen = parser.parse(
                 kwargs['start_time']) + timedelta(minutes=10)
         except ValueError:
-            raise GraphQLError("Invalid start time")
+            return_error.report_errors_bugsnag_and_graphQL("Invalid start time")
         update_device_last_activity(
             info, room_id, device_last_seen, 'cancel meeting')
         if not event:
@@ -200,7 +200,8 @@ class CancelEvent(graphene.Mutation):
             room_id,
             event_reject_reason
         ):
-            raise GraphQLError("Event cancelled but email not sent")
+            return_error.report_errors_bugsnag_and_graphQL(
+                "Event cancelled but email not sent")
         return CancelEvent(event=event)
 
 
@@ -281,7 +282,8 @@ def check_event_in_db(instance, info, event_check, **kwargs):
         return room_id, event
     elif event and event_check == 'ended':
         if event.meeting_end_time:
-            raise GraphQLError("Event has already ended")
+            return_error.report_errors_bugsnag_and_graphQL(
+                "Event has already ended")
         event.meeting_end_time = kwargs['meeting_end_time']
         event.save()
         return room_id, event
@@ -389,7 +391,7 @@ class Query(graphene.ObjectType):
         per_page = kwargs.get('per_page')
         page, per_page = validate_page_and_per_page(page, per_page)
         response = filter_event(
-           start_date, end_date
+            start_date, end_date
         )
         sort_events_by_date(response)
 
@@ -422,7 +424,8 @@ class Query(graphene.ObjectType):
             calendar_id=calendar_id
         ).first()
         if not room:
-            raise GraphQLError("No rooms with the given CalendarId")
+            return_error.report_errors_bugsnag_and_graphQL(
+                "No rooms with the given CalendarId")
         response = filter_event(
             start_date, end_date, room.id
         )

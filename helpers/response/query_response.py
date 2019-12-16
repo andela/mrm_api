@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
-from graphql import GraphQLError
 from utilities.validations import validate_date_range
+from api.bugsnag_error import return_error
 
 
 def filter_rooms_by_responses(
@@ -49,7 +49,7 @@ def check_limits_are_provided(lower_limit, upper_limit, data_type):
          and not isinstance(upper_limit, data_type))
         or (isinstance(upper_limit, data_type)
             and not isinstance(lower_limit, data_type))):
-        raise GraphQLError(
+        return_error.report_errors_bugsnag_and_graphQL(
             "Provide upper and lower limits to filter")
 
 
@@ -66,7 +66,7 @@ def validate_responses_by_room(data_type, function, **kwargs):
         if kwargs['filtered_search']:
             return kwargs['filtered_search']
         else:
-            raise GraphQLError(
+            return_error.report_errors_bugsnag_and_graphQL(
                 "No response for this room at this range")
 
 

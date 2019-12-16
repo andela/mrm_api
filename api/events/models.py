@@ -1,7 +1,6 @@
 from sqlalchemy import (Column, String, Integer, Boolean, ForeignKey, Enum)
 from sqlalchemy.orm import relationship
 from sqlalchemy.schema import Sequence
-from graphql import GraphQLError
 
 from helpers.database import Base
 from utilities.utility import Utility, StateType
@@ -9,6 +8,7 @@ from helpers.events_filter.events_filter import (
     validate_date_input,
     format_range_dates,
 )
+from api.bugsnag_error import return_error
 
 
 class Events(Base, Utility):
@@ -38,7 +38,7 @@ def filter_event(start_date, end_date, room_id=None):
     or returns all events otherwise.
     """
     def error_message(error):
-        raise GraphQLError(error)
+        return_error.report_errors_bugsnag_and_graphQL(error)
 
     validate_date_input(start_date, end_date)
 

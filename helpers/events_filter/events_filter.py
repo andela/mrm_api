@@ -1,8 +1,8 @@
 from datetime import datetime, timedelta
-from graphql import GraphQLError
 import pytz
 import inspect
 from dateutil import parser
+from api.bugsnag_error import return_error
 
 utc = pytz.utc
 
@@ -12,9 +12,11 @@ def validate_date_input(start_date, end_date):
     Ensures either both or none of start_date and end_date is supplied
     """
     if start_date and not end_date:
-        raise GraphQLError("endDate argument missing")
+        return_error.report_errors_bugsnag_and_graphQL(
+            "endDate argument missing")
     if end_date and not start_date:
-        raise GraphQLError("startDate argument missing")
+        return_error.report_errors_bugsnag_and_graphQL(
+            "startDate argument missing")
 
 
 def validate_calendar_id_input(calendar_id):
@@ -22,7 +24,7 @@ def validate_calendar_id_input(calendar_id):
     Ensures that the calendar id is supplied
     """
     if not calendar_id:
-        raise GraphQLError("Calendar Id missing")
+        return_error.report_errors_bugsnag_and_graphQL("Calendar Id missing")
 
 
 def format_range_dates(start_date, end_date):
@@ -35,7 +37,8 @@ def format_range_dates(start_date, end_date):
     end_date = datetime.strptime(end_date, '%b %d %Y')
 
     if start_date > end_date:
-        raise GraphQLError("Start date must be lower than end date")
+        return_error.report_errors_bugsnag_and_graphQL(
+            "Start date must be lower than end date")
 
     start_date = start_date
     end_date = end_date + timedelta(days=1)
@@ -48,13 +51,16 @@ def format_range_dates(start_date, end_date):
 
 def validate_page_and_per_page(page, per_page):
     if page is not None and page < 1:
-        raise GraphQLError("page must be at least 1")
+        return_error.report_errors_bugsnag_and_graphQL(
+            "page must be at least 1")
     if per_page is not None and per_page < 1:
-        raise GraphQLError("perPage must be at least 1")
+        return_error.report_errors_bugsnag_and_graphQL(
+            "perPage must be at least 1")
     if page and not per_page:
-        raise GraphQLError("perPage argument missing")
+        return_error.report_errors_bugsnag_and_graphQL(
+            "perPage argument missing")
     if per_page and not page:
-        raise GraphQLError("page argument missing")
+        return_error.report_errors_bugsnag_and_graphQL("page argument missing")
     else:
         return (page, per_page)
 
@@ -76,7 +82,8 @@ def empty_string_checker(string_to_check):
     context = info_data[1].code_context[0].strip()
     error_title = context[context.index("(") + 1:context.rindex(")")]
     if not string_to_check:
-        raise GraphQLError('{} can not be empty'.format(error_title))
+        return_error.report_errors_bugsnag_and_graphQL(
+            '{} can not be empty'.format(error_title))
 
 
 def date_time_format_validator(date_text, time_text):
@@ -116,7 +123,8 @@ def calendar_dates_format(start_date, start_time, duration):
     current_date = datetime.now()
 
     if current_date > start_date:
-        raise GraphQLError("Sorry time travel hasn't been invented yet")
+        return_error.report_errors_bugsnag_and_graphQL(
+            "Sorry time travel hasn't been invented yet")
 
     end_date = start_date + timedelta(minutes=duration)
 
@@ -135,7 +143,8 @@ def format_range_time(start_time, end_time):
     end_time = datetime.strptime(end_time, '%H:%M:%S')
 
     if start_time > end_time:
-        raise GraphQLError("Start time must be lower than end time")
+        return_error.report_errors_bugsnag_and_graphQL(
+            "Start time must be lower than end time")
     return start_time, end_time
 
 

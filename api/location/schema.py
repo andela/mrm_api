@@ -1,6 +1,5 @@
 import graphene
 from sqlalchemy import func
-from graphql import GraphQLError
 from graphene_sqlalchemy import SQLAlchemyObjectType
 
 from api.location.models import Location as LocationModel
@@ -20,6 +19,7 @@ from helpers.auth.user_details import get_user_from_db
 from helpers.room_filter.room_filter import room_join_location
 from helpers.auth.authentication import Auth
 from helpers.auth.admin_roles import admin_roles
+from api.bugsnag_error import return_error
 
 
 class Location(SQLAlchemyObjectType):
@@ -60,15 +60,15 @@ class CreateLocation(graphene.Mutation):
         template = 'location_success.html'
         payload = {
             'model': LocationModel, 'field': 'name', 'value':  kwargs['name']
-            }
+        }
         with SaveContextManager(location, 'Location', payload):
             if not notification.send_email_notification(
                 email=email, subject=subject, template=template,
                 location_name=location.name, user_name=admin_name
             ):
-                raise GraphQLError(
+                return_error.report_errors_bugsnag_and_graphQL(
                     "Location created but email not sent"
-                    )
+                )
             return CreateLocation(location=location)
 
 
@@ -93,7 +93,7 @@ class UpdateLocation(graphene.Mutation):
         location_object = result.filter(
             LocationModel.id == location_id).first()
         if not location_object:
-            raise GraphQLError("Location not found")
+            return_error.report_errors_bugsnag_and_graphQL("Location not found")
         admin_roles.verify_admin_location(location_id)
         if "time_zone" in kwargs:
             validate_timezone_field(**kwargs)
@@ -130,7 +130,7 @@ class DeleteLocation(graphene.Mutation):
         location = result.filter(
             LocationModel.id == location_id).first()  # noqa: E501
         if not location:
-            raise GraphQLError("location not found")
+            return_error.report_errors_bugsnag_and_graphQL("location not found")
         admin_roles.verify_admin_location(location_id)
         update_entity_fields(location, state="archived", **kwargs)
         location.save()

@@ -1,13 +1,12 @@
 import graphene
 from graphene_sqlalchemy import SQLAlchemyObjectType
-from graphql import GraphQLError
 
 from api.question.models import Question as QuestionModel
 from utilities.validations import (
     validate_empty_fields,
     validate_date_time_range,
     validate_question_type
-    )
+)
 from utilities.utility import update_entity_fields
 from helpers.auth.authentication import Auth
 from helpers.auth.error_handler import SaveContextManager
@@ -15,6 +14,7 @@ from helpers.pagination.paginate import Paginate, validate_page
 from helpers.questions_filter.questions_filter import (
     filter_questions_by_date_range
 )
+from api.bugsnag_error import return_error
 
 
 class Question(SQLAlchemyObjectType):
@@ -52,7 +52,7 @@ class CreateQuestion(graphene.Mutation):
         question_type = kwargs['question_type']
         fields = kwargs
         if question_type == "check" and not kwargs.get('check_options'):
-            return GraphQLError(
+            return_error.report_errors_bugsnag_and_graphQL(
                 "No check options supplied for question type check"
             )
         if question_type != "check":
@@ -60,7 +60,7 @@ class CreateQuestion(graphene.Mutation):
         payload = {
             'model': QuestionModel, 'field': 'question',
             'value':  kwargs['question']
-            }
+        }
         question = QuestionModel(**fields)
         with SaveContextManager(question, 'Question', payload):
             return CreateQuestion(question=question)
@@ -85,7 +85,7 @@ class PaginatedQuestions(Paginate):
         self.query_total = active_questions.count()
         result = active_questions.limit(per_page).offset(page * per_page)
         if result.count() == 0:
-            return GraphQLError("No questions found")
+            return_error.report_errors_bugsnag_and_graphQL("No questions found")
         return result
 
 
@@ -117,7 +117,7 @@ class UpdateQuestion(graphene.Mutation):
         exact_question = active_questions.filter(
             QuestionModel.id == question_id).first()
         if not exact_question:
-            raise GraphQLError("Question not found")
+            return_error.report_errors_bugsnag_and_graphQL("Question not found")
         validate_date_time_range(**kwargs)
         update_entity_fields(exact_question, **kwargs)
         exact_question.save()
@@ -144,7 +144,7 @@ class DeleteQuestion(graphene.Mutation):
         exact_question = active_questions.filter(
             QuestionModel.id == question_id).first()
         if not exact_question:
-            raise GraphQLError("Question not found")
+            return_error.report_errors_bugsnag_and_graphQL("Question not found")
         update_entity_fields(exact_question, state="archived")
         exact_question.save()
         return DeleteQuestion(question=exact_question)
@@ -203,9 +203,9 @@ class Query(graphene.ObjectType):
         query = Question.get_query(info)
         questions = query.filter(QuestionModel.state == "active").all()
         questions_by_range = filter_questions_by_date_range(
-                                                            questions,
-                                                            start_date, end_date
-                                                            )
+            questions,
+            start_date, end_date
+        )
         return questions_by_range
 
     def resolve_questions(self, info, **kwargs):
@@ -218,7 +218,8 @@ class Query(graphene.ObjectType):
         active_questions = query.filter(QuestionModel.state == "active")
         response = active_questions.filter(QuestionModel.id == id).first()
         if not response:
-            raise GraphQLError('Question does not exist')
+            return_error.report_errors_bugsnag_and_graphQL(
+                'Question does not exist')
         return response
 
 

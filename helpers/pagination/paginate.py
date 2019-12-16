@@ -2,7 +2,7 @@ import itertools
 
 import graphene
 from math import ceil
-from graphql import GraphQLError
+from api.bugsnag_error import return_error
 
 
 class Paginate(graphene.ObjectType):
@@ -52,13 +52,14 @@ class Paginate(graphene.ObjectType):
     def resolve_current_page(self, pages):
         pages = self.resolve_pages(pages)
         if self.page > pages:
-            raise GraphQLError("Page does not exist")
+            return_error.report_errors_bugsnag_and_graphQL(
+                "Page does not exist")
         return self.page
 
 
 def validate_page(page):
     if page < 1:
-        raise GraphQLError("No page requested")
+        return_error.report_errors_bugsnag_and_graphQL("No page requested")
     else:
         return page - 1
 
@@ -67,6 +68,7 @@ class ListPaginate:
     """Handles pagination for data(list) which is queried from google calendar
     API rather than from our database
     """
+
     def __init__(self, iterable, per_page, page):
         self.iterable = iterable
         self.per_page = per_page
@@ -112,7 +114,8 @@ class ListPaginate:
     # get page_number that can be used in list indexing
     def get_page_index(self):
         if self.page < 1:
-            raise GraphQLError("Invalid page requested")
+            return_error.report_errors_bugsnag_and_graphQL(
+                "Invalid page requested")
         return self.page - 1
 
     def get_paginated(self):
@@ -124,5 +127,6 @@ class ListPaginate:
         try:
             self.current_page = self.paginated[self.get_page_index()]
         except IndexError:
-            raise GraphQLError("Page does not exist")
+            return_error.report_errors_bugsnag_and_graphQL(
+                "Page does not exist")
         return self.current_page

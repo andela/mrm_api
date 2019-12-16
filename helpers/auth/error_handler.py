@@ -1,7 +1,7 @@
 import os
 from sqlalchemy import exc
-from graphql import GraphQLError
 from utilities.validator import ErrorHandler
+from api.bugsnag_error import return_error
 
 
 class SaveContextManager():
@@ -21,9 +21,9 @@ class SaveContextManager():
                 long_error_message = str(error.orig)
                 index = long_error_message.find("\n")
                 Specific_error = long_error_message[:index]
-                raise GraphQLError(Specific_error)
+                return_error.report_errors_bugsnag_and_graphQL(Specific_error)
             else:  # pragma: no cover
-                raise GraphQLError(
+                return_error.report_errors_bugsnag_and_graphQL(
                     "There seems to be a database connection error \
                         contact your admin for assistance")
         except exc.IntegrityError as err:

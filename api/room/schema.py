@@ -1,7 +1,6 @@
 import graphene
 from sqlalchemy import func
 from graphene_sqlalchemy import (SQLAlchemyObjectType)
-from graphql import GraphQLError
 from api.room.models import Room as RoomModel
 from api.tag.models import Tag as TagModel
 from utilities.validations import (
@@ -18,6 +17,7 @@ from utilities.validator import (
     ErrorHandler)
 from helpers.room_filter.room_filter import room_filter, room_join_location
 from helpers.pagination.paginate import Paginate, validate_page
+from api.bugsnag_error import return_error
 
 
 class Room(SQLAlchemyObjectType):
@@ -37,7 +37,8 @@ def save_room_tags(room, room_tags):
             missing_tags += str(tag)+" "
         room.room_tags.append(room_tag)
     if missing_tags:
-        raise GraphQLError("Tag id {}not found".format(missing_tags))
+        return_error.report_errors_bugsnag_and_graphQL(
+            "Tag id {}not found".format(missing_tags))
     room.save()
 
 
@@ -164,7 +165,7 @@ class PaginatedRooms(Paginate):
         result = active_rooms.order_by(func.lower(
             RoomModel.name)).limit(per_page).offset(page*per_page)
         if result.count() == 0:
-            return GraphQLError("No more resources")
+            return_error.report_errors_bugsnag_and_graphQL("No more resources")
         return result
 
 
@@ -195,7 +196,7 @@ class UpdateRoom(graphene.Mutation):
         active_rooms = query_room.filter(RoomModel.state == "active")
         room = active_rooms.filter(RoomModel.id == room_id).first()
         if not room:
-            raise GraphQLError("Room not found")
+            return_error.report_errors_bugsnag_and_graphQL("Room not found")
         admin_roles.update_delete_rooms_create_resource(room_id)
         room_tags = []
         if kwargs.get('room_tags'):
@@ -224,7 +225,7 @@ class DeleteRoom(graphene.Mutation):
         exact_room = active_rooms.filter(
             RoomModel.id == room_id).first()
         if not exact_room:
-            raise GraphQLError("Room not found")
+            return_error.report_errors_bugsnag_and_graphQL("Room not found")
         exact_room.room_tags.clear()
         admin_roles.update_delete_rooms_create_resource(room_id)
         update_entity_fields(exact_room, state="archived", **kwargs)
@@ -249,7 +250,7 @@ class UpdateFirebaseToken(graphene.Mutation):
         active_rooms = query_room.filter(RoomModel.state == "active")
         room = active_rooms.filter(RoomModel.id == room_id).first()
         if not room:
-            raise GraphQLError("Room not found")
+            return_error.report_errors_bugsnag_and_graphQL("Room not found")
         update_entity_fields(room, **kwargs)
         room.save()
         subscriber.update_room_token.delay(

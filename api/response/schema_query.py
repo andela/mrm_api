@@ -1,5 +1,4 @@
 import graphene
-from graphql import GraphQLError
 from api.response.schema import Response
 from api.room.schema import Room
 from api.room.models import Room as RoomModel
@@ -18,6 +17,7 @@ from helpers.response.create_response import (
     map_response_type,
     ResponseDetail
 )
+from api.bugsnag_error import return_error
 
 
 class RoomResponse(graphene.ObjectType):
@@ -95,7 +95,8 @@ class Query(graphene.ObjectType):
         query_response = Response.get_query(info)
         room = query.filter_by(id=room_id).first()
         if not room:
-            raise GraphQLError("Non-existent room id")
+            return_error.report_errors_bugsnag_and_graphQL(
+                "Non-existent room id")
         room_response = query_response.filter_by(room_id=room_id)
         if resolved:
             room_response = room_response.filter_by(resolved=True)
@@ -131,14 +132,15 @@ class Query(graphene.ObjectType):
             RoomModel.name.ilike('%' + kwargs.get('room') + '%'),
             RoomModel.state == "active").first()
         if not exact_room:
-            raise GraphQLError(
+            return_error.report_errors_bugsnag_and_graphQL(
                 "No response for this room, enter a valid room name")
         room_response = Response.get_query(info).filter_by(
             room_id=exact_room.id)
         if kwargs.get('resolved'):
             room_response = room_response.filter_by(resolved=True)
         if not room_response:
-            raise GraphQLError("No response for this room at the moment")
+            return_error.report_errors_bugsnag_and_graphQL(
+                "No response for this room at the moment")
         total_response = room_response.count()
         all_responses = Query.get_room_response(
             self, room_response, exact_room.id)

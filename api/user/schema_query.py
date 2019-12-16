@@ -1,11 +1,11 @@
 import graphene
 from sqlalchemy import func
-from graphql import GraphQLError
 from api.user.schema import User
 from api.user.models import User as UserModel
 from helpers.auth.authentication import Auth
 from helpers.user_filter.user_filter import user_filter
 from helpers.pagination.paginate import Paginate, validate_page
+from api.bugsnag_error import return_error
 
 
 class PaginatedUsers(Paginate):
@@ -27,7 +27,7 @@ class PaginatedUsers(Paginate):
         users = exact_query.order_by(
             func.lower(UserModel.name)).limit(per_page).offset(page * per_page)
         if users.count() == 0:
-            return GraphQLError("No users found")
+            return_error.report_errors_bugsnag_and_graphQL("No users found")
         return users
 
 
@@ -74,13 +74,14 @@ class Query(graphene.ObjectType):
         user_list = []
         user_name = ''.join(user_name.split()).lower()
         if not user_name:
-            raise GraphQLError("Please provide the user name")
+            return_error.report_errors_bugsnag_and_graphQL(
+                "Please provide the user name")
         active_users = User.get_query(info).filter_by(state="active")
         for user in active_users:
             exact_user_name = user.name.lower().replace(" ", "")
             if user_name in exact_user_name:
                 user_list.append(user)
         if not user_list:
-            raise GraphQLError("User not found")
+            return_error.report_errors_bugsnag_and_graphQL("User not found")
 
         return user_list

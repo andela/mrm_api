@@ -2,6 +2,7 @@ from flask import Flask, render_template, Response
 from flask_graphql import GraphQLView
 from flask_cors import CORS
 from flask_json import FlaskJSON
+from bugsnag.flask import handle_exceptions
 
 from flask_mail import Mail
 from config import config
@@ -21,6 +22,7 @@ def create_app(config_name):
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
     mail.init_app(app)
+    handle_exceptions(app)
 
     @app.route("/", methods=['GET'])
     def index():

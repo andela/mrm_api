@@ -3,7 +3,6 @@ from graphene_sqlalchemy import SQLAlchemyObjectType
 from api.structure.models import Structure as StructureModel
 from helpers.auth.authentication import Auth
 from helpers.structure.create_structure import create_structure
-from graphql import GraphQLError
 from helpers.auth.admin_roles import admin_roles
 from api.room.schema import Room
 from api.room.models import Room as RoomModel
@@ -13,6 +12,7 @@ from utilities.validations import (
     validate_unique_structure_id
 )
 from utilities.utility import update_entity_fields
+from api.bugsnag_error import return_error
 
 
 class Structure(SQLAlchemyObjectType):
@@ -116,7 +116,8 @@ class UpdateOfficeStructure(graphene.Mutation):
             StructureModel.structure_id == structure_id,
             StructureModel.state == "active").first()
         if not active_structure:
-            raise GraphQLError('Structure not found')
+            return_error.report_errors_bugsnag_and_graphQL(
+                'Structure not found')
         update_entity_fields(active_structure, **kwargs)
         active_structure.save()
         return UpdateOfficeStructure(structure=active_structure)
@@ -164,11 +165,13 @@ class Query(graphene.ObjectType):
     @Auth.user_roles('Admin', 'Default User', 'Super Admin')
     def resolve_structure_by_structure_id(self, info, structure_id):
         if not structure_id.strip():
-            raise GraphQLError("Please input a valid structureId")
+            return_error.report_errors_bugsnag_and_graphQL(
+                "Please input a valid structureId")
         query = Structure.get_query(info)
         location_id = admin_roles.user_location_for_analytics_view()
         structure = query.filter(
             StructureModel.structure_id == structure_id).first()
         if not structure or location_id != structure.location_id:
-            raise GraphQLError("Structure not found")
+            return_error.report_errors_bugsnag_and_graphQL(
+                "Structure not found")
         return structure

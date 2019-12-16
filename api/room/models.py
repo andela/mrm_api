@@ -3,7 +3,6 @@ from sqlalchemy import (
 )
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import relationship
-from graphql import GraphQLError
 from sqlalchemy.schema import Sequence
 
 from helpers.database import Base, db_session
@@ -12,7 +11,9 @@ from api.events.models import Events  # noqa: F401
 from api.response.models import Response  # noqa: F401
 from api.tag.models import Tag  # noqa: F401
 from utilities.validator import verify_calendar_id
-from api.devices.models import Devices # noqa F4
+from api.devices.models import Devices  # noqa F4
+from api.bugsnag_error import return_error
+
 
 tags = Table(
     'room_tags',
@@ -66,13 +67,13 @@ class Room(Base, Utility):
     resources = relationship("RoomResource", back_populates='room')
 
     __table_args__ = (
-            Index(
-                'ix_unique_room_in_location_content',
-                'name',
-                'location_id',
-                unique=True,
-                postgresql_where=(state == 'active')),
-        )
+        Index(
+            'ix_unique_room_in_location_content',
+            'name',
+            'location_id',
+            unique=True,
+            postgresql_where=(state == 'active')),
+    )
 
 
 @event.listens_for(Room, 'before_insert')
@@ -80,7 +81,8 @@ def receive_before_insert(mapper, connection, target):
     @event.listens_for(db_session, "after_flush", once=True)
     def receive_after_flush(session, context):
         if not verify_calendar_id(target.calendar_id):
-            raise GraphQLError("Room calendar Id is invalid")
+            return_error.report_errors_bugsnag_and_graphQL(
+                "Room calendar Id is invalid")
         pass
 
 

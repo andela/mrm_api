@@ -2,9 +2,9 @@ import os
 
 from apiclient.discovery import build
 from httplib2 import Http
-from graphql import GraphQLError
 from oauth2client import file, client, tools  # noqa
 from oauth2client.client import OAuth2WebServerFlow  # noqa
+from api.bugsnag_error import return_error
 
 
 class Credentials():
@@ -67,7 +67,7 @@ def get_google_api_calendar_list(pageToken=None):
         calendars_list = service.calendarList().list(
             pageToken=pageToken).execute()
     except Exception as exception:
-        raise GraphQLError(exception)
+        return_error.report_errors_bugsnag_and_graphQL(exception)
     return calendars_list
 
 

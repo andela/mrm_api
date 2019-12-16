@@ -1,7 +1,7 @@
 import graphene
+
 from graphene_sqlalchemy import (SQLAlchemyObjectType)
 from sqlalchemy import exc
-from graphql import GraphQLError
 
 from api.user.models import User as UserModel
 from api.notification.models import Notification as NotificationModel
@@ -15,6 +15,7 @@ from api.role.schema import Role
 from api.role.models import Role as RoleModel
 from api.location.models import Location as LocationModel
 from helpers.user_role.restrict_admin import check_admin_restriction
+from api.bugsnag_error import return_error
 
 
 class User(SQLAlchemyObjectType):
@@ -40,7 +41,8 @@ class CreateUser(graphene.Mutation):
     def mutate(self, info, **kwargs):
         user = UserModel(**kwargs)
         if not verify_email(user.email):
-            raise GraphQLError("This email is not allowed")
+            return_error.report_errors_bugsnag_and_graphQL(
+                "This email is not allowed")
         payload = {
             'model': UserModel, 'field': 'email', 'value':  kwargs['email']
         }
@@ -65,13 +67,15 @@ class DeleteUser(graphene.Mutation):
     @Auth.user_roles('Admin', 'Super Admin')
     def mutate(self, info, email, **kwargs):
         if not verify_email(email):
-            raise GraphQLError("Invalid email format")
+            return_error.report_errors_bugsnag_and_graphQL(
+                "Invalid email format")
         user_to_be_deleted = User.get_query(info).filter_by(email=email).first()
         if not user_to_be_deleted:
-            raise GraphQLError("User not found")
+            return_error.report_errors_bugsnag_and_graphQL("User not found")
         current_user = get_user_from_db()
         if current_user.email == user_to_be_deleted.email:
-            raise GraphQLError("You cannot delete yourself")
+            return_error.report_errors_bugsnag_and_graphQL(
+                "You cannot delete yourself")
         should_remove_user = kwargs.get('remove')
         if should_remove_user:
             user_to_be_deleted.delete()
@@ -98,15 +102,16 @@ class ChangeUserRole(graphene.Mutation):
         active_user = query_user.filter(UserModel.state == "active")
         exact_user = active_user.filter(UserModel.email == email).first()
         if not exact_user:
-            raise GraphQLError("User not found")
+            return_error.report_errors_bugsnag_and_graphQL("User not found")
 
         new_role = RoleModel.query.filter_by(id=kwargs['role_id']).first()
         if not new_role:
-            raise GraphQLError('invalid role id')
+            return_error.report_errors_bugsnag_and_graphQL('invalid role id')
 
         current_user_role = exact_user.roles[0].role
         if new_role.role == current_user_role:
-            raise GraphQLError('This role is already assigned to this user')
+            return_error.report_errors_bugsnag_and_graphQL(
+                'This role is already assigned to this user')
 
         check_admin_restriction(new_role.role)
         exact_user.roles[0] = new_role
@@ -114,7 +119,8 @@ class ChangeUserRole(graphene.Mutation):
 
         if not notification.send_changed_role_email(
                 email, exact_user.name, new_role.role):
-            raise GraphQLError("Role changed but email not sent")
+            return_error.report_errors_bugsnag_and_graphQL(
+                "Role changed but email not sent")
         return ChangeUserRole(user=exact_user)
 
 
@@ -136,13 +142,15 @@ class ChangeUserLocation(graphene.Mutation):
         user = query_user.filter(
             UserModel.state == "active", UserModel.email == email).first()
         if not user:
-            raise GraphQLError("User not found")
+            return_error.report_errors_bugsnag_and_graphQL("User not found")
         new_location = LocationModel.query.filter_by(
             id=location_id, state="active").first()
         if not new_location:
-            raise GraphQLError('the location supplied does not exist')
+            return_error.report_errors_bugsnag_and_graphQL(
+                'the location supplied does not exist')
         if user.location == new_location.name:
-            raise GraphQLError('user already in this location')
+            return_error.report_errors_bugsnag_and_graphQL(
+                'user already in this location')
         user.location = new_location.name
         user.save()
         return ChangeUserLocation(user=user)
@@ -163,7 +171,8 @@ class SetUserLocation(graphene.Mutation):
         query_user = User.get_query(info)
         user = query_user.filter(UserModel.id == logged_in_user.id).first()
         if user.location:
-            raise GraphQLError('This user already has a location set.')
+            return_error.report_errors_bugsnag_and_graphQL(
+                'This user already has a location set.')
 
 
 class CreateUserRole(graphene.Mutation):
@@ -182,23 +191,26 @@ class CreateUserRole(graphene.Mutation):
             exact_user = user.filter_by(id=kwargs['user_id']).first()
 
             if not exact_user:
-                raise GraphQLError('User not found')
+                return_error.report_errors_bugsnag_and_graphQL('User not found')
 
             role = Role.get_query(info)
             exact_role = role.filter_by(id=kwargs['role_id']).first()
 
             if not exact_role:
-                raise GraphQLError('Role id does not exist')
+                return_error.report_errors_bugsnag_and_graphQL(
+                    'Role id does not exist')
 
             if len(exact_user.roles) > 0:
-                raise GraphQLError('This user is already assigned a role')
+                return_error.report_errors_bugsnag_and_graphQL(
+                    'This user is already assigned a role')
 
             exact_user.roles.append(exact_role)
             exact_user.save()
 
             return CreateUserRole(user_role=exact_user)
         except exc.ProgrammingError:
-            raise GraphQLError("The database cannot be reached")
+            return_error.report_errors_bugsnag_and_graphQL(
+                "The database cannot be reached")
 
 
 class InviteToConverge(graphene.Mutation):
@@ -214,12 +226,14 @@ class InviteToConverge(graphene.Mutation):
     @Auth.user_roles('Admin', 'Super Admin')
     def mutate(self, info, email):
         if not verify_email(email):
-            raise GraphQLError("Use a valid andela email")
+            return_error.report_errors_bugsnag_and_graphQL(
+                "Use a valid andela email")
         query_user = User.get_query(info)
         active_user = query_user.filter(UserModel.state == "active")
         user = active_user.filter(UserModel.email == email).first()
         if user:
-            raise GraphQLError("User already joined Converge")
+            return_error.report_errors_bugsnag_and_graphQL(
+                "User already joined Converge")
         admin = get_user_from_db()
         notification.email_invite(email, admin.__dict__["name"])
         return InviteToConverge(email=email)
