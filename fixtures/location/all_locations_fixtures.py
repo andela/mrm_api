@@ -100,17 +100,17 @@ all_location_no_hierachy = '''{
 expected_all_location_no_hierachy = {
     'data': {'allLocations': [
         {'rooms': [
-                {
-                    'name': 'Entebbe',
-                    'roomType': 'meeting',
-                    'capacity': 6
-                },
-                {
-                    'name': 'Tana',
-                    'roomType': 'meeting',
-                    'capacity': 14
-                },
-            ]},
+            {
+                'name': 'Entebbe',
+                'roomType': 'meeting',
+                'capacity': 6
+            },
+            {
+                'name': 'Tana',
+                'roomType': 'meeting',
+                'capacity': 14
+            },
+        ]},
         {'rooms': []},
         {'rooms': []}
     ]

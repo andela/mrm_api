@@ -1,3 +1,6 @@
+from ..output.OutputBuilder import build
+from ..output.Error import error_item
+
 null = None
 
 role_mutation_query = '''
@@ -20,25 +23,16 @@ role_mutation_response = {
     }
 }
 
-role_duplication_mutation_response = {
-    "errors": [
-        {
-            "message": "DevOps Role already exists",
-            "locations": [
-                {
-                    "line": 3,
-                    "column": 3
-                }
-            ],
-            "path": [
-                "createRole"
-            ]
-        }
-    ],
-    "data": {
-        "createRole": null
-    }
-}
+rdm_error = error_item
+rdm_error.message = "DevOps Role already exists"
+rdm_error.locations = [{"line": 3, "column": 3}]
+rdm_error.path = ["createRole"]
+rdm_data = {"createRole": null}
+role_duplication_mutation_response = build(
+    error=rdm_error.build_error(rdm_error),
+    data=rdm_data
+)
+
 
 role_query = '''
 query {

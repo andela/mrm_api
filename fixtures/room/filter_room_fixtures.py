@@ -9,20 +9,6 @@ filter_rooms_by_capacity = '''query {
     }
 }
     '''
-filter_rooms_by_capacity_response = {
-    "data": {
-        "allRooms": {
-            "rooms": [
-                {
-                    "name": "Entebbe",
-                    "capacity": 6,
-                    "roomType": "meeting",
-                    "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg"  # noqa: E501
-                }
-            ]
-        }
-    }
-}
 filter_rooms_by_location = '''query {
   allRooms(location:"Kampala"){
    rooms{
@@ -34,26 +20,6 @@ filter_rooms_by_location = '''query {
     }
 }
     '''
-filter_rooms_by_location_response = {
-    "data": {
-        "allRooms": {
-            "rooms": [
-                {
-                    "name": "Entebbe",
-                    "capacity": 6,
-                    "roomType": "meeting",
-                    "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg"  # noqa: E501
-                },
-                {
-                    "name": "Tana",
-                    "capacity": 14,
-                    "roomType": "meeting",
-                    "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg"  # noqa: E501
-                }
-            ]
-        }
-    }
-}
 filter_rooms_by_wings_and_floors = '''
     query {
     allRooms(roomLabels:"1st Floor, Wing A") {
@@ -66,22 +32,6 @@ filter_rooms_by_wings_and_floors = '''
     }
     '''
 
-filter_rooms_by_wings_and_floors_response = {
-    'data': {
-        'allRooms': {
-            'rooms': [
-                {
-                    'id': '1',
-                    'name': 'Entebbe',
-                    'roomLabels': [
-                        '1st Floor',
-                        'Wing A'
-                    ]
-                }
-            ]
-        }
-    }
-}
 filter_rooms_by_non_existent_room_label = '''
     query {
     allRooms(roomLabels:"Random") {
@@ -94,13 +44,6 @@ filter_rooms_by_non_existent_room_label = '''
     }
     '''
 
-filter_rooms_by_non_existent_room_label_response = {
-    'data': {
-        'allRooms': {
-            'rooms': []
-        }
-    }
-}
 filter_rooms_by_location_capacity = '''query {
   allRooms(location:"Kampala",capacity:6){
    rooms{
@@ -112,35 +55,6 @@ filter_rooms_by_location_capacity = '''query {
     }
 }
     '''
-filter_rooms_by_location_capacity_response = {
-    "data": {
-        "allRooms": {
-            "rooms": [
-                {
-                    "name": "Entebbe",
-                    "capacity": 6,
-                    "roomType": "meeting",
-                    "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg"  # noqa: E501
-                }
-            ]
-        }
-    }
-}
-filter_rooms_by_resources_capacity_response = {
-    "data": {
-        "allRooms": {
-            "rooms": [
-                {
-                    "name": "Entebbe",
-                    "capacity": 6,
-                    "roomType": "meeting",
-                    "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg"  # noqa: E501
-                }
-            ]
-        }
-    }
-}
-
 filter_rooms_by_tag = '''query {
     filterRoomsByTag(tagId: 1){
         id
@@ -166,26 +80,6 @@ filter_rooms_by_invalid_tag = '''query {
         }
     }'''
 
-filter_rooms_by_invalid_tag_error_response = {
-    "errors": [
-        {
-            "message": "No rooms found with this tag",
-            "locations": [
-                {
-                    "line": 2,
-                    "column": 5
-                }
-            ],
-            "path": [
-                "filterRoomsByTag"
-            ]
-        }
-    ],
-    "data": {
-        "filterRoomsByTag": None
-    }
-}
-
 filter_rooms_by_room_labels = '''query {
   allRooms(roomLabels:"Wing A"){
    rooms{
@@ -199,21 +93,6 @@ filter_rooms_by_room_labels = '''query {
 }
     '''
 
-filter_rooms_by_room_labels_response = {
-    "data": {
-        "allRooms": {
-            "rooms": [
-                {
-                    "name": "Entebbe",
-                    "capacity": 6,
-                    "roomType": "meeting",
-                    "imageUrl": "https://www.officelovin.com/wp-content/uploads/2016/10/andela-office-main-1.jpg",  # noqa: E501
-                    "roomLabels": ["1st Floor", "Wing A"]
-                }
-            ]
-        }
-    }
-}
 filter_rooms_by_location_room_labels = '''query {
   allRooms(roomLabels:"Wing A", location:"Kampala"){
    rooms{

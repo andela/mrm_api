@@ -3,9 +3,11 @@ from tests.base import BaseTestCase
 from helpers.calendar.calendar import get_events_mock_data
 from fixtures.events.sync_events_data_fixture import (
     sync_data_mutation,
-    sync_data_response,
-    notification_response,
     notification_mutation
+)
+from fixtures.events.sync_events_data_responses_fixture import (
+    sync_data_response,
+    notification_response
 )
 
 

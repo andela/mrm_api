@@ -1,12 +1,13 @@
 from tests.base import BaseTestCase, CommonTestCases
 from fixtures.events.events_by_room_fixtures import (
     query_all_events_by_room_with_dates,
-    query_all_events_by_room_with_dates_response,
     query_all_events_by_room_with_invalid_calendar_id,
     query_all_events_by_room_without_callendar_id,
-    query_all_events_by_room_without_dates,
+    query_all_events_by_room_without_dates
+)
+from fixtures.events.events_by_room_responses_fixtures import (
+    query_all_events_by_room_with_dates_response,
     query_all_events_by_room_without_dates_response
-
 )
 
 

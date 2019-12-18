@@ -5,12 +5,14 @@ from tests.base import BaseTestCase, CommonTestCases
 from fixtures.events.event_checkin_fixtures import (
     event_checkin_mutation,
     event_2_checkin_mutation,
-    event_checkin_response,
     wrong_calendar_id_checkin_mutation,
     cancel_event_mutation,
-    cancel_event_respone,
     cancel_event_invalid_start_time,
-    checkin_mutation_for_event_existing_in_db,
+    checkin_mutation_for_event_existing_in_db
+)
+from fixtures.events.event_checkin_responses_fixtures import (
+    event_checkin_response,
+    cancel_event_respone,
     response_for_event_existing_in_db_checkin
 )
 from helpers.calendar.calendar import get_events_mock_data

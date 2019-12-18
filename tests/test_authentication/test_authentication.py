@@ -2,8 +2,9 @@ import os
 import sys
 
 from tests.base import BaseTestCase
-from fixtures.room.create_room_fixtures import (
-    room_mutation_query)
+from fixtures.room.create_room_query_fixtures import (
+    room_mutation_query
+)
 
 sys.path.append(os.getcwd())
 

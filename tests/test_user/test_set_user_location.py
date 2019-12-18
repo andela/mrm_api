@@ -1,10 +1,11 @@
 from tests.base import BaseTestCase, CommonTestCases
 from fixtures.user.user_fixture import (
     set_user_location_mutation,
-    set_user_location_mutation_response,
-    set_user_location_exists_mutation,
-    set_location_for_user_with_location_response
-
+    set_user_location_exists_mutation
+)
+from fixtures.user.user_fixture_response import (
+    set_location_for_user_with_location_response,
+    set_user_location_mutation_response
 )
 
 

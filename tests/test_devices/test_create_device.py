@@ -1,10 +1,11 @@
 from tests.base import BaseTestCase, CommonTestCases
 from fixtures.devices.devices_fixtures import (
     devices_query,
-    devices_query_response,
     create_device_query_invalid_room
 )
-
+from fixtures.devices.devices_fixtures_responses import (
+    devices_query_response
+)
 from fixtures.token.token_fixture import ADMIN_TOKEN
 
 import sys

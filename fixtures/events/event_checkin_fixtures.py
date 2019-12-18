@@ -20,24 +20,6 @@ event_checkin_mutation = '''mutation {
     }
 '''
 
-event_checkin_response = {
-    "data": {
-        "eventCheckin": {
-            "event": {
-                "eventId": "test_id5",
-                "roomId": 1,
-                "checkedIn": True,
-                "cancelled": False,
-                "room": {
-                    "id": "1",
-                    "name": "Entebbe",
-                    "calendarId": "andela.com_3630363835303531343031@resource.calendar.google.com"  # noqa
-                }
-            }
-        }
-    }
-}
-
 event_2_checkin_mutation = '''mutation {
     eventCheckin(
         calendarId:"andela.com_3730313534393638323232@resource.calendar.google.com",
@@ -104,8 +86,6 @@ cancel_event_mutation = '''
     }
 '''
 
-cancel_event_respone = "Event cancelled but email not sent"
-
 cancel_event_invalid_start_time = '''
     mutation {
         cancelEvent(
@@ -149,21 +129,3 @@ checkin_mutation_for_event_existing_in_db = '''mutation {
         }
     }
 '''
-
-response_for_event_existing_in_db_checkin = {
-    "data": {
-        "eventCheckin": {
-            "event": {
-                "eventId": "test_id5",
-                "roomId": 1,
-                "checkedIn": True,
-                "cancelled": False,
-                "room": {
-                    "id": "1",
-                    "name": "Entebbe",
-                    "calendarId": "andela.com_3630363835303531343031@resource.calendar.google.com"  # noqa
-                }
-            }
-        }
-    }
-}

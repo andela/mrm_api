@@ -2,14 +2,18 @@ from tests.base import BaseTestCase, CommonTestCases
 
 from fixtures.events.end_event_fixtures import (
     end_event_mutation,
-    end_event_mutation_response,
     end_unchecked_in_event_mutation,
-    end_unchecked_in_event_mutation_response,
-    end_event_twice_mutation_response,
     wrong_calendar_id_end_event_mutation,
 )
+from fixtures.events.end_event_responses_fixtures import (
+    end_event_mutation_response,
+    end_event_twice_mutation_response,
+    end_unchecked_in_event_mutation_response
+)
 from fixtures.events.event_checkin_fixtures import (
-    event_checkin_mutation,
+    event_checkin_mutation
+)
+from fixtures.events.event_checkin_responses_fixtures import (
     event_checkin_response
 )
 

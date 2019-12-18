@@ -1,16 +1,22 @@
 from tests.base import BaseTestCase, CommonTestCases
 from fixtures.response.room_response_fixture import (
     get_resolved_room_responses_query,
-    get_resolved_room_responses_query_data,
+    get_resolved_room_responses_query_data
+)
+from fixtures.response.room_all_resolved_response_fixture import (
     all_resolved_room_response_query,
-    all_resolved_room_response_data,
-    search_resolved_responses_by_room_name,
-    search_resolved_responses_by_room_name_data,
+    all_resolved_room_response_data
+)
+from fixtures.response.room_mark_response_fixture import (
     mark_multiple_as_resolved_mutation,
     mark_multiple_as_unresolved_mutation,
     mark_multiple_as_resolved_with_invalid_id,
     mark_multiple_as_resolved_response,
-    mark_multiple_as_unresolved_response,
+    mark_multiple_as_unresolved_response
+)
+from fixtures.response.room_search_response_fixture import (
+    search_resolved_responses_by_room_name,
+    search_resolved_responses_by_room_name_data
 )
 
 

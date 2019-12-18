@@ -1,3 +1,6 @@
+from ..output.OutputBuilder import build
+from ..output.Error import error_item
+
 null = None
 
 create_rate_query = '''
@@ -58,25 +61,15 @@ mutation{
 }
 '''
 
-rate_non_existing_question_response = {
-    "errors": [
-        {
-            "message": "Question does not exist",
-            "locations": [
-                {
-                    "line": 2,
-                    "column": 3
-                }
-            ],
-            "path": [
-                "createResponse"
-            ]
-        }
-    ],
-    "data": {
-        "createResponse": null
-    }
-}
+rne_error = error_item
+rne_error.message = "Question does not exist"
+rne_error.locations = [{"line": 2, "column": 3}]
+rne_error.path = ["createResponse"]
+rne_data = {"createResponse": null}
+rate_non_existing_question_response = build(
+    error=rne_error.build_error(rne_error),
+    data=rne_data
+)
 
 invalid_rating_number = '''
 mutation{
@@ -107,25 +100,15 @@ mutation{
 }
 '''
 
-invalid_rating_number_response = {
-    "errors": [
-        {
-            "message": "Please rate between 1 and 5",
-            "locations": [
-                {
-                    "line": 2,
-                    "column": 3
-                }
-            ],
-            "path": [
-                "createResponse"
-            ]
-        }
-    ],
-    "data": {
-        "createResponse": null
-    }
-}
+irn_error = error_item
+irn_error.message = "Please rate between 1 and 5"
+irn_error.locations = [{"line": 2, "column": 3}]
+irn_error.path = ["createResponse"]
+irn_data = {"createResponse": null}
+invalid_rating_number_response = build(
+    error=irn_error.build_error(irn_error),
+    data=irn_data
+)
 
 rate_with_non_existent_room = '''
 mutation{
@@ -156,22 +139,12 @@ mutation{
 }
 '''
 
-rate_with_non_existent_room_response = {
-    "errors": [
-        {
-            "message": "Non-existent room id",
-            "locations": [
-                {
-                    "line": 2,
-                    "column": 3
-                }
-            ],
-            "path": [
-                "createResponse"
-            ]
-        }
-    ],
-    "data": {
-        "createResponse": null
-    }
-}
+rwn_error = error_item
+rwn_error.message = "Non-existent room id"
+rwn_error.locations = [{"line": 2, "column": 3}]
+rwn_error.path = ["createResponse"]
+rwn_data = {"createResponse": null}
+rate_with_non_existent_room_response = build(
+    error=rwn_error.build_error(rwn_error),
+    data=rwn_data
+)

@@ -1,13 +1,18 @@
 from tests.base import BaseTestCase, CommonTestCases
 from fixtures.user.user_fixture import (
-    user_query, user_query_response,
-    query_user_by_email, query_user_email_response,
-    paginated_users_query, paginated_users_response,
-    get_users_by_location, get_users_by_location_and_role,
-    get_user_by_role_reponse, get_users_by_role,
-    filter_user_by_location,
-    query_user_by_name, query_user_by_name_response,
-    query_non_existing_user_by_name, query_non_existing_user_by_name_response
+    user_query, query_user_by_email,
+    paginated_users_query, get_users_by_location,
+    get_users_by_location_and_role,
+    get_users_by_role, filter_user_by_location,
+    query_user_by_name, query_non_existing_user_by_name
+)
+from fixtures.user.user_fixture_response import (
+    user_query_response,
+    query_user_email_response,
+    paginated_users_response,
+    get_user_by_role_reponse,
+    query_user_by_name_response,
+    query_non_existing_user_by_name_response
 )
 from helpers.database import db_session
 from api.user.models import User

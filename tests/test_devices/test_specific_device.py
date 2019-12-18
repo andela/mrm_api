@@ -1,14 +1,14 @@
 from tests.base import BaseTestCase, CommonTestCases
 from fixtures.devices.devices_fixtures import (
+    search_device_by_name,
+    search_non_existing_device,
     query_device,
-    expected_response_device,
     query_non_existent_device,
     expected_error_non_existent_device_id
 )
-from fixtures.devices.devices_fixtures import (
-    search_device_by_name,
-    search_non_existing_device,
+from fixtures.devices.devices_fixtures_responses import (
     search_device_by_name_expected_response,
+    expected_response_device,
     search_non_existing_device_response
 )
 

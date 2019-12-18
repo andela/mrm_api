@@ -1,6 +1,9 @@
 from tests.base import BaseTestCase
 from fixtures.user.user_fixture import (
-    user_mutation_query, user_mutation_response,
+    user_mutation_query
+)
+from fixtures.user.user_fixture_response import (
+    user_mutation_response,
     user_duplication_mutation_response
 )
 from fixtures.user.add_user_fixture import (

@@ -1,3 +1,6 @@
+from ..output.OutputBuilder import build
+from ..output.Error import error_item
+
 null = None
 
 check_non_existing_question = '''
@@ -29,25 +32,15 @@ mutation{
 }
 '''
 
-check_non_existing_question_response = {
-    "errors": [
-        {
-            "message": "Response to question",
-            "locations": [
-                {
-                    "line": 2,
-                    "column": 3
-                }
-            ],
-            "path": [
-                "createResponse"
-            ]
-        }
-    ],
-    "data": {
-        "createResponse": null
-    }
-}
+cne_error = error_item
+cne_error.message = "Response to question"
+cne_error.locations = [{"line": 2, "column": 3}]
+cne_error.path = ["createResponse"]
+cne_data = {"createResponse": null}
+check_non_existing_question_response = build(
+    error=cne_error.build_error(cne_error),
+    data=cne_data
+)
 
 check_with_non_existent_room = '''
 mutation{
@@ -235,16 +228,12 @@ filter_question_by_invalid_room = '''
 
 '''
 
-filter_question_by_invalid_room_response = {
-    "errors": [{
-        "message": "This room doesn't exist or doesn't have feedback.",
-        "locations": [{
-            "line": 3,
-            "column": 3
-        }],
-        "path": ["getRoomResponse"]
-    }],
-    "data": {
-        "getRoomResponse": null
-    }
-}
+fqb_error = error_item
+fqb_error.message = "This room doesn't exist or doesn't have feedback."
+fqb_error.locations = [{"line": 3, "column": 3}]
+fqb_error.path = ["getRoomResponse"]
+fqb_data = {"getRoomResponse": null}
+filter_question_by_invalid_room_response = build(
+    error=fqb_error.build_error(fqb_error),
+    data=fqb_data
+)

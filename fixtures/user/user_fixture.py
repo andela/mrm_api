@@ -1,5 +1,44 @@
 null = None
 
+send_invitation_template = '''
+mutation{
+    inviteToConverge(email: "%s"){
+        email
+
+    }
+}
+'''
+
+query_user_by_name_template = '''
+    query{
+        userByName(userName:"%s"){
+            name
+            email
+        }
+    }
+'''
+
+change_user_location_template = '''
+       mutation {
+        changeUserLocation(email: "%s", locationId: %d) {
+          user {
+            name
+            location
+          }
+        }
+      }
+   '''
+set_user_location_template = '''
+mutation {
+  setUserLocation(locationId: %d){
+    user{
+      email
+      location
+    }
+  }
+}
+'''
+
 user_mutation_query = '''
 mutation {
   createUser(email: "mrm@andela.com"
@@ -16,33 +55,6 @@ mutation {
 }
 '''
 
-user_mutation_response = {
-    "data": {
-        "createUser": {
-            "user": {
-                "email": "mrm@andela.com",
-                "name": "this user",
-                "picture": "www.andela.com/user",
-                "location": "Lagos"
-            }
-        }
-    }
-}
-
-user_duplication_mutation_response = {
-    "errors": [{
-        "message": "mrm@andela.com User email already exists",
-        "locations": [{
-            "line": 3,
-            "column": 3
-        }],
-        "path": ["createUser"]
-    }],
-    "data": {
-        "createUser": null
-    }
-}
-
 user_query = '''
 query {
     users{
@@ -52,24 +64,6 @@ query {
    }
 }
 '''
-
-user_query_response = {
-    "data": {
-        "users": {
-            "users": [
-                {
-                    "email": "mrm@andela.com",
-                },
-                {
-                    "email": "peter.adeoye@andela.com",
-                },
-                {
-                    "email": "peter.walugembe@andela.com",
-                },
-            ]
-        }
-    }
-}
 
 paginated_users_query = '''
 query {
@@ -83,20 +77,6 @@ query {
    }
 }
 '''
-
-paginated_users_response = {
-    "data": {
-        "users": {
-            "users": [{
-                "email": "peter.adeoye@andela.com"
-            }],
-            "hasNext": True,
-            "hasPrevious": False,
-            "pages": 3
-        }
-    }
-}
-
 query_user_by_email = '''
  query {
   user(email: "peter.walugembe@andela.com"){
@@ -104,14 +84,6 @@ query_user_by_email = '''
   }
 }
 '''
-
-query_user_email_response = {
-    "data": {
-        "user": {
-            "email": "peter.walugembe@andela.com",
-        }
-    }
-}
 
 change_user_role_mutation = '''
 mutation{
@@ -139,8 +111,6 @@ mutation{
 }
 '''
 
-change_user_role_mutation_response = "Role changed but email not sent"
-
 change_user_role_with_already_assigned_role_mutation = '''
 mutation{
     changeUserRole(email:"peter.walugembe@andela.com", roleId: 1){
@@ -153,8 +123,6 @@ mutation{
     }
 }
 '''
-
-change_user_role_with_already_assigned_role_mutation_response = "This role is already assigned to this user"  # noqa: E501
 
 change_user_role_to_non_existence_role_mutation = '''
 mutation{
@@ -169,46 +137,17 @@ mutation{
 }
 '''
 
-change_user_role_to_non_existing_role_mutation_response = "Role id does not exist"  # noqa: E501
+send_invitation_to_existent_user_query = send_invitation_template % (
+    "peter.walugembe@andela.com"
+)
 
-send_invitation_to_existent_user_query = '''
-mutation{
-    inviteToConverge(email: "peter.walugembe@andela.com"){
-        email
+send_invitation_to_nonexistent_user_query = send_invitation_template % (
+    "beverly.kololi@andela.com"
+)
 
-    }
-}
-'''
-
-send_invitation_to_nonexistent_user_query = '''
-mutation{
-    inviteToConverge(email: "beverly.kololi@andela.com"){
-        email
-    }
-}
-'''
-
-send_invitation_to_invalid_email = '''
-mutation{
-    inviteToConverge(email: "peter.walugembe@gmail.com"){
-        email
-    }
-}
-'''
-
-send_invitation_to_existent_user_response = {
-    "errors": [{
-        "message": "User already joined Converge",
-        "locations": [{
-            "line": 3,
-            "column": 5
-        }],
-        "path": ["inviteToConverge"]
-    }],
-    "data": {
-        "inviteToConverge": null
-    }
-}
+send_invitation_to_invalid_email = send_invitation_template % (
+    "peter.walugembe@gmail.com"
+)
 
 get_users_by_location = '''
 query{
@@ -242,18 +181,6 @@ query{
     }
 }
 '''
-get_user_by_role_reponse = {
-    'data': {
-        'users': {
-            'users': [
-                {
-                    'name': 'Peter Adeoye',
-                    'location': 'Lagos'
-                }
-            ]
-        }
-    }
-}
 
 change_role_of_non_existing_user_mutation = '''
 mutation{
@@ -289,225 +216,32 @@ query {
 }
 '''
 
-query_user_by_name = '''
-    query{
-        userByName(userName:"Peter Adeoye"){
-            name
-            email
-        }
-    }
-'''
+query_user_by_name = query_user_by_name_template % ("Peter Adeoye")
 
-query_user_by_name_response = {
-    'data': {
-        'userByName': [{
-            'name': 'Peter Adeoye',
-            'email': 'peter.adeoye@andela.com'
-        }]
-    }
-}
+query_non_existing_user_by_name = query_user_by_name_template % (
+    "unknown user"
+)
 
-query_non_existing_user_by_name = '''
-    query{
-        userByName(userName:"unknown user"){
-            name
-            email
-        }
-    }
-'''
+change_user_location_invalid_user_mutation = change_user_location_template % (
+    "someinvaliduser@andela.com",
+    1
+)
 
-query_non_existing_user_by_name_response = {
-    "errors": [
-        {
-            "message": "User not found",
-            "locations": [
-                {
-                    "line": 3,
-                    "column": 9
-                }
-            ],
-            "path": [
-                "userByName"
-            ]
-        }
-    ],
-    "data": {
-        "userByName": null
-    }
-}
+change_user_location_invalid_location_id_mutation = change_user_location_template % (  # noqa: E501
+    "peter.walugembe@andela.com",
+    90
+)
 
-change_user_location_invalid_user_mutation = '''
-       mutation {
-        changeUserLocation(email: "someinvaliduser@andela.com", locationId: 1) {
-          user {
-            name
-            location
-          }
-        }
-      }
-   '''
+change_user_location_to_same_location_mutation = change_user_location_template % (  # noqa: E501
+    "peter.walugembe@andela.com",
+    1
+)
 
-change_user_location_invalid_user_response = {
-    "errors": [
-        {
-            "message": "User not found",
-            "locations": [
-                {
-                    "line": 3,
-                    "column": 9
-                }
-            ],
-            "path": [
-                "changeUserLocation"
-            ]
-        }
-    ],
-    "data": {
-        "changeUserLocation": null
-    }
-}
+change_user_location_valid_input_mutation = change_user_location_template % (
+    "peter.walugembe@andela.com",
+    2
+)
 
-change_user_location_invalid_location_id_mutation = '''
-      mutation {
-      changeUserLocation(email: "peter.walugembe@andela.com", locationId: 90) {
-        user {
-          name
-          location
-        }
-      }
-    }
-  '''
+set_user_location_mutation = set_user_location_template % (2)
 
-change_user_location_invalid_location_id_response = {
-    "errors": [
-        {
-            "message": "the location supplied does not exist",
-            "locations": [
-                {
-                    "line": 3,
-                    "column": 7
-                }
-            ],
-            "path": [
-                "changeUserLocation"
-            ]
-        }
-    ],
-    "data": {
-        "changeUserLocation": null
-    }
-}
-
-change_user_location_to_same_location_mutation = '''
-       mutation {
-        changeUserLocation(email: "peter.walugembe@andela.com", locationId: 1) {
-          user {
-            name
-            location
-          }
-        }
-      }
-   '''
-
-change_user_location_to_same_location_response = {
-    "errors": [
-        {
-            "message": "user already in this location",
-            "locations": [
-                {
-                    "line": 3,
-                    "column": 9
-                }
-            ],
-            "path": [
-                "changeUserLocation"
-            ]
-        }
-    ],
-    "data": {
-        "changeUserLocation": null
-    }
-}
-
-change_user_location_valid_input_mutation = '''
-       mutation {
-        changeUserLocation(email: "peter.walugembe@andela.com", locationId: 2) {
-          user {
-            name
-            location
-          }
-        }
-      }
-   '''
-
-change_user_location_valid_input_response = {
-    "data": {
-        "changeUserLocation": {
-            "user": {
-                "name": "Peter Walugembe",
-                "location": "Nairobi"
-            }
-        }
-    }
-}
-
-set_user_location_mutation = '''
-mutation {
-  setUserLocation(locationId: 2){
-    user{
-      email
-      location
-    }
-  }
-}
-'''
-set_user_location_exists_mutation = '''
-mutation {
-  setUserLocation(locationId: 1){
-    user{
-      email
-      location
-    }
-  }
-}
-'''
-
-set_user_location_mutation_response = {
-    "errors": [
-        {
-            "message": "This user already has a location set.",
-            "locations": [
-                {
-                    "line": 3,
-                    "column": 3
-                }
-            ],
-            "path": [
-                "setUserLocation"
-            ]
-        }
-    ],
-    "data": {
-        "setUserLocation": None
-    }
-}
-
-set_location_for_user_with_location_response = {
-    "errors": [
-        {
-            "message": "This user already has a location set.",
-            "locations": [
-                {
-                    "line": 3,
-                    "column": 3
-                }
-            ],
-            "path": [
-                "setUserLocation"
-            ]
-        }
-    ],
-    "data": {
-        "setUserLocation": None
-    }
-}
+set_user_location_exists_mutation = set_user_location_template % (1)

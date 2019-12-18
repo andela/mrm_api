@@ -1,7 +1,10 @@
 from tests.base import BaseTestCase, CommonTestCases
 from fixtures.channels.channel_fixtures import (
-    channels_query,
-    channels_response)
+    channels_query
+)
+from fixtures.channels.channel_responses_fixtures import (
+    channels_response
+)
 
 
 class TestChannels(BaseTestCase):

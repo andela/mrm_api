@@ -3,8 +3,10 @@ import os
 from tests.base import BaseTestCase, CommonTestCases
 from fixtures.questions.create_questions_fixtures import (
    delete_question_mutation,
-   delete_question_response,
    delete_question_invalidId
+)
+from fixtures.questions.create_questions_responses_fixtures import (
+    delete_question_response
 )
 
 

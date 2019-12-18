@@ -3,11 +3,13 @@ import os
 from tests.base import BaseTestCase, CommonTestCases
 from fixtures.questions.create_questions_fixtures import (
    create_question_query,
-   create_question_response,
    question_mutation_query_without_name,
    create_question_query_with_early_startDate,
    create_question_query_with_early_endDate,
    question_mutation_query_with_invalid_question_type
+)
+from fixtures.questions.create_questions_responses_fixtures import (
+    create_question_response
 )
 
 
