@@ -17,7 +17,7 @@ expected_response_devices = {
                                     "allDevices": [
                                         {
                                             "id": "1",
-                                            "lastSeen": "2018-06-08T11:17:58.785136",  # noqa: E501
+                                            "lastSeen": "2019-04-10T13:28:45",  # noqa: E501
                                             "dateAdded": "2018-06-08T11:17:58.785136",  # noqa: E501
                                             "name": "Samsung",
                                             "location": "Kampala"
@@ -44,7 +44,7 @@ expected_response_devices_with_filter = {
             {
                 "dateAdded": "2018-06-08T11:17:58.785136",
                 "id": "1",
-                "lastSeen": "2018-06-08T11:17:58.785136",
+                "lastSeen": "2019-04-10T13:28:45",
                 "location": "Kampala",
                 "name": "Samsung"
             }
@@ -68,7 +68,7 @@ expected_response_device = {
     "data": {
         "specificDevice": {
             "id": "1",
-            "lastSeen": "2018-06-08T11:17:58.785136",  # noqa: E501
+            "lastSeen": "2019-04-10T13:28:45",  # noqa: E501
             "dateAdded": "2018-06-08T11:17:58.785136",  # noqa: E501
             "name": "Samsung",
             "location": "Kampala"

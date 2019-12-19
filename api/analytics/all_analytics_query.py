@@ -1,12 +1,13 @@
 import graphene
 from helpers.auth.admin_roles import admin_roles
 from helpers.calendar.all_analytics_helper import (
-    AllAnalyticsHelper, Event, BookingsCount
+    AllAnalyticsHelper, Event, BookingsCount, DeviceAnalytics
 )
 from api.role.schema import Role
 from helpers.calendar.analytics_helper import CommonAnalytics
 from helpers.auth.authentication import Auth
 from api.room.schema import Room
+from api.devices.schema import Devices
 from utilities.utility import percentage_formater
 from helpers.auth.user_details import get_user_from_db
 from utilities.validator import verify_location_id
@@ -37,6 +38,7 @@ class AllAnalytics(graphene.ObjectType):
     cancellations_percentage = graphene.Float()
     app_bookings_percentage = graphene.Float()
     bookings_count = graphene.List(BookingsCount)
+    device_analytics = graphene.List(DeviceAnalytics)
 
 
 class Query(graphene.ObjectType):
@@ -69,6 +71,11 @@ class Query(graphene.ObjectType):
         start_date, end_date = CommonAnalytics.all_analytics_date_validation(
             self, start_date, end_date
         )
+        device_query = Devices.get_query(info)
+        device_analytics = AllAnalyticsHelper.get_devices_analytics(
+            self,
+            device_query
+        )
         query = Room.get_query(info)
         room_analytics, bookings, percentages_dict, bookings_count =  \
             AllAnalyticsHelper.get_all_analytics(
@@ -98,6 +105,14 @@ class Query(graphene.ObjectType):
                 events=analytic['room_events'],
             )
             analytics.append(current_analytic)
+        device_analytics_list = []
+        for device_object in device_analytics:
+            device_analytic = DeviceAnalytics(
+                device_name=device_object['device_name'],
+                device_id=device_object['device_id'],
+                down_time=device_object['down_time']
+            )
+            device_analytics_list.append(device_analytic)
         return AllAnalytics(
             bookings=bookings,
             checkins_percentage=percentage_formater(
@@ -117,4 +132,5 @@ class Query(graphene.ObjectType):
                 bookings
             ),
             bookings_count=bookings_count,
-            analytics=analytics)
+            analytics=analytics,
+            device_analytics=device_analytics_list)

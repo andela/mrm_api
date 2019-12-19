@@ -111,7 +111,7 @@ class BaseTestCase(TestCase):
                                 quantity=3)
             resource.save()
             device = Devices(
-                last_seen="2018-06-08T11:17:58.785136",
+                last_seen="2019-04-10T13:28:45",
                 date_added="2018-06-08T11:17:58.785136",
                 name="Samsung",
                 location="Kampala",
