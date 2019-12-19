@@ -144,3 +144,17 @@ def convert_date(provided_date, provided_time, time_zone):
     new_date = parser.parse(date)
     new_date_format = str(pytz.timezone(time_zone).localize(new_date))
     return new_date_format.replace(new_date_format[10], 'T')
+
+
+def convert_date_into_user_time(time, requester_time_zone):
+    events_time_in_utc = str(datetime.strptime(
+        time[:19], "%Y-%m-%dT%H:%M:%S"
+    ) + timedelta(hours=int(
+        time[-6:20] + time[-4:22]))
+    )
+
+    time_zone = pytz.timezone(requester_time_zone)
+    user_time = str(datetime.strptime(
+        events_time_in_utc, '%Y-%m-%d %H:%M:%S'
+    ).replace(tzinfo=pytz.utc).astimezone(time_zone))
+    return user_time.replace(" ", "T")
