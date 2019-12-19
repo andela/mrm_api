@@ -280,7 +280,7 @@ mutation{
 
 filter_user_by_location = '''
 query {
-    users (locationId:5) {
+    users (locationId:10) {
       users {
         email
         name

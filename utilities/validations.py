@@ -3,9 +3,9 @@ import validators
 import re
 
 from api.location.models import CountryType, TimeZoneType
-from graphql import GraphQLError
 from api.structure.models import Structure as StructureModel
 from api.office_structure.models import OfficeStructure as OfficeStructureModel
+from api.bugsnag_error import return_error
 
 
 def validate_url(**kwargs):
@@ -113,7 +113,8 @@ def validate_room_labels(**kwargs):
     for label in room_labels:
         structure = StructureModel.query.filter_by(name=label).first()
         if structure is None:
-            raise GraphQLError("Structure does not exist")
+            return_error.report_errors_bugsnag_and_graphQL(
+                "Structure does not exist")
         break
 
 
@@ -127,7 +128,7 @@ def validate_structure_id(**kwargs):
         structure_id=structure_id).first()
     if not structure:
         error_message = 'The structure {} does not exist'.format(structure_id)
-        raise GraphQLError(error_message)
+        return_error.report_errors_bugsnag_and_graphQL(error_message)
 
 
 def validate_unique_structure_id(**kwargs):
@@ -138,32 +139,35 @@ def validate_unique_structure_id(**kwargs):
         [structure['structure_id'] for structure in kwargs['data']]
     for structure_id in structure_id_list:
         if structure_id_list.count(structure_id) > 1:
-            raise GraphQLError(
+            return_error.report_errors_bugsnag_and_graphQL(
                 'The office stuctures does not contain unique ids')
 
         structure_in_db = StructureModel.query.filter_by(
             structure_id=structure_id).first()
         if structure_in_db:
-            raise GraphQLError('{} already exists'.format(structure_in_db.name))
+            return_error.report_errors_bugsnag_and_graphQL(
+                '{} already exists'.format(structure_in_db.name))
 
 
 def ensure_unique_id(node_list):
     node_id_list = [node.id for node in node_list]
     if len(node_list) != len(set(node_id_list)):
-        raise GraphQLError('nodes must have unique id')
+        return_error.report_errors_bugsnag_and_graphQL(
+            'nodes must have unique id')
     node_with_id = OfficeStructureModel.query.filter(
         OfficeStructureModel.id.in_(node_id_list)).first()
     if node_with_id:
-        raise GraphQLError('node id "{}" in use'.format(node_with_id.id))
+        return_error.report_errors_bugsnag_and_graphQL(
+            'node id "{}" in use'.format(node_with_id.id))
 
 
 def ensure_single_root_node(node_list):
     total_root_nodes = len(
-      [node.parent_id for node in node_list if node.parent_id is None])
+        [node.parent_id for node in node_list if node.parent_id is None])
     if total_root_nodes != 1:
-        raise GraphQLError(
-          'there must be exactly 1 root node. {} were supplied'.format(
-            total_root_nodes))
+        return_error.report_errors_bugsnag_and_graphQL(
+            'there must be exactly 1 root node. {} were supplied'.format(
+                total_root_nodes))
 
 
 def ensure_valid_parent_id(node_list):
@@ -173,9 +177,9 @@ def ensure_valid_parent_id(node_list):
     available_parents = set()
     for node in node_list:
         if node.parent_id and node.parent_id not in available_parents:
-            raise GraphQLError(
-              'node "{}" appears before its parent'.format(
-                node.name))
+            return_error.report_errors_bugsnag_and_graphQL(
+                'node "{}" appears before its parent'.format(
+                    node.name))
         available_parents.add(node.id)
 
 
@@ -185,7 +189,8 @@ def validate_structure_nodes(node_list):
     a valid structure
     """
     if not len(node_list):
-        raise GraphQLError('node_list cannot be empty')
+        return_error.report_errors_bugsnag_and_graphQL(
+            'node_list cannot be empty')
     ensure_unique_id(node_list)
     ensure_single_root_node(node_list)
     ensure_valid_parent_id(node_list)

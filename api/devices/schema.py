@@ -1,5 +1,4 @@
 import graphene
-from graphql import GraphQLError
 from datetime import datetime
 from graphene_sqlalchemy import SQLAlchemyObjectType
 from sqlalchemy import func, String, cast
@@ -14,6 +13,7 @@ from utilities.utility import update_entity_fields
 from helpers.room_filter.room_filter import location_join_room
 from helpers.auth.user_details import get_user_from_db
 from helpers.auth.admin_roles import admin_roles
+from api.bugsnag_error import return_error
 
 
 class Devices(SQLAlchemyObjectType):
@@ -43,7 +43,7 @@ class CreateDevice(graphene.Mutation):
             RoomModel.state == 'active'
         ).first()
         if not room_location:
-            raise GraphQLError("Room not found")
+            return_error.report_errors_bugsnag_and_graphQL("Room not found")
         user = get_user_from_db()
         device = DevicesModel(
             **kwargs,
@@ -77,7 +77,8 @@ class UpdateDevice(graphene.Mutation):
             DevicesModel.id == device_id
         ).first()
         if not exact_device:
-            raise GraphQLError("Device ID not found")
+            return_error.report_errors_bugsnag_and_graphQL(
+                "Device ID not found")
         update_entity_fields(exact_device, **kwargs)
 
         exact_device.save()
@@ -102,7 +103,7 @@ class DeleteDevice(graphene.Mutation):
             DevicesModel.id == device_id
         ).first()
         if not exact_device:
-            raise GraphQLError("Device not found")
+            return_error.report_errors_bugsnag_and_graphQL("Device not found")
         update_entity_fields(exact_device, state="archived", **kwargs)
         exact_device.save()
         return DeleteDevice(device=exact_device)
@@ -160,7 +161,7 @@ class Query(graphene.ObjectType):
         device = query.filter(DevicesModel.id == device_id).first()
 
         if not device:
-            raise GraphQLError("Device not found")
+            return_error.report_errors_bugsnag_and_graphQL("Device not found")
 
         return device
 
@@ -169,7 +170,8 @@ class Query(graphene.ObjectType):
         devices = Devices.get_query(info)
         device_name = ''.join(device_name.split()).lower()
         if not device_name:
-            raise GraphQLError("Please provide the device name")
+            return_error.report_errors_bugsnag_and_graphQL(
+                "Please provide the device name")
         found_devices = []
         for device in devices:
             exact_name = ''.join(device.name.split()).lower()

@@ -1,7 +1,6 @@
 import graphene
 from graphene_sqlalchemy import SQLAlchemyObjectType
 from sqlalchemy import func, and_, String, cast
-from graphql import GraphQLError
 
 from api.room_resource.models import Resource as ResourceModel
 from api.room.models import RoomResource as RoomResourceModel
@@ -13,6 +12,7 @@ from helpers.auth.authentication import Auth
 from helpers.auth.error_handler import SaveContextManager
 from helpers.pagination.paginate import Paginate, validate_page
 from helpers.room_filter.room_filter import room_resources_join_room
+from api.bugsnag_error import return_error
 
 
 class Resource(SQLAlchemyObjectType):
@@ -51,15 +51,16 @@ class AssignResource(graphene.Mutation):
         exact_room = active_rooms.filter(
             RoomModel.id == kwargs['room_id']).first()
         if not exact_room:
-            raise GraphQLError("Room not found")
+            return_error.report_errors_bugsnag_and_graphQL("Room not found")
         exact_resource = ResourceModel.query.filter_by(
             id=kwargs['resource_id'], state="active").first()
         if not exact_resource:
-            raise GraphQLError('Resource with such id does not exist.')
+            return_error.report_errors_bugsnag_and_graphQL(
+                'Resource with such id does not exist.')
         resource_name = exact_resource.name
         assigned_quantity = kwargs['quantity']
         if assigned_quantity < 1:
-            raise GraphQLError(
+            return_error.report_errors_bugsnag_and_graphQL(
                 "Assigned quantity cannot be less than 1."
             )
         resource_query = RoomResource.get_query(info)
@@ -67,7 +68,7 @@ class AssignResource(graphene.Mutation):
             RoomResourceModel.resource_id == kwargs['resource_id'],
             RoomResourceModel.room_id == kwargs['room_id']).first()
         if exact_resource_id:
-            raise GraphQLError(
+            return_error.report_errors_bugsnag_and_graphQL(
                 'Resource already exists in the room.'
             )
         room_resources = RoomResourceModel(**kwargs, name=resource_name)
@@ -94,9 +95,10 @@ class UpdateAssignedResource(graphene.Mutation):
             room_id=room_id, resource_id=resource_id).first()
 
         if not actual_resource:
-            raise GraphQLError('Resource does not exist in the room')
+            return_error.report_errors_bugsnag_and_graphQL(
+                'Resource does not exist in the room')
         if kwargs['quantity'] < 0:
-            raise GraphQLError(
+            return_error.report_errors_bugsnag_and_graphQL(
                 'Assigned quantity cannot be less than zero'
             )
         update_entity_fields(actual_resource, **kwargs)
@@ -118,16 +120,18 @@ class DeleteAssignedResource(graphene.Mutation):
         query = RoomResource.get_query(info)
         exact_room = RoomModel.query.filter_by(id=room_id).first()
         if not exact_room:
-            raise GraphQLError('Room does not exist')
+            return_error.report_errors_bugsnag_and_graphQL(
+                'Room does not exist')
         exact_resource = ResourceModel.query.filter_by(
             id=resource_id).first()
         if not exact_resource:
-            raise GraphQLError('Resource does not exist')
+            return_error.report_errors_bugsnag_and_graphQL(
+                'Resource does not exist')
         assigned_resource = query.filter(
             RoomResourceModel.room_id == room_id,
             RoomResourceModel.resource_id == resource_id).first()
         if not assigned_resource:
-            raise GraphQLError(
+            return_error.report_errors_bugsnag_and_graphQL(
                 'The resource has not been assigned to the specified room')
         assigned_resource.delete()
         return DeleteAssignedResource(room_resource=assigned_resource)
@@ -164,7 +168,7 @@ class PaginatedResource(Paginate):
         result = active_resources.order_by(func.lower(
             ResourceModel.name)).limit(per_page).offset(page*per_page)
         if result.count() == 0:
-            return GraphQLError("No more resources")
+            return_error.report_errors_bugsnag_and_graphQL("No more resources")
         return result
 
 
@@ -206,7 +210,7 @@ class UpdateRoomResource(graphene.Mutation):
         exact_resource = active_resources.filter(
             ResourceModel.id == resource_id).first()
         if not exact_resource:
-            raise GraphQLError("Resource not found")
+            return_error.report_errors_bugsnag_and_graphQL("Resource not found")
         update_entity_fields(exact_resource, **kwargs)
         exact_resource.save()
         return UpdateRoomResource(resource=exact_resource)
@@ -229,7 +233,7 @@ class DeleteResource(graphene.Mutation):
             ResourceModel.state == "active",
             ResourceModel.id == resource_id)).first()
         if not exact_resource:
-            raise GraphQLError("Resource not found")
+            return_error.report_errors_bugsnag_and_graphQL("Resource not found")
         update_entity_fields(exact_resource, state="archived")
         query_room_resource = RoomResource.get_query(info)
         room_resources = query_room_resource.filter(
@@ -287,13 +291,14 @@ class Query(graphene.ObjectType):
             RoomModel.state == "active"
         ).first()
         if not exact_room:
-            raise GraphQLError("Room not found")
+            return_error.report_errors_bugsnag_and_graphQL("Room not found")
         resource_query = Resource.get_query(info)
         room_resources = RoomResource.get_query(info).filter(
             RoomResourceModel.room_id == room_id
         )
         if not room_resources.first():
-            raise GraphQLError("Room has no resource yet")
+            return_error.report_errors_bugsnag_and_graphQL(
+                "Room has no resource yet")
         resources = []
         for resource in room_resources:
             room_resource = resource_query.filter(
@@ -309,14 +314,16 @@ class Query(graphene.ObjectType):
         matching_resources = []
         resource_name = search_name.lower().replace(" ", "")
         if not resource_name:
-            raise GraphQLError("Please input Resource Name")
+            return_error.report_errors_bugsnag_and_graphQL(
+                "Please input Resource Name")
         all_resources = Resource.get_query(info).filter_by(state="active")
         for each_resource in all_resources:
             striped_resource = each_resource.name.lower().replace(" ", "")
             if resource_name in striped_resource:
                 matching_resources.append(each_resource)
         if not matching_resources:
-            raise GraphQLError('No Matching Resource')
+            return_error.report_errors_bugsnag_and_graphQL(
+                'No Matching Resource')
         return matching_resources
 
     @Auth.user_roles('Admin', 'Super Admin')
@@ -324,7 +331,8 @@ class Query(graphene.ObjectType):
         resource_exists = Resource.get_query(info).filter_by(
             id=resource_id).first()
         if not resource_exists:
-            raise GraphQLError('Resource does not exist')
+            return_error.report_errors_bugsnag_and_graphQL(
+                'Resource does not exist')
         query = RoomResource.get_query(info).join(ResourceModel).join(
             RoomModel)
         rooms_with_resource = query.filter(

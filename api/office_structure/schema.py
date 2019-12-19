@@ -1,6 +1,5 @@
 import graphene
 from graphene_sqlalchemy import SQLAlchemyObjectType
-from graphql import GraphQLError
 from enum import Enum
 from sqlalchemy import asc, desc
 from api.office_structure.models import OfficeStructure as StructureModel
@@ -12,6 +11,7 @@ from utilities.validations import (
 from helpers.auth.admin_roles import admin_roles
 from helpers.database import db_session
 from utilities.utility import update_entity_fields
+from api.bugsnag_error import return_error
 
 
 class StructureNode(SQLAlchemyObjectType):
@@ -43,7 +43,7 @@ class UpdateNode(graphene.Mutation):
             StructureModel.id == kwargs['node_id']).first()
 
         if not node:
-            raise GraphQLError("node not found")
+            return_error.report_errors_bugsnag_and_graphQL("node not found")
 
         validate_empty_fields(**kwargs)
 
@@ -78,7 +78,7 @@ class DeleteNode(graphene.Mutation):
         exact_node = db_session.query(StructureModel).filter(
             StructureModel.id == node_id).first()
         if not exact_node:
-            raise GraphQLError(
+            return_error.report_errors_bugsnag_and_graphQL(
                 "The specified node does not exist"
             )
         db_session.delete(exact_node)
@@ -111,7 +111,7 @@ class CreateStructure(graphene.Mutation):
             node['name'] = node.name.strip()
             node['tag'] = node.tag.strip()
             nodes.append(StructureModel(
-              **node, location_id=admin_location_id))
+                **node, location_id=admin_location_id))
         db_session.add_all(nodes)
         db_session.commit()
         return CreateStructure(structure=nodes)
@@ -146,7 +146,7 @@ class Query(graphene.ObjectType):
         node_name=graphene.String(required=True),
         order=graphene.Argument(graphene.Enum.from_enum(Order)),
         description="Returns the path from root to the node within structure"
-        )
+    )
 
     @Auth.user_roles('Admin', 'Default User', 'Super Admin')
     def resolve_node_path_by_name(self, info, **kwargs):
@@ -155,7 +155,7 @@ class Query(graphene.ObjectType):
         query = StructureNode.get_query(info)
         order = asc if order == 'asc' else desc
         node = query.filter(
-          StructureModel.name.ilike(node_name.strip())).first()
+            StructureModel.name.ilike(node_name.strip())).first()
         if not node:
-            raise GraphQLError('node not found')
+            return_error.report_errors_bugsnag_and_graphQL('node not found')
         return node.path_to_root(order=order)

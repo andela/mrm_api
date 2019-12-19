@@ -1,20 +1,20 @@
 from datetime import datetime
 import graphene
 from graphene_sqlalchemy import SQLAlchemyObjectType
-from graphql import GraphQLError
 from api.question.models import Question as QuestionModel
 from api.response.models import Response as ResponseModel
 from api.room.schema import Room
 from helpers.auth.authentication import Auth
 from helpers.pagination.paginate import ListPaginate
 from helpers.response.create_response import (
-                                              create_response,
-                                              create_response_details,
-                                              map_response_type,
-                                              ResponseDetail,
-                                              ResponseData)
+    create_response,
+    create_response_details,
+    map_response_type,
+    ResponseDetail,
+    ResponseData)
 from utilities.utility import update_entity_fields
 from utilities.validations import validate_empty_fields
+from api.bugsnag_error import return_error
 
 
 class Response(SQLAlchemyObjectType):
@@ -79,7 +79,8 @@ class CreateResponse(graphene.Mutation):
         present_date = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
         room = query.filter_by(id=kwargs['room_id']).first()
         if not room:
-            raise GraphQLError("Non-existent room id")
+            return_error.report_errors_bugsnag_and_graphQL(
+                "Non-existent room id")
         for each_response in kwargs['responses']:
             question = QuestionModel.query.filter_by(
                 id=each_response.question_id).first()
@@ -98,7 +99,7 @@ class CreateResponse(graphene.Mutation):
                 **each_response
             )
         if errors:
-            raise GraphQLError(
+            return_error.report_errors_bugsnag_and_graphQL(
                 ('The following errors occured: {}').format(
                     str(errors).strip('[]'))
             )
@@ -148,7 +149,7 @@ class Query(graphene.ObjectType):
         room_feedback = query.filter_by(room_id=kwargs['room_id'])
         active_feedback = room_feedback.filter(ResponseModel.state == "active")
         if active_feedback.count() < 1:
-            raise GraphQLError("This room\
+            return_error.report_errors_bugsnag_and_graphQL("This room\
  doesn't exist or doesn't have feedback.")
 
         if page and per_page:
@@ -204,7 +205,8 @@ class HandleRoomResponse(graphene.Mutation):
         room_response = query_responses.filter(
             ResponseModel.id == response_id).first()
         if not room_response:
-            raise GraphQLError("Response does not exist")
+            return_error.report_errors_bugsnag_and_graphQL(
+                "Response does not exist")
         if room_response.resolved:
             room_response.resolved = False
             room_response.save()
@@ -238,7 +240,7 @@ class HandleMultipleResponse(graphene.Mutation):
             room_response = query_responses.filter(
                 ResponseModel.id == response).first()
             if not room_response:
-                raise GraphQLError(
+                return_error.report_errors_bugsnag_and_graphQL(
                     "Response " + str(response) + " does not exist"
                 )
         for response in responses:
@@ -276,7 +278,7 @@ class ArchiveResponse(graphene.Mutation):
             ResponseModel.id == response_id,
             ResponseModel.state == "active", ResponseModel.resolved).first()
         if not exact_response:
-            raise GraphQLError(
+            return_error.report_errors_bugsnag_and_graphQL(
                 "The specified response does not exist\
  or hasn't been resolved yet."
             )

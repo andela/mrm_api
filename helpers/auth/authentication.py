@@ -6,7 +6,6 @@ from flask import request, jsonify
 from functools import wraps
 
 import requests
-from graphql import GraphQLError
 from sqlalchemy.exc import SQLAlchemyError
 
 from api.user.models import User
@@ -17,6 +16,7 @@ from helpers.location.location import check_and_add_location
 from utilities.utility import StateType
 
 from helpers.database import db_session
+from api.bugsnag_error import return_error
 
 api_url = "https://api-prod.andela.com/api/v1/"
 
@@ -146,10 +146,11 @@ class Authentication:
                     try:
                         user = User.query.filter_by(email=email).first()
                     except Exception:
-                        raise GraphQLError("The database cannot be reached")
+                        return_error.report_errors_bugsnag_and_graphQL(
+                            "The database cannot be reached")
 
                     if user and user.state != StateType.active:  # pragma: no cover # noqa
-                        raise GraphQLError(
+                        return_error.report_errors_bugsnag_and_graphQL(
                             "Your account is not active, please contact an admin")  # noqa
 
                     if not user:
@@ -164,7 +165,8 @@ class Authentication:
                         handle_http_error(message, status, expected_args)
 
                 else:
-                    raise GraphQLError(user_data[0].data)
+                    return_error.report_errors_bugsnag_and_graphQL(
+                        user_data[0].data)
 
             return wrapper
 

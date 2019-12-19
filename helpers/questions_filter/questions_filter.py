@@ -1,6 +1,6 @@
 from dateutil import parser
 from dateutil.relativedelta import relativedelta
-from graphql import GraphQLError
+from api.bugsnag_error import return_error
 
 
 def filter_questions_by_date_range(questions, start_date, end_date):
@@ -27,7 +27,8 @@ def format_range_dates(start_date, end_date):
     start_date = parser.parse(start_date).strftime('%Y-%m-%d')
     end_date = parser.parse(end_date).strftime('%Y-%m-%d')
     if start_date > end_date:
-        raise GraphQLError("Start date must be lower than end date")
+        return_error.report_errors_bugsnag_and_graphQL(
+            "Start date must be lower than end date")
     start_date = parser.parse(start_date)
     end_date = parser.parse(end_date) + relativedelta(days=1)
     return(start_date, end_date)

@@ -1,10 +1,10 @@
 from dateutil.relativedelta import relativedelta
-from graphql import GraphQLError
 from api.room.models import Room as RoomModel
 from api.events.models import Events as EventsModel
 from datetime import datetime
 from helpers.calendar.credentials import Credentials
 from helpers.email.email import event_cancellation_notification
+from api.bugsnag_error import return_error
 
 
 class UpdateRecurringEvent():
@@ -136,7 +136,8 @@ class UpdateRecurringEvent():
                 if not event_cancellation_notification(
                     event, room_id, event_reject_reason
                 ):
-                    raise GraphQLError("Event cancelled but email not sent")
+                    return_error.report_errors_bugsnag_and_graphQL(
+                        "Event cancelled but email not sent")
                 for missed_checkin in missed_checkins:
                     missed_checkin.state = "archived"
                     missed_checkin.save()

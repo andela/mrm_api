@@ -1,7 +1,6 @@
-from graphql import GraphQLError
-
 from api.location.models import Location as LocationModel
 from api.user.models import users_roles
+from api.bugsnag_error import return_error
 
 
 def user_filter(query, filter_data):
@@ -31,7 +30,8 @@ def user_filter(query, filter_data):
 def filter_by_location(query, location):
     get_location = LocationModel.query.filter_by(id=location).first()
     if not get_location:
-        raise GraphQLError("Location id does not exist")
+        return_error.report_errors_bugsnag_and_graphQL(
+            "Location id does not exist")
     return query.filter_by(location=get_location.name)
 
 

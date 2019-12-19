@@ -1,11 +1,11 @@
 import graphene
-from graphql import GraphQLError
 from graphene_sqlalchemy import SQLAlchemyObjectType
 from api.tag.models import Tag as TagModel
 from utilities.validations import validate_empty_fields
 from utilities.utility import update_entity_fields
 from helpers.auth.authentication import Auth
 from helpers.auth.error_handler import SaveContextManager
+from api.bugsnag_error import return_error
 
 
 class Tag(SQLAlchemyObjectType):
@@ -32,9 +32,9 @@ class CreateTag(graphene.Mutation):
         tag = TagModel(**kwargs)
         payload = {
             'model': TagModel, 'field': 'name', 'value':  kwargs['name']
-            }
+        }
         with SaveContextManager(
-           tag, 'Tag', payload
+            tag, 'Tag', payload
         ):
             return CreateTag(tag=tag)
 
@@ -58,7 +58,7 @@ class UpdateTag(graphene.Mutation):
             TagModel.id == tag_id,
             TagModel.state == "active").first()
         if not tag:
-            raise GraphQLError("Tag not found")
+            return_error.report_errors_bugsnag_and_graphQL("Tag not found")
         update_entity_fields(tag, **kwargs)
         tag.save()
         return UpdateTag(tag=tag)
@@ -80,7 +80,7 @@ class DeleteTag(graphene.Mutation):
         tag = result.filter(
             TagModel.id == tag_id).first()
         if not tag:
-            raise GraphQLError("Tag not found")
+            return_error.report_errors_bugsnag_and_graphQL("Tag not found")
         update_entity_fields(tag, state="archived", **kwargs)
         tag.save()
         return DeleteTag(tag=tag)

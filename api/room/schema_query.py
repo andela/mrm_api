@@ -1,7 +1,6 @@
 import graphene
 import os
 import re
-from graphql import GraphQLError
 from helpers.calendar.analytics import RoomAnalytics  # noqa: E501
 from helpers.auth.authentication import Auth
 from helpers.auth.admin_roles import admin_roles
@@ -26,6 +25,7 @@ from helpers.events_filter.events_filter import (convert_date,
                                                  )
 from api.room.schema import (RatioOfCheckinsAndCancellations,
                              BookingsAnalyticsCount)
+from api.bugsnag_error import return_error
 
 
 def resolve_booked_rooms_analytics(*args):
@@ -278,7 +278,7 @@ class Query(graphene.ObjectType):
             RoomModel.calendar_id == calendar_id
         ).first()
         if not check_calendar_id:
-            raise GraphQLError("CalendarId given not assigned to any room on converge")  # noqa: E501
+            return_error.report_errors_bugsnag_and_graphQL("CalendarId given not assigned to any room on converge")  # noqa: E501
 
     def room_occupants_room_schedule(self, info, calender_id, days):
         query = Room.get_query(info)
@@ -387,7 +387,7 @@ class Query(graphene.ObjectType):
             }
             res = service.freebusy().query(
                 body=free_busy_rooms_request_object
-                ).execute()
+            ).execute()
             all_remote_rooms.append(res[u'calendars'])
 
         # all busy remote rooms in a given period
@@ -397,13 +397,14 @@ class Query(graphene.ObjectType):
         # all available rooms in a user's location in a given period
         available_rooms = [room for room in all_rooms if room[
             'id'
-            ] not in busy_rooms]
+        ] not in busy_rooms]
         all_available_rooms = [AvailableRooms(room['id'],
                                               room['name']
                                               ) for room in available_rooms]
 
         def raise_no_available_rooms():
-            raise GraphQLError("No available rooms at the moment")
+            return_error.report_errors_bugsnag_and_graphQL(
+                "No available rooms at the moment")
 
         return AllAvailableRooms(
             availableRoom=all_available_rooms
@@ -414,7 +415,8 @@ class Query(graphene.ObjectType):
         rooms = Room.get_query(info).join(tags).join(
             Tag).filter(tags.c.tag_id == tagId).all()
         if not rooms:
-            raise GraphQLError('No rooms found with this tag')
+            return_error.report_errors_bugsnag_and_graphQL(
+                'No rooms found with this tag')
 
         return rooms
 
@@ -424,17 +426,18 @@ class Query(graphene.ObjectType):
             RoomModel.id == room_id,
             RoomModel.state == "active").first()
         if not check_room:
-            raise GraphQLError("Room not found")
+            return_error.report_errors_bugsnag_and_graphQL("Room not found")
         return check_room
 
     def resolve_get_room_by_name(self, info, name):
         query = Room.get_query(info)
         if name == "":
-            raise GraphQLError("Please input Room Name")
+            return_error.report_errors_bugsnag_and_graphQL(
+                "Please input Room Name")
         check_room_name = list(query.filter(
             RoomModel.name.ilike("%" + name + "%"),  RoomModel.state == "active").all())  # noqa: E501
         if not check_room_name:
-            raise GraphQLError("Room not found")
+            return_error.report_errors_bugsnag_and_graphQL("Room not found")
         return check_room_name
 
     def resolve_room_occupants(self, info, calendar_id, days):

@@ -1,5 +1,5 @@
-from graphql import GraphQLError
 from flask_json import JsonError
+from api.bugsnag_error import return_error
 
 
 def handle_http_error(*args):
@@ -9,4 +9,4 @@ def handle_http_error(*args):
     message, status, expected_args = args
     if 'REST' in expected_args:
         raise JsonError(message=message, status=status)
-    raise GraphQLError(message)
+    return_error.report_errors_bugsnag_and_graphQL(message)

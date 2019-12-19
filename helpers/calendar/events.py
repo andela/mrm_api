@@ -10,6 +10,7 @@ from api.events.models import Events as EventsModel
 from api.room.models import Room as RoomModel
 from .analytics_helper import CommonAnalytics
 from .credentials import Credentials, get_google_calendar_events
+from api.bugsnag_error import return_error
 
 
 class RoomSchedules(Credentials):
@@ -119,14 +120,17 @@ class RoomSchedules(Credentials):
                 start_time=kwargs['start_time'],
                 cancelled=True).count()
             if checked_in_events > 0 and 'meeting_end_time' not in kwargs:
-                raise GraphQLError("Event already checked in")
+                return_error.report_errors_bugsnag_and_graphQL(
+                    "Event already checked in")
             elif checked_in_events < 1 and 'meeting_end_time' in kwargs:
-                raise GraphQLError("Event yet to be checked in")
+                return_error.report_errors_bugsnag_and_graphQL(
+                    "Event yet to be checked in")
             elif cancelled_events > 0:
-                raise GraphQLError("Event already cancelled")
+                return_error.report_errors_bugsnag_and_graphQL(
+                    "Event already cancelled")
             return room_id
         except AttributeError:
-            raise GraphQLError(
+            return_error.report_errors_bugsnag_and_graphQL(
                 "This Calendar ID is invalid")
 
 

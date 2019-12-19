@@ -1,6 +1,5 @@
 import graphene
 from graphene_sqlalchemy import SQLAlchemyObjectType
-from graphql import GraphQLError
 from sqlalchemy import exc, func
 
 from api.office.models import Office as OfficeModel
@@ -16,6 +15,7 @@ from helpers.auth.error_handler import SaveContextManager
 from helpers.pagination.paginate import Paginate, validate_page
 from helpers.email.email import notification
 from helpers.auth.user_details import get_user_from_db
+from api.bugsnag_error import return_error
 
 
 class Office(SQLAlchemyObjectType):
@@ -41,7 +41,7 @@ class CreateOffice(graphene.Mutation):
     def mutate(self, info, **kwargs):
         location = Location.query.filter_by(id=kwargs['location_id']).first()
         if not location:
-            raise GraphQLError("Location not found")
+            return_error.report_errors_bugsnag_and_graphQL("Location not found")
         admin_roles.verify_admin_location(location_id=kwargs['location_id'])
         office = OfficeModel(**kwargs)
         admin = get_user_from_db()
@@ -50,15 +50,16 @@ class CreateOffice(graphene.Mutation):
         admin_name = username.split(".")[0]
         payload = {
             'model': OfficeModel, 'field': 'name', 'value':  kwargs['name']
-            }
+        }
         with SaveContextManager(
-           office, 'Office', payload
+            office, 'Office', payload
         ):
             new_office = kwargs['name']
             if not notification.send_email_notification(
                 email, new_office, location.name, admin_name
             ):
-                raise GraphQLError("Office created but Emails not Sent")
+                return_error.report_errors_bugsnag_and_graphQL(
+                    "Office created but Emails not Sent")
             return CreateOffice(office=office)
 
 
@@ -79,7 +80,7 @@ class DeleteOffice(graphene.Mutation):
         exact_office = result.filter(
             OfficeModel.id == office_id).first()  # noqa: E501
         if not exact_office:
-            raise GraphQLError("Office not found")
+            return_error.report_errors_bugsnag_and_graphQL("Office not found")
 
         admin_roles.create_rooms_update_delete_office(office_id)
         update_entity_fields(exact_office, state="archived", **kwargs)
@@ -104,13 +105,13 @@ class UpdateOffice(graphene.Mutation):
         result = get_office.filter(OfficeModel.state == "active")
         exact_office = result.filter(OfficeModel.id == office_id).first()
         if not exact_office:
-            raise GraphQLError("Office not found")
+            return_error.report_errors_bugsnag_and_graphQL("Office not found")
         admin_roles.create_rooms_update_delete_office(office_id)
         try:
             update_entity_fields(exact_office, **kwargs)
             exact_office.save()
         except exc.SQLAlchemyError:
-            raise GraphQLError("Action Failed")
+            return_error.report_errors_bugsnag_and_graphQL("Action Failed")
 
         return UpdateOffice(office=exact_office)
 
@@ -134,7 +135,7 @@ class PaginateOffices(Paginate):
             func.lower(OfficeModel.name)).limit(
             per_page).offset(page * per_page)
         if result.count() == 0:
-            return GraphQLError("No more offices")
+            return_error.report_errors_bugsnag_and_graphQL("No more offices")
         return result
 
 
@@ -166,7 +167,7 @@ class Query(graphene.ObjectType):
         active_offices = query.filter(OfficeModel.state == "active")
         check_office = active_offices.filter(OfficeModel.name == name).first()
         if not check_office:
-            raise GraphQLError("Office Not found")
+            return_error.report_errors_bugsnag_and_graphQL("Office Not found")
         if name == "Epic tower":
             exact_query = lagos_office_join_location(active_offices)
             result = exact_query.filter(OfficeModel.name == name)

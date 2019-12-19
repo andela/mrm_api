@@ -3,7 +3,6 @@ import pytz
 from datetime import datetime, timedelta
 import dateutil.parser
 from dateutil.relativedelta import relativedelta
-from graphql import GraphQLError
 from sqlalchemy.sql import text
 from helpers.database import db_session
 from helpers.calendar.events_sql import room_events_query
@@ -14,6 +13,7 @@ from helpers.auth.admin_roles import admin_roles
 from flask import request
 from flask_json import JsonError
 from api.events.models import Events as EventsModel
+from api.bugsnag_error import return_error
 
 
 class EventsDuration(graphene.ObjectType):
@@ -61,7 +61,8 @@ class CommonAnalytics:
             self, start_date, end_date
         )
         if start_date > end_date:
-            raise GraphQLError('Earlier date should be lower than later date')
+            return_error.report_errors_bugsnag_and_graphQL(
+                'Earlier date should be lower than later date')
         return (start_date, end_date)
 
     def validate_current_date(self, start_date, end_date):
@@ -78,7 +79,7 @@ class CommonAnalytics:
         user_end_date = dateutil.parser.parse(end_date)
         today = dateutil.parser.parse(date_now)
         if user_start_date > today or user_end_date > today:
-            raise GraphQLError(
+            return_error.report_errors_bugsnag_and_graphQL(
                 "Invalid date. You can not retrieve data beyond today")
         return(start_date, end_date)
 
@@ -117,7 +118,8 @@ class CommonAnalytics:
             if 'analytics' in request.url:
                 raise JsonError(Message='No rooms in this location')
             else:
-                raise GraphQLError("No rooms in this location")
+                return_error.report_errors_bugsnag_and_graphQL(
+                    "No rooms in this location")
         result = [{
             'name': room.name,
             'room_id': room.id,
@@ -136,16 +138,16 @@ class CommonAnalytics:
         """
         user_time_zone = CommonAnalytics.get_user_time_zone()
         hour_offset = str(event_start_time.astimezone(pytz.timezone(
-          user_time_zone)).utcoffset().total_seconds()/60/60) + 'h'
+            user_time_zone)).utcoffset().total_seconds()/60/60) + 'h'
 
         events = db_session.query(EventsModel).from_statement(
-          text(room_events_query)).params(
-                state="active",
-                room_id=room_id,
-                event_end_time=event_end_time.isoformat(),
-                event_start_time=event_start_time.isoformat(),
-                hour_offset=hour_offset
-                ).all()
+            text(room_events_query)).params(
+            state="active",
+            room_id=room_id,
+            event_end_time=event_end_time.isoformat(),
+            event_start_time=event_start_time.isoformat(),
+            hour_offset=hour_offset
+        ).all()
         return events
 
     def get_event_details(self, query, event, room_id):
@@ -172,7 +174,8 @@ class CommonAnalytics:
                 exact_room = active_rooms.filter(
                     RoomModel.id == room_id).first()
                 if not exact_room:
-                    raise GraphQLError("Room Id does not exist")
+                    return_error.report_errors_bugsnag_and_graphQL(
+                        "Room Id does not exist")
 
             bookings = CommonAnalytics.get_bookings_count(instance, room,
                                                           start_date,
