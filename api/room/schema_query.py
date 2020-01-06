@@ -16,13 +16,15 @@ from helpers.remote_rooms.remote_rooms_location import (
     map_remote_room_location_to_filter
 )
 from helpers.calendar.credentials import (get_google_api_calendar_list,
+                                          get_google_calendar_events,
                                           credentials
                                           )
 from helpers.events_filter.events_filter import (convert_date,
                                                  validate_date_input,
                                                  format_range_dates,
                                                  format_range_time,
-                                                 empty_string_checker
+                                                 empty_string_checker,
+                                                 convert_date_into_user_time
                                                  )
 from api.room.schema import (RatioOfCheckinsAndCancellations,
                              BookingsAnalyticsCount)
@@ -124,6 +126,14 @@ class AvailableRooms(graphene.ObjectType):
 
 class AllAvailableRooms(graphene.ObjectType):
     availableRoom = graphene.List(AvailableRooms)
+
+
+class suggestedTime(graphene.ObjectType):
+    time = graphene.String()
+
+
+class AllsuggestedTime(graphene.ObjectType):
+    suggestedTime = graphene.List(AvailableRooms)
 
 
 class Query(graphene.ObjectType):
@@ -273,6 +283,22 @@ class Query(graphene.ObjectType):
                 [required]"
     )
 
+    all_suggested_time = graphene.Field(
+        # suggest time for a meeting to a user
+        AllsuggestedTime,
+        start_date=graphene.String(required=True),
+        start_time=graphene.String(required=True),
+        end_date=graphene.String(required=True),
+        end_time=graphene.String(required=True),
+        time_zone=graphene.String(required=True),
+        description="Returns available rooms in a given period \
+            \n- start_time: Start time and date when you want to book room from\
+            [required]\n- end_time: time and date you want to book room upto\
+                [required]\n time_zone: The time zone of the location\
+                    [required]\n location: The location of the office's \
+                        room you want to book"
+    )
+
     def check_valid_calendar_id(self, query, calendar_id):
         check_calendar_id = query.filter(
             RoomModel.calendar_id == calendar_id
@@ -408,6 +434,62 @@ class Query(graphene.ObjectType):
         return AllAvailableRooms(
             availableRoom=all_available_rooms
         ) if available_rooms else raise_no_available_rooms()
+
+    @Auth.user_roles('Admin', 'Super Admin')
+    def resolve_all_suggested_time(self, info, **kwargs):
+
+        time_zone = kwargs['time_zone']
+        empty_string_checker(time_zone)
+        validate_date_input(kwargs['start_date'], kwargs['end_date'])
+        validate_date_input(kwargs['start_time'], kwargs['end_time'])
+        format_range_dates(kwargs['start_date'], kwargs['end_date'])
+        format_range_time(kwargs['start_time'], kwargs['end_time'])
+
+        start_time = convert_date(kwargs['start_date'],
+                                  kwargs['start_time'],
+                                  time_zone
+                                  )
+        end_time = convert_date(kwargs['end_date'],
+                                kwargs['end_time'],
+                                time_zone
+                                )
+
+        remote_rooms = Query.resolve_all_remote_rooms(
+            self, info, return_all=True)
+        all_rooms = []
+        for room in remote_rooms.rooms:
+            all_rooms.append({
+                "id": room.calendar_id,
+            })
+
+        calendar = 'andela.com_3339323638393131363334@resource.calendar.google.com' # noqa
+        all_calendars = get_google_calendar_events(calendarId=calendar,
+                                                   timeMin=start_time,
+                                                   timeMax=end_time,
+                                                   singleEvents=None,
+                                                   orderBy=None,
+                                                   syncToken=None,
+                                                   pageToken=None
+                                                   )
+        items = all_calendars.get('items', [])
+        users = []
+        for item in items:
+            if item['status'] != 'cancelled':
+                users.append({
+                    "start": convert_date_into_user_time(item.get(
+                        'start')['dateTime'], time_zone),
+                    "end": convert_date_into_user_time(item.get(
+                        'end')['dateTime'], time_zone),
+                    "attendees": item.get('attendees')[0]['email']
+                })
+
+        def raise_no_suggested_time():
+            raise GraphQLError("No suggestion available"
+                               + str(users))
+
+        return AllsuggestedTime(
+            availableRoom=all_calendars
+        ) if not AllsuggestedTime else raise_no_suggested_time()
 
     @Auth.user_roles('Admin', 'Super Admin')
     def resolve_filter_rooms_by_tag(self, info, tagId):
