@@ -16,7 +16,7 @@ imgkit==1.0.1
 MarkupSafe==1.0
 more-itertools==4.1.0
 numpy==1.15.2
-opencv-python==3.4.3.18
+opencv-python==3.4.7.28
 pandas==0.23.4
 Pillow==5.3.0
 pdfkit==0.6.1
